@@ -1,9 +1,38 @@
-<div class="container">
-    <p>Barre latérale pour vos outils!</p>
-    <p>
-        Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet <br />
-        L'implémentation ici ne couvre pas tous les critères d'acceptation du projet<br />
-        Vous êtes encouragés de modifier et compléter le code.<br />
-        N'oubliez pas de regarder les tests dans les fichiers spec.ts aussi!
-    </p>
+<div class="sidebar">
+    <mat-icon class="material-icons">add</mat-icon>
+
+    <mat-button-toggle-group vertical>
+        <mat-button-toggle>
+            <mat-icon class="material-icons">create</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle>
+            <mat-icon class="material-icons">change_history</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle>
+            <mat-icon class="fas fa-eraser"></mat-icon>
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <div class="toggleButtonGroup">
+        <input type="radio" id="pen" name="tool" value="pen">
+        <label for="pen">
+            <mat-icon class="material-icons">create</mat-icon>
+        </label>
+        <input type="radio" id="shapes" name="tool" value="shapes">
+        <label for="shapes">
+            <mat-icon class="material-icons">change_history</mat-icon>
+        </label>
+        <input type="radio" id="eraser" name="tool" value="eraser">
+        <label for="eraser">
+            <mat-icon class="fas fa-eraser"></mat-icon>
+        </label>
+    </div>
+
+
+    <mat-icon class="material-icons">grid_on</mat-icon>
+    <mat-icon class="material-icons">content_paste</mat-icon>
+    <mat-icon class="material-icons">import_export</mat-icon>
+    <mat-icon class="material-icons">help</mat-icon>
+    <mat-icon class="material-icons">undo</mat-icon>
+    <mat-icon class="material-icons">redo</mat-icon>
 </div>

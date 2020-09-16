@@ -1,12 +1,61 @@
-.container {
-    height: auto;
-    min-height: 98vh;
-    border: 1px solid black;
-    padding: 0 5px 0 5px;
-    margin-right: 5px;
+.sidebar {
+    height: 100vh;
+    width: 34px;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
 }
 
-.sidebar-container {
-    display: flex;
-    flex-direction: column;
+.material-icons {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.material-icons:hover {
+    background-color: #e6e6e6;
+}
+
+.mat-button-toggle-group-appearance-standard {
+    border-radius: 0px;
+}
+
+.mat-button-toggle-button{
+    padding: 0px;
+}
+
+::ng-deep .mat-button-base .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    padding: 0px;
+}
+
+::ng-deep {
+    .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+        padding: 0px;
+    }
+}
+
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    line-height: 0px;
+}
+
+.mat-button-toggle-label-content {
+    line-height: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.sidebar .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    line-height: 0px;
+}
+
+.toggleButtonGroup label {
+    background-color: lawngreen;
+}
+
+.toggleButtonGroup input[type="radio"] {
+    display: none;
+}
+  
+.toggleButtonGroup input[type="radio"]:checked+label {
+    background-color: red;
 }
