@@ -4,27 +4,27 @@
     </div>
 
     <div class="toggleButtonGroup sidebarSection">
-        <input type="radio" id="pen" name="tool" value="pen" />
+        <input type="radio" id="pen" name="tool" value="pen" (change)="onToolChange($event)" />
         <label for="pen">
             <mat-icon class="material-icons">create</mat-icon>
         </label>
-        <input type="radio" id="brush" name="tool" value="brush" />
+        <input type="radio" id="brush" name="tool" value="brush" (change)="onToolChange($event)" />
         <label for="brush">
             <mat-icon class="material-icons">brush</mat-icon>
         </label>
-        <input type="radio" id="eraser" name="tool" value="eraser" />
+        <input type="radio" id="eraser" name="tool" value="eraser" (change)="onToolChange($event)" />
         <label for="eraser">
             <mat-icon class="fas fa-eraser"></mat-icon>
         </label>
-        <input type="radio" id="crop_square" name="tool" value="crop_square" />
+        <input type="radio" id="crop_square" name="tool" value="square" (change)="onToolChange($event)" />
         <label for="crop_square">
             <mat-icon class="material-icons">crop_square</mat-icon>
         </label>
-        <input type="radio" id="panorama_fish_eye" name="tool" value="panorama_fish_eye" />
+        <input type="radio" id="panorama_fish_eye" name="tool" value="circle" (change)="onToolChange($event)" />
         <label for="panorama_fish_eye">
             <mat-icon class="material-icons">panorama_fish_eye</mat-icon>
         </label>
-        <input type="radio" id="timeline" name="tool" value="timeline" />
+        <input type="radio" id="timeline" name="tool" value="line" (change)="onToolChange($event)" />
         <label for="timeline">
             <mat-icon class="material-icons">timeline</mat-icon>
         </label>

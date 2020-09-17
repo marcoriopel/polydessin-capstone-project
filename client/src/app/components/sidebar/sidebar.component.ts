@@ -5,4 +5,11 @@ import { Component } from '@angular/core';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+
+    onToolChange(event: Event): void {
+        if (event.target.value != null) {
+            console.log(event.target.value);
+        }
+    }
+}
