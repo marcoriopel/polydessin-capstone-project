@@ -1,15 +1,23 @@
 .sidebar {
     height: 100vh;
-    width: 34px;
-    background-color:  #c7c7c7;
+    align-items: center;
+    background-color:#673AB7;
     display: flex;
-    flex-flow: row wrap;
-    align-content: flex-start;
+    flex-flow: column;
+}
+
+.sidebarSection{
+    border-bottom:#c9c9c9;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: flex;
+    flex-flow: column;
 }
 
 .material-icons {
     cursor: pointer;
-    padding: 5px;
+    padding: 7px;
+    color: #F5F5F5;
 }
 
 .toggleButtonGroup label {
@@ -18,6 +26,9 @@
 
 .toggleButtonGroup label:hover {
     background-color: #e6e6e6;
+    .material-icons {
+        color: black;
+    }
 }
 
 .toggleButtonGroup input[type="radio"] {
@@ -26,4 +37,7 @@
   
 .toggleButtonGroup input[type="radio"]:checked+label {
     background-color: #f0f0f0;
+    .material-icons {
+        color: black;
+    }
 }
