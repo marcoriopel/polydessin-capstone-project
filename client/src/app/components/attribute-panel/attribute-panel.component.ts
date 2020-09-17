@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToolSelectionService } from '../../services/tool-selection.service';
 
 @Component({
   selector: 'app-attribute-panel',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AttributePanelComponent implements OnInit {
 
-  constructor() { }
+  constructor(public toolSelectionService: ToolSelectionService) { }
 
   ngOnInit(): void {
   }

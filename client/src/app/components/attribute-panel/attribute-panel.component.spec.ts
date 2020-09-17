@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AttributePanelComponent } from './attribute-panel.component';
+
 
 describe('AttributePanelComponent', () => {
   let component: AttributePanelComponent;
@@ -8,9 +8,9 @@ describe('AttributePanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AttributePanelComponent ]
+      declarations: [AttributePanelComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
