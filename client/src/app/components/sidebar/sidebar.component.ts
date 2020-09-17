@@ -8,8 +8,9 @@ import { Component } from '@angular/core';
 export class SidebarComponent {
 
     onToolChange(event: Event): void {
-        if (event.target.value != null) {
-            console.log(event.target.value);
+        let target = event.target as HTMLInputElement;
+        if (target.value != null) {
+            console.log(target.value);
         }
     }
 }
