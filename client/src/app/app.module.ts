@@ -11,6 +11,12 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
+import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
+import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
+import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
+import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
+import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +25,13 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
-        AttributePanelComponent
+        AttributePanelComponent,
+        PencilAttributesComponent,
+        BrushAttributesComponent,
+        SquareAttributesComponent,
+        CircleAttributesComponent,
+        LineAttributesComponent,
+        EraserAttributesComponent
     ],
     imports: [
         BrowserModule,
