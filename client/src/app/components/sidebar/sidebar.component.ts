@@ -8,7 +8,7 @@ import { ToolSelectionService } from '../../services/tool-selection.service';
 })
 export class SidebarComponent {
 
-    constructor(private toolSelectionService: ToolSelectionService) { }
+    constructor(public toolSelectionService: ToolSelectionService) { }
 
     onToolChange(event: Event): void {
         let target = event.target as HTMLInputElement;

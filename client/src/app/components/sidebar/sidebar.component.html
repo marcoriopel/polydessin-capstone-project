@@ -4,29 +4,35 @@
     </div>
 
     <div class="toggleButtonGroup sidebarSection">
-        <input type="radio" id="pencil" name="tool" value="pencil" (change)="onToolChange($event)" />
+        <input type="radio" id="pencil" name="tool" [value]="toolSelectionService.toolNames.PENCIL_TOOL_NAME"
+            (change)="onToolChange($event)" checked />
         <label for="pencil">
             <mat-icon class="material-icons">create</mat-icon>
         </label>
-        <input type="radio" id="brush" name="tool" value="brush" (change)="onToolChange($event)" />
+        <input type="radio" id="brush" name="tool" [value]="toolSelectionService.toolNames.BRUSH_TOOL_NAME"
+            (change)="onToolChange($event)" />
         <label for="brush">
             <mat-icon class="material-icons">brush</mat-icon>
         </label>
-        <input type="radio" id="eraser" name="tool" value="eraser" (change)="onToolChange($event)" />
-        <label for="eraser">
-            <mat-icon class="fas fa-eraser"></mat-icon>
-        </label>
-        <input type="radio" id="crop_square" name="tool" value="square" (change)="onToolChange($event)" />
+        <input type="radio" id="crop_square" name="tool" [value]="toolSelectionService.toolNames.SQUARE_TOOL_NAME"
+            (change)="onToolChange($event)" />
         <label for="crop_square">
             <mat-icon class="material-icons">crop_square</mat-icon>
         </label>
-        <input type="radio" id="panorama_fish_eye" name="tool" value="circle" (change)="onToolChange($event)" />
+        <input type="radio" id="panorama_fish_eye" name="tool" [value]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME"
+            (change)="onToolChange($event)" />
         <label for="panorama_fish_eye">
             <mat-icon class="material-icons">panorama_fish_eye</mat-icon>
         </label>
-        <input type="radio" id="timeline" name="tool" value="line" (change)="onToolChange($event)" />
+        <input type="radio" id="timeline" name="tool" [value]="toolSelectionService.toolNames.LINE_TOOL_NAME"
+            (change)="onToolChange($event)" />
         <label for="timeline">
             <mat-icon class="material-icons">timeline</mat-icon>
+        </label>
+        <input type="radio" id="eraser" name="tool" [value]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
+            (change)="onToolChange($event)" />
+        <label for="eraser">
+            <mat-icon class="fas fa-eraser"></mat-icon>
         </label>
     </div>
 

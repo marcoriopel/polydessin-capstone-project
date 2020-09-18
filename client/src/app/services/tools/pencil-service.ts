@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -21,6 +22,7 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
+    name = TOOL_NAMES.PENCIL_TOOL_NAME;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
