@@ -7,10 +7,17 @@ import { PencilService } from '@app/services/tools/pencil-service';
   styleUrls: ['./pencil-attributes.component.scss']
 })
 export class PencilAttributesComponent implements OnInit {
-  toolWidth = 1;
+  toolWidth: number;
 
-  constructor(public pencilService: PencilService) { }
+  constructor(public pencilService: PencilService) {
+    this.toolWidth = pencilService.width;
+  }
 
   ngOnInit(): void {
+  }
+
+  handleWidthChange(newWidth: number) {
+    this.toolWidth = newWidth;
+    this.pencilService.changeWidth(this.toolWidth);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-slider',
@@ -11,6 +11,8 @@ export class SliderComponent implements OnInit {
   @Input() step: number;
   @Input() value: number;
 
+  @Output() valueChange: EventEmitter<number> = new EventEmitter();
+
   constructor() { }
 
   ngOnInit(): void {
@@ -20,11 +22,17 @@ export class SliderComponent implements OnInit {
     if (this.value > this.min) {
       --this.value;
     }
+    this.handleValueChange();
   }
 
   incrementToolWidth() {
     if (this.value < this.max) {
       ++this.value;
     }
+    this.handleValueChange();
+  }
+
+  handleValueChange() {
+    this.valueChange.emit(this.value);
   }
 }
