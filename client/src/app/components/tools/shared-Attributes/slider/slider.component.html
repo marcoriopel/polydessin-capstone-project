@@ -1,5 +1,5 @@
 <div id="slider">
-    <mat-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value" (input)="this.handleValueChange()">
+    <mat-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value" (change)="this.handleValueChange()">
     </mat-slider>
     <div id="sliderDetails">
         <input [(ngModel)]="value" (change)="this.handleValueChange()">
