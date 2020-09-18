@@ -7,10 +7,18 @@ import { PencilService } from '@app/services/tools/pencil-service';
   styleUrls: ['./pencil-attributes.component.scss']
 })
 export class PencilAttributesComponent implements OnInit {
+  toolWidth = 1;
 
   constructor(public pencilService: PencilService) { }
 
   ngOnInit(): void {
   }
 
+  decrementToolWidth() {
+    --this.toolWidth;
+  }
+
+  incrementToolWidth() {
+    ++this.toolWidth;
+  }
 }

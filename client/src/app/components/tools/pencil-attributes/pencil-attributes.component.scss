@@ -1,0 +1,30 @@
+#pencilAttributes{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.toolName{
+    margin: 5px;
+}
+
+#toolWidthAttributeContainer{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: 80%;
+    justify-content: space-between;
+}
+
+#toolWidthAttributeContainer input {
+    width: 35%;
+    line-height: 20px;
+}
+
+#toolWidthAttributeContainer button{
+    width: 26px;
+    line-height: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+

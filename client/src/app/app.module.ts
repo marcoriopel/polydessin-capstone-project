@@ -1,7 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -11,12 +12,12 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
-import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
-import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
+import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
+import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
+import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 
 @NgModule({
     declarations: [
@@ -36,10 +37,11 @@ import { EraserAttributesComponent } from './components/tools/eraser-attributes/
     imports: [
         BrowserModule,
         HttpClientModule,
+        FormsModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         MatIconModule,
-        MatButtonToggleModule
+        MatSliderModule
     ],
     providers: [
 
