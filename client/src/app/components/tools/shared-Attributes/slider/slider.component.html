@@ -1,0 +1,10 @@
+<div id="slider">
+    <mat-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value"></mat-slider>
+    <div id="sliderDetails">
+        <input [(ngModel)]="value">
+        <div>
+            <button (click)="decrementToolWidth()">-</button>
+            <button (click)="incrementToolWidth()">+</button>
+        </div>
+    </div>
+</div>

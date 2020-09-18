@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SquareService } from '@app/services/tools/square.service';
 
 @Component({
   selector: 'app-square-attributes',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./square-attributes.component.scss']
 })
 export class SquareAttributesComponent implements OnInit {
+  toolWidth = 1;
 
-  constructor() { }
+  constructor(public squareService: SquareService) { }
 
   ngOnInit(): void {
   }

@@ -13,12 +13,4 @@ export class PencilAttributesComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  decrementToolWidth() {
-    --this.toolWidth;
-  }
-
-  incrementToolWidth() {
-    ++this.toolWidth;
-  }
 }

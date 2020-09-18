@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CircleService } from '@app/services/tools/circle.service';
 
 @Component({
   selector: 'app-circle-attributes',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./circle-attributes.component.scss']
 })
 export class CircleAttributesComponent implements OnInit {
+  toolWidth = 1;
 
-  constructor() { }
+  constructor(public circleService: CircleService) { }
 
   ngOnInit(): void {
   }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LineService } from '@app/services/tools/line.service';
 
 @Component({
   selector: 'app-line-attributes',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./line-attributes.component.scss']
 })
 export class LineAttributesComponent implements OnInit {
+  toolWidth = 1;
 
-  constructor() { }
+  constructor(public lineService: LineService) { }
 
   ngOnInit(): void {
   }

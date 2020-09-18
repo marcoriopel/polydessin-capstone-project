@@ -18,6 +18,7 @@ import { EraserAttributesComponent } from './components/tools/eraser-attributes/
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
+import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 
 @NgModule({
     declarations: [
@@ -32,7 +33,8 @@ import { SquareAttributesComponent } from './components/tools/square-attributes/
         SquareAttributesComponent,
         CircleAttributesComponent,
         LineAttributesComponent,
-        EraserAttributesComponent
+        EraserAttributesComponent,
+        SliderComponent
     ],
     imports: [
         BrowserModule,
