@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/../ressources/global-variables';
+import { SidebarElementDescriptions } from '@app/classes/sidebarElementDescriptions';
 import { ToolSelectionService } from '../../services/tool-selection.service';
 
 @Component({
@@ -7,6 +9,9 @@ import { ToolSelectionService } from '../../services/tool-selection.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
+
+    elementDescriptions: SidebarElementDescriptions = SIDEBAR_ELEMENT_DESCRIPTIONS;
+    tooltipShowDelay: number = TOOLTIP_DELAY;
 
     constructor(public toolSelectionService: ToolSelectionService) { }
 

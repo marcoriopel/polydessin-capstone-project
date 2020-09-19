@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,8 +18,8 @@ import { CircleAttributesComponent } from './components/tools/circle-attributes/
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
-import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
+import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import { SliderComponent } from './components/tools/shared-Attributes/slider/sli
         AppRoutingModule,
         BrowserAnimationsModule,
         MatIconModule,
-        MatSliderModule
+        MatSliderModule,
+        MatTooltipModule
     ],
     providers: [
 
