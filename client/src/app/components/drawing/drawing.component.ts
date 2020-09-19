@@ -19,7 +19,7 @@ export class DrawingComponent implements AfterViewInit {
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2;
 
-    constructor(private drawingService: DrawingService, private toolSelectionService: ToolSelectionService) {
+    constructor(private drawingService: DrawingService, public toolSelectionService: ToolSelectionService) {
         this.setDefaultCanvasSize();
     }
 
