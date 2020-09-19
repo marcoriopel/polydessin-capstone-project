@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { TOOL_NAMES } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // TODO : Déplacer ça dans un fichier séparé accessible par tous
@@ -22,7 +22,7 @@ export enum MouseButton {
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    name = TOOL_NAMES.PENCIL_TOOL_NAME;
+    name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
     width: number = 1;
 
     constructor(drawingService: DrawingService) {
@@ -61,7 +61,7 @@ export class PencilService extends Tool {
         }
     }
 
-    changeWidth(newWidth: number) {
+    changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
 

@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BrushService } from '@app/services/tools/brush.service';
 
 @Component({
-  selector: 'app-brush-attributes',
-  templateUrl: './brush-attributes.component.html',
-  styleUrls: ['./brush-attributes.component.scss']
+    selector: 'app-brush-attributes',
+    templateUrl: './brush-attributes.component.html',
+    styleUrls: ['./brush-attributes.component.scss'],
 })
-export class BrushAttributesComponent implements OnInit {
-  toolWidth = 1;
+export class BrushAttributesComponent {
+    toolWidth: number = 1;
 
-  constructor(public brushService: BrushService) { }
-
-  ngOnInit(): void {
-  }
-
+    constructor(public brushService: BrushService) { }
 }

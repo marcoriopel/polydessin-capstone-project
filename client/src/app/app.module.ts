@@ -35,7 +35,7 @@ import { SquareAttributesComponent } from './components/tools/square-attributes/
         CircleAttributesComponent,
         LineAttributesComponent,
         EraserAttributesComponent,
-        SliderComponent
+        SliderComponent,
     ],
     imports: [
         BrowserModule,
@@ -45,13 +45,9 @@ import { SquareAttributesComponent } from './components/tools/square-attributes/
         BrowserAnimationsModule,
         MatIconModule,
         MatSliderModule,
-        MatTooltipModule
+        MatTooltipModule,
     ],
-    providers: [
-
-    ],
-    bootstrap: [
-        AppComponent
-    ],
+    providers: [],
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

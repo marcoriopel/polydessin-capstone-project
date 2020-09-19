@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/../ressources/global-variables';
-import { SidebarElementDescriptions } from '@app/classes/sidebarElementDescriptions';
-import { ToolSelectionService } from '../../services/tool-selection.service';
+import { SidebarElementDescriptions } from '@app/classes/sidebar-element-descriptions';
+import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/ressources/global-variables';
+import { ToolSelectionService } from '@app/services/tool-selection.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -9,14 +9,13 @@ import { ToolSelectionService } from '../../services/tool-selection.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-
     elementDescriptions: SidebarElementDescriptions = SIDEBAR_ELEMENT_DESCRIPTIONS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService) { }
+    constructor(public toolSelectionService: ToolSelectionService) {}
 
     onToolChange(event: Event): void {
-        let target = event.target as HTMLInputElement;
+        const target = event.target as HTMLInputElement;
         if (target.value != null) {
             this.toolSelectionService.onToolChange(target.value);
         }
