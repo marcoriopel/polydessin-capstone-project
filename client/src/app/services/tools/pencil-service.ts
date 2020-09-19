@@ -67,6 +67,8 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
+        //remove line below when color picker will be implemented
+        ctx.strokeStyle = 'black';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
