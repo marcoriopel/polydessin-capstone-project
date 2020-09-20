@@ -11,7 +11,7 @@ import { MouseButton } from '../../../ressources/global-variables';
 export class EraserService extends Tool {
     private pathData: Vec2[];
     name = TOOL_NAMES.ERASER_TOOL_NAME;
-    width: number = 1;
+    width: number = 5;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
