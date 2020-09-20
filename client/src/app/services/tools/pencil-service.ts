@@ -69,6 +69,7 @@ export class PencilService extends Tool {
         ctx.lineWidth = this.width;
         //remove line below when color picker will be implemented
         ctx.strokeStyle = 'black';
+        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
