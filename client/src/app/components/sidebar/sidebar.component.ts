@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/../ressources/global-variables';
 import { SidebarElementDescriptions } from '@app/classes/sidebarElementDescriptions';
-import { ToolSelectionService } from '../../services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-sidebar',

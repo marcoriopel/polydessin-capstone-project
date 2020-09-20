@@ -9,6 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class LineService extends Tool {
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
+    isShiftKeyDown: boolean = false;
+    endingClickCoordinates: Vec2;
     isDrawing: boolean = false;
     numberOfClicks: number = 0;
     mouseClicks: Vec2[] = [];
@@ -62,10 +64,10 @@ export class LineService extends Tool {
                 endingPoint: this.mouseClicks[this.numberOfClicks - 1],
             };
 
-            // Draw the line with the new segment
+            // Draw the line with the new segment on preview canvas
             this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
 
-            // Add the new line segment to stored lines
+            // Add the new line segment to the stored lines
             this.storedLines.push(this.line);
         }
     }
@@ -81,11 +83,15 @@ export class LineService extends Tool {
             this.drawLine(line.startingPoint, line.endingPoint, true);
         });
 
-        // Get new coordinates for end of line
-        const endingClickCoordinates = this.getPositionFromMouse(event);
-
+        if (this.isShiftKeyDown) {
+            // Handle angles (set a different ending coordinates)
+            this.evaluateClosestAngle(this.getPositionFromMouse(event));
+        } else {
+            // Get new coordinates for end of line
+            this.endingClickCoordinates = this.getPositionFromMouse(event);
+        }
         // Draw the new line preview
-        this.drawLine(this.mouseClicks[this.numberOfClicks - 1], endingClickCoordinates, true);
+        this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
     }
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean): void {
@@ -125,6 +131,194 @@ export class LineService extends Tool {
             return true;
         } else {
             return false;
+        }
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
+            this.isShiftKeyDown = true;
+        }
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'Shift': {
+                this.isShiftKeyDown = false;
+                break;
+            }
+            case 'Backspace': {
+                if (this.numberOfClicks > 1) {
+                    this.deleteLastSegment();
+                }
+                break;
+            }
+            case 'Escape': {
+                this.deleteLine();
+                break;
+            }
+        }
+    }
+
+    deleteLastSegment(): void {
+        this.storedLines.pop();
+        this.mouseClicks.pop();
+        --this.numberOfClicks;
+
+        // Clear the old line segment preview
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+        // Restore previous line segments
+        this.storedLines.forEach((line) => {
+            this.drawLine(line.startingPoint, line.endingPoint, true);
+        });
+
+        // Draw the new line preview
+        this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
+    }
+
+    deleteLine(): void {
+        this.storedLines = [];
+        this.mouseClicks = [];
+        this.numberOfClicks = 0;
+        this.isDrawing = false;
+
+        // Clear the old line segment preview
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+
+        // Restore previous line segments
+        this.storedLines.forEach((line) => {
+            this.drawLine(line.startingPoint, line.endingPoint, true);
+        });
+    }
+
+    // tslint:disable-next-line: cyclomatic-complexity
+    evaluateClosestAngle(mouseCoordinates: Vec2): void {
+        let opposite: number;
+        let adjacent: number;
+        let hypothenuse: number;
+        let angleDegree: number;
+        let angleRadians: number;
+        let quadrant: Quadrant;
+        let lineAngle: LineAngles;
+
+        adjacent = mouseCoordinates.x - this.mouseClicks[this.mouseClicks.length - 1].x;
+        opposite = this.mouseClicks[this.mouseClicks.length - 1].y - mouseCoordinates.y;
+
+        hypothenuse = Math.sqrt(Math.pow(opposite, 2) + Math.pow(adjacent, 2));
+
+        enum Quadrant {
+            TOP_RIGHT = 0,
+            TOP_LEFT = 1,
+            BOTTOM_LEFT = 2,
+            BOTTOM_RIGHT = 3,
+        }
+
+        enum LineAngles {
+            DEGREES_0 = 0,
+            DEGREES_45 = 1,
+            DEGREES_90 = 2,
+            DEGREES_135 = 3,
+            DEGREES_180 = 4,
+            DEGREES_225 = 5,
+            DEGREES_270 = 6,
+            DEGREES_315 = 7,
+        }
+
+        if (adjacent > 0 && opposite > 0) {
+            quadrant = Quadrant.TOP_RIGHT;
+        } else if (adjacent < 0 && opposite > 0) {
+            quadrant = Quadrant.TOP_LEFT;
+        } else if (adjacent < 0 && opposite < 0) {
+            quadrant = Quadrant.BOTTOM_LEFT;
+        } else {
+            quadrant = Quadrant.BOTTOM_RIGHT;
+        }
+
+        if (adjacent < 0) {
+            adjacent = adjacent * -1;
+        }
+        if (opposite < 0) {
+            opposite = opposite * -1;
+        }
+        angleRadians = Math.asin(opposite / hypothenuse);
+        angleDegree = angleRadians * (180 / Math.PI);
+
+        switch (quadrant) {
+            case Quadrant.TOP_RIGHT: {
+                if (0 < angleDegree && angleDegree <= 22.5) {
+                    lineAngle = LineAngles.DEGREES_0;
+                } else if (22.5 < angleDegree && angleDegree < 67.5) {
+                    lineAngle = LineAngles.DEGREES_45;
+                } else {
+                    lineAngle = LineAngles.DEGREES_90;
+                }
+                break;
+            }
+            case Quadrant.TOP_LEFT: {
+                if (90 > angleDegree && angleDegree >= 67.5) {
+                    lineAngle = LineAngles.DEGREES_90;
+                } else if (67.5 > angleDegree && angleDegree > 22.5) {
+                    lineAngle = LineAngles.DEGREES_135;
+                } else {
+                    lineAngle = LineAngles.DEGREES_180;
+                }
+                break;
+            }
+            case Quadrant.BOTTOM_LEFT: {
+                if (0 < angleDegree && angleDegree <= 22.5) {
+                    lineAngle = LineAngles.DEGREES_180;
+                } else if (22.5 < angleDegree && angleDegree < 67.5) {
+                    lineAngle = LineAngles.DEGREES_225;
+                } else {
+                    lineAngle = LineAngles.DEGREES_270;
+                }
+                break;
+            }
+            case Quadrant.BOTTOM_RIGHT: {
+                if (90 > angleDegree && angleDegree >= 67.5) {
+                    lineAngle = LineAngles.DEGREES_270;
+                } else if (67.5 > angleDegree && angleDegree > 22.5) {
+                    lineAngle = LineAngles.DEGREES_315;
+                } else {
+                    lineAngle = LineAngles.DEGREES_0;
+                }
+                break;
+            }
+        }
+
+        switch (lineAngle) {
+            case LineAngles.DEGREES_0: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y };
+                break;
+            }
+            case LineAngles.DEGREES_45: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y - adjacent };
+                break;
+            }
+            case LineAngles.DEGREES_90: {
+                this.endingClickCoordinates = { x: this.mouseClicks[this.mouseClicks.length - 1].x, y: mouseCoordinates.y };
+                break;
+            }
+            case LineAngles.DEGREES_135: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y - adjacent };
+                break;
+            }
+            case LineAngles.DEGREES_180: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y };
+                break;
+            }
+            case LineAngles.DEGREES_225: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y + adjacent };
+                break;
+            }
+            case LineAngles.DEGREES_270: {
+                this.endingClickCoordinates = { x: this.mouseClicks[this.mouseClicks.length - 1].x, y: mouseCoordinates.y };
+                break;
+            }
+            case LineAngles.DEGREES_315: {
+                this.endingClickCoordinates = { x: mouseCoordinates.x, y: this.mouseClicks[this.mouseClicks.length - 1].y + adjacent };
+                break;
+            }
         }
     }
 }

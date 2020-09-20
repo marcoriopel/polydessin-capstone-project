@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { TOOL_NAMES } from '@app/../ressources/global-variables';
 import { ToolNames } from '@app/classes/toolNames';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-editor',
@@ -12,79 +12,85 @@ export class EditorComponent {
     constructor(public toolSelectionService: ToolSelectionService) {}
     toolNames: ToolNames = TOOL_NAMES;
 
-    @HostListener('document:keypress', ['$event'])
-    handleKeyPress(event: KeyboardEvent): void {
+    // tslint:disable-next-line: cyclomatic-complexity
+    @HostListener('document:keyup', ['$event'])
+    handleKeyUp(event: KeyboardEvent): void {
         switch (event.key) {
             case 'c': {
                 const tool = document.querySelector('#' + this.toolNames.PENCIL_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case 'w': {
                 const tool = document.querySelector('#' + this.toolNames.BRUSH_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case '1': {
                 const tool = document.querySelector('#' + this.toolNames.SQUARE_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case '2': {
                 const tool = document.querySelector('#' + this.toolNames.CIRCLE_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case 'e': {
                 const tool = document.querySelector('#' + this.toolNames.ERASER_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case 'l': {
                 const tool = document.querySelector('#' + this.toolNames.LINE_TOOL_NAME) as HTMLElement;
                 tool.click();
-                break;
+                return;
             }
             case 'p': {
                 // TODO PLUME
-                break;
+                return;
             }
             case 'a': {
                 // TODO AEROSOL
-                break;
+                return;
             }
             case '3': {
                 // TODO POLYGONE
-                break;
+                return;
             }
             case 't': {
                 // TODO TEXTE
-                break;
+                return;
             }
             case 'b': {
                 // TODO SCEAU PEINTURE
-                break;
+                return;
             }
             case 'd': {
                 // TODO ETAMPE
-                break;
+                return;
             }
             case 'i': {
                 // TODO PIPETTE
-                break;
+                return;
             }
             case 'r': {
                 // TODO RECTANGLE SELECTION
-                break;
+                return;
             }
             case 's': {
                 // TODO ELLIPSE SELECTION
-                break;
+                return;
             }
             case 'v': {
                 // TODO BAGUETTE MAGIQUE
-                break;
+                return;
             }
         }
+        this.toolSelectionService.currentTool.onKeyUp(event);
+    }
+    @HostListener('document:keydown', ['$event'])
+    handleKeyDown(event: KeyboardEvent): void {
+        this.toolSelectionService.currentTool.onKeyDown(event);
     }
 }

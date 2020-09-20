@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import {
     HALF_RATIO,
     MINIMUM_CANVAS_HEIGHT,
