@@ -44,7 +44,7 @@ export class ToolSelectionService {
         }
     }
 
-    getCurrentTool(): string {
+    getCurrentToolName(): string {
         return this.currentTool.name;
     }
 }
