@@ -61,7 +61,7 @@ export class LineService extends Tool {
             // Create a new line segment
             this.line = {
                 startingPoint: this.mouseClicks[this.numberOfClicks - 2],
-                endingPoint: this.mouseClicks[this.numberOfClicks - 1],
+                endingPoint: this.endingClickCoordinates,
             };
 
             // Draw the line with the new segment on preview canvas
@@ -69,6 +69,10 @@ export class LineService extends Tool {
 
             // Add the new line segment to the stored lines
             this.storedLines.push(this.line);
+
+            // Replace last click with the coordinates of the last click
+            this.mouseClicks.pop();
+            this.mouseClicks.push(this.endingClickCoordinates);
         }
     }
 
