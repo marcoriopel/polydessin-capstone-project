@@ -43,8 +43,9 @@ describe('SidebarComponent', () => {
     });
 
     it('should call toolSelectionService.onToolChange', () => {
-        const event = new InputEvent('change');
-        component.onToolChange(event);
-        expect(component.toolSelectionService.onToolChange).toHaveBeenCalled();
+        let spy = spyOn(component.toolSelectionService, 'onToolChange')
+        const button = fixture.debugElement.nativeElement.querySelector('#brush');
+        button.click()
+        expect(spy).toHaveBeenCalled();
     });
 });
