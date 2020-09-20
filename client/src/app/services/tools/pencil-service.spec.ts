@@ -41,6 +41,12 @@ describe('PencilService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should change width', () => {
+        service.width = 1;
+        service.changeWidth(3);
+        expect(service.width).toBe(3);
+    });
+
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
