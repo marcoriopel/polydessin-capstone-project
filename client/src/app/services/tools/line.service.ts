@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TOOL_NAMES } from '@app/../ressources/global-variables';
+import { MAXIMUM_DISTANCE_LINE_CONNECTION, TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Line } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
@@ -30,35 +30,43 @@ export class LineService extends Tool {
         this.numberOfClicks = this.mouseClicks.length;
 
         // Check if it's a new line
-        if (this.numberOfClicks > 1) {
-            // Check if it is a double click
-            if (this.checkIfDoubleClick(event)) {
-                this.isDrawing = false;
+        if (this.numberOfClicks <= 1) {
+            return;
+        }
 
-                // Draw line on base canvas
-                this.storedLines.forEach((line) => {
-                    this.drawLine(line.startingPoint, line.endingPoint, false);
-                });
+        // Check if it is a double click
+        if (this.checkIfDoubleClick(event)) {
+            this.isDrawing = false;
 
-                // Clear the preview canvas and the mouse clicks used to create the previous line
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.mouseClicks = [];
-                return;
+            // Check if the last point is 20px away from initial point
+            if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
+                // Replace the ending point received from click coordinates with the inital point of the line
+                this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
             }
 
-            if (this.isDrawing) {
-                // Create a new line segment
-                this.line = {
-                    startingPoint: this.mouseClicks[this.numberOfClicks - 2],
-                    endingPoint: this.mouseClicks[this.numberOfClicks - 1],
-                };
+            // Draw line on base canvas
+            this.storedLines.forEach((line) => {
+                this.drawLine(line.startingPoint, line.endingPoint, false);
+            });
 
-                // Draw the line with the new segment
-                this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
+            // Clear the preview canvas and the mouse clicks used to create the previous line
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.mouseClicks = [];
+            return;
+        }
 
-                // Add the new line segment to stored lines
-                this.storedLines.push(this.line);
-            }
+        if (this.isDrawing) {
+            // Create a new line segment
+            this.line = {
+                startingPoint: this.mouseClicks[this.numberOfClicks - 2],
+                endingPoint: this.mouseClicks[this.numberOfClicks - 1],
+            };
+
+            // Draw the line with the new segment
+            this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
+
+            // Add the new line segment to stored lines
+            this.storedLines.push(this.line);
         }
     }
 
@@ -106,5 +114,17 @@ export class LineService extends Tool {
             return true;
         }
         return false;
+    }
+
+    checkIf20pxAway(firstPoint: Vec2, secondPoint: Vec2): boolean {
+        // Shoutout to my boy Phytagore
+        const a = secondPoint.x - firstPoint.x;
+        const b = secondPoint.y - firstPoint.y;
+        const c = Math.sqrt(a * a + b * b);
+        if (c <= MAXIMUM_DISTANCE_LINE_CONNECTION) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
