@@ -40,7 +40,7 @@ export class LineService extends Tool {
 
             // Check if the last point is 20px away from initial point
             if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
-                // Replace the ending point received from click coordinates with the inital point of the line
+                // Replace the ending point received from the click coordinates with the inital point of the line
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
             }
 

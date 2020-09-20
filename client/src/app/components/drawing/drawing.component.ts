@@ -2,9 +2,13 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection.service';
-import { HALF_RATIO, MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MINIMUM_WORKSPACE_HEIGHT, MINIMUM_WORKSPACE_WIDTH } from "../../../ressources/global-variables";
-
-
+import {
+    HALF_RATIO,
+    MINIMUM_CANVAS_HEIGHT,
+    MINIMUM_CANVAS_WIDTH,
+    MINIMUM_WORKSPACE_HEIGHT,
+    MINIMUM_WORKSPACE_WIDTH,
+} from '../../../ressources/global-variables';
 @Component({
     selector: 'app-drawing',
     templateUrl: './drawing.component.html',
