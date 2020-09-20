@@ -25,6 +25,7 @@ export class EraserService extends Tool {
 
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
