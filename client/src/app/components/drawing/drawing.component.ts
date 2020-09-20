@@ -23,9 +23,11 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2;
+    private workSpaceSize: Vec2;
 
     constructor(private drawingService: DrawingService, public toolSelectionService: ToolSelectionService) {
-        this.setDefaultCanvasSize();
+        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     }
 
     ngAfterViewInit(): void {
@@ -34,6 +36,13 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+
+        setTimeout(() => {
+            let workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            this.workSpaceSize.x = workspaceElement.offsetWidth;
+            this.workSpaceSize.y = workspaceElement.offsetHeight;
+            this.setDefaultCanvasSize();
+        });
     }
 
     @HostListener('mousemove', ['$event'])
@@ -60,17 +69,13 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     private setDefaultCanvasSize(): void {
-        let canvasWidth = MINIMUM_CANVAS_WIDTH;
-        let canvasHeight = MINIMUM_CANVAS_HEIGHT;
 
-        if (window.innerWidth > MINIMUM_WORKSPACE_WIDTH) {
-            canvasWidth = window.innerWidth * HALF_RATIO;
+        if (this.workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
+            this.canvasSize.x = this.workSpaceSize.x * HALF_RATIO;
         }
 
-        if (window.innerHeight > MINIMUM_WORKSPACE_HEIGHT) {
-            canvasHeight = window.innerHeight * HALF_RATIO;
+        if (this.workSpaceSize.y > MINIMUM_WORKSPACE_HEIGHT) {
+            this.canvasSize.y = this.workSpaceSize.y * HALF_RATIO;
         }
-
-        this.canvasSize = { x: canvasWidth, y: canvasHeight };
     }
 }
