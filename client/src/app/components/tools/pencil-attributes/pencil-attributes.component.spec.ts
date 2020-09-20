@@ -6,17 +6,15 @@ describe('PencilAttributesComponent', () => {
     let component: PencilAttributesComponent;
     let fixture: ComponentFixture<PencilAttributesComponent>;
     let pencilServiceSpy: jasmine.SpyObj<PencilService>;
-    let initialToolWidth: number = 1;
-    let finalToolWidth: number = 5;
+    const initialToolWidth = 1;
+    const finalToolWidth = 5;
 
     beforeEach(async(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth']);
 
         TestBed.configureTestingModule({
             declarations: [PencilAttributesComponent],
-            providers: [
-                { provide: PencilService, useValue: pencilServiceSpy },
-            ],
+            providers: [{ provide: PencilService, useValue: pencilServiceSpy }],
         }).compileComponents();
     }));
 
@@ -31,13 +29,13 @@ describe('PencilAttributesComponent', () => {
     });
 
     it('should call changeWidth of pencilService', () => {
-        component.handleWidthChange(finalToolWidth)
+        component.handleWidthChange(finalToolWidth);
         expect(component.pencilService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleWidthChange(finalToolWidth)
+        component.handleWidthChange(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 });

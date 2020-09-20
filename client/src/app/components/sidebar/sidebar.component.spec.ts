@@ -14,7 +14,6 @@ describe('SidebarComponent', () => {
     let toolSelectionStub: ToolSelectionService;
 
     beforeEach(async(() => {
-
         toolSelectionStub = new ToolSelectionService(
             {} as PencilService,
             {} as BrushService,
@@ -26,9 +25,7 @@ describe('SidebarComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
-            providers: [
-                { provide: ToolSelectionService, useValue: toolSelectionStub },
-            ],
+            providers: [{ provide: ToolSelectionService, useValue: toolSelectionStub }],
         }).compileComponents();
     }));
 
@@ -43,9 +40,9 @@ describe('SidebarComponent', () => {
     });
 
     it('should call toolSelectionService.onToolChange', () => {
-        let spy = spyOn(component.toolSelectionService, 'onToolChange')
+        const spy = spyOn(component.toolSelectionService, 'onToolChange');
         const button = fixture.debugElement.nativeElement.querySelector('#brush');
-        button.click()
+        button.click();
         expect(spy).toHaveBeenCalled();
     });
 });

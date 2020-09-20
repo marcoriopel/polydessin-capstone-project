@@ -9,5 +9,5 @@ import { EraserService } from '@app/services/tools/eraser.service';
 export class EraserAttributesComponent {
     toolWidth: number = 1;
 
-    constructor(public eraserService: EraserService) { }
+    constructor(public eraserService: EraserService) {}
 }

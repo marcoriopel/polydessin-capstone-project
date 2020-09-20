@@ -9,5 +9,5 @@ import { LineService } from '@app/services/tools/line.service';
 export class LineAttributesComponent {
     toolWidth: number = 1;
 
-    constructor(public lineService: LineService) { }
+    constructor(public lineService: LineService) {}
 }

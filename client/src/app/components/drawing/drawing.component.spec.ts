@@ -5,7 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
-class ToolStub extends Tool { }
+class ToolStub extends Tool {}
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;

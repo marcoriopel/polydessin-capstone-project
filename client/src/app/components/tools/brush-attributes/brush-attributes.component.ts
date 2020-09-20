@@ -9,5 +9,5 @@ import { BrushService } from '@app/services/tools/brush.service';
 export class BrushAttributesComponent {
     toolWidth: number = 1;
 
-    constructor(public brushService: BrushService) { }
+    constructor(public brushService: BrushService) {}
 }

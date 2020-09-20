@@ -9,5 +9,5 @@ import { CircleService } from '@app/services/tools/circle.service';
 export class CircleAttributesComponent {
     toolWidth: number = 1;
 
-    constructor(public circleService: CircleService) { }
+    constructor(public circleService: CircleService) {}
 }

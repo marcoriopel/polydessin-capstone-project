@@ -9,5 +9,5 @@ import { SquareService } from '@app/services/tools/square.service';
 export class SquareAttributesComponent {
     toolWidth: number = 1;
 
-    constructor(public squareService: SquareService) { }
+    constructor(public squareService: SquareService) {}
 }

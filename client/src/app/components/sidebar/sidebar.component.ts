@@ -12,7 +12,7 @@ export class SidebarComponent {
     elementDescriptions: SidebarElementDescriptions = SIDEBAR_ELEMENT_DESCRIPTIONS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService) { }
+    constructor(public toolSelectionService: ToolSelectionService) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
