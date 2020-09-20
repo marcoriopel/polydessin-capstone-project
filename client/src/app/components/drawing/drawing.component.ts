@@ -5,10 +5,10 @@ import {
     MINIMUM_CANVAS_HEIGHT,
     MINIMUM_CANVAS_WIDTH,
     MINIMUM_WORKSPACE_HEIGHT,
-    MINIMUM_WORKSPACE_WIDTH,
+    MINIMUM_WORKSPACE_WIDTH
 } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-drawing',

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-attribute-panel',
@@ -7,5 +7,5 @@ import { ToolSelectionService } from '@app/services/tool-selection.service';
     styleUrls: ['./attribute-panel.component.scss'],
 })
 export class AttributePanelComponent {
-    constructor(public toolSelectionService: ToolSelectionService) {}
+    constructor(public toolSelectionService: ToolSelectionService) { }
 }
