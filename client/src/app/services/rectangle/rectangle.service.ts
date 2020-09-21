@@ -1,11 +1,9 @@
-
 import { Tool } from '../../classes/tool'
- //tslint:disable:prettier
- import { Injectable } from '@angular/core';
- import { DrawingService } from '../drawing/drawing.service';
+//tslint:disable:prettier
+import { Injectable } from '@angular/core';
+import { DrawingService } from '../drawing/drawing.service';
 import { Vec2 } from '../../classes/vec2';
- //mport { DrawingType } from '../';
- 
+
  export enum MouseButton {
   Left = 0,
   Middle = 1,
@@ -23,14 +21,7 @@ import { Vec2 } from '../../classes/vec2';
    providedIn: 'root'
  })
    
-   
-   
- 
-
-
  export class RectangleService extends Tool {
-
-   
    shiftPressed: boolean
    mouseDown: boolean
    lineWidth: number=5
@@ -75,14 +66,7 @@ import { Vec2 } from '../../classes/vec2';
    }
  }
  
-//  onKeyDown(event:KeyboardEvent): void{
-//    this.shiftPressed=event.keyCode===Keyboard.shift;
-//    if (this.shiftPressed&&this.mouseDown){
-//      this.drawingService.clearCanvas(this.drawingService.previewCtx);
-//      const topLeftPoint=this.findTopLeftPoint(this.firstPoint,this.lastPoint);
-//      this.drawRectangle(this.drawingService.previewCtx,topLeftPoint);
-//    }
-//  }
+
  
  onKeyUp(event:KeyboardEvent): void{
    this.shiftPressed=false;
@@ -178,3 +162,12 @@ import { Vec2 } from '../../classes/vec2';
      return this.width>this.height?this.width:this.height;
    }
  }
+
+ //  onKeyDown(event:KeyboardEvent): void{
+//    this.shiftPressed=event.keyCode===Keyboard.shift;
+//    if (this.shiftPressed&&this.mouseDown){
+//      this.drawingService.clearCanvas(this.drawingService.previewCtx);
+//      const topLeftPoint=this.findTopLeftPoint(this.firstPoint,this.lastPoint);
+//      this.drawRectangle(this.drawingService.previewCtx,topLeftPoint);
+//    }
+//  }
