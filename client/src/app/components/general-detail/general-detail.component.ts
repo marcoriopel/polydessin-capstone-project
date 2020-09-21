@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { general, GENERALS } from './general-description';
+import { general, GENERALS } from '@app/ressources/texts/general-description';
 
 @Component({
     selector: 'app-general-detail',

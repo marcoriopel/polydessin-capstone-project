@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Line } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant, TOOL_NAMES } from 'src/ressources/global-variables';
+
 @Injectable({
     providedIn: 'root',
 })

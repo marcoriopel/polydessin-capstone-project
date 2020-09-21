@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { TOOL_NAMES } from '@app/ressources/global-variables';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseButton } from 'src/ressources/global-variables';
 
 @Injectable({
     providedIn: 'root',

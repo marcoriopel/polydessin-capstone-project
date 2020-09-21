@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BasicTool, BASIC_TOOLS, OTHER_FEATURES, ToolGroup, TOOL_GROUPS, TRANSFORMATIONS } from './outils-description';
+import { BasicTool, BASIC_TOOLS, OTHER_FEATURES, ToolGroup, TOOL_GROUPS, TRANSFORMATIONS } from '@app/ressources/texts/outils-description';
 
 @Component({
     selector: 'app-drawing-detail',

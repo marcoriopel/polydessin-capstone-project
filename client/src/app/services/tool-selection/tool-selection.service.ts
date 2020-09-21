@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ToolNames } from '@app/classes/tool-names';
-import { TOOL_NAMES } from '@app/ressources/global-variables';
+import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';

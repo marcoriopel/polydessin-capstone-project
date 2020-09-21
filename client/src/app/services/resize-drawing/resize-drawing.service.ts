@@ -7,7 +7,7 @@ import {
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH,
     MouseButton,
-} from '@app/ressources/global-variables';
+} from '@app/ressources/global-variables/global-variables';
 
 @Injectable({
     providedIn: 'root',

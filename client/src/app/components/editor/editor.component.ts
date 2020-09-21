@@ -1,7 +1,6 @@
 import { Component, HostListener } from '@angular/core';
-import { ToolNames } from '@app/classes/tool-names';
+import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { TOOL_NAMES } from 'src/ressources/global-variables';
 
 @Component({
     selector: 'app-editor',

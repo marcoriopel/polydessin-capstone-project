@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { TOOL_NAMES } from '@app/ressources/global-variables';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { PencilService } from '@app/services/tools/pencil-service';
