@@ -1,21 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { AutreAffichage, BaseOUTILS, Manipulation, Outilplus } from './outils-description';
+import { Component } from '@angular/core';
+import { BasicTool, BASIC_TOOLS, OTHER_FEATURES, ToolGroup, TOOL_GROUPS, TRANSFORMATIONS } from './outils-description';
 
 @Component({
     selector: 'app-drawing-detail',
     templateUrl: './drawing-detail.component.html',
     styleUrls: ['./drawing-detail.component.scss'],
 })
-export class DrawingDetailComponent implements OnInit {
-    baseOutils = BaseOUTILS;
+export class DrawingDetailComponent {
+    basicTools: BasicTool[] = BASIC_TOOLS;
 
-    OutilsPlus = Outilplus;
+    toolGroups: ToolGroup[] = TOOL_GROUPS;
 
-    Autres = AutreAffichage;
+    otherFeatures: BasicTool[] = OTHER_FEATURES;
 
-    Manipulations = Manipulation;
-
-    constructor() {}
-
-    ngOnInit(): void {}
+    transformations: BasicTool[] = TRANSFORMATIONS;
 }

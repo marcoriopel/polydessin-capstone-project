@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant, TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Line } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant, TOOL_NAMES } from 'src/ressources/global-variables';
 @Injectable({
     providedIn: 'root',
 })
@@ -323,7 +323,10 @@ export class LineService extends Tool {
         return radians * (180 / Math.PI);
     }
 
-    handleCursor() {
-        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
     }
 }

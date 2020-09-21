@@ -3,23 +3,28 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { TOOL_NAMES } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseButton } from '../../../ressources/global-variables';
+import { MouseButton } from 'src/ressources/global-variables';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    name = TOOL_NAMES.ERASER_TOOL_NAME;
+    name: string = TOOL_NAMES.ERASER_TOOL_NAME;
     width: number = 5;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
     }
-    handleCursor() {
-        document.getElementById('previewLayer')!.style.cursor = 'none';
+
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'none';
+        }
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -52,7 +57,7 @@ export class EraserService extends Tool {
         }
         this.squareCursor(event);
     }
-    private squareCursor(event: MouseEvent) {
+    private squareCursor(event: MouseEvent): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.strokeRect(

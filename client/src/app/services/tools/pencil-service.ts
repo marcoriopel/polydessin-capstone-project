@@ -1,17 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { TOOL_NAMES } from '@app/ressources/global-variables';
+import { MouseButton, TOOL_NAMES } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
-export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
-}
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
 // L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
@@ -30,8 +21,11 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
-    handleCursor() {
-        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -71,7 +65,7 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
-        //remove line below when color picker will be implemented
+        // remove line below when color picker will be implemented
         ctx.strokeStyle = 'black';
         ctx.lineCap = 'round';
         ctx.beginPath();

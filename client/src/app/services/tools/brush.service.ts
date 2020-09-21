@@ -14,6 +14,9 @@ export class BrushService extends Tool {
     }
 
     handleCursor(): void {
-        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
     }
 }
