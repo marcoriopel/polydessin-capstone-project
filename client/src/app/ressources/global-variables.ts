@@ -30,3 +30,11 @@ export const SIDEBAR_ELEMENT_DESCRIPTIONS: SidebarElementDescriptions = {
     UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
 };
+
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+};

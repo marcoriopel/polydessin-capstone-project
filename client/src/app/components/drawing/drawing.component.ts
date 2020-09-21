@@ -1,13 +1,13 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import {
-    HALF_RATIO,
     MINIMUM_CANVAS_HEIGHT,
     MINIMUM_CANVAS_WIDTH,
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH
 } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
@@ -25,7 +25,10 @@ export class DrawingComponent implements AfterViewInit {
     private canvasSize: Vec2;
     private workSpaceSize: Vec2;
 
-    constructor(private drawingService: DrawingService, public toolSelectionService: ToolSelectionService) {
+    constructor(
+        private drawingService: DrawingService,
+        public toolSelectionService: ToolSelectionService,
+        public resizeDrawingService: ResizeDrawingService) {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     }
@@ -69,13 +72,6 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     private setDefaultCanvasSize(): void {
-
-        if (this.workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
-            this.canvasSize.x = this.workSpaceSize.x * HALF_RATIO;
-        }
-
-        if (this.workSpaceSize.y > MINIMUM_WORKSPACE_HEIGHT) {
-            this.canvasSize.y = this.workSpaceSize.y * HALF_RATIO;
-        }
+        this.canvasSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
     }
 }
