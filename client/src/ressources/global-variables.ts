@@ -31,3 +31,21 @@ export const SIDEBAR_ELEMENT_DESCRIPTIONS: SidebarElementDescriptions = {
     UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
 };
+
+export enum Quadrant {
+    TOP_RIGHT = 0,
+    TOP_LEFT = 1,
+    BOTTOM_LEFT = 2,
+    BOTTOM_RIGHT = 3,
+}
+
+export enum LineAngle {
+    DEGREES_0 = 0,
+    DEGREES_45 = 1,
+    DEGREES_90 = 2,
+    DEGREES_135 = 3,
+    DEGREES_180 = 4,
+    DEGREES_225 = 5,
+    DEGREES_270 = 6,
+    DEGREES_315 = 7,
+}
