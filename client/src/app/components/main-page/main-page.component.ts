@@ -39,6 +39,9 @@ export class MainPageComponent {
     }
 
     openUserguide() {
-        this.dialog.open(UserguideComponent);
+        this.dialog.open(UserguideComponent, {
+            height: '1000px',
+            width: '1200px',
+        });
     }
 }
