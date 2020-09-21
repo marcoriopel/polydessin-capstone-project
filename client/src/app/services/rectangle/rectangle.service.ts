@@ -135,8 +135,8 @@ import { Vec2 } from '../../classes/vec2';
  private findTopLeftPoint(point1:Vec2,point2:Vec2): Vec2{
    let x=point1.x;
    let y=point1.y;
- 
-   if(point1.x>point2.x&&point1.y>point2.y){ //dans le premier cadrant
+  // in the left edge
+   if(point1.x>point2.x&&point1.y>point2.y){ 
        x=point2.x;
        y=point2.y;
    }else if(point1.x>point2.x&&point1.y<point2.y){
