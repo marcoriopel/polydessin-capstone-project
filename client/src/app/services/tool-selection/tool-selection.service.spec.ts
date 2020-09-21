@@ -21,7 +21,7 @@ describe('ToolSelectionService', () => {
     });
 
     it('should change tool', () => {
-        service.onToolChange(TOOL_NAMES.ERASER_TOOL_NAME);
+        service.changeTool(TOOL_NAMES.ERASER_TOOL_NAME);
         expect(service.currentTool).toBe(eraserService);
     });
 
