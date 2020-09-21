@@ -1,11 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import {
-    MINIMUM_CANVAS_HEIGHT,
-    MINIMUM_CANVAS_WIDTH,
-    MINIMUM_WORKSPACE_HEIGHT,
-    MINIMUM_WORKSPACE_WIDTH
-} from '@app/ressources/global-variables';
+import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MINIMUM_WORKSPACE_HEIGHT, MINIMUM_WORKSPACE_WIDTH } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -28,7 +23,8 @@ export class DrawingComponent implements AfterViewInit {
     constructor(
         private drawingService: DrawingService,
         public toolSelectionService: ToolSelectionService,
-        public resizeDrawingService: ResizeDrawingService) {
+        public resizeDrawingService: ResizeDrawingService,
+    ) {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     }
@@ -41,7 +37,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.canvas = this.baseCanvas.nativeElement;
 
         setTimeout(() => {
-            let workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
             this.workSpaceSize.x = workspaceElement.offsetWidth;
             this.workSpaceSize.y = workspaceElement.offsetHeight;
             this.setDefaultCanvasSize();
