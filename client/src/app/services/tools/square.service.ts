@@ -3,11 +3,13 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SquareService extends Tool {
+    name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
     mouseDown: boolean;
     width: number = 1;
     lastPoint: Vec2;
