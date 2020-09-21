@@ -11,5 +11,10 @@ export class LineAttributesComponent implements OnInit {
 
     constructor(public lineService: LineService) {}
 
+    handleWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
+        this.lineService.changeWidth(this.toolWidth);
+    }
+
     ngOnInit(): void {}
 }

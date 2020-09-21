@@ -15,6 +15,7 @@ export class LineService extends Tool {
     numberOfClicks: number = 0;
     mouseClicks: Vec2[] = [];
     storedLines: Line[] = [];
+    lineWidth: number = 1;
     line: Line;
 
     constructor(drawingService: DrawingService) {
@@ -53,6 +54,7 @@ export class LineService extends Tool {
 
             // Clear the preview canvas and the mouse clicks used to create the previous line
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.storedLines = [];
             this.mouseClicks = [];
             return;
         }
@@ -101,17 +103,23 @@ export class LineService extends Tool {
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean): void {
         if (isPreview) {
             // Using the preview canvas
+            this.drawingService.previewCtx.lineWidth = this.lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
             this.drawingService.previewCtx.lineTo(endingPoint.x, endingPoint.y);
             this.drawingService.previewCtx.stroke();
         } else {
             // Using the base canvas
+            this.drawingService.baseCtx.lineWidth = this.lineWidth;
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.moveTo(startingPoint.x, startingPoint.y);
             this.drawingService.baseCtx.lineTo(endingPoint.x, endingPoint.y);
             this.drawingService.baseCtx.stroke();
         }
+    }
+
+    changeWidth(newWidth: number): void {
+        this.lineWidth = newWidth;
     }
 
     checkIfDoubleClick(event: MouseEvent): boolean {
