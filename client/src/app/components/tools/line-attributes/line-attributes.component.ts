@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LineService } from '@app/services/tools/line.service';
 
 @Component({

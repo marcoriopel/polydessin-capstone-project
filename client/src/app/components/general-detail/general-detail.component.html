@@ -1,0 +1,6 @@
+<mat-expansion-panel *ngFor="let info of Informations" hideToggle>
+    <mat-expansion-panel-header>
+        <mat-panel-title> {{ info.name }} </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>{{ info.description }}</p>
+</mat-expansion-panel>

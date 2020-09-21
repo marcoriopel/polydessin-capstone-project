@@ -1,5 +1,5 @@
-import { SidebarElementDescriptions } from '@app/classes/sidebarElementDescriptions';
-import { ToolNames } from '@app/classes/toolNames';
+import { SidebarElementDescriptions } from '@app/classes/sidebar-element-descriptions';
+import { ToolNames } from '@app/classes/tool-names';
 
 // Global variables are stored here
 export const MINIMUM_CANVAS_WIDTH = 250;

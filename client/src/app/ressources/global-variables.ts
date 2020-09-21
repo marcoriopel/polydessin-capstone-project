@@ -37,4 +37,4 @@ export enum MouseButton {
     Right = 2,
     Back = 3,
     Forward = 4,
-};
+}

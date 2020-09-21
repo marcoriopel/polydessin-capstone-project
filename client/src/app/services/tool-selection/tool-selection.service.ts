@@ -37,7 +37,7 @@ export class ToolSelectionService {
         this.currentTool = pencilService;
     }
 
-    onToolChange(toolName: string): void {
+    changeTool(toolName: string): void {
         const selectedTool = this.tools.get(toolName);
         if (selectedTool) {
             this.currentTool = selectedTool;
