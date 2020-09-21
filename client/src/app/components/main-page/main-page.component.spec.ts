@@ -34,13 +34,8 @@ describe('MainPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it("should have as title 'LOG2990'", () => {
-        expect(component.title).toEqual('LOG2990');
-    });
-
-    it('should call basicGet when calling getMessagesFromServer', () => {
-        component.getMessagesFromServer();
-        expect(indexServiceSpy.basicGet).toHaveBeenCalled();
+    it("should have as title 'PolyDessin'", () => {
+        expect(component.title).toEqual('PolyDessin');
     });
 
     it('should call basicPost when calling sendTimeToServer', () => {
