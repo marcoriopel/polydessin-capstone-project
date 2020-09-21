@@ -30,6 +30,10 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
+    handleCursor() {
+        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {

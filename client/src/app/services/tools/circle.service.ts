@@ -4,13 +4,16 @@ import { Tool } from '@app/classes/tool';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class CircleService extends Tool {
-  name = TOOL_NAMES.CIRCLE_TOOL_NAME;
+    name = TOOL_NAMES.CIRCLE_TOOL_NAME;
 
-  constructor(drawingService: DrawingService) {
-    super(drawingService);
-  }
+    constructor(drawingService: DrawingService) {
+        super(drawingService);
+    }
+
+    handleCursor() {
+        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    }
 }
-
