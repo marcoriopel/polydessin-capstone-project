@@ -12,4 +12,8 @@ export class BrushService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
+
+    handleCursor(): void {
+        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    }
 }

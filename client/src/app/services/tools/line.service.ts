@@ -322,4 +322,8 @@ export class LineService extends Tool {
     radiansToDegrees(radians: number): number {
         return radians * (180 / Math.PI);
     }
+
+    handleCursor() {
+        document.getElementById('previewLayer')!.style.cursor = 'crosshair';
+    }
 }

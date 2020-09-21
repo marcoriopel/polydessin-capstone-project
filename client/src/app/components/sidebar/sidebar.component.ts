@@ -18,6 +18,7 @@ export class SidebarComponent {
         const target = event.target as HTMLInputElement;
         if (target.value != null) {
             this.toolSelectionService.changeTool(target.value);
+            this.toolSelectionService.currentTool.handleCursor();
         }
     }
 }
