@@ -49,3 +49,11 @@ export enum LineAngle {
     DEGREES_270 = 6,
     DEGREES_315 = 7,
 }
+
+export enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Back = 3,
+    Forward = 4,
+}

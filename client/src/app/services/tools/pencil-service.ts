@@ -34,9 +34,9 @@ export class PencilService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.drawLine(this.drawingService.previewCtx, this.pathData);
         }
     }
 
@@ -67,6 +67,9 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
+        //remove line below when color picker will be implemented
+        ctx.strokeStyle = 'black';
+        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
