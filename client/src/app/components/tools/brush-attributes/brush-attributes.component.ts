@@ -7,7 +7,14 @@ import { BrushService } from '@app/services/tools/brush.service';
     styleUrls: ['./brush-attributes.component.scss'],
 })
 export class BrushAttributesComponent {
-    toolWidth: number = 1;
+    toolWidth: number;
 
-    constructor(public brushService: BrushService) {}
+    constructor(public brushService: BrushService) {
+        this.toolWidth = brushService.width;
+    }
+
+    handleWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
+        this.brushService.changeWidth(this.toolWidth);
+    }
 }
