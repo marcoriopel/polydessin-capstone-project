@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { BasicTool, BASIC_TOOLS, OTHER_FEATURES, ToolGroup, TOOL_GROUPS, TRANSFORMATIONS } from '@app/ressources/texts/outils-description';
+import { feature } from '@app/ressources/texts/feature';
+import { BASIC_TOOLS, GroupFeature, OTHER_FEATURES, TOOL_GROUPS, TRANSFORMATIONS } from '@app/ressources/texts/outils-description';
 
 @Component({
     selector: 'app-drawing-detail',
@@ -7,11 +8,11 @@ import { BasicTool, BASIC_TOOLS, OTHER_FEATURES, ToolGroup, TOOL_GROUPS, TRANSFO
     styleUrls: ['./drawing-detail.component.scss'],
 })
 export class DrawingDetailComponent {
-    basicTools: BasicTool[] = BASIC_TOOLS;
+    basicTools: feature[] = BASIC_TOOLS;
 
-    toolGroups: ToolGroup[] = TOOL_GROUPS;
+    toolGroups: GroupFeature[] = TOOL_GROUPS;
 
-    otherFeatures: BasicTool[] = OTHER_FEATURES;
+    otherFeatures: feature[] = OTHER_FEATURES;
 
-    transformations: BasicTool[] = TRANSFORMATIONS;
+    transformations: feature[] = TRANSFORMATIONS;
 }
