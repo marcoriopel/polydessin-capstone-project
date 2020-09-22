@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Line } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -212,10 +213,10 @@ export class LineService extends Tool {
 
         // Make adjacent and opposite values positive if they are negative
         if (adjacent < 0) {
-            adjacent = adjacent * -1;
+            adjacent = Math.abs(adjacent);
         }
         if (opposite < 0) {
-            opposite = opposite * -1;
+            opposite = Math.abs(opposite);
         }
 
         angleRadians = Math.asin(opposite / hypothenuse);
@@ -267,9 +268,9 @@ export class LineService extends Tool {
     findClosestAngle(quadrant: Quadrant, angleDegree: number): LineAngle {
         switch (quadrant) {
             case Quadrant.TOP_RIGHT: {
-                if (0 < angleDegree && angleDegree <= 22.5) {
+                if (LIMIT_ANGLES.DEGREES_0 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
                     return LineAngle.DEGREES_0;
-                } else if (22.5 < angleDegree && angleDegree < 67.5) {
+                } else if (LIMIT_ANGLES.DEGREES_22POINT5 < angleDegree && angleDegree < LIMIT_ANGLES.DEGREES_67POINT5) {
                     return LineAngle.DEGREES_45;
                 } else {
                     return LineAngle.DEGREES_90;
@@ -277,9 +278,9 @@ export class LineService extends Tool {
                 break;
             }
             case Quadrant.TOP_LEFT: {
-                if (90 > angleDegree && angleDegree >= 67.5) {
+                if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
                     return LineAngle.DEGREES_90;
-                } else if (67.5 > angleDegree && angleDegree > 22.5) {
+                } else if (LIMIT_ANGLES.DEGREES_67POINT5 > angleDegree && angleDegree > LIMIT_ANGLES.DEGREES_22POINT5) {
                     return LineAngle.DEGREES_135;
                 } else {
                     return LineAngle.DEGREES_180;
@@ -287,9 +288,9 @@ export class LineService extends Tool {
                 break;
             }
             case Quadrant.BOTTOM_LEFT: {
-                if (0 < angleDegree && angleDegree <= 22.5) {
+                if (LIMIT_ANGLES.DEGREES_0 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
                     return LineAngle.DEGREES_180;
-                } else if (22.5 < angleDegree && angleDegree < 67.5) {
+                } else if (LIMIT_ANGLES.DEGREES_22POINT5 < angleDegree && angleDegree < LIMIT_ANGLES.DEGREES_67POINT5) {
                     return LineAngle.DEGREES_225;
                 } else {
                     return LineAngle.DEGREES_270;
@@ -297,9 +298,9 @@ export class LineService extends Tool {
                 break;
             }
             case Quadrant.BOTTOM_RIGHT: {
-                if (90 > angleDegree && angleDegree >= 67.5) {
+                if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
                     return LineAngle.DEGREES_270;
-                } else if (67.5 > angleDegree && angleDegree > 22.5) {
+                } else if (LIMIT_ANGLES.DEGREES_67POINT5 > angleDegree && angleDegree > LIMIT_ANGLES.DEGREES_22POINT5) {
                     return LineAngle.DEGREES_315;
                 } else {
                     return LineAngle.DEGREES_0;
@@ -322,7 +323,7 @@ export class LineService extends Tool {
     }
 
     radiansToDegrees(radians: number): number {
-        return radians * (180 / Math.PI);
+        return radians * (DEGREES_180 / Math.PI);
     }
 
     handleCursor(): void {
