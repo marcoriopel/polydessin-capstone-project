@@ -20,6 +20,13 @@ export class SquareService extends Tool {
         this.mouseDown = false;
     }
 
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
+    }
+
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
