@@ -3,30 +3,30 @@
         <mat-panel-title> Outils </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-expansion-panel *ngFor="let baseOutil of baseOutils" hideToggle>
+    <mat-expansion-panel *ngFor="let basicTool of basicTools" hideToggle>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{ baseOutil.name }}
+                {{ basicTool.name }}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ baseOutil.description }}</p>
+        <p>{{ basicTool.description }}</p>
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngFor="let outilPlus of OutilsPlus" hideToggle>
+    <mat-expansion-panel *ngFor="let toolGroup of toolGroups" hideToggle>
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{ outilPlus.name }}
+                {{ toolGroup.name }}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ outilPlus.description }}</p>
+        <p>{{ toolGroup.description }}</p>
 
-        <mat-expansion-panel *ngFor="let outil of outilPlus.dependance" hideToggle>
+        <mat-expansion-panel *ngFor="let tool of toolGroup.dependance" hideToggle>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{ outil.name }}
+                    {{ tool.name }}
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>{{ outil.description }}</p>
+            <p>{{ tool.description }}</p>
         </mat-expansion-panel>
     </mat-expansion-panel>
 </mat-expansion-panel>
@@ -36,19 +36,19 @@
         <mat-panel-title> Manipulation </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-expansion-panel *ngFor="let manipulation of Manipulations" hideToggle>
+    <mat-expansion-panel *ngFor="let transformation of transformations" hideToggle>
         <mat-expansion-panel-header>
-            <mat-panel-title> {{ manipulation.name }} </mat-panel-title>
+            <mat-panel-title> {{ transformation.name }} </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ manipulation.description }}</p>
+        <p>{{ transformation.description }}</p>
     </mat-expansion-panel>
 </mat-expansion-panel>
 
-<mat-expansion-panel *ngFor="let affichage of Autres" hideToggle>
+<mat-expansion-panel *ngFor="let feature of otherFeatures" hideToggle>
     <mat-expansion-panel-header>
         <mat-panel-title>
-            {{ affichage.name }}
+            {{ feature.name }}
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>{{ affichage.description }}</p>
+    <p>{{ feature.description }}</p>
 </mat-expansion-panel>
