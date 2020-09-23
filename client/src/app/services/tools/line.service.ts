@@ -53,9 +53,12 @@ export class LineService extends Tool {
         if (this.checkIfDoubleClick()) {
             this.isDrawing = false;
 
-            // Delete the second click of the double click (not used to create segments)
-            this.mouseClicks.pop();
-
+            // Handle case when user double click when there is no line
+            if (this.mouseClicks[0].x === this.mouseClicks[1].x && this.mouseClicks[0].y === this.mouseClicks[1].y) {
+                this.mouseClicks = [];
+                this.numberOfClicks = 0;
+                return;
+            }
             // Check if the last point is 20px away from initial point
             if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
@@ -148,9 +151,6 @@ export class LineService extends Tool {
     }
 
     checkIfDoubleClick(): boolean {
-        if (this.mouseClicks.length <= 2) {
-            return false;
-        }
         const previousClickX = this.mouseClicks[this.numberOfClicks - 2].x;
         const previousClickY = this.mouseClicks[this.numberOfClicks - 2].y;
         const currentClickX = this.mouseClicks[this.numberOfClicks - 1].x;
@@ -310,7 +310,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_90;
                 }
-                break;
             }
             case Quadrant.TOP_LEFT: {
                 if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
@@ -320,7 +319,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_180;
                 }
-                break;
             }
             case Quadrant.BOTTOM_LEFT: {
                 if (LIMIT_ANGLES.DEGREES_0 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
@@ -330,7 +328,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_270;
                 }
-                break;
             }
             case Quadrant.BOTTOM_RIGHT: {
                 if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
@@ -340,7 +337,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_0;
                 }
-                break;
             }
         }
     }
@@ -369,15 +365,20 @@ export class LineService extends Tool {
     }
 
     drawDots(width: number, isPreview: boolean): void {
+        const LAST_DOT = this.mouseClicks.length;
         if (isPreview) {
-            for (let i = 0; i < this.mouseClicks.length - 1; i++) {
+            for (let i = 0; i < LAST_DOT; i++) {
                 this.drawingService.previewCtx.beginPath();
                 this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
                 this.drawingService.previewCtx.fill();
                 this.drawingService.previewCtx.stroke();
             }
         } else {
-            for (let i = 0; i < this.mouseClicks.length - 1; i++) {
+            // Remove the double click that doesnt need to be drawed on the canvas
+            this.mouseClicks[this.mouseClicks.length - 2] = this.mouseClicks[this.mouseClicks.length - 1];
+            this.mouseClicks.pop();
+
+            for (let i = 0; i < LAST_DOT - 1; i++) {
                 this.drawingService.baseCtx.beginPath();
                 this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();
