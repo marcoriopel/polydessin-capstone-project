@@ -1,15 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { Tool } from '@app/classes/tool';
+import { HALF_RATIO } from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
-
-// TODO : Déplacer dans un fichier accessible à tous
-const DEFAULT_WIDTH = 1000;
-const DEFAULT_HEIGHT = 800;
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
@@ -43,12 +39,12 @@ describe('DrawingComponent', () => {
     it('should have a default WIDTH and HEIGHT', () => {
         const height = component.height;
         const width = component.width;
-        expect(height).toEqual(DEFAULT_HEIGHT);
-        expect(width).toEqual(DEFAULT_WIDTH);
+        expect(height).toEqual(window.innerHeight * HALF_RATIO);
+        expect(width).toEqual(window.innerWidth * HALF_RATIO);
     });
 
     it('should get stubTool', () => {
-        const currentTool = component.currentTool;
+        const currentTool = component.toolSelectionService.currentTool;
         expect(currentTool).toEqual(toolStub);
     });
 
