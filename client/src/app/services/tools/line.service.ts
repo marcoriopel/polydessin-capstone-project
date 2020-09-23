@@ -50,12 +50,16 @@ export class LineService extends Tool {
         }
 
         // Check if it is a double click
-        if (this.checkIfDoubleClick(event)) {
+        if (this.checkIfDoubleClick()) {
             this.isDrawing = false;
+
+            // Delete the second click of the double click (not used to create segments)
+            this.mouseClicks.pop();
 
             // Check if the last point is 20px away from initial point
             if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
+                this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
             }
 
@@ -65,7 +69,9 @@ export class LineService extends Tool {
             });
 
             // Draw the junction dots
-            this.drawDots(this.dotWidth, false);
+            if (this.isDot) {
+                this.drawDots(this.dotWidth, false);
+            }
 
             // Clear the preview canvas, the stored clikcs and the stored lines used for previewing
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -85,7 +91,9 @@ export class LineService extends Tool {
             this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
 
             // Draw the junction dots
-            this.drawDots(this.dotWidth, true);
+            if (this.isDot) {
+                this.drawDots(this.dotWidth, true);
+            }
 
             // Add the new line segment to the stored lines
             this.storedLines.push(this.line);
@@ -106,7 +114,9 @@ export class LineService extends Tool {
             this.drawLine(line.startingPoint, line.endingPoint, true);
         });
 
-        this.drawDots(this.dotWidth, true);
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
 
         if (this.isShiftKeyDown) {
             // Handle angles (set a different ending coordinates depending on mouse position)
@@ -137,7 +147,10 @@ export class LineService extends Tool {
         }
     }
 
-    checkIfDoubleClick(event: MouseEvent): boolean {
+    checkIfDoubleClick(): boolean {
+        if (this.mouseClicks.length <= 2) {
+            return false;
+        }
         const previousClickX = this.mouseClicks[this.numberOfClicks - 2].x;
         const previousClickY = this.mouseClicks[this.numberOfClicks - 2].y;
         const currentClickX = this.mouseClicks[this.numberOfClicks - 1].x;
@@ -201,7 +214,10 @@ export class LineService extends Tool {
 
         // Draw the new line preview
         this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
-        this.drawDots(this.dotWidth, true);
+
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
     }
 
     deleteLine(): void {
@@ -353,17 +369,15 @@ export class LineService extends Tool {
     }
 
     drawDots(width: number, isPreview: boolean): void {
-        const FIRST_DOT_INDEX = 1;
-        const LAST_DOT_INDEX = this.mouseClicks.length;
         if (isPreview) {
-            for (let i = FIRST_DOT_INDEX; i < LAST_DOT_INDEX; i++) {
+            for (let i = 0; i < this.mouseClicks.length - 1; i++) {
                 this.drawingService.previewCtx.beginPath();
                 this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
                 this.drawingService.previewCtx.fill();
                 this.drawingService.previewCtx.stroke();
             }
         } else {
-            for (let i = FIRST_DOT_INDEX; i < LAST_DOT_INDEX; i++) {
+            for (let i = 0; i < this.mouseClicks.length - 1; i++) {
                 this.drawingService.baseCtx.beginPath();
                 this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();
