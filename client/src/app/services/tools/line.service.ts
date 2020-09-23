@@ -22,6 +22,7 @@ export class LineService extends Tool {
     dotWidth: number = 1;
     isDot: boolean = false;
     line: Line;
+    mouseEvent: MouseEvent;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -107,6 +108,7 @@ export class LineService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.mouseEvent = event;
         if (!this.isDrawing) return;
 
         // Clear the old line segment preview
@@ -177,6 +179,7 @@ export class LineService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.isShiftKeyDown = true;
+            this.onMouseMove(this.mouseEvent);
         }
     }
 
@@ -184,6 +187,7 @@ export class LineService extends Tool {
         switch (event.key) {
             case 'Shift': {
                 this.isShiftKeyDown = false;
+                this.onMouseMove(this.mouseEvent);
                 break;
             }
             case 'Backspace': {
