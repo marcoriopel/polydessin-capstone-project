@@ -1,5 +1,5 @@
 <div id="brushAttributes">
     <h2 class="toolName">{{ brushService.name }}</h2>
     <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleWidthChange($event)"> </app-slider>
-    <div><button (click)="setPattern()">Test</button></div>
+    <div><button (click)="setPattern()">Test</button> <button (click)="setPattern()">Test</button></div>
 </div>
