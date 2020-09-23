@@ -253,12 +253,14 @@ export class LineService extends Tool {
         if (opposite < 0) {
             opposite = Math.abs(opposite);
         }
+        if (hypothenuse === 0) {
+            hypothenuse = 1;
+        }
 
         angleRadians = Math.asin(opposite / hypothenuse);
         angleDegree = this.radiansToDegrees(angleRadians);
 
         lineAngle = this.findClosestAngle(quadrant, angleDegree);
-
         this.adjustEndingPoint(lineAngle, mouseCoordinates, adjacent);
     }
 
@@ -342,11 +344,11 @@ export class LineService extends Tool {
     }
 
     findCursorQuadrant(adjacent: number, opposite: number): Quadrant {
-        if (adjacent > 0 && opposite > 0) {
+        if (adjacent >= 0 && opposite >= 0) {
             return Quadrant.TOP_RIGHT;
-        } else if (adjacent < 0 && opposite > 0) {
+        } else if (adjacent <= 0 && opposite >= 0) {
             return Quadrant.TOP_LEFT;
-        } else if (adjacent < 0 && opposite < 0) {
+        } else if (adjacent <= 0 && opposite <= 0) {
             return Quadrant.BOTTOM_LEFT;
         } else {
             return Quadrant.BOTTOM_RIGHT;
