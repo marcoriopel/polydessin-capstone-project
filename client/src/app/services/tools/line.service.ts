@@ -25,8 +25,16 @@ export class LineService extends Tool {
         super(drawingService);
     }
 
-    changeWidth(newWidth: number): void {
+    changeLineWidth(newWidth: number): void {
         this.lineWidth = newWidth;
+    }
+
+    changeJunction(isDot: boolean): void {
+        console.log(isDot);
+    }
+
+    changeDotWidth(newWidth: number): void {
+        console.log(newWidth);
     }
 
     onMouseUp(event: MouseEvent): void {

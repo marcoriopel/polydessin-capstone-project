@@ -7,12 +7,18 @@ import { LineService } from '@app/services/tools/line.service';
     styleUrls: ['./line-attributes.component.scss'],
 })
 export class LineAttributesComponent {
+    constructor(public lineService: LineService) {}
     toolWidth: number = 1;
 
-    constructor(public lineService: LineService) {}
+    handleDotWidthChange(newWidth: number): void {
+        this.lineService.changeDotWidth(newWidth);
+    }
 
-    handleWidthChange(newWidth: number): void {
-        this.toolWidth = newWidth;
-        this.lineService.changeWidth(this.toolWidth);
+    handleLineWidthChange(newWidth: number): void {
+        this.lineService.changeLineWidth(newWidth);
+    }
+
+    handleJunctionPointChange(isChecked: boolean): void {
+        this.lineService.changeJunction(isChecked);
     }
 }
