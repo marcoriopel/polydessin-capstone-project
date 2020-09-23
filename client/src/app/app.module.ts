@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -63,6 +64,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatTabsModule,
         MatIconModule,
         MatExpansionModule,
+        MatCheckboxModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
     providers: [],
