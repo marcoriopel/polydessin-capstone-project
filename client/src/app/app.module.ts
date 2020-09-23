@@ -19,15 +19,6 @@ import { EditorComponent } from './components/editor/editor.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
-<<<<<<< HEAD
-import { RectangleComponent } from './components/rectangle/rectangle.component';
-
-
-
-@NgModule({
-    declarations: [AppComponent, EditorComponent, SidebarComponent, DrawingComponent, MainPageComponent, RectangleComponent],
-    imports: [BrowserModule,HttpClientModule, AppRoutingModule],
-=======
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
@@ -74,7 +65,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatExpansionModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
->>>>>>> 3795886c5a334edb7af29015816fbaf84cfa12a4
     providers: [],
     bootstrap: [AppComponent, MainPageComponent],
 })
