@@ -1,8 +1,8 @@
-import { Tool } from '../../classes/tool'
 //tslint:disable:prettier
 import { Injectable } from '@angular/core';
 import { DrawingService } from '../drawing/drawing.service';
 import { Vec2 } from '../../classes/vec2';
+import { Tool } from '../../classes/tool'
 
  export enum MouseButton {
   Left = 0,
@@ -136,10 +136,12 @@ import { Vec2 } from '../../classes/vec2';
    let x=point1.x;
    let y=point1.y;
   // in the left edge
-   if(point1.x>point2.x&&point1.y>point2.y){ 
+   if (point1.x > point2.x && point1.y > point2.y) { 
+     // Left up corner 
        x=point2.x;
        y=point2.y;
-   }else if(point1.x>point2.x&&point1.y<point2.y){
+   } else if (point1.x > point2.x && point1.y < point2.y) {
+     // right up corner
      x=point2.x;
      y=point1.y;
    }else if(point1.x<point2.x&&point1.y>point2.y){
