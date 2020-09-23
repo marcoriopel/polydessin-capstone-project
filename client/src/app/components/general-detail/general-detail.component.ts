@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { general, GENERALS } from '@app/ressources/texts/general-description';
+import { feature, GENERALS_FEATURE } from '@app/ressources/texts/feature';
 
 @Component({
     selector: 'app-general-detail',
@@ -7,6 +7,6 @@ import { general, GENERALS } from '@app/ressources/texts/general-description';
     styleUrls: ['./general-detail.component.scss'],
 })
 export class GeneralDetailComponent {
-    informations: general[] = GENERALS;
-    selectedinfo: general;
+    informations: feature[] = GENERALS_FEATURE;
+    selectedinfo: feature;
 }
