@@ -19,6 +19,8 @@ export class LineService extends Tool {
     mouseClicks: Vec2[] = [];
     storedLines: Line[] = [];
     lineWidth: number = 1;
+    dotWidth: number = 1;
+    isDot: boolean = false;
     line: Line;
 
     constructor(drawingService: DrawingService) {
@@ -30,11 +32,11 @@ export class LineService extends Tool {
     }
 
     changeJunction(isDot: boolean): void {
-        console.log(isDot);
+        this.isDot = isDot;
     }
 
     changeDotWidth(newWidth: number): void {
-        console.log(newWidth);
+        this.dotWidth = newWidth;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -62,6 +64,9 @@ export class LineService extends Tool {
                 this.drawLine(line.startingPoint, line.endingPoint, false);
             });
 
+            // Draw the junction dots
+            this.drawDots(this.dotWidth, false);
+
             // Clear the preview canvas, the stored clikcs and the stored lines used for previewing
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.storedLines = [];
@@ -78,6 +83,9 @@ export class LineService extends Tool {
 
             // Draw the line with the new segment on preview canvas
             this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
+
+            // Draw the junction dots
+            this.drawDots(this.dotWidth, true);
 
             // Add the new line segment to the stored lines
             this.storedLines.push(this.line);
@@ -97,6 +105,8 @@ export class LineService extends Tool {
         this.storedLines.forEach((line) => {
             this.drawLine(line.startingPoint, line.endingPoint, true);
         });
+
+        this.drawDots(this.dotWidth, true);
 
         if (this.isShiftKeyDown) {
             // Handle angles (set a different ending coordinates depending on mouse position)
@@ -191,6 +201,7 @@ export class LineService extends Tool {
 
         // Draw the new line preview
         this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
+        this.drawDots(this.dotWidth, true);
     }
 
     deleteLine(): void {
@@ -338,6 +349,26 @@ export class LineService extends Tool {
         const previewLayer = document.getElementById('previewLayer');
         if (previewLayer) {
             previewLayer.style.cursor = 'crosshair';
+        }
+    }
+
+    drawDots(width: number, isPreview: boolean): void {
+        const FIRST_DOT_INDEX = 1;
+        const LAST_DOT_INDEX = this.mouseClicks.length;
+        if (isPreview) {
+            for (let i = FIRST_DOT_INDEX; i < LAST_DOT_INDEX; i++) {
+                this.drawingService.previewCtx.beginPath();
+                this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.previewCtx.fill();
+                this.drawingService.previewCtx.stroke();
+            }
+        } else {
+            for (let i = FIRST_DOT_INDEX; i < LAST_DOT_INDEX; i++) {
+                this.drawingService.baseCtx.beginPath();
+                this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.baseCtx.fill();
+                this.drawingService.baseCtx.stroke();
+            }
         }
     }
 }
