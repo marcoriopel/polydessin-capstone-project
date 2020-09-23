@@ -59,17 +59,24 @@ export class BrushService extends Tool {
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
+    loadImage(): void {
+        console.log('called');
+        this.image = new Image();
+        this.image.src = 'https://i.imgur.com/huy6X9t.png';
+        console.log(this.image.complete);
+    }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
-        this.image.src = 'https://i.imgur.com/huy6X9t.png';
-        this.image.onload = () => {
-            const pat = ctx.createPattern(this.image, 'repeat');
-            if (pat instanceof CanvasPattern) {
-                ctx.strokeStyle = pat;
-            }
-            ctx.lineJoin = ctx.lineCap = 'round';
-        };
+        ctx.lineJoin = ctx.lineCap = 'round';
+        const pat = ctx.createPattern(this.image, 'repeat');
+        if (pat instanceof CanvasPattern) {
+            ctx.strokeStyle = pat;
+        } else if (pat == null) {
+            console.log('wtf');
+        } else {
+            console.log(typeof pat);
+        }
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

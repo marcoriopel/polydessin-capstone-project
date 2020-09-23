@@ -17,4 +17,7 @@ export class BrushAttributesComponent {
         this.toolWidth = newWidth;
         this.brushService.changeWidth(this.toolWidth);
     }
+    setPattern(): void {
+        this.brushService.loadImage();
+    }
 }
