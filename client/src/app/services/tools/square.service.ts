@@ -50,6 +50,7 @@ export class SquareService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.fillStyle = '#000000';
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
