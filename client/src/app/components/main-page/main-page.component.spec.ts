@@ -1,8 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { IndexService } from '@app/services/index/index.service';
-import { of } from 'rxjs';
 import { MainPageComponent } from './main-page.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -10,17 +9,15 @@ import SpyObj = jasmine.SpyObj;
 describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
-    let indexServiceSpy: SpyObj<IndexService>;
+    let matDialogSpy: SpyObj<MatDialog>;
 
     beforeEach(async(() => {
-        indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
-        indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
-        indexServiceSpy.basicPost.and.returnValue(of());
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
 
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: IndexService, useValue: indexServiceSpy }],
+            providers: [{ provide: MatDialog, useValue: matDialogSpy }],
         }).compileComponents();
     }));
 
@@ -38,8 +35,8 @@ describe('MainPageComponent', () => {
         expect(component.title).toEqual('PolyDessin');
     });
 
-    it('should call basicPost when calling sendTimeToServer', () => {
-        component.sendTimeToServer();
-        expect(indexServiceSpy.basicPost).toHaveBeenCalled();
+    it('should call open of MatDialog', () => {
+        component.openUserguide();
+        expect(component.dialog.open).toHaveBeenCalled();
     });
 });
