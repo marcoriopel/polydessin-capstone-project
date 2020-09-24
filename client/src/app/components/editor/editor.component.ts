@@ -19,11 +19,8 @@ export class EditorComponent implements AfterViewInit {
     toolNames: ToolNames = TOOL_NAMES;
     canvasSize: Vec2;
     private workSpaceSize: Vec2;
-
-    constructor(public toolSelectionService: ToolSelectionService, public resizeDrawingService: ResizeDrawingService) {
-        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
-    }
+    previewSize: Vec2;
+    previewDiv: HTMLDivElement;
 
     // TODO -> Add missing keys for new tools as we create them
     keyToolMapping: Map<string, string> = new Map([
@@ -34,6 +31,26 @@ export class EditorComponent implements AfterViewInit {
         ['e', this.toolNames.LINE_TOOL_NAME],
         ['p', this.toolNames.ERASER_TOOL_NAME],
     ]);
+
+    constructor(public toolSelectionService: ToolSelectionService, public resizeDrawingService: ResizeDrawingService) {
+        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+        this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+    }
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            this.workSpaceSize.x = workspaceElement.offsetWidth;
+            this.workSpaceSize.y = workspaceElement.offsetHeight;
+            this.previewDiv = document.querySelector('#previewDiv') as HTMLDivElement;
+            this.previewDiv.style.borderWidth = '1px';
+            this.previewDiv.style.borderColor = '#09acd9';
+            this.previewDiv.style.borderStyle = 'hidden';
+            this.previewDiv.style.position = 'absolute';
+            this.setDefaultCanvasSize();
+        });
+    }
 
     @HostListener('document:keyup', ['$event'])
     handleKeyUp(event: KeyboardEvent): void {
@@ -50,13 +67,9 @@ export class EditorComponent implements AfterViewInit {
         this.toolSelectionService.currentTool.onKeyDown(event);
     }
 
-    ngAfterViewInit(): void {
-        setTimeout(() => {
-            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
-            this.workSpaceSize.x = workspaceElement.offsetWidth;
-            this.workSpaceSize.y = workspaceElement.offsetHeight;
-            this.setDefaultCanvasSize();
-        });
+    onMouseDown(event: MouseEvent): void {
+        this.previewDiv.style.borderStyle = 'dashed';
+        this.resizeDrawingService.onMouseDown(event);
     }
 
     @HostListener('mousemove', ['$event'])
@@ -67,10 +80,14 @@ export class EditorComponent implements AfterViewInit {
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.resizeDrawingService.onMouseUp();
+        this.canvasSize.x = this.previewSize.x;
+        this.canvasSize.y = this.previewSize.y;
+        this.previewDiv.style.borderStyle = 'hidden';
     }
 
     private setDefaultCanvasSize(): void {
-        this.canvasSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
-        console.log(this.canvasSize);
+        this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
+        this.canvasSize.x = this.previewSize.x;
+        this.canvasSize.y = this.previewSize.y;
     }
 }

@@ -3,27 +3,25 @@
     <app-attribute-panel></app-attribute-panel>
     <div id="workSpace">
         <app-drawing class="drawing" tabindex="0" [canvasSize]="canvasSize"></app-drawing>
+        <div id="previewDiv" [ngStyle]="{ height: previewSize.y + 'px', width: previewSize.x + 'px' }"></div>
 
         <div
             id="verticalCanvasResizePoint"
             class="canvasResizePoint"
-            [ngStyle]="{ 'top.px': canvasSize.y - 3, 'left.px': canvasSize.x / 2 - 3 }"
-            (mousedown)="resizeDrawingService.onMouseDown($event)"
-            (mouseup)="resizeDrawingService.onMouseUp()"
+            [ngStyle]="{ 'top.px': previewSize.y - 3, 'left.px': previewSize.x / 2 - 3 }"
+            (mousedown)="onMouseDown($event)"
         ></div>
         <div
             id="horizontalCanvasResizePoint"
             class="canvasResizePoint"
-            [ngStyle]="{ 'top.px': canvasSize.y - 9, 'left.px': canvasSize.x - 3 }"
-            (mousedown)="resizeDrawingService.onMouseDown($event)"
-            (mouseup)="resizeDrawingService.onMouseUp()"
+            [ngStyle]="{ 'top.px': previewSize.y - 9, 'left.px': previewSize.x - 3 }"
+            (mousedown)="onMouseDown($event)"
         ></div>
         <div
             id="verticalAndHorizontalCanvasResizePoint"
             class="canvasResizePoint"
-            [ngStyle]="{ 'top.px': canvasSize.y / 2 - 15, 'left.px': canvasSize.x - 3 }"
-            (mousedown)="resizeDrawingService.onMouseDown($event)"
-            (mouseup)="resizeDrawingService.onMouseUp()"
+            [ngStyle]="{ 'top.px': previewSize.y / 2 - 15, 'left.px': previewSize.x - 3 }"
+            (mousedown)="onMouseDown($event)"
         ></div>
     </div>
 </div>
