@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -19,6 +19,13 @@ export class SquareService extends Tool {
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.mouseDown = false;
+    }
+
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
     }
 
     changeWidth(newWidth: number): void {
@@ -63,6 +70,8 @@ export class SquareService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.fillStyle = '#000000';
+        ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
