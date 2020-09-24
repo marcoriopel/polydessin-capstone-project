@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
-import { TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MouseButton } from '../../../ressources/global-variables';
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     private pathData: Vec2[];
-    name = TOOL_NAMES.ERASER_TOOL_NAME;
+    name: string = TOOL_NAMES.ERASER_TOOL_NAME;
     width: number = 5;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
         this.clearPath();
     }
-    handleCursor() {
-        document.getElementById('previewLayer')!.style.cursor = 'none';
+
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'none';
+        }
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
@@ -52,7 +57,7 @@ export class EraserService extends Tool {
         }
         this.squareCursor(event);
     }
-    private squareCursor(event: MouseEvent) {
+    private squareCursor(event: MouseEvent): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.strokeRect(
@@ -63,7 +68,7 @@ export class EraserService extends Tool {
         );
     }
 
-    changeWidth(newWidth: number) {
+    changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -75,6 +80,8 @@ export class EraserService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+        // Temporary fix to draw line in black after calling the eraser
+        ctx.strokeStyle = 'black';
     }
 
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -87,6 +94,8 @@ export class EraserService extends Tool {
         }
         ctx.fill();
         ctx.stroke();
+        // Temporary fix to draw line in black after calling the eraser
+        ctx.strokeStyle = 'black';
     }
 
     private clearPath(): void {

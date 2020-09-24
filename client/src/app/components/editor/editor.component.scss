@@ -1,10 +1,10 @@
 .container {
     height: 100%;
     display: flex;
-    background-color: #3b3737;
 }
 
-.drawing-container {
+#workSpace {
+    background-color: #3b3737;
     overflow: auto;
     flex: 1 1 auto;
 }
