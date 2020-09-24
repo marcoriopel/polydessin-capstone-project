@@ -44,9 +44,10 @@ export class EditorComponent implements AfterViewInit {
             this.workSpaceSize.x = workspaceElement.offsetWidth;
             this.workSpaceSize.y = workspaceElement.offsetHeight;
             this.previewDiv = document.querySelector('#previewDiv') as HTMLDivElement;
+            this.previewDiv.style.display = 'none';
             this.previewDiv.style.borderWidth = '1px';
             this.previewDiv.style.borderColor = '#09acd9';
-            this.previewDiv.style.borderStyle = 'hidden';
+            this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
             this.setDefaultCanvasSize();
         });
@@ -68,7 +69,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.previewDiv.style.borderStyle = 'dashed';
+        this.previewDiv.style.display = 'block';
         this.resizeDrawingService.onMouseDown(event);
     }
 
@@ -82,7 +83,7 @@ export class EditorComponent implements AfterViewInit {
         this.resizeDrawingService.onMouseUp();
         this.canvasSize.x = this.previewSize.x;
         this.canvasSize.y = this.previewSize.y;
-        this.previewDiv.style.borderStyle = 'hidden';
+        this.previewDiv.style.display = 'none';
     }
 
     private setDefaultCanvasSize(): void {
