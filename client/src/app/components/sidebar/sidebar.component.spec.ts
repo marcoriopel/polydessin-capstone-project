@@ -39,8 +39,8 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call toolSelectionService.onToolChange', () => {
-        const spy = spyOn(component.toolSelectionService, 'onToolChange');
+    it('should call toolSelectionService.changeTool', () => {
+        const spy = spyOn(component.toolSelectionService, 'changeTool');
         const button = fixture.debugElement.nativeElement.querySelector('#brush');
         button.click();
         expect(spy).toHaveBeenCalled();

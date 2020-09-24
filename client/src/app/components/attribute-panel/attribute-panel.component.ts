@@ -7,5 +7,5 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
     styleUrls: ['./attribute-panel.component.scss'],
 })
 export class AttributePanelComponent {
-    constructor(public toolSelectionService: ToolSelectionService) { }
+    constructor(public toolSelectionService: ToolSelectionService) {}
 }

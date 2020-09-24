@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SidebarElementDescriptions } from '@app/classes/sidebar-element-descriptions';
-import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/ressources/global-variables';
+import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
+import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
@@ -9,13 +9,16 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    elementDescriptions: SidebarElementDescriptions = SIDEBAR_ELEMENT_DESCRIPTIONS;
+    elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService) { }
+    constructor(public toolSelectionService: ToolSelectionService) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
-        this.toolSelectionService.onToolChange(target.value);
+        if (target.value != null) {
+            this.toolSelectionService.changeTool(target.value);
+            this.toolSelectionService.currentTool.handleCursor();
+        }
     }
 }

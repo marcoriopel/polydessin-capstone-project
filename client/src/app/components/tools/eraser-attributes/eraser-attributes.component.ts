@@ -7,7 +7,14 @@ import { EraserService } from '@app/services/tools/eraser.service';
     styleUrls: ['./eraser-attributes.component.scss'],
 })
 export class EraserAttributesComponent {
-    toolWidth: number = 1;
+    toolWidth: number;
 
-    constructor(public eraserService: EraserService) {}
+    constructor(public eraserService: EraserService) {
+        this.toolWidth = eraserService.width;
+    }
+
+    handleWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
+        this.eraserService.changeWidth(this.toolWidth);
+    }
 }
