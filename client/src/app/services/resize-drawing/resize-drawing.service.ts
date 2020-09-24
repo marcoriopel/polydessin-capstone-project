@@ -56,12 +56,17 @@ export class ResizeDrawingService {
     }
 
     resizeCanvas(event: MouseEvent): void {
-        if (this.serviceCaller === 'verticalCanvasResizePoint') {
-            this.verticalResize(event);
-        } else if (this.serviceCaller === 'horizontalCanvasResizePoint') {
-            this.horizontalResize(event);
-        } else if (this.serviceCaller === 'verticalAndHorizontalCanvasResizePoint') {
-            this.verticalAndHorizontalResize(event);
+        switch (this.serviceCaller) {
+            case 'verticalCanvasResizePoint':
+                this.verticalResize(event);
+                break;
+            case 'horizontalCanvasResizePoint':
+                this.horizontalResize(event);
+                break;
+            case 'verticalAndHorizontalCanvasResizePoint':
+                this.verticalAndHorizontalResize(event);
+                break;
+            default:
         }
     }
 
@@ -69,7 +74,10 @@ export class ResizeDrawingService {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
-            this.canvasSize.y += mousePositionChangeY;
+            const newCanvasHeight = this.canvasSize.y + mousePositionChangeY;
+            if (newCanvasHeight >= MINIMUM_CANVAS_HEIGHT) {
+                this.canvasSize.y = newCanvasHeight;
+            }
             this.mouseMoveCoord = this.getPositionFromMouse(event);
         }
     }
@@ -78,9 +86,15 @@ export class ResizeDrawingService {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
-            this.canvasSize.y += mousePositionChangeY;
+            const newCanvasHeight = this.canvasSize.y + mousePositionChangeY;
+            if (newCanvasHeight >= MINIMUM_CANVAS_HEIGHT) {
+                this.canvasSize.y = newCanvasHeight;
+            }
             const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
-            this.canvasSize.x += mousePositionChangeX;
+            const newCanvasWidth = this.canvasSize.x + mousePositionChangeX;
+            if (newCanvasWidth >= MINIMUM_CANVAS_WIDTH) {
+                this.canvasSize.x = newCanvasWidth;
+            }
             this.mouseMoveCoord = this.getPositionFromMouse(event);
         }
     }
@@ -89,7 +103,10 @@ export class ResizeDrawingService {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
-            this.canvasSize.x += mousePositionChangeX;
+            const newCanvasWidth = this.canvasSize.x + mousePositionChangeX;
+            if (newCanvasWidth >= MINIMUM_CANVAS_WIDTH) {
+                this.canvasSize.x = newCanvasWidth;
+            }
             this.mouseMoveCoord = this.getPositionFromMouse(event);
         }
     }
