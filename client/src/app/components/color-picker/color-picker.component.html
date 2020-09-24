@@ -1,0 +1,33 @@
+<div class="container">
+    Couleur principale
+    <div class="choice-container">
+        <input class="color-input" type="color" value="#ffffff" (change)="this.changeColor($event)" />
+        <div id="sliderDetails">
+            <button (click)="decrementToolWidth()">-</button>
+            <input class="opacity-input" type="number" [(ngModel)]="value" (change)="this.handleValueChange()" [min]="min" [max]="max" readonly />
+            <button (click)="incrementToolWidth()">+</button>
+        </div>
+    </div>
+
+    Couleur secondaire
+    <div class="choice-container">
+        <input class="color-input" type="color" value="#ffffff" (change)="this.changeColor($event)" />
+        <div id="sliderDetails">
+            <button (click)="decrementToolWidth()">-</button>
+            <input class="opacity-input" type="number" [(ngModel)]="value" (change)="this.handleValueChange()" [min]="min" [max]="max" readonly />
+            <button (click)="incrementToolWidth()">+</button>
+        </div>
+    </div>
+    <div class="previous-color">
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+        <button id="color"></button>
+    </div>
+</div>

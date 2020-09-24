@@ -1,0 +1,43 @@
+.container {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
+.choice-container {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.color-input {
+    margin: 0 10;
+}
+
+.opacity-input {
+    width: 10px;
+}
+
+.previous-color {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+    padding-top: 10px;
+}
+
+#color {
+    height: 23px;
+    width: 23px;
+    background-color: red;
+    display: grid;
+    margin: 3px;
+    border: none;
+    border-radius: 15%;
+    outline: none;
+    cursor: pointer;
+}
+
+#sliderDetails {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+}
