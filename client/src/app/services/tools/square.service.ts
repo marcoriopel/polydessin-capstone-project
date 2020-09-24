@@ -71,9 +71,15 @@ export class SquareService extends Tool {
 
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.beginPath();
+        if(this.rectangleWidth>this.rectangleHeight){ 
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
         ctx.stroke();
+        } else if (this.rectangleHeight>this.rectangleWidth) {
+            ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
+            ctx.stroke();
+        }
     }
 
     /*
