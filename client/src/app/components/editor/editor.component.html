@@ -2,7 +2,7 @@
     <app-sidebar></app-sidebar>
     <app-attribute-panel></app-attribute-panel>
     <div id="workSpace">
-        <app-drawing class="drawing" tabindex="0" [canvasSize]="canvasSize"></app-drawing>
+        <app-drawing #drawingComponent class="drawing" tabindex="0" [canvasSize]="canvasSize"></app-drawing>
         <div id="previewDiv" [ngStyle]="{ height: previewSize.y + 'px', width: previewSize.x + 'px' }"></div>
 
         <div

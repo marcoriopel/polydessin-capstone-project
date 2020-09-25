@@ -45,9 +45,12 @@ export class ResizeDrawingService {
         }
     }
 
-    onMouseUp(): void {
+    onMouseUp(): boolean {
         if (this.mouseDown) {
             this.mouseDown = false;
+            return true;
+        } else {
+            return false;
         }
     }
 

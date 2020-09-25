@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import {
     MINIMUM_CANVAS_HEIGHT,
     MINIMUM_CANVAS_WIDTH,
@@ -16,6 +17,8 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent implements AfterViewInit {
+    @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
+
     toolNames: ToolNames = TOOL_NAMES;
     canvasSize: Vec2;
     private workSpaceSize: Vec2;
@@ -80,10 +83,21 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.resizeDrawingService.onMouseUp();
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
-        this.previewDiv.style.display = 'none';
+        if (this.resizeDrawingService.onMouseUp()) {
+            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
+            tempCanvas.width = this.canvasSize.x;
+            tempCanvas.height = this.canvasSize.y;
+            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+            tempCanvasCtx.drawImage(this.drawingComponent.baseCanvas.nativeElement, 0, 0);
+
+            this.canvasSize.x = this.previewSize.x;
+            this.canvasSize.y = this.previewSize.y;
+            this.previewDiv.style.display = 'none';
+
+            setTimeout(() => {
+                this.drawingComponent.baseCtx.drawImage(tempCanvas, 0, 0);
+            });
+        }
     }
 
     private setDefaultCanvasSize(): void {
