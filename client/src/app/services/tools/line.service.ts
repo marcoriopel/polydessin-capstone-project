@@ -19,14 +19,25 @@ export class LineService extends Tool {
     mouseClicks: Vec2[] = [];
     storedLines: Line[] = [];
     lineWidth: number = 1;
+    dotWidth: number = 1;
+    isDot: boolean = false;
     line: Line;
+    mouseEvent: MouseEvent;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
-    changeWidth(newWidth: number): void {
+    changeLineWidth(newWidth: number): void {
         this.lineWidth = newWidth;
+    }
+
+    changeJunction(isDot: boolean): void {
+        this.isDot = isDot;
+    }
+
+    changeDotWidth(newWidth: number): void {
+        this.dotWidth = newWidth;
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -40,12 +51,19 @@ export class LineService extends Tool {
         }
 
         // Check if it is a double click
-        if (this.checkIfDoubleClick(event)) {
+        if (this.checkIfDoubleClick()) {
             this.isDrawing = false;
 
+            // Handle case when user double click when there is no line
+            if (this.mouseClicks[0].x === this.mouseClicks[1].x && this.mouseClicks[0].y === this.mouseClicks[1].y) {
+                this.mouseClicks = [];
+                this.numberOfClicks = 0;
+                return;
+            }
             // Check if the last point is 20px away from initial point
             if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
+                this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
             }
 
@@ -53,6 +71,11 @@ export class LineService extends Tool {
             this.storedLines.forEach((line) => {
                 this.drawLine(line.startingPoint, line.endingPoint, false);
             });
+
+            // Draw the junction dots
+            if (this.isDot) {
+                this.drawDots(this.dotWidth, false);
+            }
 
             // Clear the preview canvas, the stored clikcs and the stored lines used for previewing
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -71,6 +94,11 @@ export class LineService extends Tool {
             // Draw the line with the new segment on preview canvas
             this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
 
+            // Draw the junction dots
+            if (this.isDot) {
+                this.drawDots(this.dotWidth, true);
+            }
+
             // Add the new line segment to the stored lines
             this.storedLines.push(this.line);
 
@@ -80,6 +108,7 @@ export class LineService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.mouseEvent = event;
         if (!this.isDrawing) return;
 
         // Clear the old line segment preview
@@ -89,6 +118,10 @@ export class LineService extends Tool {
         this.storedLines.forEach((line) => {
             this.drawLine(line.startingPoint, line.endingPoint, true);
         });
+
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
 
         if (this.isShiftKeyDown) {
             // Handle angles (set a different ending coordinates depending on mouse position)
@@ -119,7 +152,7 @@ export class LineService extends Tool {
         }
     }
 
-    checkIfDoubleClick(event: MouseEvent): boolean {
+    checkIfDoubleClick(): boolean {
         const previousClickX = this.mouseClicks[this.numberOfClicks - 2].x;
         const previousClickY = this.mouseClicks[this.numberOfClicks - 2].y;
         const currentClickX = this.mouseClicks[this.numberOfClicks - 1].x;
@@ -146,6 +179,7 @@ export class LineService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.isShiftKeyDown = true;
+            this.onMouseMove(this.mouseEvent);
         }
     }
 
@@ -153,6 +187,7 @@ export class LineService extends Tool {
         switch (event.key) {
             case 'Shift': {
                 this.isShiftKeyDown = false;
+                this.onMouseMove(this.mouseEvent);
                 break;
             }
             case 'Backspace': {
@@ -183,6 +218,10 @@ export class LineService extends Tool {
 
         // Draw the new line preview
         this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
+
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
     }
 
     deleteLine(): void {
@@ -218,12 +257,14 @@ export class LineService extends Tool {
         if (opposite < 0) {
             opposite = Math.abs(opposite);
         }
+        if (hypothenuse === 0) {
+            hypothenuse = 1;
+        }
 
         angleRadians = Math.asin(opposite / hypothenuse);
         angleDegree = this.radiansToDegrees(angleRadians);
 
         lineAngle = this.findClosestAngle(quadrant, angleDegree);
-
         this.adjustEndingPoint(lineAngle, mouseCoordinates, adjacent);
     }
 
@@ -275,7 +316,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_90;
                 }
-                break;
             }
             case Quadrant.TOP_LEFT: {
                 if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
@@ -285,7 +325,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_180;
                 }
-                break;
             }
             case Quadrant.BOTTOM_LEFT: {
                 if (LIMIT_ANGLES.DEGREES_0 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
@@ -295,7 +334,6 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_270;
                 }
-                break;
             }
             case Quadrant.BOTTOM_RIGHT: {
                 if (LIMIT_ANGLES.DEGREES_90 > angleDegree && angleDegree >= LIMIT_ANGLES.DEGREES_67POINT5) {
@@ -305,17 +343,16 @@ export class LineService extends Tool {
                 } else {
                     return LineAngle.DEGREES_0;
                 }
-                break;
             }
         }
     }
 
     findCursorQuadrant(adjacent: number, opposite: number): Quadrant {
-        if (adjacent > 0 && opposite > 0) {
+        if (adjacent >= 0 && opposite >= 0) {
             return Quadrant.TOP_RIGHT;
-        } else if (adjacent < 0 && opposite > 0) {
+        } else if (adjacent <= 0 && opposite >= 0) {
             return Quadrant.TOP_LEFT;
-        } else if (adjacent < 0 && opposite < 0) {
+        } else if (adjacent <= 0 && opposite <= 0) {
             return Quadrant.BOTTOM_LEFT;
         } else {
             return Quadrant.BOTTOM_RIGHT;
@@ -330,6 +367,29 @@ export class LineService extends Tool {
         const previewLayer = document.getElementById('previewLayer');
         if (previewLayer) {
             previewLayer.style.cursor = 'crosshair';
+        }
+    }
+
+    drawDots(width: number, isPreview: boolean): void {
+        const LAST_DOT = this.mouseClicks.length;
+        if (isPreview) {
+            for (let i = 0; i < LAST_DOT; i++) {
+                this.drawingService.previewCtx.beginPath();
+                this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.previewCtx.fill();
+                this.drawingService.previewCtx.stroke();
+            }
+        } else {
+            // Remove the double click that doesnt need to be drawed on the canvas
+            this.mouseClicks[this.mouseClicks.length - 2] = this.mouseClicks[this.mouseClicks.length - 1];
+            this.mouseClicks.pop();
+
+            for (let i = 0; i < LAST_DOT - 1; i++) {
+                this.drawingService.baseCtx.beginPath();
+                this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.baseCtx.fill();
+                this.drawingService.baseCtx.stroke();
+            }
         }
     }
 }
