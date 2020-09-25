@@ -11,10 +11,20 @@
 
 .color-input {
     margin: 0 10;
+    width: 30px;
+}
+
+hr {
+    border: 0;
+    clear: both;
+    display: block;
+    width: 96%;
+    background-color: #3b3737;
+    height: 1px;
 }
 
 .opacity-input {
-    width: 10px;
+    width: 40px;
 }
 
 .previous-color {
@@ -35,9 +45,17 @@
     cursor: pointer;
 }
 
+.choice-container .grid-element {
+    margin-left: 5px;
+}
+
 #sliderDetails {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+#swap-button {
     display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
