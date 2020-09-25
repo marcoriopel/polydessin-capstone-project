@@ -3,7 +3,8 @@
     display: flex;
 }
 
-.drawing-container {
+#workSpace {
+    background-color: #3b3737;
     overflow: auto;
     flex: 1 1 auto;
 }
