@@ -16,7 +16,7 @@ export class DrawingComponent implements AfterViewInit {
 
     @Input() private canvasSize: Vec2;
 
-    baseCtx: CanvasRenderingContext2D;
+    private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
 
     constructor(

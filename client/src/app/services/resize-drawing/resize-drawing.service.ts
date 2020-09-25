@@ -45,6 +45,7 @@ export class ResizeDrawingService {
         }
     }
 
+    // returns true if mouseDown was previously true.
     onMouseUp(): boolean {
         if (this.mouseDown) {
             this.mouseDown = false;

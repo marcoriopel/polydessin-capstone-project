@@ -95,7 +95,9 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.display = 'none';
 
             setTimeout(() => {
-                this.drawingComponent.baseCtx.drawImage(tempCanvas, 0, 0);
+                let baseCtx: CanvasRenderingContext2D;
+                baseCtx = this.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+                baseCtx.drawImage(tempCanvas, 0, 0);
             });
         }
     }
