@@ -6,18 +6,54 @@ import { Component } from '@angular/core';
     styleUrls: ['./color-picker.component.scss'],
 })
 export class ColorPickerComponent {
-    constructor() {}
+    primaryColor: string;
+    secondaryColor: string;
+    colors: string[] = ['#000000'];
+
+    constructor() {
+        this.primaryColor = '#000000';
+        this.secondaryColor = '#000000';
+        document.addEventListener(
+            'contextmenu',
+            function (e) {
+                e.preventDefault();
+            },
+            false,
+        );
+    }
 
     primaryOpacity: number = 100;
     secondaryOpacity: number = 100;
     min: number = 0;
     max: number = 100;
 
-    changeColor(event: any) {
-        console.log(event.target.value);
+    colorClickHandler(event: MouseEvent): void {
+        console.log(event.button);
     }
 
-    swapColors(): void {}
+    changePrimaryColor(color: string): void {
+        this.primaryColor = color;
+        this.colors.unshift(this.primaryColor);
+        if (this.colors.length > 10) {
+            this.colors.pop();
+        }
+        console.log(this.primaryColor);
+    }
+
+    changeSecondaryColor(color: string): void {
+        this.secondaryColor = color;
+        this.colors.unshift(this.secondaryColor);
+        if (this.colors.length > 10) {
+            this.colors.pop();
+        }
+        console.log(this.secondaryColor);
+    }
+
+    swapColors(): void {
+        const temp: string = this.primaryColor;
+        this.primaryColor = this.secondaryColor;
+        this.secondaryColor = temp;
+    }
 
     decrementPrimaryOpacity(): void {
         if (this.primaryOpacity > this.min) {

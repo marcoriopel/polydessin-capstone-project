@@ -1,7 +1,7 @@
 <div class="container">
     <h3>Couleur principale</h3>
     <div class="choice-container">
-        <input class="color-input" type="color" value="#ffffff" (change)="this.changeColor($event)" />
+        <input class="color-input" id="primary" type="color" [value]="this.primaryColor" (change)="this.changePrimaryColor($event.target.value)" />
         <div id="sliderDetails">
             <button class="grid-element" (click)="decrementPrimaryOpacity()">-</button>
             <input class="opacity-input grid-element" [value]="this.primaryOpacity" type="number" [min]="0" [max]="100" readonly />
@@ -13,7 +13,13 @@
     </button>
     <h3>Couleur secondaire</h3>
     <div class="choice-container">
-        <input class="color-input" type="color" value="#ffffff" (change)="this.changeColor($event)" />
+        <input
+            class="color-input"
+            id="secondary"
+            type="color"
+            [value]="this.secondaryColor"
+            (change)="this.changeSecondaryColor($event.target.value)"
+        />
         <div id="sliderDetails">
             <button class="grid-element" (click)="decrementSecondaryOpacity()">-</button>
             <input class="opacity-input grid-element" [value]="this.secondaryOpacity" type="number" [min]="0" max="100" readonly />
@@ -24,15 +30,6 @@
     <hr />
     <h3>Récemment utilisée</h3>
     <div class="previous-color">
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
-        <button id="color"></button>
+        <button *ngFor="let color of colors" id="color" style="background-color: {{ color }}" (click)="this.colorClickHandler($event)"></button>
     </div>
 </div>
