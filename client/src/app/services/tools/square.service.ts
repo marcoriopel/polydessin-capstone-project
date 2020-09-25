@@ -11,6 +11,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class SquareService extends Tool {
     name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
     mouseDown: boolean;
+    isShiftKeyDown: boolean = false;
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
@@ -47,12 +48,24 @@ export class SquareService extends Tool {
         }
     }
 
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
+            this.isShiftKeyDown = true;
+        }
+    }
+
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
             this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
+        } else if (this.isShiftKeyDown) {
+            this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+            this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
+            this.isShiftKeyDown = false;
         }
     }
 
@@ -63,6 +76,19 @@ export class SquareService extends Tool {
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.stroke();
+    }
+
+    private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.beginPath();
+        if(this.rectangleWidth>this.rectangleHeight){ 
+        ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+        ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+        ctx.stroke();
+        } else if (this.rectangleHeight>this.rectangleWidth) {
+            ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
+            ctx.stroke();
+        }
     }
 
     /*
