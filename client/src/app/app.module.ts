@@ -1,3 +1,4 @@
+import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +16,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
-import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { DrawingDetailComponent } from './components/drawing-detail/drawing-detail.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
@@ -49,6 +49,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         DrawingDetailComponent,
         GeneralDetailComponent,
         ColorPickerComponent,
+
     ],
     imports: [
         BrowserModule,
