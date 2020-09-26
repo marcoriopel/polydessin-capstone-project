@@ -9,6 +9,7 @@ describe('SquareService', () => {
     let service: SquareService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawSquareSpy: jasmine.Spy<any>;
@@ -48,13 +49,13 @@ describe('SquareService', () => {
         service.changeWidth(1);
         expect(service.width).toBe(1);
     });
-
+    
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
         expect(service.mouseDownCoord).toEqual(expectedResult);
     });
-
+    
     it(' mouseDown should set mouseDown property to true on left click', () => {
         service.onMouseDown(mouseEvent);
         expect(service.mouseDown).toEqual(true);
@@ -69,12 +70,30 @@ describe('SquareService', () => {
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
-
+    
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
         service.mouseDown = true;
         
         service.onMouseUp(mouseEvent);
         expect(drawSquareSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should call drawLine if mouse was already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = true;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(drawSquareSpy).toHaveBeenCalled();
+    });
+
+    it(' onMouseMove should not call drawLine if mouse was not already down', () => {
+        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDown = false;
+
+        service.onMouseMove(mouseEvent);
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawSquareSpy).not.toHaveBeenCalled();
     });
 });

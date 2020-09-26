@@ -1,3 +1,4 @@
+import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,7 +30,6 @@ import { PencilAttributesComponent } from './components/tools/pencil-attributes/
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { UserguideComponent } from './components/userguide/userguide.component';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -47,6 +48,8 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         UserguideComponent,
         DrawingDetailComponent,
         GeneralDetailComponent,
+        ColorPickerComponent,
+
     ],
     imports: [
         BrowserModule,
@@ -65,6 +68,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatIconModule,
         MatExpansionModule,
         MatCheckboxModule,
+        MatInputModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
     providers: [],

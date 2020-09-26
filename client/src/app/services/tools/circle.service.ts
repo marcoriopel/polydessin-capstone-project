@@ -3,8 +3,8 @@ import { Tool } from '@app/classes/tool';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Vec2 } from '@app/classes/vec2';
-//import { MouseButton } from '@app/ressources/global-variables/global-variables';
-
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import {ColorSelectionService} from "@app/services/color-selection/color-selection.service"
 
 @Injectable({
     providedIn: 'root',
@@ -12,13 +12,17 @@ import { Vec2 } from '@app/classes/vec2';
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
     mouseDown: boolean;
+    isShiftKeyDown: boolean = false;
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService,public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
+        //this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
+        //this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
+
     }
 
     handleCursor(): void {
@@ -28,17 +32,39 @@ export class CircleService extends Tool {
         }
     }
 
+    changeWidth(newWidth: number): void {
+        this.width = newWidth;
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
+            this.isShiftKeyDown = true;
+        }
+    }
+
+    onMouseDown(event: MouseEvent): void {
+        this.mouseDown = event.button === MouseButton.Left;
+        if (this.mouseDown) {
+            this.firstPoint = this.getPositionFromMouse(event);
+        }
+    }
+
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawCircle(this.drawingService.baseCtx, topLeftPoint);
+            this.drawEllipse(this.drawingService.baseCtx, topLeftPoint);
             this.mouseDown = false;
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown ) {
+            this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+            this.drawEllipse(this.drawingService.previewCtx, topLeftPoint);
+        } else if (this.isShiftKeyDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
@@ -48,11 +74,29 @@ export class CircleService extends Tool {
 
     private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.fillStyle = '#000000';
+        ctx.strokeStyle ='#000000' ;
+        ctx.lineWidth = this.width;
+        if (this.circleWidth > this.circleHeight) {
+        ctx.beginPath(); 
+        ctx.ellipse(point.x, point.y, this.circleWidth, this.circleWidth, 0, 0, Math.PI * 2, false);
+        ctx.stroke();
+        } else if (this.circleWidth < this.circleHeight) {
+            ctx.beginPath(); 
+            ctx.ellipse(point.x, point.y, this.circleHeight, this.circleWidth, 0, 0, Math.PI * 2, false);
+            ctx.stroke();
+        }
+
+    }
+    private drawEllipse(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.fillStyle = '#000000';
+        ctx.strokeStyle ='#000000' ;
         ctx.lineWidth = this.width;
         ctx.beginPath(); 
         ctx.ellipse(point.x, point.y, this.circleWidth, this.circleHeight, 0, 0, Math.PI * 2, false);
         ctx.stroke();
     }
+
+
 
         /*
      to find the top left point of the rectangle or the square

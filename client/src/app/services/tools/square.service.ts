@@ -4,7 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
+import {ColorSelectionService} from "@app/services/color-selection/color-selection.service"
 
 @Injectable({
     providedIn: 'root',
@@ -17,11 +17,11 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
 
-    constructor(drawingService: DrawingService,public colorSelectionService:ColorSelectionService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
-        this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-        this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
+        //this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
+        //this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
     }
 
     handleCursor(): void {
@@ -58,7 +58,7 @@ export class SquareService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.mouseDown && this.isShiftKeyDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
@@ -68,17 +68,19 @@ export class SquareService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
             this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
-            this.isShiftKeyDown = false;
         }
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+       // ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.fillStyle = '#000000';
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+       // ctx.strokeRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.stroke();
+        ctx.closePath();
     }
 
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
