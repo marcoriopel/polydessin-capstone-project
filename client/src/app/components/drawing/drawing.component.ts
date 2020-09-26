@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import {
-    HALF_RATIO,
     MINIMUM_CANVAS_HEIGHT,
     MINIMUM_CANVAS_WIDTH,
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH,
-} from '@app/ressources/global-variables';
+} from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-drawing',
@@ -23,9 +23,15 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private canvasSize: Vec2;
+    private workSpaceSize: Vec2;
 
-    constructor(private drawingService: DrawingService, public toolSelectionService: ToolSelectionService) {
-        this.setDefaultCanvasSize();
+    constructor(
+        private drawingService: DrawingService,
+        public toolSelectionService: ToolSelectionService,
+        public resizeDrawingService: ResizeDrawingService,
+    ) {
+        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     }
 
     ngAfterViewInit(): void {
@@ -34,6 +40,13 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+
+        setTimeout(() => {
+            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            this.workSpaceSize.x = workspaceElement.offsetWidth;
+            this.workSpaceSize.y = workspaceElement.offsetHeight;
+            this.setDefaultCanvasSize();
+        });
     }
 
     @HostListener('mousemove', ['$event'])
@@ -60,17 +73,6 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     private setDefaultCanvasSize(): void {
-        let canvasWidth = MINIMUM_CANVAS_WIDTH;
-        let canvasHeight = MINIMUM_CANVAS_HEIGHT;
-
-        if (window.innerWidth > MINIMUM_WORKSPACE_WIDTH) {
-            canvasWidth = window.innerWidth * HALF_RATIO;
-        }
-
-        if (window.innerHeight > MINIMUM_WORKSPACE_HEIGHT) {
-            canvasHeight = window.innerHeight * HALF_RATIO;
-        }
-
-        this.canvasSize = { x: canvasWidth, y: canvasHeight };
+        this.canvasSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
     }
 }

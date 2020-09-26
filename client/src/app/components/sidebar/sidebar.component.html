@@ -12,13 +12,13 @@
     <div class="toggleButtonGroup sidebarSection">
         <input
             type="radio"
-            id="pencil"
+            [id]="toolSelectionService.toolNames.PENCIL_TOOL_NAME"
             name="tool"
             [value]="toolSelectionService.toolNames.PENCIL_TOOL_NAME"
             (change)="onToolChange($event)"
             checked
         />
-        <label for="pencil">
+        <label [for]="toolSelectionService.toolNames.PENCIL_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.PENCIL_TOOL_DESCRIPTION"
@@ -27,8 +27,14 @@
                 >create
             </mat-icon>
         </label>
-        <input type="radio" id="brush" name="tool" [value]="toolSelectionService.toolNames.BRUSH_TOOL_NAME" (change)="onToolChange($event)" />
-        <label for="brush">
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.BRUSH_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.BRUSH_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.BRUSH_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.BRUSH_TOOL_DESCRIPTION"
@@ -37,8 +43,14 @@
                 >brush</mat-icon
             >
         </label>
-        <input type="radio" id="crop_square" name="tool" [value]="toolSelectionService.toolNames.SQUARE_TOOL_NAME" (change)="onToolChange($event)" />
-        <label for="crop_square">
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.SQUARE_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.SQUARE_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.SQUARE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.SQUARE_TOOL_DESCRIPTION"
@@ -49,12 +61,12 @@
         </label>
         <input
             type="radio"
-            id="panorama_fish_eye"
+            [id]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME"
             name="tool"
             [value]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME"
             (change)="onToolChange($event)"
         />
-        <label for="panorama_fish_eye">
+        <label [for]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.CIRCLE_TOOL_DESCRIPTION"
@@ -63,8 +75,14 @@
                 >panorama_fish_eye</mat-icon
             >
         </label>
-        <input type="radio" id="timeline" name="tool" [value]="toolSelectionService.toolNames.LINE_TOOL_NAME" (change)="onToolChange($event)" />
-        <label for="timeline">
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.LINE_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.LINE_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.LINE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.LINE_TOOL_DESCRIPTION"
@@ -73,8 +91,14 @@
                 >timeline</mat-icon
             >
         </label>
-        <input type="radio" id="eraser" name="tool" [value]="toolSelectionService.toolNames.ERASER_TOOL_NAME" (change)="onToolChange($event)" />
-        <label for="eraser">
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.ERASER_TOOL_NAME">
             <mat-icon
                 class="fas fa-eraser"
                 [matTooltip]="elementDescriptions.ERASER_TOOL_DESCRIPTION"
@@ -90,7 +114,6 @@
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
-            (click)="openUserguide()"
             >help</mat-icon
         >
         <mat-icon

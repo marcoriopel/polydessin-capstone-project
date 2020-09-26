@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
@@ -46,8 +46,8 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call toolSelectionService.onToolChange', () => {
-        const spy = spyOn(component.toolSelectionService, 'onToolChange');
+    it('should call toolSelectionService.changeTool', () => {
+        const spy = spyOn(component.toolSelectionService, 'changeTool');
         const button = fixture.debugElement.nativeElement.querySelector('#brush');
         button.click();
         expect(spy).toHaveBeenCalled();

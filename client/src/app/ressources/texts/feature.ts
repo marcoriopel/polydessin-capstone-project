@@ -1,4 +1,3 @@
-// tslint:disable-next-line: class-name
 export interface feature {
     name: string;
     description: string;

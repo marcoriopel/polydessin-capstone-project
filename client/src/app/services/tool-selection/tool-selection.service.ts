@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { ToolNames } from '@app/classes/tool-names';
-import { TOOL_NAMES } from '@app/ressources/global-variables';
+import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
@@ -37,7 +36,7 @@ export class ToolSelectionService {
         this.currentTool = pencilService;
     }
 
-    onToolChange(toolName: string): void {
+    changeTool(toolName: string): void {
         const selectedTool = this.tools.get(toolName);
         if (selectedTool) {
             this.currentTool = selectedTool;

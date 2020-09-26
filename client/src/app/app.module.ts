@@ -46,6 +46,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         PencilAttributesComponent,
         SliderComponent,
         SquareAttributesComponent,
+        UserguideComponent,
     ],
     imports: [
         BrowserModule,

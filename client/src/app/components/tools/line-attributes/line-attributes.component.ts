@@ -10,4 +10,9 @@ export class LineAttributesComponent {
     toolWidth: number = 1;
 
     constructor(public lineService: LineService) {}
+
+    handleWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
+        this.lineService.changeWidth(this.toolWidth);
+    }
 }

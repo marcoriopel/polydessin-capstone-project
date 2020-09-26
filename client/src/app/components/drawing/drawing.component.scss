@@ -23,3 +23,11 @@ canvas {
 #canvas-container{
     position: relative;
 }
+
+.canvasResizePoint{
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    background-color: #09acd9;
+    cursor: pointer;
+}
