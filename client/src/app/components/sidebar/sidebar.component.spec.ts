@@ -26,7 +26,7 @@ describe('SidebarComponent', () => {
             {} as LineService,
             {} as EraserService,
         );
-        matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+        matdialogSpy = jasmine.createSpyObj('MatDialog', ['openUserguide']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [
@@ -54,7 +54,8 @@ describe('SidebarComponent', () => {
     });
 
     it('should call open of MatDialog', () => {
+        const spy = spyOn(component, 'openUserguide');
         component.openUserguide();
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
     });
 });

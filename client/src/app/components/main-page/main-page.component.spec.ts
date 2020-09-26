@@ -36,7 +36,8 @@ describe('MainPageComponent', () => {
     });
 
     it('should call open of MatDialog', () => {
+        const spy = spyOn(component, 'openUserguide');
         component.openUserguide();
-        expect(component.dialog.open).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
     });
 });
