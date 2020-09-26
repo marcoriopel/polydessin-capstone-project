@@ -6,7 +6,6 @@ import {
     MINIMUM_CANVAS_WIDTH,
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH,
-    MouseButton,
 } from '@app/ressources/global-variables/global-variables';
 
 @Injectable({
@@ -32,52 +31,5 @@ export class ResizeDrawingService {
         }
 
         return this.canvasSize;
-    }
-
-    onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.mouseMoveCoord = this.mouseDownCoord;
-        }
-    }
-
-    onMouseUp(): void {
-        if (this.mouseDown) {
-            this.mouseDown = false;
-        }
-    }
-
-    getPositionFromMouse(event: MouseEvent): Vec2 {
-        return { x: event.clientX, y: event.clientY };
-    }
-
-    verticalResize(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
-            this.canvasSize.y += mousePositionChangeY;
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
-        }
-    }
-
-    horizontalResize(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
-            this.canvasSize.y += mousePositionChangeY;
-            const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
-            this.canvasSize.x += mousePositionChangeX;
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
-        }
-    }
-
-    verticalAndHorizontalResize(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
-            this.canvasSize.x += mousePositionChangeX;
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
-        }
     }
 }

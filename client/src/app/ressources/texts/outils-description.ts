@@ -1,16 +1,16 @@
-import { feature } from './feature';
+import { Feature } from './feature';
 
-export interface GroupFeature extends feature {
-    dependance: feature[];
+export interface GroupFeature extends Feature {
+    dependance: Feature[];
 }
 
-export const OTHER_FEATURES: feature[] = [
+export const OTHER_FEATURES: Feature[] = [
     { name: 'Grille et magnétisme', description: '..' },
     { name: 'Annuler-refaire', description: '..' },
     { name: 'Palette de couleur', description: 'couleur .. ' },
 ];
 
-export const BASIC_TOOLS: feature[] = [
+export const BASIC_TOOLS: Feature[] = [
     { name: 'Ligne', description: 'Ligen ...' },
     { name: 'Texte', description: 'texte ...' },
     { name: 'Efface', description: 'efface ...' },
@@ -19,25 +19,25 @@ export const BASIC_TOOLS: feature[] = [
     { name: 'Baguette magique', description: '...' },
 ];
 
-export const DRAWING_TOOLS: feature[] = [
+export const DRAWING_TOOLS: Feature[] = [
     { name: 'Crayon', description: 'cayon ...' },
     { name: 'Pinceau', description: 'pinceau ...' },
     { name: 'Plume', description: 'plume ...' },
     { name: 'Aréosol', description: 'aérosol ...' },
 ];
 
-export const SHAPES: feature[] = [
+export const SHAPES: Feature[] = [
     { name: 'Rectangle', description: 'rectangle ...' },
     { name: 'Ellipse', description: 'ellipse' },
     { name: 'Polygone', description: 'polygone ...' },
 ];
 
-export const FILL: feature[] = [
+export const FILL: Feature[] = [
     { name: 'Pixels contigus', description: 'pixels contigus' },
     { name: 'Pixels non contigus', description: 'pixels non contigus' },
 ];
 
-export const TRANSFORMATIONS: feature[] = [
+export const TRANSFORMATIONS: Feature[] = [
     { name: 'Déplacement', description: '...' },
     { name: 'Redimensionnement', description: '...' },
     { name: 'Rotation', description: '...' },
