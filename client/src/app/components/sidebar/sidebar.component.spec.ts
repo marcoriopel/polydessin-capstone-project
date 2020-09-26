@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ToolSelectionService } from '@app/services/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -8,10 +9,13 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
 
+import SpyObj = jasmine.SpyObj;
+
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let toolSelectionStub: ToolSelectionService;
+    let matdialogSpy: SpyObj<MatDialog>;
 
     beforeEach(async(() => {
         toolSelectionStub = new ToolSelectionService(
@@ -22,10 +26,13 @@ describe('SidebarComponent', () => {
             {} as LineService,
             {} as EraserService,
         );
-
+        matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
-            providers: [{ provide: ToolSelectionService, useValue: toolSelectionStub }],
+            providers: [
+                { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: MatDialog, useValue: matdialogSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -44,5 +51,10 @@ describe('SidebarComponent', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#brush');
         button.click();
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call open of MatDialog', () => {
+        component.openUserguide();
+        expect(component.dialog.open).toHaveBeenCalled();
     });
 });
