@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { ColorSelectionService } from './color-selection.service';
 
-describe('ColorSelectionService', () => {
-    let service: ColorSelectionService;
+import { TrigonometryService } from './trigonometry.service';
+
+describe('TrigonometryService', () => {
+    let service: TrigonometryService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(ColorSelectionService);
+        service = TestBed.inject(TrigonometryService);
     });
 
     it('should be created', () => {

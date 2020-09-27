@@ -7,12 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
     constructor() {
-        document.addEventListener(
-            'contextmenu',
-            function (e) {
-                e.preventDefault();
-            },
-            false,
-        );
+        const func = (e: MouseEvent) => {
+            e.preventDefault();
+        };
+        document.addEventListener('contextmenu', func, false);
     }
 }
