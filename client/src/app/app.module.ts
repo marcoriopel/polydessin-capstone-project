@@ -71,6 +71,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
     providers: [],
-    bootstrap: [AppComponent, MainPageComponent],
+    bootstrap: [AppComponent],
 })
 export class AppModule {}
