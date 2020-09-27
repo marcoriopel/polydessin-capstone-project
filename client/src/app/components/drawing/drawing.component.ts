@@ -14,7 +14,7 @@ export class DrawingComponent implements AfterViewInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
-    @Input() private canvasSize: Vec2;
+    @Input() canvasSize: Vec2;
     @Input() previewSize: Vec2;
 
     private baseCtx: CanvasRenderingContext2D;
