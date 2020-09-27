@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -24,7 +25,7 @@ export class LineService extends Tool {
     line: Line;
     mouseEvent: MouseEvent;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
     }
 
@@ -69,7 +70,7 @@ export class LineService extends Tool {
 
             // Draw line on base canvas
             this.storedLines.forEach((line) => {
-                this.drawLine(line.startingPoint, line.endingPoint, false);
+                this.drawingService.drawLine(line.startingPoint, line.endingPoint, false, this.lineWidth);
             });
 
             // Draw the junction dots
@@ -92,7 +93,7 @@ export class LineService extends Tool {
             };
 
             // Draw the line with the new segment on preview canvas
-            this.drawLine(this.line.startingPoint, this.line.endingPoint, true);
+            this.drawingService.drawLine(this.line.startingPoint, this.line.endingPoint, true, this.lineWidth);
 
             // Draw the junction dots
             if (this.isDot) {
@@ -116,7 +117,7 @@ export class LineService extends Tool {
 
         // Restore previous line segments
         this.storedLines.forEach((line) => {
-            this.drawLine(line.startingPoint, line.endingPoint, true);
+            this.drawingService.drawLine(line.startingPoint, line.endingPoint, true, this.lineWidth);
         });
 
         if (this.isDot) {
@@ -131,25 +132,7 @@ export class LineService extends Tool {
             this.endingClickCoordinates = this.getPositionFromMouse(event);
         }
         // Draw the new line preview
-        this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
-    }
-
-    drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean): void {
-        if (isPreview) {
-            // Using the preview canvas
-            this.drawingService.previewCtx.lineWidth = this.lineWidth;
-            this.drawingService.previewCtx.beginPath();
-            this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
-            this.drawingService.previewCtx.lineTo(endingPoint.x, endingPoint.y);
-            this.drawingService.previewCtx.stroke();
-        } else {
-            // Using the base canvas
-            this.drawingService.baseCtx.lineWidth = this.lineWidth;
-            this.drawingService.baseCtx.beginPath();
-            this.drawingService.baseCtx.moveTo(startingPoint.x, startingPoint.y);
-            this.drawingService.baseCtx.lineTo(endingPoint.x, endingPoint.y);
-            this.drawingService.baseCtx.stroke();
-        }
+        this.drawingService.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true, this.lineWidth);
     }
 
     checkIfDoubleClick(): boolean {
@@ -213,11 +196,11 @@ export class LineService extends Tool {
 
         // Restore previous line segments
         this.storedLines.forEach((line) => {
-            this.drawLine(line.startingPoint, line.endingPoint, true);
+            this.drawingService.drawLine(line.startingPoint, line.endingPoint, true, this.lineWidth);
         });
 
         // Draw the new line preview
-        this.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true);
+        this.drawingService.drawLine(this.mouseClicks[this.numberOfClicks - 1], this.endingClickCoordinates, true, this.lineWidth);
 
         if (this.isDot) {
             this.drawDots(this.dotWidth, true);
@@ -374,10 +357,7 @@ export class LineService extends Tool {
         const LAST_DOT = this.mouseClicks.length;
         if (isPreview) {
             for (let i = 0; i < LAST_DOT; i++) {
-                this.drawingService.previewCtx.beginPath();
-                this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
-                this.drawingService.previewCtx.fill();
-                this.drawingService.previewCtx.stroke();
+                this.drawingService.drawDot(width, isPreview, this.mouseClicks, i);
             }
         } else {
             // Remove the double click that doesnt need to be drawed on the canvas
@@ -385,10 +365,7 @@ export class LineService extends Tool {
             this.mouseClicks.pop();
 
             for (let i = 0; i < LAST_DOT - 1; i++) {
-                this.drawingService.baseCtx.beginPath();
-                this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
-                this.drawingService.baseCtx.fill();
-                this.drawingService.baseCtx.stroke();
+                this.drawingService.drawDot(width, isPreview, this.mouseClicks, i);
             }
         }
     }

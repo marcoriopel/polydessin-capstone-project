@@ -30,6 +30,12 @@
     <hr />
     <h3>Récemment utilisée</h3>
     <div class="previous-color">
-        <button *ngFor="let color of colors" id="color" style="background-color: {{ color }}" (click)="this.colorClickHandler($event)"></button>
+        <button
+            *ngFor="let color of colors"
+            class="color"
+            [ngStyle]="{ 'background-color': color }"
+            (click)="this.restorePreviousColor(color, true)"
+            (contextmenu)="this.restorePreviousColor(color, false)"
+        ></button>
     </div>
 </div>
