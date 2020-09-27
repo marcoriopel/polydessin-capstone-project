@@ -19,6 +19,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { NewDrawingComponent } from './components/new-drawing/new-drawing.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
@@ -47,6 +48,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         UserguideComponent,
         DrawingDetailComponent,
         GeneralDetailComponent,
+        NewDrawingComponent,
     ],
     imports: [
         BrowserModule,
