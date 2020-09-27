@@ -15,6 +15,7 @@ export class DrawingComponent implements AfterViewInit {
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
     @Input() private canvasSize: Vec2;
+    @Input() previewSize: Vec2;
 
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
