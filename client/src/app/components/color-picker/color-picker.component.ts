@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MAXIMUM_NUMBER_OF_COLORS, ONE_HUNDRED } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
-import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 @Component({
     selector: 'app-color-picker',
     templateUrl: './color-picker.component.html',
@@ -13,14 +12,15 @@ export class ColorPickerComponent {
     primaryOpacity: number;
     secondaryOpacity: number;
     colors: string[] = ['#000000'];
-    min: number = 0;
-    max: number = 100;
+    minOpacity: number = 0;
+    maxOpacity: number = 100;
 
-    constructor(public toolSelectionService: ToolSelectionService, public colorSelectionService: ColorSelectionService) {
+    constructor(public colorSelectionService: ColorSelectionService) {
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
         this.primaryOpacity = ONE_HUNDRED;
         this.secondaryOpacity = ONE_HUNDRED;
+
         // Initial values for the colors on application opening
         this.colorSelectionService.setPrimaryColor(this.primaryColor);
         this.colorSelectionService.setSecondaryColor(this.secondaryColor);
@@ -56,28 +56,28 @@ export class ColorPickerComponent {
     }
 
     decrementPrimaryOpacity(): void {
-        if (this.primaryOpacity > this.min) {
+        if (this.primaryOpacity > this.minOpacity) {
             --this.primaryOpacity;
         }
         this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / ONE_HUNDRED);
     }
 
     incrementPrimaryOpacity(): void {
-        if (this.primaryOpacity < this.max) {
+        if (this.primaryOpacity < this.maxOpacity) {
             ++this.primaryOpacity;
         }
         this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / ONE_HUNDRED);
     }
 
     decrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity > this.min) {
+        if (this.secondaryOpacity > this.minOpacity) {
             --this.secondaryOpacity;
         }
         this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / ONE_HUNDRED);
     }
 
     incrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity < this.max) {
+        if (this.secondaryOpacity < this.maxOpacity) {
             ++this.secondaryOpacity;
         }
         this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / ONE_HUNDRED);
