@@ -1,0 +1,25 @@
+#slider{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#sliderDetails{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: 80%;
+    justify-content: space-between;
+}
+
+#sliderDetails input {
+    width: 30%;
+    line-height: 20px;
+}
+
+#sliderDetails button{
+    width: 26px;
+    line-height: 20px;
+    margin-left: 5px;
+    cursor: pointer;
+}

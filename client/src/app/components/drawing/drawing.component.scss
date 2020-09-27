@@ -1,6 +1,5 @@
 canvas {
     cursor: crosshair;
-    border: 2px solid #000000;
     position: absolute;
     left: 0;
     top: 0;
@@ -8,6 +7,13 @@ canvas {
 
 #canvas{
     z-index: 0;
+    background-color: #FFFFFF;
+    border-bottom: 3px;
+    border-right: 3px;
+    border-top: 0px;
+    border-left: 0px;
+    border-style: solid;
+    border-color: #3B3737;
 }
 
 #drawCanvas{
@@ -16,4 +22,12 @@ canvas {
 
 #canvas-container{
     position: relative;
+}
+
+.canvasResizePoint{
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    background-color: #09acd9;
+    cursor: pointer;
 }
