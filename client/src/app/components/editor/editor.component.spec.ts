@@ -4,6 +4,8 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { EditorComponent } from './editor.component';
 
+// tslint:disable: no-magic-numbers
+
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
