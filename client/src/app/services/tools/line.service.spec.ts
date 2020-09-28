@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { LineService } from './line.service';
 
 describe('LineService', () => {

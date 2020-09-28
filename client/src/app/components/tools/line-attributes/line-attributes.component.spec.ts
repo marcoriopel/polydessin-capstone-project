@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LineAttributesComponent } from './line-attributes.component';
 
 describe('LineAttributesComponent', () => {
