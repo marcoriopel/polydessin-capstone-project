@@ -49,7 +49,6 @@ export class EraserService extends Tool {
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.previewCtx, this.pathData);

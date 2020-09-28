@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from './eraser.service';
 
+// tslint:disable:no-any
 describe('EraserService', () => {
     let service: EraserService;
     let mouseEvent: MouseEvent;
@@ -96,12 +97,15 @@ describe('EraserService', () => {
         service.mouseDown = false;
 
         service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
+        baseCtxStub.strokeStyle = 'black';
+        baseCtxStub.strokeRect(0, 0, 1, 1);
+
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
@@ -109,10 +113,10 @@ describe('EraserService', () => {
 
         // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
-        expect(imageData.data[0]).toEqual(0); // R
-        expect(imageData.data[1]).toEqual(0); // G
-        expect(imageData.data[2]).toEqual(0); // B
-        // tslint:disable-next-line:no-magic-numbers
+        // tslint:disable:no-magic-numbers
+        expect(imageData.data[0]).toEqual(255); // R
+        expect(imageData.data[1]).toEqual(255); // G
+        expect(imageData.data[2]).toEqual(255); // B
         expect(imageData.data[3]).not.toEqual(0); // A
     });
 });
