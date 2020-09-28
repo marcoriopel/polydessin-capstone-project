@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -14,7 +15,7 @@ export class BrushService extends Tool {
     width: number = 1;
     pattern: string;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.clearPath();
     }
@@ -83,7 +84,8 @@ export class BrushService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'blue';
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
+        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
