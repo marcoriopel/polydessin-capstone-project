@@ -6,16 +6,12 @@ describe('BrushAttributesComponent', () => {
     let component: BrushAttributesComponent;
     let fixture: ComponentFixture<BrushAttributesComponent>;
     let brushServiceSpy: jasmine.SpyObj<BrushService>;
-    // let drawingStub: DrawingService;
-    // let brushService: BrushService;
     const initialToolWidth = 1;
     const finalToolWidth = 5;
     const pattern = 'pattern2';
 
     beforeEach(async(() => {
         brushServiceSpy = jasmine.createSpyObj('BrushService', ['changeWidth', 'setPattern']);
-        // drawingStub = new DrawingService();
-        // brushService = new BrushService(drawingStub, {} as ColorSelectionService);
 
         TestBed.configureTestingModule({
             declarations: [BrushAttributesComponent],
@@ -35,7 +31,7 @@ describe('BrushAttributesComponent', () => {
 
     it('should call changeWidth of brushService', () => {
         component.handleWidthChange(finalToolWidth);
-        expect(component.brushService.changeWidth).toHaveBeenCalled();
+        expect(component.brushService.changeWidth).toHaveBeenCalledWith(finalToolWidth);
     });
 
     it('should change toolWidth', () => {
@@ -46,6 +42,6 @@ describe('BrushAttributesComponent', () => {
 
     it('should call setPattern of brushService', () => {
         component.setPattern(pattern);
-        expect(component.brushService.setPattern).toHaveBeenCalled();
+        expect(component.brushService.setPattern).toHaveBeenCalledWith(pattern);
     });
 });
