@@ -27,7 +27,7 @@ export class PencilService extends Tool {
         const previewLayer = document.getElementById('previewLayer');
         if (previewLayer) {
             previewLayer.style.cursor = 'crosshair';
-        }
+        } else console.log("Erreur dans l'initialisation du curseur");
     }
 
     onMouseDown(event: MouseEvent): void {
