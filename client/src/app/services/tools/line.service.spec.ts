@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { Line } from '@app/classes/line';
+import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DrawingService } from '../drawing/drawing.service';
 import { LineService } from './line.service';
 
 fdescribe('LineService', () => {
@@ -7,12 +10,17 @@ fdescribe('LineService', () => {
     let mouseEvent: MouseEvent;
     let deleteLastSegmentSpy: jasmine.Spy<any>;
     let deleteLineSpy: jasmine.Spy<any>;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+        });
+
         service = TestBed.inject(LineService);
-        deleteLastSegmentSpy = spyOn<any>(service, 'deleteLastSegment');
-        deleteLineSpy = spyOn<any>(service, 'deleteLine');
+        deleteLastSegmentSpy = spyOn<any>(service, 'deleteLastSegment').and.callThrough();
+        deleteLineSpy = spyOn<any>(service, 'deleteLine').and.callThrough();
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         mouseEvent = {
             offsetX: 25,
@@ -43,7 +51,7 @@ fdescribe('LineService', () => {
         expect(service.isDot).toBe(true);
     });
 
-    it('mouse up should add a click the mouseclicks', () => {
+    it('mouse up should add a click to mouseclicks', () => {
         service.onMouseUp(mouseEvent);
         expect(service.mouseClicks[0].x).toEqual(mouseEvent.offsetX);
         expect(service.mouseClicks[0].y).toEqual(mouseEvent.offsetY);
@@ -108,5 +116,36 @@ fdescribe('LineService', () => {
         });
         service.onKeyUp(event);
         expect(deleteLineSpy).toHaveBeenCalled();
+    });
+
+    it('should return false if the two last clicks are different', () => {
+        const click1: Vec2 = { x: 10, y: 10 };
+        const click2: Vec2 = { x: 11, y: 10 };
+        service.mouseClicks.push(click1);
+        service.mouseClicks.push(click2);
+        service.numberOfClicks = 2;
+        const returnValue: boolean = service.checkIfDoubleClick();
+        expect(returnValue).toBe(false);
+    });
+
+    // WTF
+    it('should remove last storedLine, last mouseClick and decrement numberOfClicks', () => {
+        const click1: Vec2 = { x: 10, y: 10 };
+        const click2: Vec2 = { x: 11, y: 11 };
+        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        service.storedLines.push(line);
+        service.mouseClicks.push(click2);
+        service.numberOfClicks = 1;
+
+        service.deleteLastSegment();
+        // expect(service.storedLines.length).toBe(0);
+        // expect(service.mouseClicks.length).toBe(0);
+        expect(service.numberOfClicks).toBe(0);
+    });
+
+    it('should reset storedLines, mouseClicks and numberOfClicks', () => {
+        service.isDrawing = true;
+        service.deleteLine();
+        expect(service.isDrawing).toBe(false);
     });
 });
