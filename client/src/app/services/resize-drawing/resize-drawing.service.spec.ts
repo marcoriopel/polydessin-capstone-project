@@ -46,7 +46,7 @@ describe('ResizeDrawingService', () => {
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
         const mouseEventRClick = {
-            button: MouseButton.Right, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -102,6 +102,15 @@ describe('ResizeDrawingService', () => {
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });
 
+    it('should not change canvasSize on verticalResize', () => {
+        service.mouseDown = false;
+        service.canvasSize = { x: 400, y: 400 };
+        service.mouseDownCoord = { x: 200, y: 400 };
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
+        service.resizeCanvas(mouseEvent);
+        expect(service.canvasSize).toEqual({ x: 400, y: 400 });
+    });
+
     it('should change canvasSize height', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
@@ -124,6 +133,15 @@ describe('ResizeDrawingService', () => {
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });
 
+    it('should not change canvasSize on horizontalResize', () => {
+        service.mouseDown = false;
+        service.canvasSize = { x: 400, y: 400 };
+        service.mouseDownCoord = { x: 200, y: 400 };
+        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
+        service.resizeCanvas(mouseEvent);
+        expect(service.canvasSize).toEqual({ x: 400, y: 400 });
+    });
+
     it('should change canvasSize height and width', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
@@ -143,6 +161,24 @@ describe('ResizeDrawingService', () => {
         service.mouseDownCoord = { x: 400, y: 400 };
         service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
+        expect(service.canvasSize).toEqual({ x: 400, y: 400 });
+    });
+
+    it('should not change canvasSize on verticalAndHorizontalResize', () => {
+        service.mouseDown = false;
+        service.canvasSize = { x: 400, y: 400 };
+        service.mouseDownCoord = { x: 200, y: 400 };
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
+        service.resizeCanvas(mouseEvent);
+        expect(service.canvasSize).toEqual({ x: 400, y: 400 });
+    });
+
+    it('should not change canvasSize on resizeCanvas', () => {
+        service.mouseDown = true;
+        service.canvasSize = { x: 400, y: 400 };
+        service.mouseDownCoord = { x: 200, y: 400 };
+        service.serviceCaller = 'not an actual possibility';
+        service.resizeCanvas(mouseEvent);
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });
 });
