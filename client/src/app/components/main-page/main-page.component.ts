@@ -9,15 +9,12 @@ import { BehaviorSubject } from 'rxjs';
     styleUrls: ['./main-page.component.scss'],
 })
 export class MainPageComponent {
-    readonly title: string = 'LOG2990';
+    readonly title: string = 'PolyDessin';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
     constructor(public dialog: MatDialog) {}
 
     openUserguide(): void {
-        this.dialog.open(UserguideComponent, {
-            height: '1000px',
-            width: '1200px',
-        });
+        this.dialog.open(UserguideComponent);
     }
 }
