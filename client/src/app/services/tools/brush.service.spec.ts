@@ -4,7 +4,8 @@ import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush.service';
 
-fdescribe('BrushService', () => {
+// tslint:disable:no-any
+describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
