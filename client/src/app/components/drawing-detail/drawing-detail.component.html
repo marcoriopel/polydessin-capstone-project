@@ -10,6 +10,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <p>{{ basicTool.description }}</p>
+        <img class="animated-gif" src="{{ basicTool.picture }}" />
     </mat-expansion-panel>
 
     <mat-expansion-panel *ngFor="let toolGroup of toolGroups" hideToggle>
@@ -19,7 +20,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <p>{{ toolGroup.description }}</p>
-        <img class="animated-gif" src="./../../../assets/video/crayon.gif" />
+        <img class="animated-gif" src="{{ toolGroup.picture }}" />
 
         <mat-expansion-panel *ngFor="let tool of toolGroup.dependance" hideToggle>
             <mat-expansion-panel-header>
@@ -28,6 +29,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <p>{{ tool.description }}</p>
+            <img class="animated-gif" src="{{ tool.picture }}" />
         </mat-expansion-panel>
     </mat-expansion-panel>
 </mat-expansion-panel>
@@ -42,6 +44,7 @@
             <mat-panel-title> {{ transformation.name }} </mat-panel-title>
         </mat-expansion-panel-header>
         <p>{{ transformation.description }}</p>
+        <img class="animated-gif" src="{{ transformation.picture }}" />
     </mat-expansion-panel>
 </mat-expansion-panel>
 
@@ -52,4 +55,5 @@
         </mat-panel-title>
     </mat-expansion-panel-header>
     <p>{{ feature.description }}</p>
+    <img class="animated-gif" src="{{ feature.picture }}" />
 </mat-expansion-panel>

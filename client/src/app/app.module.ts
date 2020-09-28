@@ -49,6 +49,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         SliderComponent,
         SquareAttributesComponent,
         UserguideComponent,
+        ColorPickerComponent,
     ],
     imports: [
         BrowserModule,
@@ -63,6 +64,8 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatIconModule,
         MatExpansionModule,
         FormsModule,
+        MatCheckboxModule,
+        MatInputModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
     providers: [],

@@ -7,5 +7,5 @@ import { Feature, GENERALS_FEATURE } from '@app/ressources/texts/feature';
     styleUrls: ['./general-detail.component.scss'],
 })
 export class GeneralDetailComponent {
-    informations: feature[] = GENERALS_FEATURE;
+    informations: Feature[] = GENERALS_FEATURE;
 }
