@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
-import { TOOL_NAMES } from '@app/../ressources/global-variables';
 import { Tool } from '@app/classes/tool';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class CircleService extends Tool {
-  name = TOOL_NAMES.CIRCLE_TOOL_NAME;
+    name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
 
-  constructor(drawingService: DrawingService) {
-    super(drawingService);
-  }
+    constructor(drawingService: DrawingService) {
+        super(drawingService);
+    }
+
+    handleCursor(): void {
+        const previewLayer = document.getElementById('previewLayer');
+        if (previewLayer) {
+            previewLayer.style.cursor = 'crosshair';
+        }
+    }
 }
-
