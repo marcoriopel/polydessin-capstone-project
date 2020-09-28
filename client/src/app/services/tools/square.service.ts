@@ -62,8 +62,6 @@ export class SquareService extends Tool {
         }
     }
 
-
-
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
