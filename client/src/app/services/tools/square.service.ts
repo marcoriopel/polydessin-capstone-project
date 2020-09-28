@@ -70,18 +70,13 @@ export class SquareService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
             this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
-        } /*else if (this.isShiftKeyDown) {
-            this.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
-        }*/
+        } 
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
-       // ctx.fillStyle = this.colorSelectionService.primaryColor;
-        ctx.fillStyle = '#000000';
-        ctx.strokeStyle = '#000000';
+        // ctx.fillStyle = '#000000';
+        //ctx.strokeStyle = '#000000';
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
@@ -133,7 +128,7 @@ export class SquareService extends Tool {
         return Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 
-    get squareWidth(): number {
-        return this.width > this.rectangleHeight ? this.width : this.rectangleHeight;
-    }
+    // get squareWidth(): number {
+    //     return this.width > this.rectangleHeight ? this.width : this.rectangleHeight;
+    // }
 }

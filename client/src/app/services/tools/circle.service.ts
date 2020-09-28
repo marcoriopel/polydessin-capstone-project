@@ -134,8 +134,8 @@ export class CircleService extends Tool {
         return Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 
-    get CircleWidth(): number {
-        return this.width > this.circleHeight ? this.width : this.circleHeight;
-    }
+    // get CircleWidth(): number {
+    //     return this.width > this.circleHeight ? this.width : this.circleHeight;
+    // }
 
 }
