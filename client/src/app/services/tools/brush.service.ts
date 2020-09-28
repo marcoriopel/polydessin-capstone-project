@@ -30,7 +30,7 @@ export class BrushService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.clearPath();
-            this.applyfilter(this.pattern);
+            this.applyPattern(this.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
@@ -43,7 +43,7 @@ export class BrushService extends Tool {
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.applyfilter('none');
+            this.applyPattern('none');
         }
         this.mouseDown = false;
         this.clearPath();
@@ -64,11 +64,11 @@ export class BrushService extends Tool {
         this.width = newWidth;
     }
 
-    setFilter(pattern: string): void {
+    setPattern(pattern: string): void {
         this.pattern = pattern;
     }
 
-    applyfilter(pattern: string): void {
+    applyPattern(pattern: string): void {
         if (pattern === 'none') {
             this.drawingService.baseCtx.filter = 'none';
             this.drawingService.previewCtx.filter = 'none';
