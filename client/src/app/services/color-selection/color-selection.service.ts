@@ -9,8 +9,6 @@ export class ColorSelectionService {
     secondaryColor: string;
     secondaryOpacity: number;
 
-    constructor() {}
-
     setPrimaryColor(color: string): void {
         this.primaryColor = color;
     }
