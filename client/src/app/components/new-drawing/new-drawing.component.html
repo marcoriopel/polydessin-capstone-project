@@ -1,6 +1,12 @@
-<h1 mat-dialog-title>Warning</h1>
-<div mat-dialog-content>Il y a présentement déjà un dessin sur la surface. Voulez-vous l'effacer et créer un nouveau dessin?</div>
+<h1 mat-dialog-title>
+    Attention
+    <mat-icon class="example-tab-icon">warning</mat-icon>
+</h1>
+<div mat-dialog-content class="text">
+    <p>Il y a présentement déjà un dessin sur la surface.</p>
+    Voulez-vous l'effacer et créer un nouveau dessin?
+</div>
 <div mat-dialog-actions>
-    <button mat-button (click)="createNewDrawing()" mat-dialog-close>Créer un nouveau dessin</button>
+    <button mat-button (click)="createNewDrawing()" mat-dialog-close>Oui</button>
     <button mat-button mat-dialog-close>Annuler</button>
 </div>

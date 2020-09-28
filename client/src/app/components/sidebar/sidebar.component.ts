@@ -1,9 +1,7 @@
-import { Component, HostListener } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { NewDrawingComponent } from '@app/components/new-drawing/new-drawing.component';
+import { Component } from '@angular/core';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { NouveauDessinService } from '@app/services/nouveau-dessin/nouveau-dessin.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
@@ -15,7 +13,7 @@ export class SidebarComponent {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService, public drawingService: DrawingService, public dialog: MatDialog) {}
+    constructor(public toolSelectionService: ToolSelectionService, public newDrawingService: NouveauDessinService) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
@@ -25,15 +23,7 @@ export class SidebarComponent {
         }
     }
 
-    openWarning(): void {
-        if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
-            this.dialog.open(NewDrawingComponent);
-        }
-    }
-    @HostListener('window:keyup', ['$event'])
-    KeyEvent(event: KeyboardEvent): void {
-        if (event.key === '0' && event.ctrlKey) {
-            this.openWarning();
-        }
+    openDialog(): void {
+        this.newDrawingService.openWarning();
     }
 }

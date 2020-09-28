@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { NouveauDessinService } from '@app/services/nouveau-dessin/nouveau-dessin.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
@@ -8,7 +9,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
     styleUrls: ['./editor.component.scss'],
 })
 export class EditorComponent {
-    constructor(public toolSelectionService: ToolSelectionService) {}
+    constructor(public toolSelectionService: ToolSelectionService, public nouveauDessinService: NouveauDessinService) {}
     toolNames: ToolNames = TOOL_NAMES;
 
     // TODO -> Add missing keys for new tools as we create them
@@ -33,6 +34,10 @@ export class EditorComponent {
 
     @HostListener('document:keydown', ['$event'])
     handleKeyDown(event: KeyboardEvent): void {
-        this.toolSelectionService.currentTool.onKeyDown(event);
+        if (event.key === '0' && event.ctrlKey) {
+            this.nouveauDessinService.openWarning();
+        } else {
+            this.toolSelectionService.currentTool.onKeyDown(event);
+        }
     }
 }
