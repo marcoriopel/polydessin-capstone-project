@@ -26,6 +26,7 @@ export class BrushService extends Tool {
             previewLayer.style.cursor = 'crosshair';
         }
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
