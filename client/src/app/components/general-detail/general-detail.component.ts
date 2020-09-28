@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { feature, GENERALS_FEATURE } from '@app/ressources/texts/feature';
+import { Feature, GENERALS_FEATURE } from '@app/ressources/texts/feature';
 
 @Component({
     selector: 'app-general-detail',

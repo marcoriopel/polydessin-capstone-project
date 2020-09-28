@@ -1,7 +1,7 @@
-import { feature } from './feature';
+import { Feature } from './feature';
 
-export interface GroupFeature extends feature {
-    dependance: feature[];
+export interface GroupFeature extends Feature {
+    dependance: Feature[];
 }
 
 export const OTHER_FEATURES: feature[] = [

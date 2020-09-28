@@ -14,4 +14,11 @@
     width: min-content;
     outline: none;
 }
-  
+
+.canvasResizePoint {
+    position: relative;
+    height: 6px;
+    width: 6px;
+    background-color: #09acd9;
+    cursor: pointer;
+}

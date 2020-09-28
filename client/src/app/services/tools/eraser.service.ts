@@ -40,7 +40,6 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            console.log(this.width);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
@@ -80,6 +79,8 @@ export class EraserService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+        // Temporary fix to draw line in black after calling the eraser
+        ctx.strokeStyle = 'black';
     }
 
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -92,6 +93,8 @@ export class EraserService extends Tool {
         }
         ctx.fill();
         ctx.stroke();
+        // Temporary fix to draw line in black after calling the eraser
+        ctx.strokeStyle = 'black';
     }
 
     private clearPath(): void {

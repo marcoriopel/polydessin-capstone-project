@@ -1,4 +1,30 @@
 <div id="brushAttributes">
-    <h2 class="toolName">{{brushService.name}}</h2>
-    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth"></app-slider>
+    <h2 class="toolName">{{ brushService.name }}</h2>
+    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleWidthChange($event)"> </app-slider>
+    <div id="patterns">
+        <label>
+            <input type="radio" id="pattern1" name="patterns" (change)="setPattern(this.patternNames.FIRST_PATTERN)" checked />
+            <img src="/assets/pattern1.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.SECOND_PATTERN)" />
+            <img src="/assets/pattern2.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.THIRD_PATTERN)" />
+            <img src="/assets/pattern3.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FOURTH_PATTERN)" />
+            <img src="/assets/pattern4.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FIFTH_PATTERN)" />
+            <img src="/assets/pattern5.png" />
+        </label>
+    </div>
 </div>
