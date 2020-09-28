@@ -82,23 +82,12 @@ fdescribe('SquareService', () => {
         expect(drawSquareSpy).toHaveBeenCalled();
     });
 
-    // it(' previewLayer.style.cursor shold be crosshair ', () => {
-    //     const spy = spyOn(service, 'handleCursor').and.callThrough();
-       
+    it(' previewLayer.style.cursor should be crosshair ', () => {
+        let test = document.createElement('div');
+        document.getElementById = jasmine.createSpy('HTML Element').and.returnValue(test);
+        service.handleCursor();
         
-    //     service.handleCursor();
-    //     expect(spy).toHaveBeenCalled();
-    // });
-
-    // it(' should return abs rectanglewidth ', () => {
-    //     service.firstPoint.x = 25;
-    //     service.lastPoint.x = 22;
-    //     const spy = spyOnProperty('rectangleWidth', 3, 'get').and.callThrough();
-    //     //service.rectangleWidth;
-    //     expect(service.rectangleWidth).toBe(3);
-    //     //service.handleCursor();
-    //     expect(spy).toHaveBeenCalled();
-    // });
+    });
 
     it(' should return abs rectangleheigh ', () => {
         const spy = spyOn(service, 'handleCursor').and.callThrough();
@@ -114,9 +103,6 @@ fdescribe('SquareService', () => {
         service.handleCursor();
         expect(spy).toHaveBeenCalled();
     });
-
-
-
     // it(' onMouseMove should call drawLine if mouse was already down', () => {
     //     service.mouseDownCoord = { x: 0, y: 0 };
     //     service.mouseDown = true;

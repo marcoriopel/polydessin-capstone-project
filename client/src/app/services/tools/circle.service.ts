@@ -80,8 +80,8 @@ export class CircleService extends Tool {
     }
 
     private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = '#000000';
-        ctx.strokeStyle ='#000000' ;
+        ctx.fillStyle = this.colorSelectionService.secondaryColor;
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.lineWidth = this.width;
         if (this.circleWidth > this.circleHeight) {
         ctx.beginPath(); 
@@ -95,8 +95,8 @@ export class CircleService extends Tool {
 
     }
     private drawEllipse(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = '#000000';
-        ctx.strokeStyle ='#000000' ;
+        ctx.fillStyle = this.colorSelectionService.secondaryColor;
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.lineWidth = this.width;
         ctx.beginPath(); 
         ctx.ellipse(point.x, point.y, this.circleWidth, this.circleHeight, 0, 0, Math.PI * 2, false);

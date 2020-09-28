@@ -16,14 +16,14 @@ export class SquareService extends Tool {
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
-    previewLayer : HTMLElement | null;
+    previewLayer: HTMLElement | null;
+   
 
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
-        //this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-        //this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
     }
 
     handleCursor(): void {
@@ -72,8 +72,7 @@ export class SquareService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        // ctx.fillStyle = '#000000';
-        //ctx.strokeStyle = '#000000';
+        ctx.fillStyle = this.colorSelectionService.secondaryColor;
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.lineWidth = this.width;
         ctx.beginPath();
@@ -83,7 +82,8 @@ export class SquareService extends Tool {
     }
 
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
-       
+        ctx.fillStyle = this.colorSelectionService.secondaryColor;
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
         if (this.rectangleWidth > this.rectangleHeight) { 
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
@@ -125,8 +125,4 @@ export class SquareService extends Tool {
     get rectangleHeight(): number {
         return Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
-
-    // get squareWidth(): number {
-    //     return this.width > this.rectangleHeight ? this.width : this.rectangleHeight;
-    // }
 }
