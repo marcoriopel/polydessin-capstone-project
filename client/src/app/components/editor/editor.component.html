@@ -11,13 +11,13 @@
             (mousedown)="onMouseDown($event)"
         ></div>
         <div
-            id="horizontalCanvasResizePoint"
+            id="verticalAndHorizontalCanvasResizePoint"
             class="canvasResizePoint"
             [ngStyle]="{ 'top.px': previewSize.y - 9, 'left.px': previewSize.x - 3 }"
             (mousedown)="onMouseDown($event)"
         ></div>
         <div
-            id="verticalAndHorizontalCanvasResizePoint"
+            id="horizontalCanvasResizePoint"
             class="canvasResizePoint"
             [ngStyle]="{ 'top.px': previewSize.y / 2 - 15, 'left.px': previewSize.x - 3 }"
             (mousedown)="onMouseDown($event)"
