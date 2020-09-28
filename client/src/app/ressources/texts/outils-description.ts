@@ -20,7 +20,7 @@ export const BASIC_TOOLS: feature[] = [
 ];
 
 export const DRAWING_TOOLS: feature[] = [
-    { name: 'Crayon', description: 'cayon ...', picture: './../../../assets/img/picture_test.jpg' },
+    { name: 'Crayon', description: 'cayon ...', picture: './../../../assets/video/crayon.gif' },
     { name: 'Pinceau', description: 'pinceau ...', picture: './../../../assets/img/picture_test.jpg' },
     { name: 'Plume', description: 'plume ...', picture: './../../../assets/img/picture_test.jpg' },
     { name: 'Aréosol', description: 'aérosol ...', picture: './../../../assets/img/picture_test.jpg' },
