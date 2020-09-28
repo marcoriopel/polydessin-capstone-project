@@ -4,18 +4,26 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { EditorComponent } from './editor.component';
 
+// class MockResizeDrawingService {
+//     mouseDown: boolean = false;
+
+//     onMouseUp(): boolean {
+//         return this.mouseDown;
+//     }
+// }
+
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
-    let resizeDrawingStub: ResizeDrawingService;
+    let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
 
     beforeEach(async(() => {
-        resizeDrawingStub = new ResizeDrawingService();
+        resizeDrawingService = new ResizeDrawingService();
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
-            providers: [{ provide: ResizeDrawingService, useValue: resizeDrawingStub }],
+            providers: [{ provide: ResizeDrawingService, useValue: resizeDrawingService }],
         }).compileComponents();
     }));
 
@@ -37,6 +45,34 @@ describe('EditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should click brush button', () => {
+        const keyEvent = {
+            key: 'w',
+        } as KeyboardEvent;
+        const brushButton = document.querySelector('#Pinceau') as HTMLElement;
+        const spy = spyOn(brushButton, 'click');
+        component.handleKeyUp(keyEvent);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentTool.onKeyUp', () => {
+        const keyEvent = {
+            key: 'shift',
+        } as KeyboardEvent;
+        const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyUp');
+        component.handleKeyUp(keyEvent);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentTool.onKeyDown', () => {
+        const keyEvent = {
+            key: 'shift',
+        } as KeyboardEvent;
+        const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyDown');
+        component.handleKeyDown(keyEvent);
+        expect(spy).toHaveBeenCalled();
+    });
+
     it('should set previewDiv display to block', () => {
         const canvasResizePoint = fixture.debugElement.nativeElement.querySelector('.canvasResizePoint');
         canvasResizePoint.dispatchEvent(new Event('mousedown'));
@@ -54,5 +90,55 @@ describe('EditorComponent', () => {
         const spy = spyOn(component.resizeDrawingService, 'resizeCanvas');
         fixture.debugElement.nativeElement.dispatchEvent(new Event('mousemove'));
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not resize canvas if resizeDrawingService.mouseDown is false', () => {
+        const expectedResult = component.canvasSize;
+        component.previewSize = { x: 500, y: 500 };
+        component.resizeDrawingService.mouseDown = false;
+        const mouseEvent = {} as MouseEvent;
+        component.onMouseUp(mouseEvent);
+        expect(component.canvasSize).toEqual(expectedResult);
+    });
+
+    it('should resize canvas onMouseUp if resizeDrawingService.mouseDown is false', () => {
+        const expectedResult = { x: 500, y: 500 };
+        component.previewSize = { x: 500, y: 500 };
+        component.resizeDrawingService.mouseDown = true;
+        const mouseEvent = {} as MouseEvent;
+        component.onMouseUp(mouseEvent);
+        expect(component.canvasSize).toEqual(expectedResult);
+    });
+
+    it('canvas should have same context after resize', () => {
+        const ctxBeforeResize = component.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        ctxBeforeResize.beginPath();
+        ctxBeforeResize.rect(0, 0, 10, 15);
+        ctxBeforeResize.fillRect(0, 0, 10, 15);
+        ctxBeforeResize.stroke();
+        const imageBeforeResize = ctxBeforeResize.getImageData(0, 0, 20, 20);
+
+        component.previewSize = { x: 500, y: 500 };
+        component.resizeDrawingService.mouseDown = true;
+        const mouseEvent = {} as MouseEvent;
+        component.onMouseUp(mouseEvent);
+
+        const ctxAfterResize = component.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        const imageAfterResize = ctxAfterResize.getImageData(0, 0, 20, 20);
+        expect(imageAfterResize).toEqual(imageBeforeResize);
+    });
+
+    it('should set previewDiv display to none', () => {
+        component.previewDiv.style.display = 'block';
+        component.resizeDrawingService.mouseDown = true;
+        const mouseEvent = {} as MouseEvent;
+        component.onMouseUp(mouseEvent);
+
+        expect(component.previewDiv.style.display).toEqual('none');
+    });
+
+    it('should set canvas size depending on workspaceSize', () => {
+        const workSpaceSize = component.getWorkSpaceSize();
+        expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
 });
