@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 // Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
@@ -17,7 +18,7 @@ export class PencilService extends Tool {
     name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
     width: number = 1;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.clearPath();
     }
@@ -44,6 +45,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -66,8 +68,8 @@ export class PencilService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
-        // remove line below when color picker will be implemented
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
+        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {

@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { SquareService } from './square.service';
 
-describe('SquareService', () => {
-    let service: SquareService;
+import { TrigonometryService } from './trigonometry.service';
+
+describe('TrigonometryService', () => {
+    let service: TrigonometryService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(SquareService);
+        service = TestBed.inject(TrigonometryService);
     });
 
     it('should be created', () => {

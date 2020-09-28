@@ -1,16 +1,4 @@
 <div id="canvas-container">
     <canvas id="canvas" #baseCanvas [attr.width]="width" [attr.height]="height"></canvas>
     <canvas id="previewLayer" #previewCanvas [attr.width]="width" [attr.height]="height"></canvas>
-    <div class="canvasResizePoint" [ngStyle]="{ 'top.px': height - 3, 'left.px': width/2 - 3 }"
-        (mousedown)="resizeDrawingService.onMouseDown($event)" (mousemove)="resizeDrawingService.verticalResize($event)"
-        (mouseup)="resizeDrawingService.onMouseUp()">
-    </div>
-    <div class="canvasResizePoint" [ngStyle]="{ 'top.px': height - 3, 'left.px': width - 3 }"
-        (mousedown)="resizeDrawingService.onMouseDown($event)"
-        (mousemove)="resizeDrawingService.horizontalResize($event)" (mouseup)="resizeDrawingService.onMouseUp()"></div>
-    <div class="canvasResizePoint" [ngStyle]="{ 'top.px': height/2 - 3, 'left.px': width - 3 }"
-        (mousedown)="resizeDrawingService.onMouseDown($event)"
-        (mousemove)="resizeDrawingService.verticalAndHorizontalResize($event)"
-        (mouseup)="resizeDrawingService.onMouseUp()">
-    </div>
 </div>
