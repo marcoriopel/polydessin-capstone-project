@@ -31,8 +31,8 @@ export class EditorComponent implements AfterViewInit {
         ['w', this.toolNames.BRUSH_TOOL_NAME],
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
-        ['e', this.toolNames.LINE_TOOL_NAME],
-        ['p', this.toolNames.ERASER_TOOL_NAME],
+        ['l', this.toolNames.LINE_TOOL_NAME],
+        ['e', this.toolNames.ERASER_TOOL_NAME],
     ]);
 
     constructor(public toolSelectionService: ToolSelectionService, public resizeDrawingService: ResizeDrawingService) {

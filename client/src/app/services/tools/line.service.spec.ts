@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Line } from '@app/classes/line';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -8,19 +9,26 @@ import { LineService } from './line.service';
 fdescribe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
-    let deleteLastSegmentSpy: jasmine.Spy<any>;
-    let deleteLineSpy: jasmine.Spy<any>;
+
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
+    let baseCtxStub: CanvasRenderingContext2D;
+    let previewCtxStub: CanvasRenderingContext2D;
+
     beforeEach(() => {
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
 
         service = TestBed.inject(LineService);
-        deleteLastSegmentSpy = spyOn<any>(service, 'deleteLastSegment').and.callThrough();
-        deleteLineSpy = spyOn<any>(service, 'deleteLine').and.callThrough();
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+
+        // tslint:disable:no-string-literal
+        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -102,6 +110,7 @@ fdescribe('LineService', () => {
     });
 
     it('last segment of line should be deleted when releasing backspace', () => {
+        const deleteLastSegmentSpy = spyOn<any>(service, 'deleteLastSegment');
         const event = new KeyboardEvent('keypress', {
             key: 'Backspace',
         });
@@ -111,6 +120,7 @@ fdescribe('LineService', () => {
     });
 
     it('line should be deleted when escape key is released', () => {
+        const deleteLineSpy = spyOn<any>(service, 'deleteLine');
         const event = new KeyboardEvent('keypress', {
             key: 'Escape',
         });
@@ -130,6 +140,7 @@ fdescribe('LineService', () => {
 
     // WTF
     it('should remove last storedLine, last mouseClick and decrement numberOfClicks', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 11 };
         const line: Line = { startingPoint: click1, endingPoint: click2 };
@@ -138,14 +149,41 @@ fdescribe('LineService', () => {
         service.numberOfClicks = 1;
 
         service.deleteLastSegment();
-        // expect(service.storedLines.length).toBe(0);
-        // expect(service.mouseClicks.length).toBe(0);
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(service.storedLines.length).toBe(0);
+        expect(service.mouseClicks.length).toBe(0);
         expect(service.numberOfClicks).toBe(0);
     });
 
-    it('should reset storedLines, mouseClicks and numberOfClicks', () => {
-        service.isDrawing = true;
+    it('should call clearCanvas and drawLine', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
+
+        service.deleteLastSegment();
+
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('should call drawDots', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
+        const drawDots = spyOn<any>(service, 'drawDots');
+        service.isDot = true;
+
+        service.deleteLastSegment();
+        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawDots).toHaveBeenCalled();
+    });
+
+    it('should set isDrawing to be false', () => {
         service.deleteLine();
         expect(service.isDrawing).toBe(false);
+    });
+
+    it('should reset storedLines, mouseClicks and numberOfClicks', () => {
+        service.onMouseUp(mouseEvent);
+        service.deleteLine();
+        expect(service.storedLines).toEqual([]);
+        expect(service.mouseClicks).toEqual([]);
+        expect(service.numberOfClicks).toEqual(0);
     });
 });
