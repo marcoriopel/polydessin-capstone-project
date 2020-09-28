@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MouseButton, ONE_NEGATIVE_PIXEL } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -77,8 +77,8 @@ export class BrushService extends Tool {
             this.drawingService.previewCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
         }
         // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
-        this.drawingService.baseCtx.strokeRect(-1, 0, 1, 0);
-        this.drawingService.previewCtx.strokeRect(-1, 0, 1, 0);
+        this.drawingService.baseCtx.strokeRect(ONE_NEGATIVE_PIXEL, 0, 1, 0);
+        this.drawingService.previewCtx.strokeRect(ONE_NEGATIVE_PIXEL, 0, 1, 0);
     }
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {

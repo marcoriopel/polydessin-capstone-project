@@ -9,6 +9,7 @@ export const MAXIMUM_DISTANCE_LINE_CONNECTION = 20;
 export const DEGREES_180 = 180;
 export const MAXIMUM_NUMBER_OF_COLORS = 10;
 export const ONE_HUNDRED = 100;
+export const ONE_NEGATIVE_PIXEL = -1;
 
 export enum Quadrant {
     TOP_RIGHT = 0,
