@@ -4,14 +4,6 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { EditorComponent } from './editor.component';
 
-// class MockResizeDrawingService {
-//     mouseDown: boolean = false;
-
-//     onMouseUp(): boolean {
-//         return this.mouseDown;
-//     }
-// }
-
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
