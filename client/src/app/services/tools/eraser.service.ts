@@ -40,7 +40,6 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            console.log(this.width);
             this.drawLine(this.drawingService.baseCtx, this.pathData);
         }
         this.mouseDown = false;
