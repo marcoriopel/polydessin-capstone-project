@@ -16,6 +16,8 @@ export class SquareService extends Tool {
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
+    previewLayer : HTMLElement | null;
+
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -25,9 +27,9 @@ export class SquareService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'crosshair';
+         this.previewLayer = document.getElementById('previewLayer');
+        if (this.previewLayer) {
+            this.previewLayer.style.cursor = 'crosshair';
         }
     }
 
@@ -54,42 +56,48 @@ export class SquareService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.isShiftKeyDown = true;
-        }
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown && this.isShiftKeyDown) {
-            this.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
-        } else if (this.isShiftKeyDown) {
-            this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
             this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
         }
     }
 
+
+
+    onMouseMove(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+            this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
+        } /*else if (this.isShiftKeyDown) {
+            this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+            this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
+        }*/
+    }
+
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
        // ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.fillStyle = '#000000';
+        ctx.strokeStyle = '#000000';
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
-       // ctx.strokeRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
         ctx.stroke();
-        ctx.closePath();
     }
 
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
+       
+        if (this.rectangleWidth > this.rectangleHeight) { 
         ctx.beginPath();
-        if(this.rectangleWidth>this.rectangleHeight){ 
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
         ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
         ctx.stroke();
         } else if (this.rectangleHeight>this.rectangleWidth) {
+            ctx.beginPath();
             ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
             ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
             ctx.stroke();

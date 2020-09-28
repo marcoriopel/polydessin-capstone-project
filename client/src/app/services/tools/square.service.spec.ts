@@ -3,9 +3,10 @@ import { SquareService } from './square.service';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+ 
+const blbnla = 'drawingService';
 
-
-describe('SquareService', () => {
+fdescribe('SquareService', () => {
     let service: SquareService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -73,27 +74,68 @@ describe('SquareService', () => {
     
     it(' onMouseUp should call drawRectangle if mouse was already down', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
+        // service.firstPoint.x = 0;
+        // service.firstPoint.y = 0;
+        // service.lastPoint.x = 0;
+        // service.lastPoint.y = 0;
+        console.log(service.lastPoint);
+        service[blbnla].baseCtx = baseCtxStub;
+        service[blbnla].previewCtx = previewCtxStub;
         service.mouseDown = true;
-        
         service.onMouseUp(mouseEvent);
         expect(drawSquareSpy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should call drawLine if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = true;
-
-        service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawSquareSpy).toHaveBeenCalled();
+    it(' previewLayer.style.cursor shold be crosshair ', () => {
+        const spy = spyOn(service, 'handleCursor').and.callThrough();
+       
+        
+        service.handleCursor();
+        expect(spy).toHaveBeenCalled();
     });
 
-    it(' onMouseMove should not call drawLine if mouse was not already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        service.mouseDown = false;
-
-        service.onMouseMove(mouseEvent);
-        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
-        expect(drawSquareSpy).not.toHaveBeenCalled();
+    it(' should return abs rectanglewidth ', () => {
+        service.firstPoint.x = 25;
+        service.lastPoint.x = 22;
+        const spy = spyOnProperty('rectangleWidth', 3, 'get').and.callThrough();
+        //service.rectangleWidth;
+        expect(service.rectangleWidth).toBe(3);
+        //service.handleCursor();
+        expect(spy).toHaveBeenCalled();
     });
+
+    it(' should return abs rectangleheigh ', () => {
+        const spy = spyOn(service, 'handleCursor').and.callThrough();
+       
+        
+        service.handleCursor();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it(' should return abs squarewidth ', () => {
+        const spy = spyOn(service, 'handleCursor').and.callThrough();
+       
+        service.handleCursor();
+        expect(spy).toHaveBeenCalled();
+    });
+
+
+
+    // it(' onMouseMove should call drawLine if mouse was already down', () => {
+    //     service.mouseDownCoord = { x: 0, y: 0 };
+    //     service.mouseDown = true;
+
+    //     service.onMouseMove(mouseEvent);
+    //     expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    //     expect(drawSquareSpy).toHaveBeenCalled();
+    // });
+
+    // it(' onMouseMove should not call drawLine if mouse was not already down', () => {
+    //     service.mouseDownCoord = { x: 0, y: 0 };
+    //     service.mouseDown = false;
+
+    //     service.onMouseMove(mouseEvent);
+    //     expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    //     expect(drawSquareSpy).not.toHaveBeenCalled();
+    // });
 });
