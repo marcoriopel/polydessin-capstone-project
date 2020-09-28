@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
+import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ResizeDrawingService } from './resize-drawing.service';
 
@@ -13,7 +14,7 @@ describe('ResizeDrawingService', () => {
         service = TestBed.inject(ResizeDrawingService);
 
         target = {
-            id: 'verticalCanvasResizePoint',
+            id: CANVAS_RESIZING_POINTS.VERTICAL,
         } as HTMLElement;
 
         mouseEvent = ({
@@ -58,7 +59,7 @@ describe('ResizeDrawingService', () => {
     });
 
     it(' mouseDown should set serviceCaller to correct value', () => {
-        const expectedResult = 'verticalCanvasResizePoint';
+        const expectedResult = CANVAS_RESIZING_POINTS.VERTICAL;
         service.onMouseDown(mouseEvent);
         expect(service.serviceCaller).toEqual(expectedResult);
     });
@@ -83,7 +84,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 200, y: 400 };
-        service.serviceCaller = 'verticalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
         service.resizeCanvas(mouseEvent);
         expect(service.canvasSize).toEqual({ x: 400, y: 500 });
     });
@@ -96,7 +97,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 200, y: 400 };
-        service.serviceCaller = 'verticalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });
@@ -105,7 +106,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 400, y: 200 };
-        service.serviceCaller = 'horizontalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.canvasSize).toEqual({ x: 500, y: 400 });
     });
@@ -118,7 +119,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 400, y: 200 };
-        service.serviceCaller = 'horizontalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });
@@ -127,7 +128,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 400, y: 400 };
-        service.serviceCaller = 'verticalAndHorizontalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.canvasSize).toEqual({ x: 500, y: 500 });
     });
@@ -140,7 +141,7 @@ describe('ResizeDrawingService', () => {
         service.mouseDown = true;
         service.canvasSize = { x: 400, y: 400 };
         service.mouseDownCoord = { x: 400, y: 400 };
-        service.serviceCaller = 'verticalAndHorizontalCanvasResizePoint';
+        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.canvasSize).toEqual({ x: 400, y: 400 });
     });

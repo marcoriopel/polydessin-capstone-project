@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import {
     HALF_RATIO,
     MINIMUM_CANVAS_HEIGHT,
@@ -59,13 +60,13 @@ export class ResizeDrawingService {
 
     resizeCanvas(event: MouseEvent): void {
         switch (this.serviceCaller) {
-            case 'verticalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.VERTICAL:
                 this.verticalResize(event);
                 break;
-            case 'horizontalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.HORIZONTAL:
                 this.horizontalResize(event);
                 break;
-            case 'verticalAndHorizontalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL:
                 this.verticalAndHorizontalResize(event);
                 break;
             default:
