@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
+import { CanvasResizingPoints, CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import {
     MINIMUM_CANVAS_HEIGHT,
     MINIMUM_CANVAS_WIDTH,
@@ -24,6 +25,7 @@ export class EditorComponent implements AfterViewInit {
     private workSpaceSize: Vec2;
     previewSize: Vec2;
     previewDiv: HTMLDivElement;
+    canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
 
     // TODO -> Add missing keys for new tools as we create them
     keyToolMapping: Map<string, string> = new Map([
@@ -52,6 +54,7 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
+            console.log(this.previewDiv);
             this.setDefaultCanvasSize();
         });
     }
