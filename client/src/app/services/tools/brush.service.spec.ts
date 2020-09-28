@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush.service';
 
@@ -13,6 +14,8 @@ describe('BrushService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
+
+    const pattern = 'pattern2';
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -62,10 +65,10 @@ describe('BrushService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
@@ -116,5 +119,22 @@ describe('BrushService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
+    });
+
+    it(' setPattern should change current pattern', () => {
+        service.setPattern(pattern);
+        expect(service.pattern).toEqual(pattern);
+    });
+
+    it(' applyPattern should change filter of layers when called with a valid pattern string', () => {
+        service.applyPattern(pattern);
+        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+    });
+
+    it(' applyPattern should change filter of layers to none when called with a none pattern string', () => {
+        service.applyPattern('none');
+        expect(baseCtxStub.filter).toEqual('none');
+        expect(previewCtxStub.filter).toEqual('none');
     });
 });
