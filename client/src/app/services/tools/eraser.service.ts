@@ -26,8 +26,10 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
+        if (event.button !== MouseButton.Left) {
+            return;
+        } else {
+            this.mouseDown = true;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
@@ -78,8 +80,6 @@ export class EraserService extends Tool {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
-        // Temporary fix to draw line in black after calling the eraser
-        ctx.strokeStyle = 'black';
     }
 
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
@@ -92,8 +92,6 @@ export class EraserService extends Tool {
         }
         ctx.fill();
         ctx.stroke();
-        // Temporary fix to draw line in black after calling the eraser
-        ctx.strokeStyle = 'black';
     }
 
     private clearPath(): void {

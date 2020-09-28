@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { EraserService } from './eraser.service';
 
@@ -61,10 +62,10 @@ describe('EraserService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: 1, // TODO: Avoir ceci dans un enum accessible
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
