@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { PatternNames, PATTERN_NAMES } from '@app/ressources/global-variables/brush-pattern-names';
 import { BrushService } from '@app/services/tools/brush.service';
 
 @Component({
@@ -7,7 +8,19 @@ import { BrushService } from '@app/services/tools/brush.service';
     styleUrls: ['./brush-attributes.component.scss'],
 })
 export class BrushAttributesComponent {
-    toolWidth: number = 1;
+    toolWidth: number;
+    patternNames: PatternNames = PATTERN_NAMES;
 
-    constructor(public brushService: BrushService) {}
+    constructor(public brushService: BrushService) {
+        this.toolWidth = brushService.width;
+        this.brushService.setFilter(this.patternNames.FIRST_PATTERN);
+    }
+
+    handleWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
+        this.brushService.changeWidth(this.toolWidth);
+    }
+    setPattern(pattern: string): void {
+        this.brushService.setFilter(pattern);
+    }
 }
