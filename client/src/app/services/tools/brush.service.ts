@@ -21,14 +21,17 @@ export class BrushService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'crosshair';
+        const previewCanvas = this.drawingService.previewCanvas;
+        if (previewCanvas) {
+            previewCanvas.style.cursor = 'crosshair';
         }
     }
+
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
+        if (event.button !== MouseButton.Left) {
+            return;
+        } else {
+            this.mouseDown = true;
             this.clearPath();
             this.applyPattern(this.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);

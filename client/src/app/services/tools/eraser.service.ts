@@ -19,9 +19,9 @@ export class EraserService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'none';
+        const previewCanvas = this.drawingService.previewCanvas;
+        if (previewCanvas) {
+            previewCanvas.style.cursor = 'none';
         }
     }
 
@@ -46,6 +46,10 @@ export class EraserService extends Tool {
         this.clearPath();
     }
 
+    onMouseLeave(event: MouseEvent): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         if (this.mouseDown) {
@@ -59,7 +63,14 @@ export class EraserService extends Tool {
     private squareCursor(event: MouseEvent): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
+        this.drawingService.previewCtx.fillStyle = 'white';
         this.drawingService.previewCtx.strokeRect(
+            this.getPositionFromMouse(event).x - this.width / 2,
+            this.getPositionFromMouse(event).y - this.width / 2,
+            this.width,
+            this.width,
+        );
+        this.drawingService.previewCtx.fillRect(
             this.getPositionFromMouse(event).x - this.width / 2,
             this.getPositionFromMouse(event).y - this.width / 2,
             this.width,

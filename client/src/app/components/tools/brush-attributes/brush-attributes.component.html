@@ -1,6 +1,14 @@
 <div id="brushAttributes">
     <h2 class="toolName">{{ brushService.name }}</h2>
-    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleWidthChange($event)"> </app-slider>
+    <app-slider
+        title="Épaisseur Ligne"
+        [min]="brushService.minToolWidth"
+        [max]="brushService.maxToolWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="handleWidthChange($event)"
+    >
+    </app-slider>
     <div id="patterns">
         <label>
             <input type="radio" id="pattern1" name="patterns" (change)="setPattern(this.patternNames.FIRST_PATTERN)" checked />
