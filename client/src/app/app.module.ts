@@ -30,6 +30,7 @@ import { PencilAttributesComponent } from './components/tools/pencil-attributes/
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { UserguideComponent } from './components/userguide/userguide.component';
+import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -49,6 +50,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         DrawingDetailComponent,
         GeneralDetailComponent,
         ColorPickerComponent,
+        TypeOfFillSelectionComponent,
     ],
     imports: [
         BrowserModule,

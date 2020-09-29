@@ -8,18 +8,5 @@
         [value]="toolWidth"
         (valueChange)="handleBorderWidthChange($event)"
     ></app-slider>
-    <div class="radioContainer">
-        <label>
-            <input type="radio" name="typeOfFill" value="fillWithBorder" />
-            <p>Plein avec contour</p>
-        </label>
-        <label>
-            <input type="radio" name="typeOfFill" value="fillWithoutBorder" />
-            <p>Plein</p>
-        </label>
-        <label>
-            <input type="radio" name="typeOfFill" value="borderWithoutFill" />
-            <p>Contour</p>
-        </label>
-    </div>
+    <app-type-of-fill-selection></app-type-of-fill-selection>
 </div>
