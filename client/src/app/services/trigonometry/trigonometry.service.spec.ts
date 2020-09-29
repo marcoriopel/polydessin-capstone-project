@@ -195,4 +195,32 @@ fdescribe('TrigonometryService', () => {
         const returnValue: number = service.radiansToDegrees(0);
         expect(returnValue).toBe(0);
     });
+
+    it('findCursorQuadrant should return top right when adjacent and opposite are positive', () => {
+        const adjacent = 1;
+        const opposite = 1;
+        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+        expect(returnValue).toBe(Quadrant.TOP_RIGHT);
+    });
+
+    it('findCursorQuadrant should return top left when adjacent is negative and opposite is positive', () => {
+        const adjacent = -1;
+        const opposite = 1;
+        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+        expect(returnValue).toBe(Quadrant.TOP_LEFT);
+    });
+
+    it('findCursorQuadrant should return bottom left when adjacent and opposite are negative', () => {
+        const adjacent = -1;
+        const opposite = -1;
+        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+        expect(returnValue).toBe(Quadrant.BOTTOM_LEFT);
+    });
+
+    it('findCursorQuadrant should return bottom right when adjacent is positive and opposite is negative', () => {
+        const adjacent = 1;
+        const opposite = -1;
+        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+        expect(returnValue).toBe(Quadrant.BOTTOM_RIGHT);
+    });
 });
