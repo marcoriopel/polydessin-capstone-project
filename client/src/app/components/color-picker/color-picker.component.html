@@ -15,7 +15,7 @@
                     <input
                         class="opacity-input grid-element"
                         id="primary-opacity"
-                        (change)="this.changePrimaryOpacity($event.target.value)"
+                        (change)="this.changePrimaryOpacity($event.target.value, $event)"
                         [(ngModel)]="this.primaryOpacity"
                         type="text"
                         [min]="0"
@@ -39,7 +39,7 @@
                     <input
                         class="opacity-input grid-element"
                         id="secondary-opacity"
-                        (change)="this.changeSecondaryOpacity($event.target.value)"
+                        (change)="this.changeSecondaryOpacity($event.target.value, $event)"
                         [(ngModel)]="this.secondaryOpacity"
                         type="text"
                         [min]="0"

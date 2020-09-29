@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 @Component({
@@ -26,6 +26,11 @@ export class ColorPickerComponent {
         this.colorSelectionService.setSecondaryColor(this.secondaryColor);
         this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
         this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+    }
+
+    @HostListener('keyup', ['$event'])
+    onInput(e: KeyboardEvent): void {
+        e.stopPropagation();
     }
 
     changePrimaryColor(color: string): void {
@@ -85,7 +90,8 @@ export class ColorPickerComponent {
 
     // We had to disable any here to handle different type of input from user
     // tslint:disable-next-line: no-any
-    changePrimaryOpacity(opacity: any): void {
+    changePrimaryOpacity(opacity: any, event: KeyboardEvent): void {
+        event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY) {
             this.primaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
@@ -98,7 +104,8 @@ export class ColorPickerComponent {
 
     // We had to disable any here to handle different type of input from user
     // tslint:disable-next-line: no-any
-    changeSecondaryOpacity(opacity: any): void {
+    changeSecondaryOpacity(opacity: any, event: KeyboardEvent): void {
+        event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY) {
             this.secondaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
