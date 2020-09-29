@@ -35,19 +35,23 @@ export class CircleService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
-            this.isShiftKeyDown = true;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawCircle(this.drawingService.previewCtx, topLeftPoint);
+            if (this.mouseDown) {
+                this.isShiftKeyDown = true;
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+            }
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.isShiftKeyDown = false;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawEllipse(this.drawingService.previewCtx, topLeftPoint);
+            if (this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+            }
         }
     }
 
@@ -62,7 +66,7 @@ export class CircleService extends Tool {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawEllipse(this.drawingService.baseCtx, topLeftPoint);
+            this.drawShape(this.drawingService.baseCtx, topLeftPoint);
             this.mouseDown = false;
         }
     }
@@ -72,30 +76,57 @@ export class CircleService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawEllipse(this.drawingService.previewCtx, topLeftPoint);
+            this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+        }
+    }
+
+    private drawShape(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.fillStyle = this.colorSelectionService.primaryColor;
+        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
+        ctx.lineWidth = this.width;
+        ctx.setLineDash([0]);
+
+        if (this.isShiftKeyDown) {
+            this.drawCircle(ctx, point);
+        } else {
+            this.drawEllipse(ctx, point);
+        }
+
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.beginPath();
+            ctx.setLineDash([5, 3]);
+            ctx.rect(point.x, point.y, this.circleWidth, this.circleHeight);
+            ctx.stroke();
+        } else {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
 
     private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = this.colorSelectionService.secondaryColor;
-        ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.lineWidth = this.width;
-        if (this.circleWidth > this.circleHeight) {
+        const ellipseRadiusX = this.circleWidth / 2;
+        const ellipseRadiusY = this.circleHeight / 2;
+        const ellipseCenterX = point.x + ellipseRadiusX;
+        const ellipseCenterY = point.y + ellipseRadiusY;
+
+        if (this.circleWidth >= this.circleHeight) {
             ctx.beginPath();
-            ctx.ellipse(point.x, point.y, this.circleWidth, this.circleWidth, 0, 0, Math.PI * 2, false);
+            ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusY, ellipseRadiusY, 0, 0, Math.PI * 2, false);
             ctx.stroke();
         } else if (this.circleWidth < this.circleHeight) {
             ctx.beginPath();
-            ctx.ellipse(point.x, point.y, this.circleHeight, this.circleWidth, 0, 0, Math.PI * 2, false);
+            ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusX, 0, 0, Math.PI * 2, false);
             ctx.stroke();
         }
     }
+
     private drawEllipse(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = this.colorSelectionService.secondaryColor;
-        ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.lineWidth = this.width;
+        const ellipseRadiusX = this.circleWidth / 2;
+        const ellipseRadiusY = this.circleHeight / 2;
+        const ellipseCenterX = point.x + ellipseRadiusX;
+        const ellipseCenterY = point.y + ellipseRadiusY;
+
         ctx.beginPath();
-        ctx.ellipse(point.x, point.y, this.circleWidth, this.circleHeight, 0, 0, Math.PI * 2, false);
+        ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusY, 0, 0, Math.PI * 2, false);
         ctx.stroke();
     }
 
