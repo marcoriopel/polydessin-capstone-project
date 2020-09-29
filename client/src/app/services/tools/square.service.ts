@@ -3,8 +3,8 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import {ColorSelectionService} from "@app/services/color-selection/color-selection.service"
 
 @Injectable({
     providedIn: 'root',
@@ -17,17 +17,14 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
-   
 
-
-    constructor(drawingService: DrawingService,
-        public colorSelectionService: ColorSelectionService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
     }
 
     handleCursor(): void {
-         this.previewLayer = document.getElementById('previewLayer');
+        this.previewLayer = document.getElementById('previewLayer');
         if (this.previewLayer) {
             this.previewLayer.style.cursor = 'crosshair';
         }
@@ -68,7 +65,7 @@ export class SquareService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
             this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
-        } 
+        }
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
@@ -84,12 +81,12 @@ export class SquareService extends Tool {
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.fillStyle = this.colorSelectionService.secondaryColor;
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        if (this.rectangleWidth > this.rectangleHeight) { 
-        ctx.beginPath();
-        ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
-        ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
-        ctx.stroke();
-        } else if (this.rectangleHeight>this.rectangleWidth) {
+        if (this.rectangleWidth > this.rectangleHeight) {
+            ctx.beginPath();
+            ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            ctx.stroke();
+        } else if (this.rectangleHeight > this.rectangleWidth) {
             ctx.beginPath();
             ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
             ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
