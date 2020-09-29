@@ -6,7 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class NouveauDessinService {
+export class NewDrawingService {
     constructor(public drawingService: DrawingService, public dialog: MatDialog) {}
 
     openWarning(): void {

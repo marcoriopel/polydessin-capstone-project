@@ -26,7 +26,7 @@ describe('DrawingService', () => {
 
     it('should know if the canvas is blank', () => {
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
-        const hasBlankBuffer = pixelBuffer.some((color) => color === 0);
-        expect(service.isCanvasBlank(service.baseCtx)).toEqual(hasBlankBuffer);
+        const hasBlankBuffer = pixelBuffer.some((color) => color !== 0);
+        expect(service.isCanvasBlank(service.baseCtx)).toEqual(!hasBlankBuffer);
     });
 });

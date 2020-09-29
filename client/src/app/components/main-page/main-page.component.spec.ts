@@ -19,7 +19,7 @@ describe('MainPageComponent', () => {
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
 
-        matDialogSpy = jasmine.createSpyObj('dialog', ['openUserguide']);
+        matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
@@ -46,8 +46,8 @@ describe('MainPageComponent', () => {
     });
 
     it('should call open of MatDialog', () => {
-        const spy = spyOn(component, 'openUserguide');
         component.openUserguide();
-        expect(spy).toHaveBeenCalled();
+
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 });
