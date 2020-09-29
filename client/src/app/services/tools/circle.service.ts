@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -97,7 +97,7 @@ export class CircleService extends Tool {
             ctx.beginPath();
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 1;
-            ctx.setLineDash([5, 3]);
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
             ctx.rect(point.x, point.y, this.circleWidth, this.circleHeight);
             ctx.stroke();
             ctx.lineWidth = this.width;
