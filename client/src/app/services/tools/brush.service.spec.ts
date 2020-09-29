@@ -28,15 +28,14 @@ describe('BrushService', () => {
         service = TestBed.inject(BrushService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 0,
+            button: MouseButton.Left,
         } as MouseEvent;
     });
 
@@ -105,7 +104,6 @@ describe('BrushService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
@@ -136,5 +134,13 @@ describe('BrushService', () => {
         service.applyPattern('none');
         expect(baseCtxStub.filter).toEqual('none');
         expect(previewCtxStub.filter).toEqual('none');
+    });
+
+    it(' applyPattern should not change filter of layers when called with an invalid pattern string', () => {
+        baseCtxStub.filter = 'url(/assets/patterns.svg#' + pattern + ')';
+        previewCtxStub.filter = 'url(/assets/patterns.svg#' + pattern + ')';
+        service.applyPattern('invalid string');
+        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
     });
 });
