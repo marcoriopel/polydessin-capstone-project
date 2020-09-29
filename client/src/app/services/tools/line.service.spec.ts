@@ -3,9 +3,11 @@ import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Line } from '@app/classes/line';
 import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, MouseButton } from '@app/ressources/global-variables/global-variables';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line.service';
 
+// tslint:disable: no-any
+// tslint:disable: no-magic-numbers
 describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
@@ -27,7 +29,7 @@ describe('LineService', () => {
         service = TestBed.inject(LineService);
 
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
 
         mouseEvent = {
