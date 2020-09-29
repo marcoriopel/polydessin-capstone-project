@@ -1,15 +1,16 @@
 <div id="lineAttributes">
     <h2 class="toolName">{{ lineService.name }}</h2>
     <app-slider
+        title="Épaisseur Ligne"
         [min]="lineService.minToolWidth"
         [max]="lineService.maxToolWidth"
         [step]="1"
         [value]="toolWidth"
         (valueChange)="handleLineWidthChange($event)"
     ></app-slider>
-    <p>Épaisseur ligne</p>
 
     <app-slider
+        title="Diamètre Point"
         [min]="lineService.minToolWidth"
         [max]="lineService.maxToolWidth"
         [step]="1"
