@@ -83,6 +83,7 @@ export class CircleService extends Tool {
     private drawShape(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
+        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
         ctx.setLineDash([0]);
 
@@ -110,11 +111,11 @@ export class CircleService extends Tool {
 
         if (this.circleWidth >= this.circleHeight) {
             ctx.beginPath();
-            ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusY, ellipseRadiusY, 0, 0, Math.PI * 2, false);
+            ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusY, 0, Math.PI * 2, false);
             ctx.stroke();
         } else if (this.circleWidth < this.circleHeight) {
             ctx.beginPath();
-            ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusX, 0, 0, Math.PI * 2, false);
+            ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusX, 0, Math.PI * 2, false);
             ctx.stroke();
         }
     }
