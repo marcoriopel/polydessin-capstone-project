@@ -14,4 +14,8 @@ export class SquareAttributesComponent {
     handleBorderWidthChange(newWidth: number): void {
         this.squareService.changeWidth(newWidth);
     }
+
+    handleFillStyleChange(newFillStyle: number): void {
+        this.squareService.changeFillStyle(newFillStyle);
+    }
 }
