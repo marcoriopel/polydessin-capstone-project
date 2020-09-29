@@ -26,7 +26,7 @@ export class LineService extends Tool {
     mouseEvent: MouseEvent;
 
     constructor(
-        drawingService: DrawingService,
+        public drawingService: DrawingService,
         public colorSelectionService: ColorSelectionService,
         public trigonometryService: TrigonometryService,
     ) {
@@ -214,7 +214,6 @@ export class LineService extends Tool {
         this.mouseClicks = [];
         this.numberOfClicks = 0;
         this.isDrawing = false;
-
         // Clear the old line segment preview
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
@@ -299,6 +298,7 @@ export class LineService extends Tool {
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
+            console.log(startingPoint);
             // Using the preview canvas
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
             this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
