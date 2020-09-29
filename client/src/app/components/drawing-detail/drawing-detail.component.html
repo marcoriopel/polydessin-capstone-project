@@ -34,20 +34,6 @@
     </mat-expansion-panel>
 </mat-expansion-panel>
 
-<mat-expansion-panel hideToggle>
-    <mat-expansion-panel-header>
-        <mat-panel-title> Manipulation </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <mat-expansion-panel *ngFor="let transformation of transformations" hideToggle>
-        <mat-expansion-panel-header>
-            <mat-panel-title> {{ transformation.name }} </mat-panel-title>
-        </mat-expansion-panel-header>
-        <p>{{ transformation.description }}</p>
-        <img class="animated-gif" src="{{ transformation.picture }}" />
-    </mat-expansion-panel>
-</mat-expansion-panel>
-
 <mat-expansion-panel *ngFor="let feature of otherFeatures" hideToggle>
     <mat-expansion-panel-header>
         <mat-panel-title>

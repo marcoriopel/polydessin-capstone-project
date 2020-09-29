@@ -14,7 +14,7 @@ import { SquareService } from '@app/services/tools/square.service';
 import SpyObj = jasmine.SpyObj;
 class ToolStub extends Tool {}
 
-describe('SidebarComponent', () => {
+fdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;

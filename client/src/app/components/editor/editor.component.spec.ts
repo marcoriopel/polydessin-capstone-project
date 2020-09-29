@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -17,7 +18,11 @@ describe('EditorComponent', () => {
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
-            providers: [{ provide: ResizeDrawingService, useValue: resizeDrawingService }],
+
+            providers: [
+                { provide: ResizeDrawingService, useValue: resizeDrawingService },
+                { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },
+            ],
         }).compileComponents();
     }));
 
