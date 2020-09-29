@@ -27,8 +27,10 @@ export class BrushService extends Tool {
         }
     }
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
+        if (event.button !== MouseButton.Left) {
+            return;
+        } else {
+            this.mouseDown = true;
             this.clearPath();
             this.applyPattern(this.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
