@@ -10,4 +10,8 @@ export class SquareAttributesComponent {
     toolWidth: number = 1;
 
     constructor(public squareService: SquareService) {}
+
+    handleBorderWidthChange(newWidth: number): void {
+        this.squareService.changeWidth(newWidth);
+    }
 }

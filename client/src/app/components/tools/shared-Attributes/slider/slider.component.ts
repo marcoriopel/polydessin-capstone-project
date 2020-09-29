@@ -10,6 +10,7 @@ export class SliderComponent {
     @Input() max: number;
     @Input() step: number;
     @Input() value: number;
+    @Input() title: string;
 
     @Output() valueChange: EventEmitter<number> = new EventEmitter();
 
