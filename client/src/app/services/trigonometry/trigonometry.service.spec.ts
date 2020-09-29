@@ -197,6 +197,11 @@ describe('TrigonometryService', () => {
         expect(returnValue).toBe(0);
     });
 
+    it('radiansToDegrees should return 1 when given a 0.0174533 radian angle', () => {
+        const returnValue: number = service.radiansToDegrees(0.0174533);
+        expect(Math.floor(returnValue)).toBe(1);
+    });
+
     it('findCursorQuadrant should return top right when adjacent and opposite are positive', () => {
         const adjacent = 1;
         const opposite = 1;
