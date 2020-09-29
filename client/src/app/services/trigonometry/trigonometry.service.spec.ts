@@ -3,7 +3,7 @@ import { LineAngle, Quadrant } from '@app/ressources/global-variables/global-var
 import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 import { TrigonometryService } from './trigonometry.service';
 
-fdescribe('TrigonometryService', () => {
+describe('TrigonometryService', () => {
     let service: TrigonometryService;
 
     beforeEach(() => {
