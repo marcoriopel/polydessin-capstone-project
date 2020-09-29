@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -29,6 +29,7 @@ import { EraserAttributesComponent } from './components/tools/eraser-attributes/
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
+import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { UserguideComponent } from './components/userguide/userguide.component';
 @NgModule({
@@ -51,6 +52,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         GeneralDetailComponent,
         NewDrawingComponent,
         ColorPickerComponent,
+        TypeOfFillSelectionComponent,
     ],
     imports: [
         BrowserModule,
@@ -65,7 +67,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         BrowserAnimationsModule,
         MatButtonModule,
         MatDialogModule,
-        MatDialog,
         MatTabsModule,
         MatIconModule,
         MatExpansionModule,

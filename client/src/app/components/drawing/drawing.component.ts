@@ -32,6 +32,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
+        this.toolSelectionService.currentTool.handleCursor();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -47,6 +49,11 @@ export class DrawingComponent implements AfterViewInit {
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
         this.toolSelectionService.currentTool.onMouseUp(event);
+    }
+
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(event: MouseEvent): void {
+        this.toolSelectionService.currentTool.onMouseLeave(event);
     }
 
     get width(): number {
