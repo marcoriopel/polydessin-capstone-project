@@ -6,7 +6,7 @@ import { LineAngle, MouseButton } from '@app/ressources/global-variables/global-
 import { DrawingService } from '../drawing/drawing.service';
 import { LineService } from './line.service';
 
-fdescribe('LineService', () => {
+describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
 
