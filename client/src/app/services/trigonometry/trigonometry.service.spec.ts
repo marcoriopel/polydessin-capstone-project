@@ -202,31 +202,31 @@ describe('TrigonometryService', () => {
         expect(Math.floor(returnValue)).toBe(1);
     });
 
-    it('findCursorQuadrant should return top right when adjacent and opposite are positive', () => {
-        const adjacent = 1;
-        const opposite = 1;
-        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+    it('findCursorQuadrant should return top right when x and y are positive', () => {
+        const positionX = 1;
+        const positionY = 1;
+        const returnValue: Quadrant = service.findCursorQuadrant(positionX, positionY);
         expect(returnValue).toBe(Quadrant.TOP_RIGHT);
     });
 
-    it('findCursorQuadrant should return top left when adjacent is negative and opposite is positive', () => {
-        const adjacent = -1;
-        const opposite = 1;
-        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+    it('findCursorQuadrant should return top left when positionX is negative and positionY is positive', () => {
+        const positionX = -1;
+        const positionY = 1;
+        const returnValue: Quadrant = service.findCursorQuadrant(positionX, positionY);
         expect(returnValue).toBe(Quadrant.TOP_LEFT);
     });
 
-    it('findCursorQuadrant should return bottom left when adjacent and opposite are negative', () => {
-        const adjacent = -1;
-        const opposite = -1;
-        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+    it('findCursorQuadrant should return bottom left when positionX and positionY are negative', () => {
+        const positionX = -1;
+        const positionY = -1;
+        const returnValue: Quadrant = service.findCursorQuadrant(positionX, positionY);
         expect(returnValue).toBe(Quadrant.BOTTOM_LEFT);
     });
 
-    it('findCursorQuadrant should return bottom right when adjacent is positive and opposite is negative', () => {
-        const adjacent = 1;
-        const opposite = -1;
-        const returnValue: Quadrant = service.findCursorQuadrant(adjacent, opposite);
+    it('findCursorQuadrant should return bottom right when positionX is positive and positionY is negative', () => {
+        const positionX = 1;
+        const positionY = -1;
+        const returnValue: Quadrant = service.findCursorQuadrant(positionX, positionY);
         expect(returnValue).toBe(Quadrant.BOTTOM_RIGHT);
     });
 });
