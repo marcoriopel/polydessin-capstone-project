@@ -1,9 +1,14 @@
-#lineAttributes{
+#lineAttributes {
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
 }
 
-.toolName{
+.toolName {
     margin: 5px;
+}
+
+mat-checkbox {
+    font-size: 12px;
+    text-align: center;
 }

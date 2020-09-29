@@ -10,6 +10,10 @@ export const DEGREES_180 = 180;
 export const MAXIMUM_NUMBER_OF_COLORS = 10;
 export const ONE_HUNDRED = 100;
 export const ONE_NEGATIVE_PIXEL = -1;
+export const MAX_TOOL_WIDTH = 50;
+export const MIN_TOOL_WIDTH = 1;
+export const MAX_BORDER = 20;
+export const MIN_BORDER = 1;
 
 export enum Quadrant {
     TOP_RIGHT = 0,

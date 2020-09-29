@@ -19,9 +19,9 @@ export class EraserService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'none';
+        const previewCanvas = this.drawingService.previewCanvas;
+        if (previewCanvas) {
+            previewCanvas.style.cursor = 'none';
         }
     }
 

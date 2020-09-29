@@ -110,4 +110,8 @@ export class EditorComponent implements AfterViewInit {
         this.canvasSize.x = this.previewSize.x;
         this.canvasSize.y = this.previewSize.y;
     }
+
+    getWorkSpaceSize(): Vec2 {
+        return this.workSpaceSize;
+    }
 }
