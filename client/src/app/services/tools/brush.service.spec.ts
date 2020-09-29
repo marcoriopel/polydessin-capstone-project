@@ -60,7 +60,7 @@ describe('BrushService', () => {
         expect(service.mouseDown).toEqual(true);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
+    it(' mouseDown should not draw anything on right click', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,

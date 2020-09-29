@@ -24,15 +24,19 @@ export class PencilService extends Tool {
     }
 
     handleCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
+        try {
+            const previewCanvas = this.drawingService.previewCanvas;
             previewCanvas.style.cursor = 'crosshair';
-        } else console.log("Erreur dans l'initialisation du curseur");
+        } catch (error) {
+            throw new Error('Could not load cursor');
+        }
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
-        if (this.mouseDown) {
+        if (event.button !== MouseButton.Left) {
+            return;
+        } else {
+            this.mouseDown = true;
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
