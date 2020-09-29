@@ -298,6 +298,7 @@ export class LineService extends Tool {
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
+            console.log(startingPoint);
             // Using the preview canvas
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
             this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
