@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { BrushService } from './brush.service';
 
 describe('BrushService', () => {

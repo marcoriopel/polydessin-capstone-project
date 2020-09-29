@@ -2,26 +2,30 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { EditorComponent } from './editor.component';
 
 // tslint:disable: no-magic-numbers
-
+import SpyObj = jasmine.SpyObj;
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
+    let newdrawServiceSpy: SpyObj<NewDrawingService>;
     let matDialog: MatDialog;
 
     beforeEach(async(() => {
         resizeDrawingService = new ResizeDrawingService();
+        newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
 
             providers: [
                 { provide: ResizeDrawingService, useValue: resizeDrawingService },
+                { provide: NewDrawingService, useValue: newdrawServiceSpy },
                 { provide: MatDialog, useValue: matDialog },
             ],
         }).compileComponents();
@@ -140,5 +144,11 @@ describe('EditorComponent', () => {
     it('should set canvas size depending on workspaceSize', () => {
         const workSpaceSize = component.getWorkSpaceSize();
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
+    });
+
+    it('should call openDialog when ctrl+0 press', () => {
+        const keyEvent = { key: '0', ctrlKey: true } as KeyboardEvent;
+        component.handleKeyDown(keyEvent);
+        expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
     });
 });

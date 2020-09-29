@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +21,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
+import { NewDrawingComponent } from './components/new-drawing/new-drawing.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
@@ -49,6 +50,9 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         SliderComponent,
         SquareAttributesComponent,
         UserguideComponent,
+        DrawingDetailComponent,
+        GeneralDetailComponent,
+        NewDrawingComponent,
         ColorPickerComponent,
     ],
     imports: [
@@ -58,6 +62,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         BrowserAnimationsModule,
         MatButtonModule,
         MatDialogModule,
+        MatDialog,
         MatTabsModule,
         MatSliderModule,
         MatTooltipModule,

@@ -13,20 +13,16 @@
         <img class="animated-gif" src="{{ basicTool.picture }}" />
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngFor="let toolGroup of toolGroups" hideToggle>
+    <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{ toolGroup.name }}
-            </mat-panel-title>
+            <mat-panel-title> Manipulation </mat-panel-title>
         </mat-expansion-panel-header>
         <p>{{ toolGroup.description }}</p>
         <img class="animated-gif" src="{{ toolGroup.picture }}" />
 
-        <mat-expansion-panel *ngFor="let tool of toolGroup.dependance" hideToggle>
+        <mat-expansion-panel *ngFor="let transformation of transformations" hideToggle>
             <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{ tool.name }}
-                </mat-panel-title>
+                <mat-panel-title> {{ transformation.name }} </mat-panel-title>
             </mat-expansion-panel-header>
             <p>{{ tool.description }}</p>
             <img class="animated-gif" src="{{ tool.picture }}" />
