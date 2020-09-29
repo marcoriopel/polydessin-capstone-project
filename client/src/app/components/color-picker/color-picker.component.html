@@ -12,7 +12,15 @@
                 />
                 <div id="sliderDetails">
                     <button class="grid-element" (click)="decrementPrimaryOpacity()">-</button>
-                    <input class="opacity-input grid-element" [value]="this.primaryOpacity" type="text" [min]="0" [max]="100" readonly />
+                    <input
+                        class="opacity-input grid-element"
+                        id="primary-opacity"
+                        (change)="this.changePrimaryOpacity($event.target.value)"
+                        [(ngModel)]="this.primaryOpacity"
+                        type="text"
+                        [min]="0"
+                        [max]="100"
+                    />
                     <button class="grid-element" (click)="incrementPrimaryOpacity()">+</button>
                 </div>
             </div>
@@ -28,7 +36,15 @@
                 />
                 <div id="sliderDetails">
                     <button class="grid-element" (click)="decrementSecondaryOpacity()">-</button>
-                    <input class="opacity-input grid-element" [value]="this.secondaryOpacity" type="text" [min]="0" max="100" readonly />
+                    <input
+                        class="opacity-input grid-element"
+                        id="secondary-opacity"
+                        (change)="this.changeSecondaryOpacity($event.target.value)"
+                        [(ngModel)]="this.secondaryOpacity"
+                        type="text"
+                        [min]="0"
+                        max="100"
+                    />
                     <button class="grid-element" (click)="incrementSecondaryOpacity()">+</button>
                 </div>
             </div>
