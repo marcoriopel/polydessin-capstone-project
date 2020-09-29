@@ -1,4 +1,18 @@
 <div id="circleAttributes">
-    <h2 class="toolName">{{circleService.name}}</h2>
+    <h2 class="toolName">{{ circleService.name }}</h2>
     <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth"></app-slider>
+    <div class="radioContainer">
+        <label>
+            <input type="radio" name="typeOfFill" value="fillWithBorder" />
+            <p>Plein avec contour</p>
+        </label>
+        <label>
+            <input type="radio" name="typeOfFill" value="fillWithoutBorder" />
+            <p>Plein</p>
+        </label>
+        <label>
+            <input type="radio" name="typeOfFill" value="borderWithoutFill" />
+            <p>Contour</p>
+        </label>
+    </div>
 </div>

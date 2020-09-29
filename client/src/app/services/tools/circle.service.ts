@@ -112,10 +112,12 @@ export class CircleService extends Tool {
         if (this.circleWidth >= this.circleHeight) {
             ctx.beginPath();
             ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusY, 0, Math.PI * 2, false);
+            ctx.fill();
             ctx.stroke();
         } else if (this.circleWidth < this.circleHeight) {
             ctx.beginPath();
             ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusX, 0, Math.PI * 2, false);
+            ctx.fill();
             ctx.stroke();
         }
     }
@@ -128,6 +130,7 @@ export class CircleService extends Tool {
 
         ctx.beginPath();
         ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusY, 0, 0, Math.PI * 2, false);
+        ctx.fill();
         ctx.stroke();
     }
 
