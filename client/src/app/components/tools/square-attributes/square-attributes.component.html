@@ -1,4 +1,10 @@
 <div id="squareAttributes">
-    <h2 class="toolName">{{squareService.name}}</h2>
-    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth"></app-slider>
+    <h2 class="toolName">{{ squareService.name }}</h2>
+    <app-slider
+        [min]="squareService.minBorderWidth"
+        [max]="squareService.maxBorderWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="handleBorderWidthChange($event)"
+    ></app-slider>
 </div>

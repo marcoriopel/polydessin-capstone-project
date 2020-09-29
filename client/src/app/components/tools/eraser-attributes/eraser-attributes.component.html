@@ -1,4 +1,10 @@
 <div id="eraserAttributes">
     <h2 class="toolName">{{ eraserService.name }}</h2>
-    <app-slider [min]="5" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleWidthChange($event)"></app-slider>
+    <app-slider
+        [min]="eraserService.minToolWidth"
+        [max]="eraserService.maxToolWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="handleWidthChange($event)"
+    ></app-slider>
 </div>

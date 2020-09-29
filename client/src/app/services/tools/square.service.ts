@@ -3,6 +3,7 @@ import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
     }
@@ -57,7 +58,9 @@ export class SquareService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = this.colorSelectionService.primaryColor;
+        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
+        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
         ctx.beginPath();
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
