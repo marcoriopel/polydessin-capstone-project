@@ -95,11 +95,15 @@ export class CircleService extends Tool {
 
         if (ctx === this.drawingService.previewCtx) {
             ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
             ctx.setLineDash([5, 3]);
             ctx.rect(point.x, point.y, this.circleWidth, this.circleHeight);
             ctx.stroke();
+            ctx.lineWidth = this.width;
         } else {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.setLineDash([0]);
         }
     }
 

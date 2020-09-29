@@ -10,4 +10,8 @@ export class CircleAttributesComponent {
     toolWidth: number = 1;
 
     constructor(public circleService: CircleService) {}
+
+    handleBorderWidthChange(newWidth: number): void {
+        this.circleService.changeWidth(newWidth);
+    }
 }

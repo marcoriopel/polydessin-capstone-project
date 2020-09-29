@@ -26,7 +26,11 @@ describe('MainPageComponent', () => {
             declarations: [MainPageComponent],
             providers: [
                 { provide: IndexService, useValue: indexServiceSpy },
+<<<<<<< HEAD
                 { provide: MatDialog, useValue: matDialogSpy },
+=======
+                { provide: MatDialog, useValue: {} },
+>>>>>>> 716a3f8bc9e43e4794d08fbfde8d34143946d140
             ],
         }).compileComponents();
     }));
