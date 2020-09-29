@@ -348,4 +348,5 @@ export class LineService extends Tool {
             }
         }
     }
+    // tslint:disable-next-line: max-file-line-count
 }
