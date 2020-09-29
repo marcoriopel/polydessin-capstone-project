@@ -10,7 +10,7 @@
     ></app-slider>
 
     <app-slider
-        title="Diamètre Point"
+        title="Diamètre Point Jonction"
         [min]="lineService.minToolWidth"
         [max]="lineService.maxToolWidth"
         [step]="1"
@@ -18,4 +18,4 @@
         (valueChange)="handleDotWidthChange($event)"
     ></app-slider>
 </div>
-<mat-checkbox (change)="handleJunctionPointChange($event.checked)">Jonction segment</mat-checkbox>
+<mat-checkbox (change)="handleJunctionPointChange($event.checked)">Afficher jonction</mat-checkbox>
