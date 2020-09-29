@@ -1,8 +1,21 @@
 <div id="lineAttributes">
     <h2 class="toolName">{{ lineService.name }}</h2>
-    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleLineWidthChange($event)"></app-slider>
-    <p>Épaisseur ligne</p>
+    <app-slider
+        title="Épaisseur Ligne"
+        [min]="lineService.minToolWidth"
+        [max]="lineService.maxToolWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="handleLineWidthChange($event)"
+    ></app-slider>
 
-    <app-slider [min]="1" [max]="15" [step]="1" [value]="toolWidth" (valueChange)="handleDotWidthChange($event)"></app-slider>
+    <app-slider
+        title="Diamètre Point Jonction"
+        [min]="lineService.minToolWidth"
+        [max]="lineService.maxToolWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="handleDotWidthChange($event)"
+    ></app-slider>
 </div>
-<mat-checkbox (change)="handleJunctionPointChange($event.checked)">Jonction segment</mat-checkbox>
+<mat-checkbox (change)="handleJunctionPointChange($event.checked)">Afficher jonction</mat-checkbox>
