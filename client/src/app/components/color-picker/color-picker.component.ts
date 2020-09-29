@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MAXIMUM_NUMBER_OF_COLORS, ONE_HUNDRED } from '@app/ressources/global-variables/global-variables';
+import { Component, HostListener } from '@angular/core';
+import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 @Component({
     selector: 'app-color-picker',
@@ -13,19 +13,24 @@ export class ColorPickerComponent {
     secondaryOpacity: number;
     colors: string[] = ['#000000'];
     minOpacity: number = 0;
-    maxOpacity: number = 100;
+    maxOpacity: number = MAX_OPACITY;
 
     constructor(public colorSelectionService: ColorSelectionService) {
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
-        this.primaryOpacity = ONE_HUNDRED;
-        this.secondaryOpacity = ONE_HUNDRED;
+        this.primaryOpacity = MAX_OPACITY;
+        this.secondaryOpacity = MAX_OPACITY;
 
         // Initial values for the colors on application opening
         this.colorSelectionService.setPrimaryColor(this.primaryColor);
         this.colorSelectionService.setSecondaryColor(this.secondaryColor);
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / ONE_HUNDRED);
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / ONE_HUNDRED);
+        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+    }
+
+    @HostListener('keyup', ['$event'])
+    onInput(e: KeyboardEvent): void {
+        e.stopPropagation();
     }
 
     changePrimaryColor(color: string): void {
@@ -59,28 +64,56 @@ export class ColorPickerComponent {
         if (this.primaryOpacity > this.minOpacity) {
             --this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / ONE_HUNDRED);
+        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
     }
 
     incrementPrimaryOpacity(): void {
         if (this.primaryOpacity < this.maxOpacity) {
             ++this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / ONE_HUNDRED);
+        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
     }
 
     decrementSecondaryOpacity(): void {
         if (this.secondaryOpacity > this.minOpacity) {
             --this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / ONE_HUNDRED);
+        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
     }
 
     incrementSecondaryOpacity(): void {
         if (this.secondaryOpacity < this.maxOpacity) {
             ++this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / ONE_HUNDRED);
+        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+    }
+
+    // We had to disable any here to handle different type of input from user
+    // tslint:disable-next-line: no-any
+    changePrimaryOpacity(opacity: any, event: KeyboardEvent): void {
+        event.stopPropagation();
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
+            this.primaryOpacity = MAX_OPACITY;
+            this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
+            alert("L'opacité doit être un nombre entre 0 et 100.");
+        } else {
+            this.primaryOpacity = opacity;
+            this.colorSelectionService.setPrimaryOpacity(opacity / MAX_OPACITY);
+        }
+    }
+
+    // We had to disable any here to handle different type of input from user
+    // tslint:disable-next-line: no-any
+    changeSecondaryOpacity(opacity: any, event: KeyboardEvent): void {
+        event.stopPropagation();
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
+            this.secondaryOpacity = MAX_OPACITY;
+            this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+            alert("L'opacité doit être un nombre entre 0 et 100.");
+        } else {
+            this.secondaryOpacity = opacity;
+            this.colorSelectionService.setSecondaryOpacity(opacity / MAX_OPACITY);
+        }
     }
 
     restorePreviousColor(color: string, isPrimary: boolean): void {
