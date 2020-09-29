@@ -44,8 +44,7 @@ export class CircleService extends Tool {
             this.isShiftKeyDown = true;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+                this.drawShape(this.drawingService.previewCtx);
             }
         }
     }
@@ -55,8 +54,7 @@ export class CircleService extends Tool {
             this.isShiftKeyDown = false;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+                this.drawShape(this.drawingService.previewCtx);
             }
         }
     }
@@ -71,8 +69,7 @@ export class CircleService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawShape(this.drawingService.baseCtx, topLeftPoint);
+            this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
         }
     }
@@ -81,12 +78,12 @@ export class CircleService extends Tool {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+            this.drawShape(this.drawingService.previewCtx);
         }
     }
 
-    private drawShape(ctx: CanvasRenderingContext2D, point: Vec2): void {
+    private drawShape(ctx: CanvasRenderingContext2D): void {
+        const topLeftPoint = this.findTopLeftPoint();
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
@@ -105,9 +102,9 @@ export class CircleService extends Tool {
         }
 
         if (this.isShiftKeyDown) {
-            this.drawCircle(ctx, point);
+            this.drawCircle(ctx, topLeftPoint);
         } else {
-            this.drawEllipse(ctx, point);
+            this.drawEllipse(ctx, topLeftPoint);
         }
 
         if (ctx === this.drawingService.previewCtx) {
@@ -115,7 +112,7 @@ export class CircleService extends Tool {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 1;
             ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-            ctx.rect(point.x, point.y, this.circleWidth, this.circleHeight);
+            ctx.rect(topLeftPoint.x, topLeftPoint.y, this.circleWidth, this.circleHeight);
             ctx.stroke();
             ctx.lineWidth = this.width;
         } else {
@@ -164,17 +161,22 @@ export class CircleService extends Tool {
     /*
      to find the top left point of the rectangle or the square
      */
-    private findTopLeftPoint(point1: Vec2, point2: Vec2): Vec2 {
+    private findTopLeftPoint(): Vec2 {
+        const point1 = this.firstPoint;
+        const point2 = this.lastPoint;
+        // firstPoint is top left corner lastPoint is bottom right corner
         let x = point1.x;
         let y = point1.y;
-        // in the left edge
         if (point1.x > point2.x && point1.y > point2.y) {
+            // firstPoint is bottom right corner lastPoint is top left corner
             x = point2.x;
             y = point2.y;
         } else if (point1.x > point2.x && point1.y < point2.y) {
+            // firstPoint is top right corner lastPoint is bottom left corner
             x = point2.x;
             y = point1.y;
         } else if (point1.x < point2.x && point1.y > point2.y) {
+            // firstPoint is bottom left corner lastPoint is top right corner
             x = point1.x;
             y = point2.y;
         }
