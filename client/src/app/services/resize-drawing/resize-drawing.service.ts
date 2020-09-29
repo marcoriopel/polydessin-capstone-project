@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import {
     HALF_RATIO,
     MINIMUM_CANVAS_HEIGHT,
@@ -15,7 +16,6 @@ import {
 export class ResizeDrawingService {
     canvasSize: Vec2;
     mouseDownCoord: Vec2;
-    mouseMoveCoord: Vec2;
     mouseDown: boolean = false;
     serviceCaller: string;
 
@@ -39,8 +39,7 @@ export class ResizeDrawingService {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.mouseMoveCoord = this.mouseDownCoord;
-            const target = event.target as HTMLInputElement;
+            const target = event.target as HTMLElement;
             this.serviceCaller = target.id;
         }
     }
@@ -61,13 +60,13 @@ export class ResizeDrawingService {
 
     resizeCanvas(event: MouseEvent): void {
         switch (this.serviceCaller) {
-            case 'verticalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.VERTICAL:
                 this.verticalResize(event);
                 break;
-            case 'horizontalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.HORIZONTAL:
                 this.horizontalResize(event);
                 break;
-            case 'verticalAndHorizontalCanvasResizePoint':
+            case CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL:
                 this.verticalAndHorizontalResize(event);
                 break;
             default:
@@ -77,41 +76,41 @@ export class ResizeDrawingService {
     private verticalResize(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
+            const mousePositionChangeY = mousePosition.y - this.mouseDownCoord.y;
             const newCanvasHeight = this.canvasSize.y + mousePositionChangeY;
             if (newCanvasHeight >= MINIMUM_CANVAS_HEIGHT) {
                 this.canvasSize.y = newCanvasHeight;
             }
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
-        }
-    }
-
-    private horizontalResize(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeY = mousePosition.y - this.mouseMoveCoord.y;
-            const newCanvasHeight = this.canvasSize.y + mousePositionChangeY;
-            if (newCanvasHeight >= MINIMUM_CANVAS_HEIGHT) {
-                this.canvasSize.y = newCanvasHeight;
-            }
-            const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
-            const newCanvasWidth = this.canvasSize.x + mousePositionChangeX;
-            if (newCanvasWidth >= MINIMUM_CANVAS_WIDTH) {
-                this.canvasSize.x = newCanvasWidth;
-            }
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoord = mousePosition;
         }
     }
 
     private verticalAndHorizontalResize(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            const mousePositionChangeX = mousePosition.x - this.mouseMoveCoord.x;
+            const mousePositionChangeY = mousePosition.y - this.mouseDownCoord.y;
+            const newCanvasHeight = this.canvasSize.y + mousePositionChangeY;
+            if (newCanvasHeight >= MINIMUM_CANVAS_HEIGHT) {
+                this.canvasSize.y = newCanvasHeight;
+            }
+            const mousePositionChangeX = mousePosition.x - this.mouseDownCoord.x;
             const newCanvasWidth = this.canvasSize.x + mousePositionChangeX;
             if (newCanvasWidth >= MINIMUM_CANVAS_WIDTH) {
                 this.canvasSize.x = newCanvasWidth;
             }
-            this.mouseMoveCoord = this.getPositionFromMouse(event);
+            this.mouseDownCoord = mousePosition;
+        }
+    }
+
+    private horizontalResize(event: MouseEvent): void {
+        if (this.mouseDown) {
+            const mousePosition = this.getPositionFromMouse(event);
+            const mousePositionChangeX = mousePosition.x - this.mouseDownCoord.x;
+            const newCanvasWidth = this.canvasSize.x + mousePositionChangeX;
+            if (newCanvasWidth >= MINIMUM_CANVAS_WIDTH) {
+                this.canvasSize.x = newCanvasWidth;
+            }
+            this.mouseDownCoord = mousePosition;
         }
     }
 }
