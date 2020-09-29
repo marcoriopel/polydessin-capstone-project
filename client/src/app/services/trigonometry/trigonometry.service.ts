@@ -28,7 +28,7 @@ export class TrigonometryService {
                 }
             }
             case Quadrant.BOTTOM_LEFT: {
-                if (LIMIT_ANGLES.DEGREES_0 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
+                if (LIMIT_ANGLES.DEGREES_0 <= angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
                     return LineAngle.DEGREES_180;
                 } else if (LIMIT_ANGLES.DEGREES_22POINT5 < angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_67POINT5) {
                     return LineAngle.DEGREES_225;
