@@ -24,7 +24,7 @@ export class ToolSelectionService {
         lineService: LineService,
         eraserService: EraserService,
     ) {
-        this.tools = new Map([
+        this.tools = new Map<string, Tool>([
             [this.toolNames.PENCIL_TOOL_NAME, pencilService],
             [this.toolNames.BRUSH_TOOL_NAME, brushService],
             [this.toolNames.SQUARE_TOOL_NAME, squareService],
