@@ -14,4 +14,8 @@ export class CircleAttributesComponent {
     handleBorderWidthChange(newWidth: number): void {
         this.circleService.changeWidth(newWidth);
     }
+
+    handleFillStyleChange(newFillStyle: number): void {
+        this.circleService.changeFillStyle(newFillStyle);
+    }
 }

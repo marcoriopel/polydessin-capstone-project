@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -16,6 +17,7 @@ export class CircleService extends Tool {
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
+    fillStyle: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -31,6 +33,10 @@ export class CircleService extends Tool {
 
     changeWidth(newWidth: number): void {
         this.width = newWidth;
+    }
+
+    changeFillStyle(newFillStyle: number): void {
+        this.fillStyle = newFillStyle;
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -87,6 +93,17 @@ export class CircleService extends Tool {
         ctx.lineWidth = this.width;
         ctx.setLineDash([0]);
 
+        switch (this.fillStyle) {
+            case FILL_STYLES.FILL:
+                ctx.strokeStyle = this.colorSelectionService.primaryColor;
+                ctx.lineWidth = 1;
+                break;
+            case FILL_STYLES.BORDER:
+                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
+                break;
+            default:
+        }
+
         if (this.isShiftKeyDown) {
             this.drawCircle(ctx, point);
         } else {
@@ -116,12 +133,16 @@ export class CircleService extends Tool {
         if (this.circleWidth >= this.circleHeight) {
             ctx.beginPath();
             ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusY, 0, Math.PI * 2, false);
-            ctx.fill();
+            if (this.fillStyle !== FILL_STYLES.BORDER) {
+                ctx.fill();
+            }
             ctx.stroke();
         } else if (this.circleWidth < this.circleHeight) {
             ctx.beginPath();
             ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusX, 0, Math.PI * 2, false);
-            ctx.fill();
+            if (this.fillStyle !== FILL_STYLES.BORDER) {
+                ctx.fill();
+            }
             ctx.stroke();
         }
     }
@@ -134,7 +155,9 @@ export class CircleService extends Tool {
 
         ctx.beginPath();
         ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusY, 0, 0, Math.PI * 2, false);
-        ctx.fill();
+        if (this.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fill();
+        }
         ctx.stroke();
     }
 

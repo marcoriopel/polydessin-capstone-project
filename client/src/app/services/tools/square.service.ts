@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
+import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -17,10 +18,12 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
+    fillStyle: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.mouseDown = false;
+        this.fillStyle = FILL_STYLES.FILL_AND_BORDER;
     }
 
     handleCursor(): void {
@@ -32,6 +35,10 @@ export class SquareService extends Tool {
 
     changeWidth(newWidth: number): void {
         this.width = newWidth;
+    }
+
+    changeFillStyle(newFillStyle: number): void {
+        this.fillStyle = newFillStyle;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -86,6 +93,18 @@ export class SquareService extends Tool {
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
+
+        switch (this.fillStyle) {
+            case FILL_STYLES.FILL:
+                ctx.strokeStyle = this.colorSelectionService.primaryColor;
+                ctx.lineWidth = 1;
+                break;
+            case FILL_STYLES.BORDER:
+                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
+                break;
+            default:
+        }
+
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {
@@ -99,16 +118,22 @@ export class SquareService extends Tool {
 
     private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
-        ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+        if (this.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+        }
     }
 
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
         if (this.rectangleWidth <= this.rectangleHeight) {
             ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
-            ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            if (this.fillStyle !== FILL_STYLES.BORDER) {
+                ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+            }
         } else if (this.rectangleHeight < this.rectangleWidth) {
             ctx.rect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
-            ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
+            if (this.fillStyle !== FILL_STYLES.BORDER) {
+                ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
+            }
         }
     }
 
