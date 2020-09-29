@@ -8,7 +8,7 @@ import { LineService } from './line.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-describe('LineService', () => {
+fdescribe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
 
@@ -68,6 +68,7 @@ describe('LineService', () => {
     });
 
     it('mouse up should update the number of clicks', () => {
+        service.numberOfClicks = 0;
         service.onMouseUp(mouseEvent);
         expect(service.numberOfClicks).toBe(1);
     });
@@ -91,6 +92,7 @@ describe('LineService', () => {
     });
 
     it('mouse up should reset the number mouse clicks if double click when not drawing a line', () => {
+        service.numberOfClicks = 1;
         service.onMouseUp(mouseEvent);
         service.onMouseUp(mouseEvent);
         expect(service.numberOfClicks).toBe(0);
@@ -139,6 +141,16 @@ describe('LineService', () => {
         service.numberOfClicks = 2;
         const returnValue: boolean = service.checkIfDoubleClick();
         expect(returnValue).toBe(false);
+    });
+
+    it('should return true if the two last clicks are the same', () => {
+        const click1: Vec2 = { x: 10, y: 10 };
+        const click2: Vec2 = { x: 10, y: 10 };
+        service.mouseClicks.push(click1);
+        service.mouseClicks.push(click2);
+        service.numberOfClicks = 2;
+        const returnValue: boolean = service.checkIfDoubleClick();
+        expect(returnValue).toBe(true);
     });
 
     it('should remove last storedLine, last mouseClick and decrement numberOfClicks', () => {
@@ -201,7 +213,7 @@ describe('LineService', () => {
         service.onMouseUp(mouseEvent);
         service.onMouseUp(mouseEvent);
 
-        expect((service.mouseClicks[service.mouseClicks.length - 1] = service.mouseClicks[0]));
+        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
@@ -219,8 +231,27 @@ describe('LineService', () => {
         service.onMouseUp(mouseEvent);
         service.onMouseUp(mouseEvent);
 
-        expect((service.mouseClicks[service.mouseClicks.length - 1] = service.mouseClicks[0]));
+        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
         expect(drawDotsSpy).toHaveBeenCalled();
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it('should not call draw dot', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
+        const drawDotsSpy = spyOn<any>(service, 'drawDots');
+        const click1: Vec2 = { x: 20, y: 20 };
+        const click2: Vec2 = { x: 25, y: 25 };
+        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        service.isDot = false;
+        service.storedLines.push(line);
+        service.mouseClicks.push(click1);
+        service.mouseClicks.push(click2);
+
+        service.onMouseUp(mouseEvent);
+        service.onMouseUp(mouseEvent);
+
+        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
+        expect(drawDotsSpy).not.toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
@@ -286,10 +317,12 @@ describe('LineService', () => {
 
     it('should call drawDots', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
+        const drawDotsSpy = spyOn<any>(service, 'drawDots');
         service.isDrawing = true;
         service.isDot = true;
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawDotsSpy).toHaveBeenCalled();
     });
 
     it('should call drawLine', () => {
@@ -318,6 +351,13 @@ describe('LineService', () => {
         const secondPoint: Vec2 = { x: 50, y: 50 };
         const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
         expect(returnValue).toBe(false);
+    });
+
+    it('checkIf20pxAway should return true with points less than 20 px away', () => {
+        const firstPoint: Vec2 = { x: 20, y: 20 };
+        const secondPoint: Vec2 = { x: 25, y: 25 };
+        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
+        expect(returnValue).toBe(true);
     });
 
     it('deleteLastSegment should redraw preview line when a segment is deleted', () => {
