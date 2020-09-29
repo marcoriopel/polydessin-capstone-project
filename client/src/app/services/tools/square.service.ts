@@ -22,9 +22,9 @@ export class SquareService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'crosshair';
+        const previewCanvas = this.drawingService.previewCanvas;
+        if (previewCanvas) {
+            previewCanvas.style.cursor = 'crosshair';
         }
     }
 
