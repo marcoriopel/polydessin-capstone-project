@@ -45,7 +45,7 @@ export class SquareService extends Tool {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawRectangle(this.drawingService.baseCtx, topLeftPoint);
+            this.drawShape(this.drawingService.baseCtx, topLeftPoint);
             this.mouseDown = false;
         }
     }
@@ -53,9 +53,22 @@ export class SquareService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
             this.isShiftKeyDown = true;
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawSquare(this.drawingService.previewCtx, topLeftPoint);
+            if (this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+            }
+        }
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
+        if (event.key === 'Shift') {
+            this.isShiftKeyDown = false;
+            if (this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
+                this.drawShape(this.drawingService.previewCtx, topLeftPoint);
+            }
         }
     }
 
@@ -64,34 +77,38 @@ export class SquareService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
-            this.drawRectangle(this.drawingService.previewCtx, topLeftPoint);
+            this.drawShape(this.drawingService.previewCtx, topLeftPoint);
         }
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+    private drawShape(ctx: CanvasRenderingContext2D, point: Vec2): void {
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
         ctx.beginPath();
-        ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
-        ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+
+        if (this.isShiftKeyDown) {
+            this.drawSquare(ctx, point);
+        } else {
+            this.drawRectangle(ctx, point);
+        }
+
         ctx.stroke();
     }
 
+    private drawRectangle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+        ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleHeight);
+    }
+
     private drawSquare(ctx: CanvasRenderingContext2D, point: Vec2): void {
-        ctx.fillStyle = this.colorSelectionService.secondaryColor;
-        ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        if (this.rectangleWidth > this.rectangleHeight) {
-            ctx.beginPath();
+        if (this.rectangleWidth <= this.rectangleHeight) {
             ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
             ctx.fillRect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
-            ctx.stroke();
-        } else if (this.rectangleHeight > this.rectangleWidth) {
-            ctx.beginPath();
-            ctx.rect(point.x, point.y, this.rectangleWidth, this.rectangleWidth);
+        } else if (this.rectangleHeight < this.rectangleWidth) {
+            ctx.rect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
             ctx.fillRect(point.x, point.y, this.rectangleHeight, this.rectangleHeight);
-            ctx.stroke();
         }
     }
 

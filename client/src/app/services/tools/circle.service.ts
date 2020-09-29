@@ -35,8 +35,8 @@ export class CircleService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
+            this.isShiftKeyDown = true;
             if (this.mouseDown) {
-                this.isShiftKeyDown = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 const topLeftPoint = this.findTopLeftPoint(this.firstPoint, this.lastPoint);
                 this.drawShape(this.drawingService.previewCtx, topLeftPoint);
