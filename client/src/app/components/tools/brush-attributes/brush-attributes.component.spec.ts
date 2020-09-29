@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { BrushAttributesComponent } from './brush-attributes.component';
 
 describe('BrushAttributesComponent', () => {

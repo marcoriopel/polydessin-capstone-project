@@ -9,6 +9,7 @@ import { UserguideComponent } from '@app/components/userguide/userguide.componen
 })
 export class MainPageComponent {
     readonly title: string = 'PolyDessin';
+
     constructor(public dialog: MatDialog) {}
 
     openUserguide(): void {

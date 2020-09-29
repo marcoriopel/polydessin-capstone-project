@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { EraserAttributesComponent } from './eraser-attributes.component';
 
 describe('EraserAttributesComponent', () => {

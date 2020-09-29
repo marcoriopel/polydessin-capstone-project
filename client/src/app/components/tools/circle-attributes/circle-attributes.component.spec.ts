@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { CircleAttributesComponent } from './circle-attributes.component';
 
 describe('CircleAttributesComponent', () => {

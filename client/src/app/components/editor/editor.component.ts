@@ -9,7 +9,6 @@ import {
     MINIMUM_WORKSPACE_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
-import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
@@ -38,11 +37,7 @@ export class EditorComponent implements AfterViewInit {
         ['p', this.toolNames.ERASER_TOOL_NAME],
     ]);
 
-    constructor(
-        public toolSelectionService: ToolSelectionService,
-        public resizeDrawingService: ResizeDrawingService,
-        public newDrawingService: NewDrawingService,
-    ) {
+    constructor(public toolSelectionService: ToolSelectionService, public resizeDrawingService: ResizeDrawingService) {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
@@ -76,11 +71,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     handleKeyDown(event: KeyboardEvent): void {
-        if (event.key === '0' && event.ctrlKey) {
-            this.newDrawingService.openWarning();
-        } else {
-            this.toolSelectionService.currentTool.onKeyDown(event);
-        }
+        this.toolSelectionService.currentTool.onKeyDown(event);
     }
 
     onMouseDown(event: MouseEvent): void {

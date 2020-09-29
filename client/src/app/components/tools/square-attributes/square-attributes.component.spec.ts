@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { SquareAttributesComponent } from './square-attributes.component';
 
 describe('SquareAttributesComponent', () => {
