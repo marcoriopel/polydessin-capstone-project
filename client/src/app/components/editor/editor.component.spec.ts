@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -12,6 +12,7 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
+    let matDialog: MatDialog;
 
     beforeEach(async(() => {
         resizeDrawingService = new ResizeDrawingService();
@@ -21,7 +22,7 @@ describe('EditorComponent', () => {
 
             providers: [
                 { provide: ResizeDrawingService, useValue: resizeDrawingService },
-                { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { hasBackdrop: false } },
+                { provide: MatDialog, useValue: matDialog },
             ],
         }).compileComponents();
     }));
