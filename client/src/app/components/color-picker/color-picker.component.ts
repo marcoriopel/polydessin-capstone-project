@@ -92,7 +92,7 @@ export class ColorPickerComponent {
     // tslint:disable-next-line: no-any
     changePrimaryOpacity(opacity: any, event: KeyboardEvent): void {
         event.stopPropagation();
-        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY) {
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
             this.primaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
             alert("L'opacité doit être un nombre entre 0 et 100.");
@@ -106,7 +106,7 @@ export class ColorPickerComponent {
     // tslint:disable-next-line: no-any
     changeSecondaryOpacity(opacity: any, event: KeyboardEvent): void {
         event.stopPropagation();
-        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY) {
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
             this.secondaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
             alert("L'opacité doit être un nombre entre 0 et 100.");
