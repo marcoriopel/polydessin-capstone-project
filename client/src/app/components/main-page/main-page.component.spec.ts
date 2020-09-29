@@ -12,7 +12,7 @@ describe('MainPageComponent', () => {
     let matDialogSpy: SpyObj<MatDialog>;
 
     beforeEach(async(() => {
-        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+        matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
@@ -36,8 +36,7 @@ describe('MainPageComponent', () => {
     });
 
     it('should call open of MatDialog', () => {
-        const spy = spyOn(component, 'openUserguide');
         component.openUserguide();
-        expect(spy).toHaveBeenCalled();
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 });
