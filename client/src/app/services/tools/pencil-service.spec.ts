@@ -112,11 +112,6 @@ describe('PencilService', () => {
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
-    it(' should throw error on handleCursorCall with previewLayer not correctly loaded', () => {
-        previewCanvasStub.remove();
-        expect(service.handleCursor).toThrow(new Error('Could not load cursor'));
-    });
-
     // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;

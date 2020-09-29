@@ -24,11 +24,9 @@ export class PencilService extends Tool {
     }
 
     handleCursor(): void {
-        try {
-            const previewCanvas = this.drawingService.previewCanvas;
+        const previewCanvas = this.drawingService.previewCanvas;
+        if (previewCanvas) {
             previewCanvas.style.cursor = 'crosshair';
-        } catch (error) {
-            throw new Error('Could not load cursor');
         }
     }
 
