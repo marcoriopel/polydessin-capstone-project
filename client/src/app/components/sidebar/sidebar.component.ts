@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -8,15 +8,11 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements AfterViewInit {
+export class SidebarComponent {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
     constructor(public toolSelectionService: ToolSelectionService) {}
-
-    ngAfterViewInit(): void {
-        this.toolSelectionService.currentTool.handleCursor();
-    }
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
