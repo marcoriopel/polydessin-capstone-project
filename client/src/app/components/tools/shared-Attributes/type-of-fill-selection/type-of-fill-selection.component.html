@@ -1,0 +1,17 @@
+<div class="typeOfFill">
+    <p class="title">Type de tracé</p>
+    <div class="radioContainer">
+        <label>
+            <input type="radio" name="typeOfFill" [value]="fillStyles.FILL_AND_BORDER" (change)="this.handleValueChange($event)" checked />
+            <p>Plein avec contour</p>
+        </label>
+        <label>
+            <input type="radio" name="typeOfFill" [value]="fillStyles.FILL" (change)="this.handleValueChange($event)" />
+            <p>Plein</p>
+        </label>
+        <label>
+            <input type="radio" name="typeOfFill" [value]="fillStyles.BORDER" (change)="this.handleValueChange($event)" />
+            <p>Contour</p>
+        </label>
+    </div>
+</div>

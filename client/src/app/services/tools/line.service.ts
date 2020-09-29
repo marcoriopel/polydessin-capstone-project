@@ -323,11 +323,12 @@ export class LineService extends Tool {
         const LAST_DOT = this.mouseClicks.length;
         if (isPreview) {
             for (let i = 0; i < LAST_DOT; i++) {
+                this.drawingService.previewCtx.lineWidth = 1;
                 this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.previewCtx.beginPath();
-                this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.previewCtx.fill();
                 this.drawingService.previewCtx.stroke();
             }
@@ -336,14 +337,16 @@ export class LineService extends Tool {
             this.mouseClicks[this.mouseClicks.length - 2] = this.mouseClicks[this.mouseClicks.length - 1];
             this.mouseClicks.pop();
             for (let i = 0; i < LAST_DOT - 1; i++) {
+                this.drawingService.baseCtx.lineWidth = 1;
                 this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.baseCtx.fillStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.baseCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.baseCtx.beginPath();
-                this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width, 0, 2 * Math.PI);
+                this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();
                 this.drawingService.baseCtx.stroke();
             }
         }
     }
+    // tslint:disable-next-line: max-file-line-count
 }
