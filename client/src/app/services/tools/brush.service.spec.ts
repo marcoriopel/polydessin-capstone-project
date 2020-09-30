@@ -125,9 +125,9 @@ describe('BrushService', () => {
     });
 
     it(' applyPattern should change filter of layers when called with a valid pattern string', () => {
-        service.applyPattern('pattern1');
-        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#pattern1)');
-        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#pattern1)');
+        service.applyPattern(pattern);
+        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
     });
 
     it(' applyPattern should change filter of layers to none when called with a none pattern string', () => {
