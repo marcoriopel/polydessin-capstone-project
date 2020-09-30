@@ -14,6 +14,9 @@ module.exports = function (config) {
             require('@angular-devkit/build-angular/plugins/karma'),
         ],
         client: {
+            jasmine: {
+                seed: '01883',
+            },
             clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },
         coverageIstanbulReporter: {
