@@ -76,5 +76,5 @@ export const TRANSFORMATIONS: Feature[] = [
 export const TOOL_GROUPS: GroupFeature[] = [
     { name: 'Forme', description: '', picture: '', dependance: SHAPES },
     // { name: 'Sceau de peinture', description: 'pixels ...', picture: '', dependance: FILL },
-    { name: 'Outils de tracage', description: '', picture: '', dependance: DRAWING_TOOLS },
+    { name: 'Outils de tracage', description: '', picture: './../../../assets/img/title.jpg', dependance: DRAWING_TOOLS },
 ];
