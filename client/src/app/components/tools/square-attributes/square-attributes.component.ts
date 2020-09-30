@@ -7,11 +7,14 @@ import { SquareService } from '@app/services/tools/square.service';
     styleUrls: ['./square-attributes.component.scss'],
 })
 export class SquareAttributesComponent {
-    toolWidth: number = 1;
+    toolWidth: number;
 
-    constructor(public squareService: SquareService) {}
+    constructor(public squareService: SquareService) {
+        this.toolWidth = squareService.width;
+    }
 
     handleBorderWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
         this.squareService.changeWidth(newWidth);
     }
 

@@ -7,14 +7,21 @@ import { LineService } from '@app/services/tools/line.service';
     styleUrls: ['./line-attributes.component.scss'],
 })
 export class LineAttributesComponent {
-    constructor(public lineService: LineService) {}
-    toolWidth: number = 1;
+    toolWidth: number;
+    dotWith: number;
+
+    constructor(public lineService: LineService) {
+        this.toolWidth = lineService.lineWidth;
+        this.dotWith = lineService.dotWidth;
+    }
 
     handleDotWidthChange(newWidth: number): void {
+        this.dotWith = newWidth;
         this.lineService.changeDotWidth(newWidth);
     }
 
     handleLineWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
         this.lineService.changeLineWidth(newWidth);
     }
 
