@@ -298,10 +298,9 @@ export class LineService extends Tool {
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
-            console.log(startingPoint);
             // Using the preview canvas
+            console.log(this.colorSelectionService.primaryColor);
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
             this.drawingService.previewCtx.lineWidth = lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -310,7 +309,6 @@ export class LineService extends Tool {
         } else {
             // Using the base canvas
             this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.baseCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
             this.drawingService.baseCtx.lineWidth = lineWidth;
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -326,7 +324,6 @@ export class LineService extends Tool {
                 this.drawingService.previewCtx.lineWidth = 1;
                 this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
-                this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.previewCtx.beginPath();
                 this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.previewCtx.fill();
@@ -340,7 +337,6 @@ export class LineService extends Tool {
                 this.drawingService.baseCtx.lineWidth = 1;
                 this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.baseCtx.fillStyle = this.colorSelectionService.secondaryColor;
-                this.drawingService.baseCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.baseCtx.beginPath();
                 this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();
