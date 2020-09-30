@@ -1,5 +1,6 @@
 import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
@@ -21,6 +22,7 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
     let toolSelectionStub: ToolSelectionService;
+    let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
@@ -33,11 +35,13 @@ describe('SidebarComponent', () => {
             toolStub as LineService,
             toolStub as EraserService,
         );
+        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: MatDialog, useValue: matdialogSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
             ],
         }).compileComponents();
@@ -65,6 +69,11 @@ describe('SidebarComponent', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call open of MatDialog', () => {
+        component.openUserguide();
+        expect(matdialogSpy.open).toHaveBeenCalled();
     });
 
     it('should call openWarning', () => {

@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
@@ -13,6 +14,8 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
+    // tslint:disable-next-line: prefer-const  MatDialog need to be call in the constructor for the test to all pass
+    let matDialog: MatDialog;
     let newdrawServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
@@ -24,6 +27,7 @@ describe('EditorComponent', () => {
             providers: [
                 { provide: ResizeDrawingService, useValue: resizeDrawingService },
                 { provide: NewDrawingService, useValue: newdrawServiceSpy },
+                { provide: MatDialog, useValue: matDialog },
             ],
         }).compileComponents();
     }));
