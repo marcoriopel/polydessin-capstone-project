@@ -1,8 +1,12 @@
-<div class="container">
-    <h1 class="header-item">{{ title }}</h1>
+<div class="main-page">
+    <ul class="nav-area">
+        <li><a>Carrousel de dessin</a></li>
+        <li><a (click)="openUserguide()">Guide d'utilisation</a></li>
+        <li><a id="ContinueButton">Continuer un dessin</a></li>
+    </ul>
 
-    <button class="button">Ouvrir le carrousel de dessins</button>
-    <button class="button" routerLink="/editor">Créer un nouveau dessin</button>
-
-    <button mat-button (click)="openUserguide()">Afficher le guide d’utilisation</button>
+    <div class="title-text">
+        <h1>{{ title }}</h1>
+        <a routerLink="/editor">Nouveau dessin</a>
+    </div>
 </div>

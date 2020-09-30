@@ -13,6 +13,7 @@ import { TrigonometryService } from '@app/services/trigonometry/trigonometry.ser
 })
 export class LineService extends Tool {
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
+    isShiftDoubleClick: boolean = false;
     isShiftKeyDown: boolean = false;
     endingClickCoordinates: Vec2;
     isDrawing: boolean = false;
@@ -24,6 +25,8 @@ export class LineService extends Tool {
     isDot: boolean = false;
     line: Line;
     mouseEvent: MouseEvent;
+
+    test: Vec2 = { x: 0, y: 0 };
 
     constructor(
         public drawingService: DrawingService,
@@ -55,8 +58,14 @@ export class LineService extends Tool {
             return;
         }
 
+        // Check if it's a double click holding shift
+        if (this.getPositionFromMouse(event).x === this.test.x && this.getPositionFromMouse(event).y === this.test.y) {
+            this.isShiftDoubleClick = true;
+        }
+        this.test = this.getPositionFromMouse(event);
+
         // Check if it is a double click
-        if (this.checkIfDoubleClick()) {
+        if (this.checkIfDoubleClick() || this.isShiftDoubleClick) {
             this.isDrawing = false;
 
             // Handle case when user double click when there is no line
@@ -86,6 +95,7 @@ export class LineService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.storedLines = [];
             this.mouseClicks = [];
+            this.isShiftDoubleClick = false;
             return;
         }
 
@@ -298,10 +308,9 @@ export class LineService extends Tool {
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
-            console.log(startingPoint);
             // Using the preview canvas
+            console.log(this.colorSelectionService.primaryColor);
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
             this.drawingService.previewCtx.lineWidth = lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -310,7 +319,6 @@ export class LineService extends Tool {
         } else {
             // Using the base canvas
             this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.baseCtx.globalAlpha = this.colorSelectionService.primaryOpacity;
             this.drawingService.baseCtx.lineWidth = lineWidth;
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -326,7 +334,6 @@ export class LineService extends Tool {
                 this.drawingService.previewCtx.lineWidth = 1;
                 this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.previewCtx.fillStyle = this.colorSelectionService.secondaryColor;
-                this.drawingService.previewCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.previewCtx.beginPath();
                 this.drawingService.previewCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.previewCtx.fill();
@@ -336,11 +343,15 @@ export class LineService extends Tool {
             // Remove the double click that doesnt need to be drawed on the canvas
             this.mouseClicks[this.mouseClicks.length - 2] = this.mouseClicks[this.mouseClicks.length - 1];
             this.mouseClicks.pop();
+
+            // If it's a double click holding shift adjust ending dot
+            if (this.isShiftDoubleClick) {
+                this.mouseClicks[this.mouseClicks.length - 1] = this.storedLines[this.storedLines.length - 1].endingPoint;
+            }
             for (let i = 0; i < LAST_DOT - 1; i++) {
                 this.drawingService.baseCtx.lineWidth = 1;
                 this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.secondaryColor;
                 this.drawingService.baseCtx.fillStyle = this.colorSelectionService.secondaryColor;
-                this.drawingService.baseCtx.globalAlpha = this.colorSelectionService.secondaryOpacity;
                 this.drawingService.baseCtx.beginPath();
                 this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();

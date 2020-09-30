@@ -7,11 +7,14 @@ import { CircleService } from '@app/services/tools/circle.service';
     styleUrls: ['./circle-attributes.component.scss'],
 })
 export class CircleAttributesComponent {
-    toolWidth: number = 1;
+    toolWidth: number;
 
-    constructor(public circleService: CircleService) {}
+    constructor(public circleService: CircleService) {
+        this.toolWidth = circleService.width;
+    }
 
     handleBorderWidthChange(newWidth: number): void {
+        this.toolWidth = newWidth;
         this.circleService.changeWidth(newWidth);
     }
 
