@@ -1,9 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { EditorComponent } from './editor.component';
 
+import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-magic-numbers
 
 describe('EditorComponent', () => {
@@ -11,13 +13,18 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
+    let newdrawServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
         resizeDrawingService = new ResizeDrawingService();
+        newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
-            providers: [{ provide: ResizeDrawingService, useValue: resizeDrawingService }],
+            providers: [
+                { provide: ResizeDrawingService, useValue: resizeDrawingService },
+                { provide: NewDrawingService, useValue: newdrawServiceSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -135,4 +142,12 @@ describe('EditorComponent', () => {
         const workSpaceSize = component.getWorkSpaceSize();
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
+
+    /* Test FAIL preventDefault is not a function 
+    it('should call openDialog when ctrl+o press', () => {
+        const keyEvent = { key: 'o', ctrlKey: true } as KeyboardEvent;
+        component.handleKeyDown(keyEvent);
+        expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
+    });
+    */
 });

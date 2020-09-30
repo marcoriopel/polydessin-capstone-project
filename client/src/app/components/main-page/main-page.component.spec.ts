@@ -12,18 +12,21 @@ describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let indexServiceSpy: SpyObj<IndexService>;
+    let matDialogSpy: SpyObj<MatDialog>;
 
     beforeEach(async(() => {
         indexServiceSpy = jasmine.createSpyObj('IndexService', ['basicGet', 'basicPost']);
         indexServiceSpy.basicGet.and.returnValue(of({ title: '', body: '' }));
         indexServiceSpy.basicPost.and.returnValue(of());
 
+        matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
+
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
             providers: [
                 { provide: IndexService, useValue: indexServiceSpy },
-                { provide: MatDialog, useValue: {} },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));
@@ -43,8 +46,8 @@ describe('MainPageComponent', () => {
     });
 
     it('should call open of MatDialog', () => {
-        const spy = spyOn(component, 'openUserguide');
         component.openUserguide();
-        expect(spy).toHaveBeenCalled();
+
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 });
