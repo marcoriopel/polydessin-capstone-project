@@ -51,10 +51,6 @@ describe('PencilService', () => {
         expect(service.width).toBe(1);
     });
 
-    it('should set cursor to crosshair by default', () => {
-        expect(previewCanvasStub.style.cursor).toBe('crosshair');
-    });
-
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 25, y: 25 };
         service.onMouseDown(mouseEvent);
