@@ -127,6 +127,8 @@ export class ColorPickerComponent {
     }
 
     hexToRGBA(color: string, opacity: number): string {
+        // Using variables for string slicing would be as meaningless as not using variables
+        // tslint:disable: no-magic-numbers
         const r: number = parseInt(color.slice(-6, -4), 16);
         const g: number = parseInt(color.slice(-4, -2), 16);
         const b: number = parseInt(color.slice(-2), 16);
