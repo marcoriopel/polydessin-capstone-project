@@ -109,6 +109,10 @@ export class SquareService extends Tool {
             this.drawRectangle(ctx);
         }
 
+        if (ctx === this.drawingService.baseCtx) {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        }
+
         ctx.stroke();
     }
 
