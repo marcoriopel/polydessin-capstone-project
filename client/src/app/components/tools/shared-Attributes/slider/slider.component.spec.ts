@@ -1,4 +1,6 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { SliderComponent } from './slider.component';
 
 describe('SliderComponent', () => {
@@ -7,7 +9,9 @@ describe('SliderComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [FormsModule],
             declarations: [SliderComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     }));
 
