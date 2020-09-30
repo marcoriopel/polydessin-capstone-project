@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LineService } from '@app/services/tools/line.service';
 import { LineAttributesComponent } from './line-attributes.component';
@@ -13,6 +14,7 @@ describe('LineAttributesComponent', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['changeLineWidth', 'changeDotWidth', 'changeJunction']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [LineAttributesComponent],
             providers: [{ provide: LineService, useValue: lineServiceSpy }],
         }).compileComponents();

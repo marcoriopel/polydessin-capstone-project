@@ -6,7 +6,7 @@ import { LineAngle, MouseButton } from '@app/ressources/global-variables/global-
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line.service';
 
-// tslint:disable: no-any
+//                                                         tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 describe('LineService', () => {
     let service: LineService;
