@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
+import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from './square.service';
 
@@ -20,14 +22,21 @@ describe('SquareService', () => {
     let drawRectSpy: jasmine.Spy<any>;
     let topLeftPointSpy: jasmine.Spy<any>;
     let drawSquareSpy: jasmine.Spy<any>;
+    let ctxFillSpy: jasmine.Spy<any>;
+    let colorPickerStub: ColorSelectionService;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvasTestHelper.canvas as HTMLCanvasElement;
+        colorPickerStub = new ColorSelectionService();
+
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ColorSelectionService, useValue: colorPickerStub },
+            ],
         });
         service = TestBed.inject(SquareService);
         drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
@@ -36,6 +45,7 @@ describe('SquareService', () => {
         topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint').and.callThrough();
         drawRectSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         drawSquareSpy = spyOn<any>(service, 'drawSquare').and.callThrough();
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -222,5 +232,90 @@ describe('SquareService', () => {
         const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
         const expectedValue: Vec2 = { x: 2, y: 2 };
         expect(topLeft).toEqual(expectedValue);
+    });
+
+    it('drawShape should change strokestyle with fillstyle set to fill', () => {
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        colorPickerStub.primaryColor = '#ffa500';
+        service.fillStyle = FILL_STYLES.FILL;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEventLClick);
+
+        expect(baseCtxStub.strokeStyle).toEqual(colorPickerStub.primaryColor);
+    });
+
+    it('drawShape should change globalalpha with fillstyle set to border', () => {
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        colorPickerStub.secondaryOpacity = 0.6;
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEventLClick);
+
+        expect(baseCtxStub.globalAlpha).toEqual(colorPickerStub.secondaryOpacity);
+    });
+
+    it('should not set isShiftKeyDown to true if key down of anything else than shift', () => {
+        service.isShiftKeyDown = false;
+        const event = new KeyboardEvent('keypress', {
+            key: 'Ctrl',
+        });
+        service.onKeyDown(event);
+        expect(service.isShiftKeyDown).toEqual(false);
+    });
+
+    it('should not draw anything if key up of shift but not mousedown', () => {
+        service.isShiftKeyDown = true;
+        const event = new KeyboardEvent('keypress', {
+            key: 'Shift',
+        });
+        service.mouseDown = false;
+        service.onKeyUp(event);
+        expect(drawShapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not draw anything on detection of mouse up if it was not down', () => {
+        service.mouseDown = false;
+        service.onMouseUp(mouseEvent);
+        expect(drawShapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not draw anything on detection of mouse move if it was not down', () => {
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        expect(drawShapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should fill square if style is not set to border', () => {
+        service.isShiftKeyDown = true;
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.fillStyle = FILL_STYLES.FILL;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEventLClick);
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('should not fill square if style is set to border', () => {
+        service.isShiftKeyDown = true;
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEventLClick);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 });
