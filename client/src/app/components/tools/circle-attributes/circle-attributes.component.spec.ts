@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CircleService } from '@app/services/tools/circle.service';
 import { CircleAttributesComponent } from './circle-attributes.component';
@@ -13,6 +14,7 @@ describe('CircleAttributesComponent', () => {
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['changeWidth', 'changeFillStyle']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [CircleAttributesComponent],
             providers: [{ provide: CircleService, useValue: circleServiceSpy }],
         }).compileComponents();
