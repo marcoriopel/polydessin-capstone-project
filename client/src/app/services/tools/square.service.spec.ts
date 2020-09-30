@@ -7,7 +7,7 @@ import { SquareService } from './square.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-fdescribe('SquareService', () => {
+describe('SquareService', () => {
     let service: SquareService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
