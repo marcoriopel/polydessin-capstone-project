@@ -26,7 +26,7 @@ export const BASIC_TOOLS: Feature[] = [
     {
         name: 'Ligne',
         description:
-            'Cet outil permet de tracer une ligne composée d’un ou plusieurs segments. Un premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Un double clic permet de terminer le segment. Si le double clic est fait près du point initial de la ligne, le segment se fusionnera au point initial.',
+            'Cet outil permet de tracer une ligne composée d’un ou plusieurs segments. Un premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Un double clic permet de terminer le segment. Si le double clic est fait près du point initial de la ligne, le segment se fusionnera au point initial. La commande shifth permet de mettre la ligne a 90 degré de celle tracé précédemment.',
         picture: './../../../assets/video/ligne.gif',
     },
     // { name: 'Étampe', description: 'etampe ...', picture: './../../../assets/img/picture_test.jpg' },
@@ -54,7 +54,8 @@ export const DRAWING_TOOLS: Feature[] = [
 export const SHAPES: Feature[] = [
     {
         name: 'Rectangle',
-        description: 'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé a une remplissage uni.',
+        description:
+            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé a une remplissage uni. La commande shift permet de créer un carré.',
         picture: './../../../assets/video/rectangle.gif',
     },
     { name: 'Ellipse', description: 'ellipse', picture: './../../../assets/img/picture_test.jpg' },

@@ -86,7 +86,6 @@ export class CircleService extends Tool {
         const topLeftPoint = this.findTopLeftPoint();
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
         ctx.setLineDash([0]);
 
