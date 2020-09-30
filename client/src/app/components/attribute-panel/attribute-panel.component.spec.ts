@@ -20,4 +20,8 @@ describe('AttributePanelComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should have toolSelectionService', () => {
+        expect(component.toolSelectionService).not.toBeNull();
+    });
 });
