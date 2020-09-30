@@ -15,7 +15,7 @@ describe('BrushService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
 
-    const pattern = 'pattern2';
+    const pattern = 'pattern1';
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -125,9 +125,9 @@ describe('BrushService', () => {
     });
 
     it(' applyPattern should change filter of layers when called with a valid pattern string', () => {
-        service.applyPattern(pattern);
-        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
-        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+        service.applyPattern('pattern1');
+        expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#pattern1)');
+        expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#pattern1)');
     });
 
     it(' applyPattern should change filter of layers to none when called with a none pattern string', () => {
