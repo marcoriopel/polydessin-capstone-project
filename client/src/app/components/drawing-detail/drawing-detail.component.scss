@@ -2,9 +2,10 @@
     margin: 10px;
 }
 
-img.animated-gif {
-    height: 600px;
-    width: auto;
+img {
+    max-width: 100%;
+    height: 70%;
+    width: 80%;
 }
 
 .cdk-overlay-pane {

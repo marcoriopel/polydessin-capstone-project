@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { CircleService } from './circle.service';
 
 describe('CircleService', () => {

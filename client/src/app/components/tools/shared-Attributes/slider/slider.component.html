@@ -1,11 +1,13 @@
 <div id="slider">
-    <mat-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value" (change)="this.handleValueChange()">
-    </mat-slider>
+    <hr class="topBorder" />
+    <p>{{ title }}</p>
+    <mat-slider [min]="min" [max]="max" [step]="step" [(ngModel)]="value" (change)="this.handleValueChange()"> </mat-slider>
     <div id="sliderDetails">
-        <input type="number" [(ngModel)]="value" (change)="this.handleValueChange()" [min]="min" [max]="max" readonly>
+        <input type="number" [(ngModel)]="value" (change)="this.handleValueChange()" [min]="min" [max]="max" readonly />
         <div>
             <button (click)="decrementToolWidth()">-</button>
             <button (click)="incrementToolWidth()">+</button>
         </div>
     </div>
+    <hr class="bottomBorder" />
 </div>

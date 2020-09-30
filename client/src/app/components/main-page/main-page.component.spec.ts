@@ -14,6 +14,8 @@ describe('MainPageComponent', () => {
     beforeEach(async(() => {
         matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
+        matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
+
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
