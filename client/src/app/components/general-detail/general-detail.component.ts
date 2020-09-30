@@ -8,5 +8,4 @@ import { Feature, GENERALS_FEATURE } from '@app/ressources/texts/feature';
 })
 export class GeneralDetailComponent {
     informations: Feature[] = GENERALS_FEATURE;
-    selectedinfo: Feature;
 }

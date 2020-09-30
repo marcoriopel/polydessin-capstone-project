@@ -25,9 +25,7 @@ export class PencilService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'crosshair';
-        }
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -71,7 +69,6 @@ export class PencilService extends Tool {
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of path) {

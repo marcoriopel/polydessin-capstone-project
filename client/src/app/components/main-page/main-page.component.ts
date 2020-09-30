@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserguideComponent } from '@app/components/userguide/userguide.component';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-main-page',
@@ -10,8 +9,6 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MainPageComponent {
     readonly title: string = 'PolyDessin';
-    message: BehaviorSubject<string> = new BehaviorSubject<string>('');
-
     constructor(public dialog: MatDialog) {}
 
     openUserguide(): void {

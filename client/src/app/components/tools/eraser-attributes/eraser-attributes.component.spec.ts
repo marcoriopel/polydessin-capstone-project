@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { EraserAttributesComponent } from './eraser-attributes.component';
@@ -11,7 +12,9 @@ describe('EraserAttributesComponent', () => {
 
     beforeEach(async(() => {
         eraserServiceSpy = jasmine.createSpyObj('EraserService', ['changeWidth']);
+
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [EraserAttributesComponent],
             providers: [{ provide: EraserService, useValue: eraserServiceSpy }],
         }).compileComponents();
