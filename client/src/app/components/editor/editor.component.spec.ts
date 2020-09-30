@@ -143,8 +143,8 @@ describe('EditorComponent', () => {
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
 
-    it('should call openDialog when ctrl+0 press', () => {
-        const keyEvent = { key: '0', ctrlKey: true } as KeyboardEvent;
+    it('should call openDialog when ctrl+o press', () => {
+        const keyEvent = { key: 'o', ctrlKey: true } as KeyboardEvent;
         component.handleKeyDown(keyEvent);
         expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
     });

@@ -46,6 +46,10 @@ export class EditorComponent implements AfterViewInit {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+        const func = (e: MouseEvent) => {
+            e.preventDefault();
+        };
+        document.addEventListener('contextmenu', func, false);
     }
 
     ngAfterViewInit(): void {
@@ -76,7 +80,8 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     handleKeyDown(event: KeyboardEvent): void {
-        if (event.key === '0' && event.ctrlKey) {
+        if (event.key === 'o' && event.ctrlKey) {
+            event.preventDefault();
             this.newDrawingService.openWarning();
         } else {
             this.toolSelectionService.currentTool.onKeyDown(event);
