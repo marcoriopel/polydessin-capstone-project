@@ -130,7 +130,7 @@ export class CircleService extends Tool {
         const ellipseCenterX = point.x + ellipseRadiusX;
         const ellipseCenterY = point.y + ellipseRadiusY;
         ctx.beginPath();
-        ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusY, 0, Math.PI * 2, false);
+        ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
         if (this.fillStyle !== FILL_STYLES.BORDER) {
             ctx.fill();
         }
