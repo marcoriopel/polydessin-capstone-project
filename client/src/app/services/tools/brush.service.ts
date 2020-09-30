@@ -88,7 +88,6 @@ export class BrushService extends Tool {
         ctx.lineWidth = this.width;
         ctx.lineCap = 'round';
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);
