@@ -7,14 +7,19 @@ import { CircleService } from './circle.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-fdescribe('CircleService', () => {
+describe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    const drawCircleSPyy = jasmine.createSpy;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
+    let setCircleWidthSpy: jasmine.Spy<any>;
+    let setCircleHeigthSpy: jasmine.Spy<any>;
+    let drawCircleSpy: jasmine.Spy<any>;
+    let topLeftPointSpy: jasmine.Spy<any>;
+    let drawEllipseSpy: jasmine.Spy<any>;
+    let drawShapeSpy: jasmine.Spy<any>;
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -23,13 +28,20 @@ fdescribe('CircleService', () => {
         previewCanvasStub = canvasTestHelper.canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
-            providers: [{ CircleService, useValue: drawServiceSpy }],
+            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(CircleService);
+        drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
+        setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
+        setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
+        topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint').and.callThrough();
+        drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
+        drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].previewCanvas = previewCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -48,7 +60,7 @@ fdescribe('CircleService', () => {
         expect(service.width).toBe(1);
     });
 
-    it('should change line width', () => {
+    it('should change the fillStyle', () => {
         service.fillStyle = 1;
         service.changeFillStyle(1);
         expect(service.fillStyle).toBe(1);
@@ -81,33 +93,35 @@ fdescribe('CircleService', () => {
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
-        // const drawShapeSpy = spyOn<any>(service, 'drawShape');
-        const rectanglService = 'drawingService';
         service.onKeyUp(event);
-        service[rectanglService].baseCtx = baseCtxStub;
-        service[rectanglService].previewCtx = previewCtxStub;
         expect(service.isShiftKeyDown).toBe(false);
-        expect(drawCircleSPyy).toHaveBeenCalled();
-    });
-
-    it(' mouseDown should set mouseDownCoord to correct position', () => {
-        const expectedResult: Vec2 = { x: 25, y: 25 };
-        service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
     });
 
     it(' onMouseUp should call drawShape if mouse was already down', () => {
-        service.mouseDownCoord = { x: 0, y: 0 };
-        const rectanglService = 'drawingService';
-        const topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint');
-        service[rectanglService].baseCtx = baseCtxStub;
-        service[rectanglService].previewCtx = previewCtxStub;
-        service.mouseDown = true;
+        const mouseEventLClick = {
+            offsetX: 0,
+            offsetY: 0,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
         expect(topLeftPointSpy).toHaveBeenCalled();
-        expect(drawCircleSPyy).toHaveBeenCalled();
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
 
+    it('should draw ellipse ', () => {
+        const mouseEventLClick = {
+            offsetX: 20,
+            offsetY: 20,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.onMouseDown(mouseEventLClick);
+        service.onMouseUp(mouseEvent);
+        expect(drawEllipseSpy).toHaveBeenCalled();
+        expect(topLeftPointSpy).toHaveBeenCalled();
+    });
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
         service.handleCursor();
@@ -117,17 +131,94 @@ fdescribe('CircleService', () => {
     it('should get number from calculation of circleWidth', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 29, y: 29 };
+        service.setCircleHeight();
+        service.setCircleWidth();
         expect(service.circleWidth).toEqual(1);
     });
 
     it('should get number from calculation of circleHeight', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 25, y: 25 };
+        service.setCircleHeight();
+        service.setCircleWidth();
         expect(service.circleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
     it('should create topLeftPoint', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 20, y: 20 };
+    });
+
+    it('should drawCircle if mouse is down and shift is pressed', () => {
+        service.onMouseDown(mouseEvent);
+        const event = new KeyboardEvent('keypress', {
+            key: 'Shift',
+        });
+        service.onKeyDown(event);
+        expect(drawCircleSpy).toHaveBeenCalled();
+    });
+
+    it('should drawEllipse if mouse is down and shift is unpressed', () => {
+        service.onMouseDown(mouseEvent);
+        service.isShiftKeyDown = true;
+        const event = new KeyboardEvent('keypress', {
+            key: 'Shift',
+        });
+        service.onKeyUp(event);
+        expect(drawEllipseSpy).toHaveBeenCalled();
+    });
+
+    it('should drawShape when mouse is down on mousemove', () => {
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEventLClick);
+        expect(drawShapeSpy).toHaveBeenCalled();
+    });
+
+    it('should finTopLeftPoint if firstPoint is top left corner', () => {
+        // Top left is first point
+        service.firstPoint = { x: 1, y: 1 };
+        service.lastPoint = { x: 2, y: 2 };
+        service.setCircleHeight();
+        service.setCircleWidth();
+        const topLeft = service.findTopLeftPoint();
+        expect(topLeft).toEqual(service.firstPoint);
+    });
+
+    it('should finTopLeftPoint if firstPoint is top right corner', () => {
+        // top left is left by width of first point
+        service.firstPoint = { x: 2, y: 2 };
+        service.lastPoint = { x: 1, y: 3 };
+        service.setCircleHeight();
+        service.setCircleWidth();
+        const topLeft = service.findTopLeftPoint();
+        const expectedValue: Vec2 = { x: 1, y: 2 };
+        expect(topLeft).toEqual(expectedValue);
+    });
+
+    it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
+        // top left is up by heigth of first point
+        service.firstPoint = { x: 1, y: 2 };
+        service.lastPoint = { x: 2, y: 1 };
+        service.setCircleHeight();
+        service.setCircleWidth();
+        const topLeft = service.findTopLeftPoint();
+        const expectedValue: Vec2 = { x: 1, y: 1 };
+        expect(topLeft).toEqual(expectedValue);
+    });
+
+    it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
+        // top left is last point
+        service.firstPoint = { x: 3, y: 3 };
+        service.lastPoint = { x: 2, y: 2 };
+        service.setCircleHeight();
+        service.setCircleWidth();
+        const topLeft = service.findTopLeftPoint();
+        const expectedValue: Vec2 = { x: 2, y: 2 };
+        expect(topLeft).toEqual(expectedValue);
     });
 });
