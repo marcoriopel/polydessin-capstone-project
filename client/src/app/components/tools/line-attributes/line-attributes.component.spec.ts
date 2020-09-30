@@ -10,7 +10,7 @@ describe('LineAttributesComponent', () => {
     const finalToolWidth = 5;
 
     beforeEach(async(() => {
-        lineServiceSpy = jasmine.createSpyObj('LineService', ['changeLineWidth', 'changeDotWidth']);
+        lineServiceSpy = jasmine.createSpyObj('LineService', ['changeLineWidth', 'changeDotWidth', 'changeJunction']);
 
         TestBed.configureTestingModule({
             declarations: [LineAttributesComponent],
@@ -48,5 +48,10 @@ describe('LineAttributesComponent', () => {
         component.toolWidth = initialToolWidth;
         component.handleLineWidthChange(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
+    });
+
+    it('should call changeJunction of lineService', () => {
+        component.handleJunctionPointChange(true);
+        expect(component.lineService.changeJunction).toHaveBeenCalled();
     });
 });
