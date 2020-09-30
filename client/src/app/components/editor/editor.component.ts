@@ -46,10 +46,6 @@ export class EditorComponent implements AfterViewInit {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
-        const func = (e: MouseEvent) => {
-            e.preventDefault();
-        };
-        document.addEventListener('contextmenu', func, false);
     }
 
     ngAfterViewInit(): void {
