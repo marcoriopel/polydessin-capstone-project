@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
@@ -30,6 +31,7 @@ describe('SidebarComponent', () => {
         );
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [{ provide: ToolSelectionService, useValue: toolSelectionStub }],
         }).compileComponents();

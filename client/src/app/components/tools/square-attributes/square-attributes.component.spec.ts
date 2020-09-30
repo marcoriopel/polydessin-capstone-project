@@ -1,5 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SquareAttributesComponent } from './square-attributes.component';
 
 describe('SquareAttributesComponent', () => {
@@ -8,6 +8,7 @@ describe('SquareAttributesComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SquareAttributesComponent],
         }).compileComponents();
     }));
