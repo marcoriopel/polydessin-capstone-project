@@ -1,12 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Line } from '@app/classes/line';
 import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { LineService } from './line.service';
 
-//                                                         tslint:disable: no-any
+// tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 describe('LineService', () => {
     let service: LineService;
@@ -16,11 +15,21 @@ describe('LineService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
