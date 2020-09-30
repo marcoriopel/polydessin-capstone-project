@@ -5,7 +5,7 @@ import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { BrushService } from './brush.service';
 
-// tslint:disable:no-any
+//     tslint:disable:no-any
 describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
@@ -15,7 +15,7 @@ describe('BrushService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
 
-    const pattern = 'pattern1';
+    const pattern = 'pattern2';
 
     beforeEach(() => {
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;

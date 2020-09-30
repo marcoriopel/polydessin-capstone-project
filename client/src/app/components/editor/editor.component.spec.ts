@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
@@ -16,6 +17,7 @@ describe('EditorComponent', () => {
         resizeDrawingService = new ResizeDrawingService();
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
             providers: [{ provide: ResizeDrawingService, useValue: resizeDrawingService }],
         }).compileComponents();

@@ -54,7 +54,6 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
-            console.log(this.previewDiv);
             this.setDefaultCanvasSize();
         });
     }
