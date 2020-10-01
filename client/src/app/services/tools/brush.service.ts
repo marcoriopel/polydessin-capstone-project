@@ -22,9 +22,7 @@ export class BrushService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'crosshair';
-        }
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     onMouseDown(event: MouseEvent): void {

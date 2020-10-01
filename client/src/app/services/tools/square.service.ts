@@ -19,6 +19,8 @@ export class SquareService extends Tool {
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
     fillStyle: number;
+    rectangleHeight: number;
+    rectangleWidth: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -28,9 +30,15 @@ export class SquareService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'crosshair';
-        }
+        previewCanvas.style.cursor = 'crosshair';
+    }
+
+    setRectangleWidth(): void {
+        this.rectangleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+    }
+
+    setRectangleHeight(): void {
+        this.rectangleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 
     changeWidth(newWidth: number): void {
@@ -45,6 +53,7 @@ export class SquareService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
+            this.lastPoint = this.getPositionFromMouse(event);
         }
     }
 
@@ -67,7 +76,7 @@ export class SquareService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
+        if (event.key === 'Shift' && this.isShiftKeyDown) {
             this.isShiftKeyDown = false;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -89,17 +98,10 @@ export class SquareService extends Tool {
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
 
-        switch (this.fillStyle) {
-            case FILL_STYLES.FILL:
-                ctx.strokeStyle = this.colorSelectionService.primaryColor;
-                ctx.lineWidth = 1;
-                break;
-            case FILL_STYLES.BORDER:
-                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
-                break;
-            default:
+        if (this.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = this.colorSelectionService.primaryColor;
+            ctx.lineWidth = 1;
         }
-
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {
@@ -116,6 +118,8 @@ export class SquareService extends Tool {
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D): void {
+        this.setRectangleHeight();
+        this.setRectangleWidth();
         const topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
         ctx.rect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
         if (this.fillStyle !== FILL_STYLES.BORDER) {
@@ -124,6 +128,8 @@ export class SquareService extends Tool {
     }
 
     private drawSquare(ctx: CanvasRenderingContext2D): void {
+        this.setRectangleHeight();
+        this.setRectangleWidth();
         const squareWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
         const topLeftPoint = this.findTopLeftPoint(squareWidth, squareWidth);
 
@@ -136,7 +142,7 @@ export class SquareService extends Tool {
     /*
      to find the top left point of the rectangle or the square
      */
-    private findTopLeftPoint(width: number, height: number): Vec2 {
+    findTopLeftPoint(width: number, height: number): Vec2 {
         const point1 = this.firstPoint;
         const point2 = this.lastPoint;
         // firstPoint is top left corner lastPoint is bottom right corner
@@ -158,13 +164,5 @@ export class SquareService extends Tool {
         }
 
         return { x, y };
-    }
-
-    get rectangleWidth(): number {
-        return Math.abs(this.firstPoint.x - this.lastPoint.x);
-    }
-
-    get rectangleHeight(): number {
-        return Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 }
