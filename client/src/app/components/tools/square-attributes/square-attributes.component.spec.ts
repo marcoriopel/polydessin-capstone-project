@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SquareService } from '@app/services/tools/square.service';
 import { SquareAttributesComponent } from './square-attributes.component';
@@ -13,6 +14,7 @@ describe('SquareAttributesComponent', () => {
         squareServiceSpy = jasmine.createSpyObj('SquareService', ['changeWidth', 'changeFillStyle']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SquareAttributesComponent],
             providers: [{ provide: SquareService, useValue: squareServiceSpy }],
         }).compileComponents();

@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrushService } from '@app/services/tools/brush.service';
 import { BrushAttributesComponent } from './brush-attributes.component';
@@ -14,6 +15,7 @@ describe('BrushAttributesComponent', () => {
         brushServiceSpy = jasmine.createSpyObj('BrushService', ['changeWidth', 'setPattern']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [BrushAttributesComponent],
             providers: [{ provide: BrushService, useValue: brushServiceSpy }],
         }).compileComponents();

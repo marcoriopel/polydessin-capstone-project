@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -38,6 +38,7 @@ describe('SidebarComponent', () => {
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
