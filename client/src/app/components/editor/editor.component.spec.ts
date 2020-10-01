@@ -20,13 +20,13 @@ describe('EditorComponent', () => {
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
-    // tslint:disable-next-line: prefer-const  MatDialog need to be call in the constructor for the test to all pass
     let matDialog: MatDialog;
     let newdrawServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
         resizeDrawingService = new ResizeDrawingService();
         newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        matDialog = {} as MatDialog;
 
         TestBed.configureTestingModule({
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],

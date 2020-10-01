@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { NewDrawingComponent } from './new-drawing.component';
+import { NewDrawingModalComponent } from './new-drawing-modal.component';
 
-describe('NewDrawingComponent', () => {
-    let component: NewDrawingComponent;
-    let fixture: ComponentFixture<NewDrawingComponent>;
+describe('NewDrawingModalComponent', () => {
+    let component: NewDrawingModalComponent;
+    let fixture: ComponentFixture<NewDrawingModalComponent>;
     let drawingServiceStub: DrawingService;
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
         TestBed.configureTestingModule({
-            declarations: [NewDrawingComponent],
+            declarations: [NewDrawingModalComponent],
             providers: [{ provides: DrawingService, useValue: drawingServiceStub }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(NewDrawingComponent);
+        fixture = TestBed.createComponent(NewDrawingModalComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
