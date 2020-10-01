@@ -16,8 +16,6 @@ module.exports = function (config) {
         client: {
             jasmine: {
                 random: true,
-                // seed: '74707',
-                seed: '02996',
             },
             clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },

@@ -98,7 +98,6 @@ export class SquareService extends Tool {
     private drawShape(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.globalAlpha = this.colorSelectionService.primaryOpacity;
         ctx.lineWidth = this.width;
 
         switch (this.fillStyle) {

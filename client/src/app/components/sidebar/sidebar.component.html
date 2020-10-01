@@ -1,10 +1,12 @@
 <div class="sidebar">
     <div class="sidebarSection bottomDivider">
         <mat-icon
+            type="newDrawing"
             class="material-icons sidebarSectionTop"
             [matTooltip]="elementDescriptions.NEW_DRAWING_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="openDialog()"
             >add</mat-icon
         >
     </div>
@@ -114,6 +116,8 @@
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openUserguide()"
             >help</mat-icon
         >
         <mat-icon

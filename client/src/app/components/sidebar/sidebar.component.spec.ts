@@ -1,8 +1,11 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
+import { By } from '@angular/platform-browser';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
@@ -11,6 +14,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
 
+import SpyObj = jasmine.SpyObj;
 class ToolStub extends Tool {}
 
 describe('SidebarComponent', () => {
@@ -18,6 +22,8 @@ describe('SidebarComponent', () => {
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
     let toolSelectionStub: ToolSelectionService;
+    let matdialogSpy: SpyObj<MatDialog>;
+    let newDrawingServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
@@ -29,11 +35,16 @@ describe('SidebarComponent', () => {
             toolStub as LineService,
             toolStub as EraserService,
         );
-
+        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
-            providers: [{ provide: ToolSelectionService, useValue: toolSelectionStub }],
+            providers: [
+                { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: MatDialog, useValue: matdialogSpy },
+                { provide: NewDrawingService, useValue: newDrawingServiceSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -59,5 +70,18 @@ describe('SidebarComponent', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('should call open of MatDialog', () => {
+        component.openUserguide();
+        expect(matdialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should call openWarning', () => {
+        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
+        fixture.detectChanges();
+        button.triggerEventHandler('click', null);
+        fixture.detectChanges();
+        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
     });
 });

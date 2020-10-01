@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { EraserService } from './eraser.service';
 
 describe('EraserService', () => {

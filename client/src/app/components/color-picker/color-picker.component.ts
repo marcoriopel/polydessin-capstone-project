@@ -39,7 +39,7 @@ export class ColorPickerComponent {
         if (this.colors.length > MAXIMUM_NUMBER_OF_COLORS) {
             this.colors.pop();
         }
-        this.colorSelectionService.setPrimaryColor(color);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(color, this.primaryOpacity));
     }
 
     changeSecondaryColor(color: string): void {
@@ -48,44 +48,43 @@ export class ColorPickerComponent {
         if (this.colors.length > MAXIMUM_NUMBER_OF_COLORS) {
             this.colors.pop();
         }
-        this.colorSelectionService.setSecondaryColor(color);
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(color, this.secondaryOpacity));
     }
 
     swapColors(): void {
         const temp: string = this.primaryColor;
         this.primaryColor = this.secondaryColor;
         this.secondaryColor = temp;
-
-        this.colorSelectionService.setPrimaryColor(this.primaryColor);
-        this.colorSelectionService.setSecondaryColor(this.secondaryColor);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
     }
 
     decrementPrimaryOpacity(): void {
         if (this.primaryOpacity > this.minOpacity) {
             --this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
     }
 
     incrementPrimaryOpacity(): void {
         if (this.primaryOpacity < this.maxOpacity) {
             ++this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
     }
 
     decrementSecondaryOpacity(): void {
         if (this.secondaryOpacity > this.minOpacity) {
             --this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
     }
 
     incrementSecondaryOpacity(): void {
         if (this.secondaryOpacity < this.maxOpacity) {
             ++this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
     }
 
     // We had to disable any here to handle different type of input from user
@@ -94,11 +93,11 @@ export class ColorPickerComponent {
         event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
             this.primaryOpacity = MAX_OPACITY;
-            this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
+            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
             alert("L'opacité doit être un nombre entre 0 et 100.");
         } else {
             this.primaryOpacity = opacity;
-            this.colorSelectionService.setPrimaryOpacity(opacity / MAX_OPACITY);
+            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
         }
     }
 
@@ -108,21 +107,31 @@ export class ColorPickerComponent {
         event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
             this.secondaryOpacity = MAX_OPACITY;
-            this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
             alert("L'opacité doit être un nombre entre 0 et 100.");
         } else {
             this.secondaryOpacity = opacity;
-            this.colorSelectionService.setSecondaryOpacity(opacity / MAX_OPACITY);
+            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
         }
     }
 
     restorePreviousColor(color: string, isPrimary: boolean): void {
         if (isPrimary) {
             this.primaryColor = color;
-            this.colorSelectionService.setPrimaryColor(color);
+            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(color, this.primaryOpacity));
         } else {
             this.secondaryColor = color;
-            this.colorSelectionService.setSecondaryColor(color);
+            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(color, this.secondaryOpacity));
         }
+    }
+
+    hexToRGBA(color: string, opacity: number): string {
+        // Using variables for string slicing would be as meaningless as not using variables
+        // tslint:disable: no-magic-numbers
+        const r: number = parseInt(color.slice(-6, -4), 16);
+        const g: number = parseInt(color.slice(-4, -2), 16);
+        const b: number = parseInt(color.slice(-2), 16);
+        const rgba: string = 'rgba(' + r + ',' + g + ',' + b + ',' + (opacity / MAX_OPACITY).toString() + ')';
+        return rgba;
     }
 }
