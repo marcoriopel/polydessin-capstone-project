@@ -144,14 +144,6 @@ describe('SquareService', () => {
         expect(service.rectangleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    it('should create topLeftPoint', () => {
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 20, y: 20 };
-        // let x = service.firstPoint.x;
-        // let y = service.firstPoint.y;
-        service.onMouseMove(mouseEvent);
-    });
-
     it('should drawSquare if mouse is down and shift is pressed', () => {
         service.onMouseDown(mouseEvent);
         const event = new KeyboardEvent('keypress', {

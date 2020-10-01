@@ -152,11 +152,6 @@ describe('CircleService', () => {
         expect(service.circleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    it('should create topLeftPoint', () => {
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 20, y: 20 };
-    });
-
     it('should drawCircle if mouse is down and shift is pressed', () => {
         service.onMouseDown(mouseEvent);
         const event = new KeyboardEvent('keypress', {
