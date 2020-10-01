@@ -28,4 +28,10 @@ describe('ToolSelectionService', () => {
     it('should get current tool', () => {
         expect(service.getCurrentToolName()).toBe(pencilService.name);
     });
+
+    it('should not change current tool if changeTool is called with an invalid tool name', () => {
+        service.currentTool = pencilService;
+        service.changeTool('invalid tool name');
+        expect(service.currentTool).toBe(pencilService);
+    });
 });
