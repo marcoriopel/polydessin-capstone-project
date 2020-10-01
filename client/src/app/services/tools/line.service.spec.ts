@@ -43,6 +43,17 @@ describe('LineService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should not set isDrawing to true if mouse button is not left on mouse up', () => {
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Right,
+        } as MouseEvent;
+        service.isDrawing = false;
+        service.onMouseUp(mouseEvent);
+        expect(service.isDrawing).toBe(false);
+    });
+
     it('should change line width', () => {
         service.lineWidth = 0;
         service.changeLineWidth(1);
@@ -368,27 +379,13 @@ describe('LineService', () => {
     });
 
     // No conditions
-    it('should reach if branch to make adjacent positive', () => {
-        const click1: Vec2 = { x: 10, y: 10 };
-        const click2: Vec2 = { x: 9, y: 11 };
-        service.mouseClicks.push(click1);
-        service.adjustLineAngle(click2);
-    });
-
-    // No conditions
-    it('should reach if branch to make oposite positive', () => {
-        const click1: Vec2 = { x: 10, y: 10 };
-        const click2: Vec2 = { x: 11, y: 9 };
-        service.mouseClicks.push(click1);
-        service.adjustLineAngle(click2);
-    });
-
-    // No conditions
-    it('should reach if branch to change hypothenuse from 0 to 1', () => {
+    it('should call adjustEndingPoint because hypothenuse is changed from 0 to 1 to avoid divison by 0', () => {
+        const adjustEndingPointSpy = spyOn<any>(service, 'adjustEndingPoint');
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 10, y: 10 };
         service.mouseClicks.push(click1);
         service.adjustLineAngle(click2);
+        expect(adjustEndingPointSpy).toHaveBeenCalled();
     });
 
     it('should adjust line to 0 degrees', () => {
