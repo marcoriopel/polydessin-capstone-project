@@ -1,4 +1,3 @@
-import { stringify } from '@angular/compiler/src/util';
 import { Component, HostListener } from '@angular/core';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -132,7 +131,7 @@ export class ColorPickerComponent {
         const r: number = parseInt(color.slice(-6, -4), 16);
         const g: number = parseInt(color.slice(-4, -2), 16);
         const b: number = parseInt(color.slice(-2), 16);
-        const rgba: string = 'rgba(' + r + ',' + g + ',' + b + ',' + stringify(opacity / MAX_OPACITY) + ')';
+        const rgba: string = 'rgba(' + r + ',' + g + ',' + b + ',' + (opacity / MAX_OPACITY).toString() + ')';
         return rgba;
     }
 }
