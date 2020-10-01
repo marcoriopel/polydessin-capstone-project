@@ -47,7 +47,7 @@ describe('EraserService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: 0,
+            button: MouseButton.Left,
         } as MouseEvent;
     });
 
@@ -72,7 +72,7 @@ describe('EraserService', () => {
         expect(service.mouseDown).toEqual(true);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
+    it(' mouseDown should not draw anything on right click', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
@@ -116,7 +116,6 @@ describe('EraserService', () => {
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
-    // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         baseCtxStub.strokeStyle = 'black';
         baseCtxStub.strokeRect(0, 0, 1, 1);
