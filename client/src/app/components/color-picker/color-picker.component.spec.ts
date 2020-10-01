@@ -6,7 +6,6 @@ describe('ColorPickerComponent', () => {
     let keyboardEvent: KeyboardEvent;
     let component: ColorPickerComponent;
     let fixture: ComponentFixture<ColorPickerComponent>;
-    // let colorSelectionServiceSpy: jasmine.SpyObj<ColorSelectionService>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -15,12 +14,6 @@ describe('ColorPickerComponent', () => {
     }));
 
     beforeEach(() => {
-        // colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', [
-        //     'setPrimaryColor',
-        //     'setSecondaryColor',
-        //     'setPrimaryOpacity',
-        //     'setSecondaryOpacity',
-        // ]);
         fixture = TestBed.createComponent(ColorPickerComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
