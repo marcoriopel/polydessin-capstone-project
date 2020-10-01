@@ -10,8 +10,8 @@ describe('ColorPickerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [ColorPickerComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            declarations: [ColorPickerComponent],
         }).compileComponents();
     }));
 

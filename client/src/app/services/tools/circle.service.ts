@@ -18,6 +18,8 @@ export class CircleService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
     fillStyle: number;
+    circleWidth: number;
+    circleHeight: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -26,9 +28,7 @@ export class CircleService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'crosshair';
-        }
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     changeWidth(newWidth: number): void {
@@ -50,7 +50,7 @@ export class CircleService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.key === 'Shift') {
+        if (event.key === 'Shift' && this.isShiftKeyDown) {
             this.isShiftKeyDown = false;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -63,6 +63,7 @@ export class CircleService extends Tool {
         this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
+            this.lastPoint = this.getPositionFromMouse(event);
         }
     }
 
@@ -89,15 +90,9 @@ export class CircleService extends Tool {
         ctx.lineWidth = this.width;
         ctx.setLineDash([0]);
 
-        switch (this.fillStyle) {
-            case FILL_STYLES.FILL:
-                ctx.strokeStyle = this.colorSelectionService.primaryColor;
-                ctx.lineWidth = 1;
-                break;
-            case FILL_STYLES.BORDER:
-                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
-                break;
-            default:
+        if (this.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = this.colorSelectionService.primaryColor;
+            ctx.lineWidth = 1;
         }
 
         if (this.isShiftKeyDown) {
@@ -121,29 +116,23 @@ export class CircleService extends Tool {
     }
 
     private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        this.setCircleHeight();
+        this.setCircleWidth();
         const ellipseRadiusX = this.circleWidth / 2;
         const ellipseRadiusY = this.circleHeight / 2;
         const ellipseCenterX = point.x + ellipseRadiusX;
         const ellipseCenterY = point.y + ellipseRadiusY;
-
-        if (this.circleWidth >= this.circleHeight) {
-            ctx.beginPath();
-            ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusY, 0, Math.PI * 2, false);
-            if (this.fillStyle !== FILL_STYLES.BORDER) {
-                ctx.fill();
-            }
-            ctx.stroke();
-        } else if (this.circleWidth < this.circleHeight) {
-            ctx.beginPath();
-            ctx.arc(ellipseCenterX, ellipseCenterY, ellipseRadiusX, 0, Math.PI * 2, false);
-            if (this.fillStyle !== FILL_STYLES.BORDER) {
-                ctx.fill();
-            }
-            ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
+        if (this.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fill();
         }
+        ctx.stroke();
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        this.setCircleHeight();
+        this.setCircleWidth();
         const ellipseRadiusX = this.circleWidth / 2;
         const ellipseRadiusY = this.circleHeight / 2;
         const ellipseCenterX = point.x + ellipseRadiusX;
@@ -160,7 +149,7 @@ export class CircleService extends Tool {
     /*
      to find the top left point of the rectangle or the square
      */
-    private findTopLeftPoint(): Vec2 {
+    findTopLeftPoint(): Vec2 {
         const point1 = this.firstPoint;
         const point2 = this.lastPoint;
         // firstPoint is top left corner lastPoint is bottom right corner
@@ -183,11 +172,11 @@ export class CircleService extends Tool {
         return { x, y };
     }
 
-    get circleWidth(): number {
-        return Math.abs(this.firstPoint.x - this.lastPoint.x);
+    setCircleWidth(): void {
+        this.circleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }
 
-    get circleHeight(): number {
-        return Math.abs(this.firstPoint.y - this.lastPoint.y);
+    setCircleHeight(): void {
+        this.circleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 }
