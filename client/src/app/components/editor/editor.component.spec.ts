@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
@@ -23,6 +24,7 @@ describe('EditorComponent', () => {
         newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
             providers: [
                 { provide: ResizeDrawingService, useValue: resizeDrawingService },

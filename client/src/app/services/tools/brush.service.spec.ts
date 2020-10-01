@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -14,12 +13,21 @@ describe('BrushService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
-
+    const WIDTH = 100;
+    const HEIGHT = 100;
     const pattern = 'pattern2';
 
     beforeEach(() => {
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
 
         TestBed.configureTestingModule({
@@ -60,7 +68,7 @@ describe('BrushService', () => {
         expect(service.mouseDown).toEqual(true);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
+    it(' mouseDown should not draw anything on right click', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,

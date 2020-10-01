@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -13,12 +12,23 @@ describe('PencilService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let previewCanvasStub: HTMLCanvasElement;
     let drawLineSpy: jasmine.Spy<any>;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -30,6 +40,7 @@ describe('PencilService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].previewCanvas = previewCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -59,14 +70,14 @@ describe('PencilService', () => {
         expect(service.mouseDown).toEqual(true);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
+    it(' mouseDown should not draw anything on right click', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
             button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
@@ -101,6 +112,12 @@ describe('PencilService', () => {
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
         expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
+        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        service.handleCursor();
+        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     // Exemple de test d'intégration qui est quand même utile
