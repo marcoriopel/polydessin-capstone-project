@@ -30,9 +30,7 @@ export class SquareService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'crosshair';
-        }
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     setRectangleWidth(): void {
