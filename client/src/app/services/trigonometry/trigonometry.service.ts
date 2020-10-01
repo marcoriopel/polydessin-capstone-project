@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { DEGREES_180, LineAngle, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { Vec2 } from '@app/classes/vec2';
+import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 
 @Injectable({
@@ -61,6 +62,18 @@ export class TrigonometryService {
             return Quadrant.BOTTOM_LEFT;
         } else {
             return Quadrant.BOTTOM_RIGHT;
+        }
+    }
+
+    checkIf20pxAway(firstPoint: Vec2, secondPoint: Vec2): boolean {
+        // Phytagore
+        const a = secondPoint.x - firstPoint.x;
+        const b = secondPoint.y - firstPoint.y;
+        const c = Math.sqrt(a * a + b * b);
+        if (c <= MAXIMUM_DISTANCE_LINE_CONNECTION) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
