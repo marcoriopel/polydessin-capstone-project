@@ -11,6 +11,7 @@ describe('BrushService', () => {
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
     let baseCtxStub: CanvasRenderingContext2D;
+    let previewCanvasStub: HTMLCanvasElement;
     let previewCtxStub: CanvasRenderingContext2D;
     let drawLineSpy: jasmine.Spy<any>;
     const WIDTH = 100;
@@ -26,6 +27,7 @@ describe('BrushService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
+        previewCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -39,6 +41,7 @@ describe('BrushService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].previewCanvas = previewCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -55,6 +58,12 @@ describe('BrushService', () => {
         service.width = 0;
         service.changeWidth(1);
         expect(service.width).toBe(1);
+    });
+
+    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
+        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        service.handleCursor();
+        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
