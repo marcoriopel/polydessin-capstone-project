@@ -8,6 +8,12 @@ import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-magic-numbers
+class KeyEventMock {
+    key: string = 'o';
+    ctrlKey: boolean = true;
+    // tslint:disable-next-line: no-empty
+    preventDefault(): void {}
+}
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
@@ -147,11 +153,16 @@ describe('EditorComponent', () => {
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
 
-    /* Test FAIL preventDefault is not a function 
+    it('should call event.preventDefault when ctrl+o press', () => {
+        const keyEvent = new KeyEventMock() as KeyboardEvent;
+        const eventSpy = spyOn(keyEvent, 'preventDefault');
+        component.handleKeyDown(keyEvent);
+        expect(eventSpy).toHaveBeenCalled();
+    });
+
     it('should call openDialog when ctrl+o press', () => {
-        const keyEvent = { key: 'o', ctrlKey: true } as KeyboardEvent;
+        const keyEvent = new KeyEventMock() as KeyboardEvent;
         component.handleKeyDown(keyEvent);
         expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
     });
-    */
 });
