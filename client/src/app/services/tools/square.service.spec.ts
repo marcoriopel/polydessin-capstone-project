@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -24,12 +23,22 @@ describe('SquareService', () => {
     let drawSquareSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCanvasStub = canvasTestHelper.canvas as HTMLCanvasElement;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCanvasStub = canvas as HTMLCanvasElement;
         colorPickerStub = new ColorSelectionService();
 
         TestBed.configureTestingModule({

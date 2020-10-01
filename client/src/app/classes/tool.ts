@@ -21,7 +21,7 @@ export abstract class Tool {
 
     onMouseMove(event: MouseEvent): void {}
 
-    onMouseLeave(event: MouseEvent): void {}
+    onMouseLeave(): void {}
 
     onKeyDown(event: KeyboardEvent): void {}
 
