@@ -70,9 +70,9 @@ describe('SquareService', () => {
     });
 
     it('should change the fillStyle', () => {
-        service.fillStyle = 1;
-        service.changeFillStyle(1);
-        expect(service.fillStyle).toBe(1);
+        service.fillStyle = FILL_STYLES.FILL;
+        service.changeFillStyle(FILL_STYLES.BORDER);
+        expect(service.fillStyle).toBe(FILL_STYLES.BORDER);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -226,32 +226,18 @@ describe('SquareService', () => {
         expect(topLeft).toEqual(expectedValue);
     });
 
-    it('drawShape should change strokestyle with fillstyle set to fill', () => {
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.Left,
-        } as MouseEvent;
-        colorPickerStub.primaryColor = '#ffa500';
+    it('should call fillRect if option is not to draw only the border', () => {
         service.fillStyle = FILL_STYLES.FILL;
         service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
-
-        expect(baseCtxStub.strokeStyle).toEqual(colorPickerStub.primaryColor);
+        service.onMouseUp(mouseEvent);
+        expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('drawShape should change globalalpha with fillstyle set to border', () => {
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.Left,
-        } as MouseEvent;
-        colorPickerStub.secondaryOpacity = 0.6;
+    it('should not call fillRect if option is not to draw only the border', () => {
         service.fillStyle = FILL_STYLES.BORDER;
         service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
-
-        expect(baseCtxStub.globalAlpha).toEqual(colorPickerStub.secondaryOpacity);
+        service.onMouseUp(mouseEvent);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should not set isShiftKeyDown to true if key down of anything else than shift', () => {

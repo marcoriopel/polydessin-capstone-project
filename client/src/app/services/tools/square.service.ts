@@ -98,17 +98,10 @@ export class SquareService extends Tool {
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
 
-        switch (this.fillStyle) {
-            case FILL_STYLES.FILL:
-                ctx.strokeStyle = this.colorSelectionService.primaryColor;
-                ctx.lineWidth = 1;
-                break;
-            case FILL_STYLES.BORDER:
-                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
-                break;
-            default:
+        if (this.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = this.colorSelectionService.primaryColor;
+            ctx.lineWidth = 1;
         }
-
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {

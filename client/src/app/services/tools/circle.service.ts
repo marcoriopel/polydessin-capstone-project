@@ -90,15 +90,9 @@ export class CircleService extends Tool {
         ctx.lineWidth = this.width;
         ctx.setLineDash([0]);
 
-        switch (this.fillStyle) {
-            case FILL_STYLES.FILL:
-                ctx.strokeStyle = this.colorSelectionService.primaryColor;
-                ctx.lineWidth = 1;
-                break;
-            case FILL_STYLES.BORDER:
-                ctx.globalAlpha = this.colorSelectionService.secondaryOpacity;
-                break;
-            default:
+        if (this.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = this.colorSelectionService.primaryColor;
+            ctx.lineWidth = 1;
         }
 
         if (this.isShiftKeyDown) {
