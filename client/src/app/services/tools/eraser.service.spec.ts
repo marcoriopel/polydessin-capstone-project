@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -26,8 +25,9 @@ describe('EraserService', () => {
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         previewCanvasStub = canvas as HTMLCanvasElement;
 
