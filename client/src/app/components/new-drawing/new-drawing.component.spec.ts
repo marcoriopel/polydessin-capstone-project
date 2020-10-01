@@ -1,6 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { NewDrawingComponent } from './new-drawing.component';
 
@@ -14,12 +13,22 @@ describe('NewDrawingComponent', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(async(() => {
-        baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
 
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawingServiceSpy = jasmine.createSpyObj('drawingService', ['clearCanvas']);
+
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [NewDrawingComponent],

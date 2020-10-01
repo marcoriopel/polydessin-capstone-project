@@ -18,4 +18,4 @@
         (valueChange)="handleDotWidthChange($event)"
     ></app-slider>
 </div>
-<mat-checkbox (change)="handleJunctionPointChange($event.checked)">Afficher jonction</mat-checkbox>
+<mat-checkbox (change)="handleJunctionPointChange($event.checked)" [checked]="isDot">Afficher jonction</mat-checkbox>

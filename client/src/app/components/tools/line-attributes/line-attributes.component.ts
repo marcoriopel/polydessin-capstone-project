@@ -9,10 +9,12 @@ import { LineService } from '@app/services/tools/line.service';
 export class LineAttributesComponent {
     toolWidth: number;
     dotWith: number;
+    isDot: boolean;
 
     constructor(public lineService: LineService) {
         this.toolWidth = lineService.lineWidth;
         this.dotWith = lineService.dotWidth;
+        this.isDot = lineService.isDot;
     }
 
     handleDotWidthChange(newWidth: number): void {
