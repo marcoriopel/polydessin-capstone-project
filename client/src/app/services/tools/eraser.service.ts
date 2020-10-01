@@ -20,9 +20,7 @@ export class EraserService extends Tool {
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
-        if (previewCanvas) {
-            previewCanvas.style.cursor = 'none';
-        }
+        previewCanvas.style.cursor = 'none';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -48,8 +46,9 @@ export class EraserService extends Tool {
         this.clearPath();
     }
 
-    onMouseLeave(event: MouseEvent): void {
+    onMouseLeave(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
     }
 
     onMouseMove(event: MouseEvent): void {

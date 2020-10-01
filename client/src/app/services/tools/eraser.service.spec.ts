@@ -13,11 +13,22 @@ describe('EraserService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
+    let previewCanvasStub: HTMLCanvasElement;
     let drawLineSpy: jasmine.Spy<any>;
+    const WIDTH = 100;
+    const HEIGHT = 100;
     beforeEach(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
         baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = canvasTestHelper.drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -29,6 +40,7 @@ describe('EraserService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].previewCanvas = previewCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -119,5 +131,17 @@ describe('EraserService', () => {
         expect(imageData.data[1]).toEqual(255); // G
         expect(imageData.data[2]).toEqual(255); // B
         expect(imageData.data[3]).not.toEqual(0); // A
+    });
+
+    it(' should set cursor to crosshair on handleCursorCall', () => {
+        drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
+        service.handleCursor();
+        expect(previewCanvasStub.style.cursor).toEqual('none');
+    });
+
+    it(' should draw line on cursor leave of canvas', () => {
+        service.onMouseDown(mouseEvent);
+        service.onMouseLeave();
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

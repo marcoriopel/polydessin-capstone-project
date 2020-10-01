@@ -91,9 +91,8 @@ describe('DrawingComponent', () => {
     });
 
     it(' onMouseLeave should call toolSelectionService.onMouseLeave', () => {
-        const event = {} as MouseEvent;
         const mouseEventSpy = spyOn(toolStub, 'onMouseLeave').and.callThrough();
-        component.onMouseLeave(event);
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        component.onMouseLeave();
+        expect(mouseEventSpy).toHaveBeenCalled();
     });
 });
