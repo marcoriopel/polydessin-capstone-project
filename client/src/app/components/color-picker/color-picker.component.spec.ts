@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorPickerComponent } from './color-picker.component';
 
-fdescribe('ColorPickerComponent', () => {
+describe('ColorPickerComponent', () => {
     let keyboardEvent: KeyboardEvent;
     let component: ColorPickerComponent;
     let fixture: ComponentFixture<ColorPickerComponent>;
@@ -95,7 +95,7 @@ fdescribe('ColorPickerComponent', () => {
         }
         const color = '#ffffff';
         component.changePrimaryColor(color);
-        expect(component.colors.length).toEqual(10);
+        expect(component.colors.length).toEqual(MAXIMUM_NUMBER_OF_COLORS);
     });
 
     it('should not change length to 11 when changing secondary color with 10 recently used colors', () => {
@@ -104,7 +104,7 @@ fdescribe('ColorPickerComponent', () => {
         }
         const color = '#ffffff';
         component.changeSecondaryColor(color);
-        expect(component.colors.length).toEqual(10);
+        expect(component.colors.length).toEqual(MAXIMUM_NUMBER_OF_COLORS);
     });
 
     it('swap colors should swap primary and secondary colors', () => {
