@@ -346,20 +346,6 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
-    it('checkIf20pxAway should return false with points more than 20 px away', () => {
-        const firstPoint: Vec2 = { x: 20, y: 20 };
-        const secondPoint: Vec2 = { x: 50, y: 50 };
-        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
-        expect(returnValue).toBe(false);
-    });
-
-    it('checkIf20pxAway should return true with points less than 20 px away', () => {
-        const firstPoint: Vec2 = { x: 20, y: 20 };
-        const secondPoint: Vec2 = { x: 25, y: 25 };
-        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
-        expect(returnValue).toBe(true);
-    });
-
     it('deleteLastSegment should redraw preview line when a segment is deleted', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 10, y: 10 };
