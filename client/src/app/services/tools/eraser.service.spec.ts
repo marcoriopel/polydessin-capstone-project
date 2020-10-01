@@ -15,6 +15,7 @@ describe('EraserService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
     let drawLineSpy: jasmine.Spy<any>;
+    let strokeRectSpy: jasmine.Spy<any>;
     const WIDTH = 100;
     const HEIGHT = 100;
     beforeEach(() => {
@@ -41,6 +42,7 @@ describe('EraserService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        strokeRectSpy = spyOn<any>(previewCtxStub, 'fillRect').and.callThrough();
 
         mouseEvent = {
             offsetX: 25,
@@ -143,5 +145,10 @@ describe('EraserService', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseLeave();
         expect(drawLineSpy).toHaveBeenCalled();
+    });
+
+    it(' should show custom cursor on canvas', () => {
+        service.onMouseMove(mouseEvent);
+        expect(strokeRectSpy).toHaveBeenCalled();
     });
 });
