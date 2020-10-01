@@ -152,12 +152,6 @@ describe('ColorPickerComponent', () => {
         expect(component.secondaryOpacity).toEqual(component.minOpacity + 1);
     });
 
-    it('should not decrement secondary opacity because already at minimum', () => {
-        component.primaryOpacity = MAX_OPACITY;
-        component.incrementSecondaryOpacity();
-        expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
-    });
-
     it('should block primary opacity change if opacity input contains chars (reset back to 100%)', () => {
         const opacity = 'test';
         component.changePrimaryOpacity(opacity, keyboardEvent);
@@ -178,18 +172,6 @@ describe('ColorPickerComponent', () => {
 
     it('should block secondary opacity change if opacity input is less than 0 (reset back to 100%)', () => {
         const opacity = -1;
-        component.changeSecondaryOpacity(opacity, keyboardEvent);
-        expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
-    });
-
-    it('should block primary opacity change if opacity input is less than 0 (reset back to 100%)', () => {
-        const opacity = -1;
-        component.changePrimaryOpacity(opacity, keyboardEvent);
-        expect(component.primaryOpacity).toEqual(MAX_OPACITY);
-    });
-
-    it('should block secondary opacity change if opacity input is less than 0 (reset back to 100%)', () => {
-        const opacity = 101;
         component.changeSecondaryOpacity(opacity, keyboardEvent);
         expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
     });
