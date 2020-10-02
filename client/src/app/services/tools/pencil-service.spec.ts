@@ -135,4 +135,9 @@ describe('PencilService', () => {
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
     });
+
+    it(' should get position from mouse', () => {
+        const expectedResult: Vec2 = { x: 25, y: 25 };
+        expect(service.getPositionFromMouse(mouseEvent)).toEqual(expectedResult);
+    });
 });
