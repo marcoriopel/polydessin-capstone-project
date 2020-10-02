@@ -26,7 +26,7 @@ export const BASIC_TOOLS: Feature[] = [
     {
         name: 'Ligne',
         description:
-            'Cet outil permet de tracer une ligne composée d’un ou plusieurs segments. Un premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Un double clic permet de terminer le segment. Si le double clic est fait près du point initial de la ligne, le segment se fusionnera au point initial.',
+            "Cet outil permet de tracer une ligne composée d'un ou plusieurs segments. Un premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Un double clic permet de terminer le segment. Si le double clic est fait près du point initial de la ligne, le segment se fusionnera au point initial. \nLa commande shifth permet de mettre la ligne a 90° ou 45°  de celle tracé précédemment. Il est possible d'afficher un point de jonction entre les segments en cliquant dans la boîte «Afficher jonction». La couleur des points de jonction est déterminée par la couleur secondaire.   ",
         picture: './../../../assets/video/ligne.gif',
     },
     // { name: 'Étampe', description: 'etampe ...', picture: './../../../assets/img/picture_test.jpg' },
@@ -44,7 +44,7 @@ export const DRAWING_TOOLS: Feature[] = [
     {
         name: 'Pinceau',
         description:
-            'Le pinceau permet de faire des traits de différente texture. Vous pouvez changer de texture en sélectionnant l image correspondant à la texture désirée.',
+            "Le pinceau permet de faire des traits de différente texture. Vous pouvez changer de texture en sélectionnant l'image correspondant à la texture désirée.",
         picture: './../../../assets/video/brush.gif',
     },
     // { name: 'Plume', description: 'plume ...', picture: './../../../assets/img/picture_test.jpg' },
@@ -54,10 +54,16 @@ export const DRAWING_TOOLS: Feature[] = [
 export const SHAPES: Feature[] = [
     {
         name: 'Rectangle',
-        description: 'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé a une remplissage uni.',
+        description:
+            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé peut avoir un remplissage uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un carré avec la commande shift.',
         picture: './../../../assets/video/rectangle.gif',
     },
-    { name: 'Ellipse', description: 'ellipse', picture: './../../../assets/img/picture_test.jpg' },
+    {
+        name: 'Ellipse',
+        description:
+            "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
+        picture: './../../../assets/video/ellipse.jpg',
+    },
     // { name: 'Polygone', description: 'polygone ...', picture: './../../../assets/img/picture_test.jpg' },
 ];
 
@@ -71,10 +77,4 @@ export const TRANSFORMATIONS: Feature[] = [
     // { name: 'Redimensionnement', description: '', picture: './../../../assets/video/resizing.gif' },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
     // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },
-];
-
-export const TOOL_GROUPS: GroupFeature[] = [
-    { name: 'Forme', description: '', picture: '', dependance: SHAPES },
-    // { name: 'Sceau de peinture', description: 'pixels ...', picture: '', dependance: FILL },
-    { name: 'Outils de tracage', description: '', picture: '', dependance: DRAWING_TOOLS },
 ];

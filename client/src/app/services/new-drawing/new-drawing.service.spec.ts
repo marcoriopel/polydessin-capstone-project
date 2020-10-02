@@ -11,19 +11,10 @@ describe('NewDrawingService', () => {
     let service: NewDrawingService;
     let matDialogSpy: SpyObj<MatDialog>;
     let drawingServiceSpy: SpyObj<DrawingService>;
-    let baseCtxStub: CanvasRenderingContext2D;
-    const WIDTH = 100;
-    const HEIGHT = 100;
 
     beforeEach(async(() => {
-        const canvas = document.createElement('canvas');
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
-
         matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank']);
-        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
-
         TestBed.configureTestingModule({
             providers: [
                 { provide: MatDialog, useValue: matDialogSpy },
@@ -35,17 +26,33 @@ describe('NewDrawingService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(NewDrawingService);
-        service.drawingService.baseCtx = baseCtxStub;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it('Should open a warning if canvas is not blank', () => {
+    it('Should open Warning', () => {
+        const baseCtxStub = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
         baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
+        service.drawingService.baseCtx = baseCtxStub;
+
+        service.openWarning();
+
+        expect(drawingServiceSpy.clearCanvas).toBeFalsy();
+        expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+
+    /*it('should open the modal once', () => {
+        const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
+        service.drawingService.baseCtx = baseCtxStub;
+
         service.openWarning();
         expect(matDialogSpy.open).toHaveBeenCalled();
-        expect(drawingServiceSpy.isCanvasBlank).toHaveBeenCalled();
-    });
+        service.openWarning();
+        service.openWarning();
+        const modalOpenTwice = document.querySelector('.newDrawingModal') !== null;
+        expect(modalOpenTwice).toEqual(true);
+    });*/
 });

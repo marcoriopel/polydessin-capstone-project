@@ -9,19 +9,25 @@ import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-magic-numbers
+class KeyEventMock {
+    key: string = 'o';
+    ctrlKey: boolean = true;
+    // tslint:disable-next-line: no-empty
+    preventDefault(): void {}
+}
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingService: ResizeDrawingService;
     let style: CSSStyleDeclaration;
-    // tslint:disable-next-line: prefer-const  MatDialog need to be call in the constructor for the test to all pass
     let matDialog: MatDialog;
     let newdrawServiceSpy: SpyObj<NewDrawingService>;
 
     beforeEach(async(() => {
         resizeDrawingService = new ResizeDrawingService();
         newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        matDialog = {} as MatDialog;
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -149,11 +155,16 @@ describe('EditorComponent', () => {
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
 
-    /* Test FAIL preventDefault is not a function 
+    it('should call event.preventDefault when ctrl+o press', () => {
+        const keyEvent = new KeyEventMock() as KeyboardEvent;
+        const eventSpy = spyOn(keyEvent, 'preventDefault');
+        component.handleKeyDown(keyEvent);
+        expect(eventSpy).toHaveBeenCalled();
+    });
+
     it('should call openDialog when ctrl+o press', () => {
-        const keyEvent = { key: 'o', ctrlKey: true } as KeyboardEvent;
+        const keyEvent = new KeyEventMock() as KeyboardEvent;
         component.handleKeyDown(keyEvent);
         expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
     });
-    */
 });
