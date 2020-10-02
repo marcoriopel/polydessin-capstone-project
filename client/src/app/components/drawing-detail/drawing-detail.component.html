@@ -1,9 +1,9 @@
-<mat-expansion-panel hideToggle>
+<mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title> Outils </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-expansion-panel *ngFor="let basicTool of basicTools" hideToggle>
+    <mat-expansion-panel *ngFor="let basicTool of basicTools">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ basicTool.name }}
@@ -13,7 +13,7 @@
         <img class="animated-gif" src="{{ basicTool.picture }}" />
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngFor="let toolGroup of toolGroups" hideToggle>
+    <mat-expansion-panel *ngFor="let toolGroup of toolGroups">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ toolGroup.name }}
@@ -22,7 +22,7 @@
         <p>{{ toolGroup.description }}</p>
         <img class="animated-gif" src="{{ toolGroup.picture }}" />
 
-        <mat-expansion-panel *ngFor="let tool of toolGroup.dependance" hideToggle>
+        <mat-expansion-panel *ngFor="let tool of toolGroup.dependance">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     {{ tool.name }}
@@ -34,7 +34,7 @@
     </mat-expansion-panel>
 </mat-expansion-panel>
 
-<mat-expansion-panel *ngFor="let feature of otherFeatures" hideToggle>
+<mat-expansion-panel *ngFor="let feature of otherFeatures">
     <mat-expansion-panel-header>
         <mat-panel-title>
             {{ feature.name }}
