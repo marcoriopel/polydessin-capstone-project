@@ -84,7 +84,7 @@ export class BrushService extends Tool {
 
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
-        ctx.lineCap = 'round';
+        ctx.lineCap = ctx.lineJoin = 'round';
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.beginPath();
         for (const point of path) {

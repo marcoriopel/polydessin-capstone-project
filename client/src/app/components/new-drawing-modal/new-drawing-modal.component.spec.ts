@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { NewDrawingModalComponent } from './new-drawing-modal.component';
@@ -10,6 +11,7 @@ describe('NewDrawingComponent', () => {
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [NewDrawingModalComponent],
             providers: [{ provides: DrawingService, useValue: drawingServiceStub }],
         }).compileComponents();
