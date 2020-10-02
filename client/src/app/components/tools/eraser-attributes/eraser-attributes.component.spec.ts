@@ -30,7 +30,7 @@ describe('EraserAttributesComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call changeWidth of pencilService', () => {
+    it('should call changeWidth of eraserService', () => {
         component.handleWidthChange(finalToolWidth);
         expect(component.eraserService.changeWidth).toHaveBeenCalled();
     });
