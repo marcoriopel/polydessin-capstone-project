@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FillStyles, FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 
 @Component({
@@ -7,6 +7,7 @@ import { FillStyles, FILL_STYLES } from '@app/ressources/global-variables/fill-s
     styleUrls: ['./type-of-fill-selection.component.scss'],
 })
 export class TypeOfFillSelectionComponent {
+    @Input() currentFillStyle: number;
     @Output() valueChange: EventEmitter<number> = new EventEmitter();
 
     fillStyles: FillStyles = {

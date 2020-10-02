@@ -8,9 +8,11 @@ import { CircleService } from '@app/services/tools/circle.service';
 })
 export class CircleAttributesComponent {
     toolWidth: number;
+    fillStyle: number;
 
     constructor(public circleService: CircleService) {
         this.toolWidth = circleService.width;
+        this.fillStyle = circleService.fillStyle;
     }
 
     handleBorderWidthChange(newWidth: number): void {
