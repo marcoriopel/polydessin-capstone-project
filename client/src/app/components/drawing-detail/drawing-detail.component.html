@@ -13,23 +13,33 @@
         <img class="animated-gif" src="{{ basicTool.picture }}" />
     </mat-expansion-panel>
 
-    <mat-expansion-panel *ngFor="let toolGroup of toolGroups">
+    <mat-expansion-panel hideToggle>
         <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{ toolGroup.name }}
-            </mat-panel-title>
+            <mat-panel-title> Outils de tracage </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ toolGroup.description }}</p>
-        <img class="animated-gif" src="{{ toolGroup.picture }}" />
-
-        <mat-expansion-panel *ngFor="let tool of toolGroup.dependance">
+        <mat-expansion-panel *ngFor="let drawingTool of drawingTools" hideToggle>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{ tool.name }}
+                    {{ drawingTool.name }}
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>{{ tool.description }}</p>
-            <img class="animated-gif" src="{{ tool.picture }}" />
+            <p>{{ drawingTool.description }}</p>
+            <img class="animated-gif" src="{{ drawingTool.picture }}" />
+        </mat-expansion-panel>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title> Forme </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-expansion-panel *ngFor="let shape of shapes" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ shape.name }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>{{ shape.description }}</p>
+            <img class="animated-gif" src="{{ shape.picture }}" />
         </mat-expansion-panel>
     </mat-expansion-panel>
 </mat-expansion-panel>
