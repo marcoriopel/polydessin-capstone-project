@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -14,8 +15,9 @@ describe('NewDrawingService', () => {
 
     beforeEach(async(() => {
         matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'clearCanvas']);
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 { provide: MatDialog, useValue: matDialogSpy },
                 { provide: DrawingService, useValue: drawingServiceSpy },
@@ -33,27 +35,14 @@ describe('NewDrawingService', () => {
     });
 
     it('Should open Warning', () => {
-        const testModalOpen = document.querySelector('.newDrawingModal') !== null;
-        const baseCtxStub = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
+        const canvas = document.createElement('canvas');
+        const baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
+        service.drawingService.canvas = canvas;
         service.drawingService.baseCtx = baseCtxStub;
 
         service.openWarning();
-        expect(testModalOpen).toEqual(false);
-        expect(drawingServiceSpy.clearCanvas).toBeFalsy();
+        expect(drawingServiceSpy.isCanvasBlank(baseCtxStub)).toBeFalsy();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
-
-    /*it('should open the modal once', () => {
-        const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
-        baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
-        service.drawingService.baseCtx = baseCtxStub;
-
-        service.openWarning();
-        expect(matDialogSpy.open).toHaveBeenCalled();
-        service.openWarning();
-        
-        const modalOpenTwice = document.querySelector('.newDrawingModal') !== null;
-        expect(modalOpenTwice).toEqual(true);
-    });*/
 });
