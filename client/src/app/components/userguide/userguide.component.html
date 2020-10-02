@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Guide d'utilisation</h1>
-<div mat-dialog-content>
+<div mat-dialog-content [@.disabled]="disableAnimation">
     <mat-tab-group>
         <mat-tab>
             <ng-template mat-tab-label>
@@ -19,5 +19,5 @@
     </mat-tab-group>
 </div>
 <div mat-dialog-actions>
-    <button mat-button_wrapper mat-dialog-close>Close</button>
+    <button mat-button_wrapper mat-button color="warn" mat-dialog-close>Close</button>
 </div>

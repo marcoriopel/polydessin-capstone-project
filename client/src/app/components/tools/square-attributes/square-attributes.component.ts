@@ -8,9 +8,11 @@ import { SquareService } from '@app/services/tools/square.service';
 })
 export class SquareAttributesComponent {
     toolWidth: number;
+    fillStyle: number;
 
     constructor(public squareService: SquareService) {
         this.toolWidth = squareService.width;
+        this.fillStyle = squareService.fillStyle;
     }
 
     handleBorderWidthChange(newWidth: number): void {

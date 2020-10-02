@@ -62,7 +62,7 @@ export const SHAPES: Feature[] = [
         name: 'Ellipse',
         description:
             "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
-        picture: './../../../assets/video/ellipse.jpg',
+        picture: './../../../assets/video/ellipse.gif',
     },
     // { name: 'Polygone', description: 'polygone ...', picture: './../../../assets/img/picture_test.jpg' },
 ];

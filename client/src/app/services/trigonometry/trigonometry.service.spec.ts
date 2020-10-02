@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 import { TrigonometryService } from './trigonometry.service';
@@ -228,5 +229,12 @@ describe('TrigonometryService', () => {
         const positionY = -1;
         const returnValue: Quadrant = service.findCursorQuadrant(positionX, positionY);
         expect(returnValue).toBe(Quadrant.BOTTOM_RIGHT);
+    });
+
+    it('should return false if more than 20px away', () => {
+        const firstPoint: Vec2 = { x: 0, y: 0 };
+        const secondPoint: Vec2 = { x: 50, y: 50 };
+        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
+        expect(returnValue).toBe(false);
     });
 });

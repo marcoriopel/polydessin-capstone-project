@@ -1,7 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorPickerComponent } from './color-picker.component';
+
+class KeyEventMock {
+    key: string = 'o';
+    ctrlKey: boolean = true;
+    // tslint:disable-next-line: no-empty
+    stopPropagation(): void {}
+}
 
 describe('ColorPickerComponent', () => {
     let keyboardEvent: KeyboardEvent;
@@ -10,6 +18,7 @@ describe('ColorPickerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [FormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [ColorPickerComponent],
         }).compileComponents();
@@ -56,6 +65,13 @@ describe('ColorPickerComponent', () => {
     it('last 10 colors used array should have a length of one (#000000) on component creation', () => {
         expect(component.colors.length).toEqual(1);
         expect(component.colors[0]).toEqual('#000000');
+    });
+
+    it('onInput should call event.stopPropagation', () => {
+        const keyEvent = new KeyEventMock() as KeyboardEvent;
+        const eventSpy = spyOn(keyEvent, 'stopPropagation');
+        component.onInput(keyEvent);
+        expect(eventSpy).toHaveBeenCalled();
     });
 
     it('should change primary color to #ffffff', () => {
@@ -152,6 +168,12 @@ describe('ColorPickerComponent', () => {
         component.secondaryOpacity = component.minOpacity;
         component.incrementSecondaryOpacity();
         expect(component.secondaryOpacity).toEqual(component.minOpacity + 1);
+    });
+
+    it('should not increment secondary opacity because already at maximum', () => {
+        component.secondaryOpacity = MAX_OPACITY;
+        component.incrementSecondaryOpacity();
+        expect(component.primaryOpacity).toEqual(MAX_OPACITY);
     });
 
     it('should block primary opacity change if opacity input contains chars (reset back to 100%)', () => {

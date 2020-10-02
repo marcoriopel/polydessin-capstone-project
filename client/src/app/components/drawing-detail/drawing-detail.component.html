@@ -1,9 +1,9 @@
-<mat-expansion-panel hideToggle>
+<mat-expansion-panel>
     <mat-expansion-panel-header>
         <mat-panel-title> Outils </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-expansion-panel *ngFor="let basicTool of basicTools" hideToggle>
+    <mat-expansion-panel *ngFor="let basicTool of basicTools">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ basicTool.name }}
@@ -44,7 +44,7 @@
     </mat-expansion-panel>
 </mat-expansion-panel>
 
-<mat-expansion-panel *ngFor="let feature of otherFeatures" hideToggle>
+<mat-expansion-panel *ngFor="let feature of otherFeatures">
     <mat-expansion-panel-header>
         <mat-panel-title>
             {{ feature.name }}

@@ -11,7 +11,6 @@ export class NewDrawingService {
 
     openWarning(): void {
         const isNewDrawingModalOpen = document.querySelector('.newDrawingModal') !== null;
-        console.log(isNewDrawingModalOpen);
         if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx) && !isNewDrawingModalOpen) {
             this.dialog.open(NewDrawingModalComponent);
         }

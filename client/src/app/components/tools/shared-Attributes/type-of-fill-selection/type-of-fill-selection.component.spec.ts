@@ -23,12 +23,17 @@ describe('TypeOfFillSelectionComponent', () => {
 
     it('handleValueChange should emit event', () => {
         const value = '3';
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+
         const event = ({
-            target: value,
+            target,
         } as unknown) as InputEvent;
+
         const eventEmiterSpy = spyOn(component.valueChange, 'emit');
         component.handleValueChange(event);
-        const target = event.target as HTMLInputElement;
-        expect(eventEmiterSpy).toHaveBeenCalledWith(Number(target.value));
+        // tslint:disable-next-line: no-magic-numbers
+        expect(eventEmiterSpy).toHaveBeenCalledWith(3);
     });
 });
