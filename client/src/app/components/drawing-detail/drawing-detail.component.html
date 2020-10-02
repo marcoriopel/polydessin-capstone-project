@@ -10,7 +10,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <p>{{ basicTool.description }}</p>
-        <img class="animated-gif" src="{{ basicTool.picture }}" />
+        <video autoplay loop muted><source class="animated-gif" src="{{ basicTool.picture }}" type="video/mp4" /></video>
     </mat-expansion-panel>
 
     <mat-expansion-panel hideToggle>
@@ -24,7 +24,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <p>{{ drawingTool.description }}</p>
-            <img class="animated-gif" src="{{ drawingTool.picture }}" />
+            <video autoplay loop muted><source class="animated-gif" src="{{ drawingTool.picture }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
 
@@ -39,7 +39,7 @@
                 </mat-panel-title>
             </mat-expansion-panel-header>
             <p>{{ shape.description }}</p>
-            <img class="animated-gif" src="{{ shape.picture }}" />
+            <video autoplay loop muted><source class="animated-gif" src="{{ shape.picture }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
 </mat-expansion-panel>
@@ -51,5 +51,5 @@
         </mat-panel-title>
     </mat-expansion-panel-header>
     <p>{{ feature.description }}</p>
-    <img class="animated-gif" src="{{ feature.picture }}" />
+    <video autoplay loop muted><source class="animated-gif" src="{{ feature.picture }}" type="video/mp4" /></video>
 </mat-expansion-panel>
