@@ -33,12 +33,13 @@ describe('NewDrawingService', () => {
     });
 
     it('Should open Warning', () => {
+        const testModalOpen = document.querySelector('.newDrawingModal') !== null;
         const baseCtxStub = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
         baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
         service.drawingService.baseCtx = baseCtxStub;
 
         service.openWarning();
-
+        expect(testModalOpen).toEqual(false);
         expect(drawingServiceSpy.clearCanvas).toBeFalsy();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
@@ -51,7 +52,7 @@ describe('NewDrawingService', () => {
         service.openWarning();
         expect(matDialogSpy.open).toHaveBeenCalled();
         service.openWarning();
-        service.openWarning();
+        
         const modalOpenTwice = document.querySelector('.newDrawingModal') !== null;
         expect(modalOpenTwice).toEqual(true);
     });*/
