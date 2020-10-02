@@ -12,18 +12,17 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
-    mouseDown: boolean;
+    mouseDown: boolean = false;
     isShiftKeyDown: boolean = false;
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
-    fillStyle: number;
+    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     circleWidth: number;
     circleHeight: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-        this.mouseDown = false;
     }
 
     handleCursor(): void {

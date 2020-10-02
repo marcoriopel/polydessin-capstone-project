@@ -12,20 +12,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SquareService extends Tool {
     name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
-    mouseDown: boolean;
+    mouseDown: boolean = false;
     isShiftKeyDown: boolean = false;
     width: number = 1;
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
-    fillStyle: number;
+    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     rectangleHeight: number;
     rectangleWidth: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-        this.mouseDown = false;
-        this.fillStyle = FILL_STYLES.FILL_AND_BORDER;
     }
 
     handleCursor(): void {
