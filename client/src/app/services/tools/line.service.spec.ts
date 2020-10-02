@@ -10,6 +10,7 @@ import { LineService } from './line.service';
 describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
+    let previewCanvasStub: HTMLCanvasElement;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -30,6 +31,7 @@ describe('LineService', () => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -40,6 +42,7 @@ describe('LineService', () => {
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
+        service['drawingService'].previewCanvas = previewCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -50,6 +53,23 @@ describe('LineService', () => {
 
     it('should be created', () => {
         expect(service).toBeTruthy();
+    });
+
+    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
+        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        service.handleCursor();
+        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+    });
+
+    it('should not set isDrawing to true if mouse button is not left on mouse up', () => {
+        mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.Right,
+        } as MouseEvent;
+        service.isDrawing = false;
+        service.onMouseUp(mouseEvent);
+        expect(service.isDrawing).toBe(false);
     });
 
     it('should change line width', () => {
@@ -115,6 +135,14 @@ describe('LineService', () => {
         expect(service.isShiftKeyDown).toBe(true);
     });
 
+    it('isShiftKeyDown should be false when a different key than shift is pressed down', () => {
+        const event = new KeyboardEvent('keypress', {
+            key: 'Backspace',
+        });
+        service.onKeyDown(event);
+        expect(service.isShiftKeyDown).toBe(false);
+    });
+
     it('isShiftKeyDown should be false when shift key is released', () => {
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
@@ -131,6 +159,16 @@ describe('LineService', () => {
         service.numberOfClicks = 2;
         service.onKeyUp(event);
         expect(deleteLastSegmentSpy).toHaveBeenCalled();
+    });
+
+    it('last segment of line should not be deleted when releasing backspace if number of clicks < 1', () => {
+        const deleteLastSegmentSpy = spyOn<any>(service, 'deleteLastSegment');
+        const event = new KeyboardEvent('keypress', {
+            key: 'Backspace',
+        });
+        service.numberOfClicks = 1;
+        service.onKeyUp(event);
+        expect(deleteLastSegmentSpy).not.toHaveBeenCalled();
     });
 
     it('line should be deleted when escape key is released', () => {
@@ -176,6 +214,13 @@ describe('LineService', () => {
         expect(service.storedLines.length).toBe(0);
         expect(service.mouseClicks.length).toBe(0);
         expect(service.numberOfClicks).toBe(0);
+    });
+
+    it('should not call drawLine in drawSegment if isDrawing is false', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
+        service.isDrawing = false;
+        service.drawSegment();
+        expect(drawLineSpy).not.toHaveBeenCalled();
     });
 
     it('should call clearCanvas and drawLine', () => {
@@ -287,6 +332,27 @@ describe('LineService', () => {
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
+    it('should set isShiftDoubleClick to true when double clicking with shift down', () => {
+        service.onMouseUp(mouseEvent);
+        service.shiftClick = { x: 25, y: 25 };
+        service.onMouseUp(mouseEvent);
+
+        expect(service.isShiftDoubleClick).toBe(true);
+    });
+
+    it('drawDots should change last mouse click to ending point of last line if shift is down', () => {
+        service.isShiftDoubleClick = true;
+        const click1: Vec2 = { x: 20, y: 20 };
+        const click2: Vec2 = { x: 21, y: 21 };
+        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        service.storedLines.push(line);
+        service.mouseClicks.push(click1);
+        service.mouseClicks.push(click2);
+        service.drawDots(1, false);
+
+        expect(service.mouseClicks[0]).toEqual(service.storedLines[0].endingPoint);
+    });
+
     it('stored line should correspond to mouse clicks', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
 
@@ -334,7 +400,18 @@ describe('LineService', () => {
         expect(drawDotsSpy).toHaveBeenCalled();
     });
 
-    it('should call drawLine', () => {
+    it('should not call drawLine if isDrawing is false', () => {
+        const drawLineSpy = spyOn<any>(service, 'drawLine');
+        service.isDrawing = false;
+        const click1: Vec2 = { x: 20, y: 20 };
+        const click2: Vec2 = { x: 25, y: 25 };
+        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        service.storedLines.push(line);
+        service.onMouseMove(mouseEvent);
+        expect(drawLineSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call drawLine if isDrawing is false', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         service.isDrawing = true;
         const click1: Vec2 = { x: 20, y: 20 };
@@ -353,20 +430,6 @@ describe('LineService', () => {
         service.onMouseMove(mouseEvent);
         expect(adjustLineAngleSpy).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
-    });
-
-    it('checkIf20pxAway should return false with points more than 20 px away', () => {
-        const firstPoint: Vec2 = { x: 20, y: 20 };
-        const secondPoint: Vec2 = { x: 50, y: 50 };
-        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
-        expect(returnValue).toBe(false);
-    });
-
-    it('checkIf20pxAway should return true with points less than 20 px away', () => {
-        const firstPoint: Vec2 = { x: 20, y: 20 };
-        const secondPoint: Vec2 = { x: 25, y: 25 };
-        const returnValue = service.checkIf20pxAway(firstPoint, secondPoint);
-        expect(returnValue).toBe(true);
     });
 
     it('deleteLastSegment should redraw preview line when a segment is deleted', () => {
@@ -391,27 +454,13 @@ describe('LineService', () => {
     });
 
     // No conditions
-    it('should reach if branch to make adjacent positive', () => {
-        const click1: Vec2 = { x: 10, y: 10 };
-        const click2: Vec2 = { x: 9, y: 11 };
-        service.mouseClicks.push(click1);
-        service.adjustLineAngle(click2);
-    });
-
-    // No conditions
-    it('should reach if branch to make oposite positive', () => {
-        const click1: Vec2 = { x: 10, y: 10 };
-        const click2: Vec2 = { x: 11, y: 9 };
-        service.mouseClicks.push(click1);
-        service.adjustLineAngle(click2);
-    });
-
-    // No conditions
-    it('should reach if branch to change hypothenuse from 0 to 1', () => {
+    it('should call adjustEndingPoint because hypothenuse is changed from 0 to 1 to avoid divison by 0', () => {
+        const adjustEndingPointSpy = spyOn<any>(service, 'adjustEndingPoint');
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 10, y: 10 };
         service.mouseClicks.push(click1);
         service.adjustLineAngle(click2);
+        expect(adjustEndingPointSpy).toHaveBeenCalled();
     });
 
     it('should adjust line to 0 degrees', () => {

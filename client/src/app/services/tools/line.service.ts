@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Line } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { LineAngle, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,8 +25,7 @@ export class LineService extends Tool {
     isDot: boolean = false;
     line: Line;
     mouseEvent: MouseEvent;
-
-    test: Vec2 = { x: 0, y: 0 };
+    shiftClick: Vec2 = { x: 0, y: 0 };
 
     constructor(
         public drawingService: DrawingService,
@@ -49,6 +48,9 @@ export class LineService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        if (event.button !== MouseButton.Left) {
+            return;
+        }
         this.isDrawing = true;
         this.mouseClicks.push(this.getPositionFromMouse(event));
         this.numberOfClicks = this.mouseClicks.length;
@@ -59,10 +61,10 @@ export class LineService extends Tool {
         }
 
         // Check if it's a double click holding shift
-        if (this.getPositionFromMouse(event).x === this.test.x && this.getPositionFromMouse(event).y === this.test.y) {
+        if (this.getPositionFromMouse(event).x === this.shiftClick.x && this.getPositionFromMouse(event).y === this.shiftClick.y) {
             this.isShiftDoubleClick = true;
         }
-        this.test = this.getPositionFromMouse(event);
+        this.shiftClick = this.getPositionFromMouse(event);
 
         // Check if it is a double click
         if (this.checkIfDoubleClick() || this.isShiftDoubleClick) {
@@ -75,7 +77,7 @@ export class LineService extends Tool {
                 return;
             }
             // Check if the last point is 20px away from initial point
-            if (this.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
+            if (this.trigonometryService.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
                 this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
@@ -99,25 +101,30 @@ export class LineService extends Tool {
             return;
         }
 
-        if (this.isDrawing) {
-            // Create a new line segment
-            this.line = {
-                startingPoint: this.mouseClicks[this.numberOfClicks - 2],
-                endingPoint: this.endingClickCoordinates,
-            };
-            // Draw the line with the new segment on preview canvas
-            this.drawLine(this.line.startingPoint, this.line.endingPoint, true, this.lineWidth);
+        this.drawSegment();
+    }
 
-            // Draw the junction dots
-            if (this.isDot) {
-                this.drawDots(this.dotWidth, true);
-            }
-            // Add the new line segment to the stored lines
-            this.storedLines.push(this.line);
-
-            // Replace last click with the good coordinates
-            this.mouseClicks[this.mouseClicks.length - 1] = this.endingClickCoordinates;
+    drawSegment(): void {
+        if (!this.isDrawing) {
+            return;
         }
+        // Create a new line segment
+        this.line = {
+            startingPoint: this.mouseClicks[this.numberOfClicks - 2],
+            endingPoint: this.endingClickCoordinates,
+        };
+        // Draw the line with the new segment on preview canvas
+        this.drawLine(this.line.startingPoint, this.line.endingPoint, true, this.lineWidth);
+
+        // Draw the junction dots
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
+        // Add the new line segment to the stored lines
+        this.storedLines.push(this.line);
+
+        // Replace last click with the good coordinates
+        this.mouseClicks[this.mouseClicks.length - 1] = this.endingClickCoordinates;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -152,23 +159,10 @@ export class LineService extends Tool {
         const previousClickY = this.mouseClicks[this.numberOfClicks - 2].y;
         const currentClickX = this.mouseClicks[this.numberOfClicks - 1].x;
         const currentClickY = this.mouseClicks[this.numberOfClicks - 1].y;
-
         if (previousClickX === currentClickX && previousClickY === currentClickY) {
             return true;
         }
         return false;
-    }
-
-    checkIf20pxAway(firstPoint: Vec2, secondPoint: Vec2): boolean {
-        // Phytagore
-        const a = secondPoint.x - firstPoint.x;
-        const b = secondPoint.y - firstPoint.y;
-        const c = Math.sqrt(a * a + b * b);
-        if (c <= MAXIMUM_DISTANCE_LINE_CONNECTION) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -241,23 +235,17 @@ export class LineService extends Tool {
         opposite = this.mouseClicks[this.mouseClicks.length - 1].y - mouseCoordinates.y;
 
         hypothenuse = Math.sqrt(Math.pow(opposite, 2) + Math.pow(adjacent, 2));
-
         quadrant = this.trigonometryService.findCursorQuadrant(adjacent, opposite);
 
         // Make adjacent and opposite values positive if they are negative
-        if (adjacent < 0) {
-            adjacent = Math.abs(adjacent);
-        }
-        if (opposite < 0) {
-            opposite = Math.abs(opposite);
-        }
+        adjacent = Math.abs(adjacent);
+        opposite = Math.abs(opposite);
+
         if (hypothenuse === 0) {
             hypothenuse = 1;
         }
-
         angleRadians = Math.asin(opposite / hypothenuse);
         angleDegree = this.trigonometryService.radiansToDegrees(angleRadians);
-
         lineAngle = this.trigonometryService.findClosestAngle(quadrant, angleDegree);
         this.adjustEndingPoint(lineAngle, mouseCoordinates, adjacent);
     }
@@ -300,17 +288,15 @@ export class LineService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'crosshair';
-        }
+        const previewCanvas = this.drawingService.previewCanvas;
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
             // Using the preview canvas
-            console.log(this.colorSelectionService.primaryColor);
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
+            this.drawingService.baseCtx.lineCap = 'round';
             this.drawingService.previewCtx.lineWidth = lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -319,6 +305,7 @@ export class LineService extends Tool {
         } else {
             // Using the base canvas
             this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.primaryColor;
+            this.drawingService.baseCtx.lineCap = 'round';
             this.drawingService.baseCtx.lineWidth = lineWidth;
             this.drawingService.baseCtx.beginPath();
             this.drawingService.baseCtx.moveTo(startingPoint.x, startingPoint.y);
@@ -359,5 +346,4 @@ export class LineService extends Tool {
             }
         }
     }
-    // tslint:disable-next-line: max-file-line-count
 }
