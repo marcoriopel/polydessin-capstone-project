@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PencilAttributesComponent } from './pencil-attributes.component';
@@ -13,6 +14,7 @@ describe('PencilAttributesComponent', () => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [PencilAttributesComponent],
             providers: [{ provide: PencilService, useValue: pencilServiceSpy }],
         }).compileComponents();

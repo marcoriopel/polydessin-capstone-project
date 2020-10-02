@@ -1,25 +1,24 @@
 canvas {
-    cursor: crosshair;
     position: absolute;
     left: 0;
     top: 0;
 }
 
-#canvas{
+#canvas {
     z-index: 0;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     border-bottom: 3px;
     border-right: 3px;
     border-top: 0px;
     border-left: 0px;
     border-style: solid;
-    border-color: #3B3737;
+    border-color: #3b3737;
 }
 
-#drawCanvas{
+#drawCanvas {
     z-index: 1;
 }
 
-#canvas-container{
+#canvas-container {
     position: relative;
 }

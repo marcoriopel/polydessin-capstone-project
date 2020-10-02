@@ -1,14 +1,8 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
-import {
-    HALF_RATIO,
-    MINIMUM_CANVAS_HEIGHT,
-    MINIMUM_CANVAS_WIDTH,
-    MINIMUM_WORKSPACE_HEIGHT,
-    MINIMUM_WORKSPACE_WIDTH,
-} from '@app/ressources/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-drawing',
@@ -20,13 +14,17 @@ export class DrawingComponent implements AfterViewInit {
     // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
+    @Input() canvasSize: Vec2;
+    @Input() previewSize: Vec2;
+
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
-    private canvasSize: Vec2;
 
-    constructor(private drawingService: DrawingService, public toolSelectionService: ToolSelectionService) {
-        this.setDefaultCanvasSize();
-    }
+    constructor(
+        private drawingService: DrawingService,
+        public toolSelectionService: ToolSelectionService,
+        public resizeDrawingService: ResizeDrawingService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.baseCtx = this.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -34,6 +32,8 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.baseCtx = this.baseCtx;
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
+        this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
+        this.toolSelectionService.currentTool.handleCursor();
     }
 
     @HostListener('mousemove', ['$event'])
@@ -51,26 +51,16 @@ export class DrawingComponent implements AfterViewInit {
         this.toolSelectionService.currentTool.onMouseUp(event);
     }
 
+    @HostListener('mouseleave', ['$event'])
+    onMouseLeave(): void {
+        this.toolSelectionService.currentTool.onMouseLeave();
+    }
+
     get width(): number {
         return this.canvasSize.x;
     }
 
     get height(): number {
         return this.canvasSize.y;
-    }
-
-    private setDefaultCanvasSize(): void {
-        let canvasWidth = MINIMUM_CANVAS_WIDTH;
-        let canvasHeight = MINIMUM_CANVAS_HEIGHT;
-
-        if (window.innerWidth > MINIMUM_WORKSPACE_WIDTH) {
-            canvasWidth = window.innerWidth * HALF_RATIO;
-        }
-
-        if (window.innerHeight > MINIMUM_WORKSPACE_HEIGHT) {
-            canvasHeight = window.innerHeight * HALF_RATIO;
-        }
-
-        this.canvasSize = { x: canvasWidth, y: canvasHeight };
     }
 }

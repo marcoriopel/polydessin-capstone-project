@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { SidebarElementDescriptions } from '@app/classes/sidebar-element-descriptions';
-import { SIDEBAR_ELEMENT_DESCRIPTIONS, TOOLTIP_DELAY } from '@app/ressources/global-variables';
-import { ToolSelectionService } from '@app/services/tool-selection.service';
+import { MatDialog } from '@angular/material/dialog';
+import { UserguideComponent } from '@app/components/userguide/userguide.component';
+import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
+import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -9,13 +12,24 @@ import { ToolSelectionService } from '@app/services/tool-selection.service';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-    elementDescriptions: SidebarElementDescriptions = SIDEBAR_ELEMENT_DESCRIPTIONS;
+    elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService) {}
+    constructor(public toolSelectionService: ToolSelectionService, public dialog: MatDialog, public newDrawingService: NewDrawingService) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
-        this.toolSelectionService.onToolChange(target.value);
+        if (target.value != undefined) {
+            this.toolSelectionService.changeTool(target.value);
+            this.toolSelectionService.currentTool.handleCursor();
+        }
+    }
+
+    openUserguide(): void {
+        this.dialog.open(UserguideComponent);
+    }
+
+    openDialog(): void {
+        this.newDrawingService.openWarning();
     }
 }

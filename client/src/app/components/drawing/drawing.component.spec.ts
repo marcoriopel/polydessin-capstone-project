@@ -1,8 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Tool } from '@app/classes/tool';
-import { HALF_RATIO } from '@app/ressources/global-variables';
+import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { BrushService } from '@app/services/tools/brush.service';
+import { CircleService } from '@app/services/tools/circle.service';
+import { EraserService } from '@app/services/tools/eraser.service';
+import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { SquareService } from '@app/services/tools/square.service';
 import { DrawingComponent } from './drawing.component';
 
 class ToolStub extends Tool {}
@@ -12,16 +18,26 @@ describe('DrawingComponent', () => {
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
+    let toolSelectionStub: ToolSelectionService;
 
     beforeEach(async(() => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
+        toolSelectionStub = new ToolSelectionService(
+            toolStub as PencilService,
+            {} as BrushService,
+            {} as SquareService,
+            {} as CircleService,
+            {} as LineService,
+            {} as EraserService,
+        );
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
                 { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
+                { provide: ToolSelectionService, useValue: toolSelectionStub },
             ],
         }).compileComponents();
     }));
@@ -29,6 +45,8 @@ describe('DrawingComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(DrawingComponent);
         component = fixture.componentInstance;
+        component.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+        component.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         fixture.detectChanges();
     });
 
@@ -39,8 +57,8 @@ describe('DrawingComponent', () => {
     it('should have a default WIDTH and HEIGHT', () => {
         const height = component.height;
         const width = component.width;
-        expect(height).toEqual(window.innerHeight * HALF_RATIO);
-        expect(width).toEqual(window.innerWidth * HALF_RATIO);
+        expect(height).toEqual(MINIMUM_CANVAS_HEIGHT);
+        expect(width).toEqual(MINIMUM_CANVAS_WIDTH);
     });
 
     it('should get stubTool', () => {
@@ -70,5 +88,11 @@ describe('DrawingComponent', () => {
         component.onMouseUp(event);
         expect(mouseEventSpy).toHaveBeenCalled();
         expect(mouseEventSpy).toHaveBeenCalledWith(event);
+    });
+
+    it(' onMouseLeave should call toolSelectionService.onMouseLeave', () => {
+        const mouseEventSpy = spyOn(toolStub, 'onMouseLeave').and.callThrough();
+        component.onMouseLeave();
+        expect(mouseEventSpy).toHaveBeenCalled();
     });
 });
