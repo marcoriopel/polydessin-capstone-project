@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Component({
-    selector: 'app-new-drawing',
-    templateUrl: './new-drawing.component.html',
-    styleUrls: ['./new-drawing.component.scss'],
+    selector: 'app-new-drawing-modal',
+    templateUrl: './new-drawing-modal.component.html',
+    styleUrls: ['./new-drawing-modal.component.scss'],
 })
-export class NewDrawingComponent {
+export class NewDrawingModalComponent {
     constructor(public drawingService: DrawingService) {}
 
     createNewDrawing(): void {
