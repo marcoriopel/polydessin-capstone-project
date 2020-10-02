@@ -84,4 +84,21 @@ describe('SidebarComponent', () => {
         fixture.detectChanges();
         expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
     });
+
+    it('should not change tool nor handle cursor on an invalid event', () => {
+        const value = undefined;
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+
+        const event = ({
+            target,
+        } as unknown) as InputEvent;
+
+        const cursorSpy = spyOn(toolStub, 'handleCursor');
+        const toolSpy = spyOn(component.toolSelectionService, 'changeTool');
+        component.onToolChange(event);
+        expect(cursorSpy).not.toHaveBeenCalled();
+        expect(toolSpy).not.toHaveBeenCalled();
+    });
 });
