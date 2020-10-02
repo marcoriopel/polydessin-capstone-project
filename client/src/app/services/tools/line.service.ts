@@ -101,25 +101,30 @@ export class LineService extends Tool {
             return;
         }
 
-        if (this.isDrawing) {
-            // Create a new line segment
-            this.line = {
-                startingPoint: this.mouseClicks[this.numberOfClicks - 2],
-                endingPoint: this.endingClickCoordinates,
-            };
-            // Draw the line with the new segment on preview canvas
-            this.drawLine(this.line.startingPoint, this.line.endingPoint, true, this.lineWidth);
+        this.drawSegment();
+    }
 
-            // Draw the junction dots
-            if (this.isDot) {
-                this.drawDots(this.dotWidth, true);
-            }
-            // Add the new line segment to the stored lines
-            this.storedLines.push(this.line);
-
-            // Replace last click with the good coordinates
-            this.mouseClicks[this.mouseClicks.length - 1] = this.endingClickCoordinates;
+    drawSegment(): void {
+        if (!this.isDrawing) {
+            return;
         }
+        // Create a new line segment
+        this.line = {
+            startingPoint: this.mouseClicks[this.numberOfClicks - 2],
+            endingPoint: this.endingClickCoordinates,
+        };
+        // Draw the line with the new segment on preview canvas
+        this.drawLine(this.line.startingPoint, this.line.endingPoint, true, this.lineWidth);
+
+        // Draw the junction dots
+        if (this.isDot) {
+            this.drawDots(this.dotWidth, true);
+        }
+        // Add the new line segment to the stored lines
+        this.storedLines.push(this.line);
+
+        // Replace last click with the good coordinates
+        this.mouseClicks[this.mouseClicks.length - 1] = this.endingClickCoordinates;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -233,12 +238,9 @@ export class LineService extends Tool {
         quadrant = this.trigonometryService.findCursorQuadrant(adjacent, opposite);
 
         // Make adjacent and opposite values positive if they are negative
-        if (adjacent < 0) {
-            adjacent = Math.abs(adjacent);
-        }
-        if (opposite < 0) {
-            opposite = Math.abs(opposite);
-        }
+        adjacent = Math.abs(adjacent);
+        opposite = Math.abs(opposite);
+
         if (hypothenuse === 0) {
             hypothenuse = 1;
         }
@@ -286,10 +288,8 @@ export class LineService extends Tool {
     }
 
     handleCursor(): void {
-        const previewLayer = document.getElementById('previewLayer');
-        if (previewLayer) {
-            previewLayer.style.cursor = 'crosshair';
-        }
+        const previewCanvas = this.drawingService.previewCanvas;
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
