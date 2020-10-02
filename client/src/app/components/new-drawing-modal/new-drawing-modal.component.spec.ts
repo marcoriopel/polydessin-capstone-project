@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { NewDrawingModalComponent } from './new-drawing-modal.component';
 
-describe('NewDrawingModalComponent', () => {
+describe('NewDrawingComponent', () => {
     let component: NewDrawingModalComponent;
     let fixture: ComponentFixture<NewDrawingModalComponent>;
     let drawingServiceStub: DrawingService;
