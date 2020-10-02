@@ -52,8 +52,8 @@ export class DrawingComponent implements AfterViewInit {
     }
 
     @HostListener('mouseleave', ['$event'])
-    onMouseLeave(event: MouseEvent): void {
-        this.toolSelectionService.currentTool.onMouseLeave(event);
+    onMouseLeave(): void {
+        this.toolSelectionService.currentTool.onMouseLeave();
     }
 
     get width(): number {

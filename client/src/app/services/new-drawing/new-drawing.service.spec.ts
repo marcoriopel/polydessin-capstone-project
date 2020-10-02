@@ -1,6 +1,5 @@
 import { async, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { canvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { NewDrawingService } from './new-drawing.service';
 
@@ -15,7 +14,7 @@ describe('NewDrawingService', () => {
 
     beforeEach(async(() => {
         matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
-        drawingServiceSpy = jasmine.createSpyObj('drawingService', ['isCanvasBlank']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: MatDialog, useValue: matDialogSpy },
@@ -34,7 +33,7 @@ describe('NewDrawingService', () => {
     });
 
     it('Should open Warning', () => {
-        const baseCtxStub = canvasTestHelper.canvas.getContext('2d') as CanvasRenderingContext2D;
+        const baseCtxStub = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D;
         baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
         service.drawingService.baseCtx = baseCtxStub;
 
