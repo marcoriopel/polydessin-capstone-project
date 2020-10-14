@@ -38,12 +38,13 @@ export class DatabaseService {
     async addDrawing(drawing: DrawingData): Promise<void> {
         const metadata: MetaData = { id: drawing.id, name: drawing.name, tags: drawing.tags };
         const drawingInfo: Drawing = { id: drawing.id, drawingPng: drawing.drawingPng };
-        const data = JSON.stringify(drawingInfo);
-        const jsonContent = fs.readFileSync('test.json').toString();
+
+        const jsonContent = fs.readFileSync('drawing.json').toString();
         const jsonObj = JSON.parse(jsonContent);
-        jsonObj.push(data);
-        fs.writeFileSync('test.json', jsonObj);
-        console.log(drawing.drawingPng);
+        jsonObj.push(drawingInfo);
+        const data = JSON.stringify(jsonObj, null, 2);
+        fs.writeFileSync('drawing.json', data);
+
         this.collection.insertOne(metadata).catch((err) => {
             throw err;
         });
