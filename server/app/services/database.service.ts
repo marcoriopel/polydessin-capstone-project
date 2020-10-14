@@ -1,7 +1,8 @@
+import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
-import { DrawingData, MetaData } from '../../../common/communication/drawing-data';
+import { Drawing, DrawingData, MetaData } from '../../../common/communication/drawing-data';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
@@ -35,8 +36,14 @@ export class DatabaseService {
     }
 
     async addDrawing(drawing: DrawingData): Promise<void> {
-        const metadata: MetaData = { id: '2', name: 'name', tags: ['tags'] };
-        console.log(metadata);
+        const metadata: MetaData = { id: drawing.id, name: drawing.name, tags: drawing.tags };
+        const drawingInfo: Drawing = { id: drawing.id, drawingPng: drawing.drawingPng };
+        const data = JSON.stringify(drawingInfo);
+        const jsonContent = fs.readFileSync('test.json').toString();
+        const jsonObj = JSON.parse(jsonContent);
+        jsonObj.push(data);
+        fs.writeFileSync('test.json', jsonObj);
+        console.log(drawing.drawingPng);
         this.collection.insertOne(metadata).catch((err) => {
             throw err;
         });

@@ -1,10 +1,28 @@
 <div class="saving">
-    <h1 mat-dialog-title>Attention</h1>
-    <div mat-dialog-content class="text">
-        <p>Il y a présentement déjà un dessin sur la surface.</p>
-        Voulez-vous l'effacer et créer un nouveau dessin?
-    </div>
+    <h1 mat-dialog-title>Sauvegarde du dessin</h1>
+    <mat-form-field appearance="fill" floatLabel="floatLabelControl.value">
+        <mat-label>Nom du dessin</mat-label>
+        <input #name (change)="this.handleNameChange(name.value)" matInput placeholder="Ex: Forêt Boréal" />
+    </mat-form-field>
+
+    <mat-form-field class="example-chip-list">
+        <mat-chip-list #chipList aria-label="Tag selection">
+            <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="removeTag(tag)">
+                {{ tag }}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input
+                placeholder="Tags du dessin:"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="addTag($event)"
+            />
+        </mat-chip-list>
+        <mat-hint>Appuyer sur Entree pour ajouter un tag</mat-hint>
+    </mat-form-field>
     <div mat-dialog-actions>
-        <button mat-button id="save" (click)="addDrawing()" mat-dialog-close>Sauvegarder</button>
+        <button mat-stroked-button id="save" (click)="addDrawing()" mat-dialog-close>Sauvegarder</button>
+        <button mat-button mat-dialog-close>Annuler</button>
     </div>
 </div>
