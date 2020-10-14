@@ -9,6 +9,7 @@ export interface SidebarElementTooltips {
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
     REDO_DESCRIPTION: string;
+    SAVE_DRAWING_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -22,4 +23,5 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
+    SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin',
 };

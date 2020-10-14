@@ -113,26 +113,38 @@
     <div class="sidebarSection">
         <mat-icon
             class="material-icons"
-            [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
+            [matTooltip]="elementDescriptions.SAVE_DRAWING_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
             mat-button
-            (click)="openUserguide()"
-            >help</mat-icon
+            (click)="openSaveWindow()"
+            >save</mat-icon
         >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >undo</mat-icon
-        >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >redo</mat-icon
-        >
+
+        <div class="sidebarSection">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                mat-button
+                (click)="openUserguide()"
+                >help</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >undo</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >redo</mat-icon
+            >
+        </div>
     </div>
 </div>
