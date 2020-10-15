@@ -44,14 +44,9 @@ export class FillService extends Tool {
 
     fill(): void {
         const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
-        console.log(pixelData);
-
         const canvasData = this.drawingService.getCanvasData();
-        console.log(canvasData);
 
         const primaryColor = this.colorSelectionService.primaryColor.slice(5);
-
-        console.log(primaryColor);
 
         const subStrings = primaryColor.split(',');
         const r: number = parseInt(subStrings[0], 10);
@@ -64,10 +59,14 @@ export class FillService extends Tool {
         let i;
         for (i = 0; i < canvasData.data.length; i += 4) {
             if (
-                canvasData.data[i] === pixelData[0] &&
-                canvasData.data[i + 1] === pixelData[1] &&
-                canvasData.data[i + 2] === pixelData[2] &&
-                canvasData.data[i + 3] === pixelData[3]
+                pixelData[0] - (this.tolerance * 255) / 100 <= canvasData.data[i] &&
+                canvasData.data[i] <= pixelData[0] + (this.tolerance * 255) / 100 &&
+                pixelData[1] - (this.tolerance * 255) / 100 <= canvasData.data[i + 1] &&
+                canvasData.data[i + 1] <= pixelData[1] + (this.tolerance * 255) / 100 &&
+                pixelData[2] - (this.tolerance * 255) / 100 <= canvasData.data[i + 2] &&
+                canvasData.data[i + 2] <= pixelData[2] + (this.tolerance * 255) / 100 &&
+                pixelData[3] - (this.tolerance * 255) / 100 <= canvasData.data[i + 3] &&
+                canvasData.data[i + 3] <= pixelData[3] + (this.tolerance * 255) / 100
             ) {
                 canvasData.data[i] = r;
                 canvasData.data[i + 1] = g;
