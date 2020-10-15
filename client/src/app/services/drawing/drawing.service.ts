@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 @Injectable({
     providedIn: 'root',
 })
@@ -18,5 +19,15 @@ export class DrawingService {
         blank.height = this.canvas.height;
 
         return context.canvas.toDataURL() === blank.toDataURL();
+    }
+
+    getPixelData(pixelCoord: Vec2): Uint8ClampedArray {
+        const pixelData = this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
+        return pixelData;
+    }
+
+    getCanvasData(): ImageData {
+        const canvasData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        return canvasData;
     }
 }
