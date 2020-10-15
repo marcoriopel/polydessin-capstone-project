@@ -5,6 +5,7 @@ export interface SidebarElementTooltips {
     SQUARE_TOOL_DESCRIPTION: string;
     CIRCLE_TOOL_DESCRIPTION: string;
     LINE_TOOL_DESCRIPTION: string;
+    FILL_TOOL_DESCRIPTION: string;
     ERASER_TOOL_DESCRIPTION: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
@@ -18,6 +19,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     SQUARE_TOOL_DESCRIPTION: 'Rectangle (1)',
     CIRCLE_TOOL_DESCRIPTION: 'Ellipse (2)',
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
+    FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
