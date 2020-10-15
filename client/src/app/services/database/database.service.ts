@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DrawingData } from '@common/communication/drawing-data';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -10,10 +12,13 @@ export class DatabaseService {
 
     constructor(private http: HttpClient) {}
 
-    addDrawing(drawingData: DrawingData): void {
-        this.http.post(this.BASE_URL + '/addDrawing', drawingData).subscribe(
-            (data) => {},
-            (error) => {},
-        );
+    addDrawing(drawingData: DrawingData): Observable<void> {
+        return this.http.post<void>(this.BASE_URL + '/addDrawing', drawingData).pipe(catchError(this.handleError<void>('addDrawing')));
+    }
+
+    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+        return (error: Error): Observable<T> => {
+            return of(result as T);
+        };
     }
 }

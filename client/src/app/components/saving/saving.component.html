@@ -19,10 +19,10 @@
                 (matChipInputTokenEnd)="addTag($event)"
             />
         </mat-chip-list>
-        <mat-hint>Appuyer sur Entree pour ajouter un tag</mat-hint>
+        <mat-hint>Pas d'espace, Max 15 charactères</mat-hint>
     </mat-form-field>
     <div mat-dialog-actions>
-        <button mat-stroked-button id="save" (click)="addDrawing()" mat-dialog-close>Sauvegarder</button>
+        <button mat-stroked-button [disabled]="isSaveButtonDisabled" id="save" (click)="addDrawing()" mat-dialog-close>Sauvegarder</button>
         <button mat-button mat-dialog-close>Annuler</button>
     </div>
 </div>
