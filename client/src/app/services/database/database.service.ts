@@ -16,6 +16,10 @@ export class DatabaseService {
         return this.http.post<void>(this.BASE_URL + '/addDrawing', drawingData).pipe(catchError(this.handleError<void>('addDrawing')));
     }
 
+    getDrawingData(): Observable<DrawingData[]> {
+        return this.http.get<DrawingData[]>(this.BASE_URL + '/getDrawingData').pipe(catchError(this.handleError<DrawingData[]>('addDrawing')));
+    }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
             return of(result as T);

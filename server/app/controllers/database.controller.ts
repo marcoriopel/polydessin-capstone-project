@@ -2,6 +2,7 @@ import { TYPES } from '@app/types';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
+import { DrawingData } from '../../../common/communication/drawing-data';
 import { DatabaseService } from '../services/database.service';
 
 @injectable()
@@ -21,6 +22,17 @@ export class DatabaseController {
                 .addDrawing(req.body)
                 .then(() => {
                     res.sendStatus(Httpstatus.StatusCodes.OK);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
+        this.router.get('/getDrawingData', (req: Request, res: Response, next: NextFunction) => {
+            this.databaseService
+                .getDrawingData()
+                .then((drawings: DrawingData[]) => {
+                    res.json(drawings);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);

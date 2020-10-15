@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { injectable } from 'inversify';
-import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, FilterQuery, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 import { Drawing, DrawingData, MetaData } from '../../../common/communication/drawing-data';
 
@@ -38,9 +38,9 @@ export class DatabaseService {
     async addDrawing(drawing: DrawingData): Promise<void> {
         const metadata: MetaData = { id: drawing.id, name: drawing.name, tags: drawing.tags };
         const drawingInfo: Drawing = { id: drawing.id, drawingPng: drawing.drawingPng };
-
-        const jsonContent = fs.readFileSync('drawing.json').toString();
+        const jsonContent = this.loadJSon();
         const jsonObj = JSON.parse(jsonContent);
+
         jsonObj.push(drawingInfo);
         const data = JSON.stringify(jsonObj, null, 2);
         fs.writeFileSync('drawing.json', data);
@@ -48,5 +48,51 @@ export class DatabaseService {
         this.collection.insertOne(metadata).catch((err) => {
             throw err;
         });
+    }
+
+    loadJSon(): string {
+        return fs.readFileSync('drawing.json').toString();
+    }
+
+    getDrawingsJson(): Drawing[] {
+        const drawings: Drawing[] = [];
+        const jsonContent = this.loadJSon();
+        const jsonObj = JSON.parse(jsonContent);
+        jsonObj.forEach((element: Drawing) => {
+            const drawing: Drawing = { id: element.id, drawingPng: element.drawingPng };
+            drawings.push(drawing);
+        });
+        return drawings;
+    }
+
+    async getDrawingData(): Promise<DrawingData[]> {
+        const drawingData: DrawingData[] = [];
+        const drawings: Drawing[] = this.getDrawingsJson();
+        const drawingIds = this.getDrawingsIds(drawings);
+        const filterQuery: FilterQuery<MetaData> = { id: { $in: drawingIds } };
+        return this.collection
+            .find(filterQuery)
+            .toArray()
+            .then((meta: MetaData[]) => {
+                drawings.forEach((drawing: Drawing) => {
+                    meta.forEach((metadata: MetaData) => {
+                        if (drawing.id === metadata.id) {
+                            const data: DrawingData = { id: drawing.id, drawingPng: drawing.drawingPng, name: metadata.name, tags: metadata.tags };
+                            drawingData.push(data);
+                        }
+                    });
+                });
+                return drawingData;
+            })
+            .catch(() => {
+                throw new Error('Error trying to retrieve metadata');
+            });
+    }
+    getDrawingsIds(drawings: Drawing[]): string[] {
+        const ids: string[] = [];
+        drawings.forEach((element: Drawing) => {
+            ids.push(element.id);
+        });
+        return ids;
     }
 }

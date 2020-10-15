@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserguideComponent } from '@app/components/userguide/userguide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
@@ -36,5 +37,8 @@ export class SidebarComponent {
 
     openSaveWindow(): void {
         this.dialog.open(SavingComponent);
+    }
+    openCarouselWindow(): void {
+        this.dialog.open(CarouselComponent);
     }
 }

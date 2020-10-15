@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
 import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { DrawingDetailComponent } from './components/drawing-detail/drawing-detail.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
@@ -53,6 +54,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         EraserAttributesComponent,
         LineAttributesComponent,
         PencilAttributesComponent,
+        CarouselComponent,
         SliderComponent,
         SquareAttributesComponent,
         UserguideComponent,
