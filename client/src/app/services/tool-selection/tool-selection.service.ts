@@ -40,6 +40,7 @@ export class ToolSelectionService {
         const selectedTool = this.tools.get(toolName);
         if (selectedTool) {
             this.currentTool = selectedTool;
+            console.log(this.currentTool);
         }
     }
 
