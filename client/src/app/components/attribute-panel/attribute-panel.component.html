@@ -11,6 +11,8 @@
         <app-line-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.LINE_TOOL_NAME"> </app-line-attributes>
         <app-eraser-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.ERASER_TOOL_NAME">
         </app-eraser-attributes>
+        <app-pipette-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.PIPETTE_TOOL_NAME">
+        </app-pipette-attributes>
     </div>
     <div id="color-picker">
         <app-color-picker></app-color-picker>

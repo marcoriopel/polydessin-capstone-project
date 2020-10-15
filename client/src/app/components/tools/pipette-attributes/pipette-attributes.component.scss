@@ -1,0 +1,17 @@
+#pipetteAttributes {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.toolName {
+    margin: 5px;
+    align-items: center;
+}
+#zoom {
+    background-color: #ffffff;
+    border-bottom: 3px;
+    border-right: 3px;
+    border-top: 10px;
+    border-left: 0px;
+}

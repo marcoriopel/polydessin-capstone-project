@@ -60,6 +60,7 @@ export class EraserService extends Tool {
         }
         this.squareCursor(event);
     }
+
     private squareCursor(event: MouseEvent): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';

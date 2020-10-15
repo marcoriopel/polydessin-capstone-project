@@ -12,6 +12,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 import { SquareService } from '@app/services/tools/square.service';
 
 import SpyObj = jasmine.SpyObj;
@@ -34,6 +35,7 @@ describe('SidebarComponent', () => {
             toolStub as CircleService,
             toolStub as LineService,
             toolStub as EraserService,
+            toolStub as PipetteService,
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
