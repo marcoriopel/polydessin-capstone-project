@@ -32,6 +32,7 @@ import { SliderComponent } from './components/tools/shared-Attributes/slider/sli
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { UserguideComponent } from './components/userguide/userguide.component';
+import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -54,6 +55,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         NewDrawingModalComponent,
         ColorPickerComponent,
         TypeOfFillSelectionComponent,
+        FillAttributesComponent,
     ],
     imports: [
         BrowserModule,

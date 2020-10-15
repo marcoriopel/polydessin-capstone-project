@@ -9,6 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class FillService extends Tool {
     name: string = TOOL_NAMES.FILL_TOOL_NAME;
+    maxTolerance: number = 100;
+    minTolerance: number = 0;
     tolerance: number = 0;
 
     constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
@@ -18,5 +20,9 @@ export class FillService extends Tool {
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
+    }
+
+    changeTolerance(newTolerance: number): void {
+        this.tolerance = newTolerance;
     }
 }

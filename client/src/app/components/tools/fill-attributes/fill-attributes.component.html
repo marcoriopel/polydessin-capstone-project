@@ -1,0 +1,12 @@
+<div id="fillAttributes">
+    <h2 class="toolName">{{ fillService.name }}</h2>
+    <app-slider
+        title="Tolérance"
+        [min]="fillService.minTolerance"
+        [max]="fillService.maxTolerance"
+        [step]="1"
+        [value]="tolerance"
+        (valueChange)="handleToleranceChange($event)"
+    >
+    </app-slider>
+</div>

@@ -9,6 +9,7 @@
         <app-circle-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.CIRCLE_TOOL_NAME">
         </app-circle-attributes>
         <app-line-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.LINE_TOOL_NAME"> </app-line-attributes>
+        <app-fill-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.FILL_TOOL_NAME"> </app-fill-attributes>
         <app-eraser-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.ERASER_TOOL_NAME">
         </app-eraser-attributes>
     </div>
