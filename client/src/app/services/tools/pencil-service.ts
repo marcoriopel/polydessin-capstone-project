@@ -23,7 +23,7 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }

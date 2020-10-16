@@ -25,7 +25,7 @@ export class CircleService extends Tool {
         super(drawingService);
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }

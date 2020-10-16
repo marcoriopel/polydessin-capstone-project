@@ -136,7 +136,7 @@ describe('EraserService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('none');
     });
 

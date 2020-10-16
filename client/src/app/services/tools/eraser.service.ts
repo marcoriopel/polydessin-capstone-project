@@ -18,7 +18,7 @@ export class EraserService extends Tool {
         this.clearPath();
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'none';
     }

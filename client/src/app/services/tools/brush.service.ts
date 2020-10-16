@@ -22,7 +22,7 @@ export class BrushService extends Tool {
         this.clearPath();
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }

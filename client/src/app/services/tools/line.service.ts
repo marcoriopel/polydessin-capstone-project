@@ -7,7 +7,6 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TrigonometryService } from '@app/services/trigonometry/trigonometry.service';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -77,7 +76,8 @@ export class LineService extends Tool {
                 return;
             }
             // Check if the last point is 20px away from initial point
-            if (this.trigonometryService.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
+            const distance = this.trigonometryService.distanceBetweenTwoDots(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2]);
+            if (distance < this.trigonometryService.MAX_DISTANCE_BETWEEN_TWO_DOTS) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
                 this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
@@ -287,7 +287,7 @@ export class LineService extends Tool {
         }
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }

@@ -33,7 +33,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
-        this.toolSelectionService.currentTool.handleCursor();
+        this.toolSelectionService.currentTool.setCursor();
     }
 
     @HostListener('mousemove', ['$event'])
