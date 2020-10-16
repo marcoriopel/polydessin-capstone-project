@@ -151,7 +151,7 @@ describe('EditorComponent', () => {
     });
 
     it('should set canvas size depending on workspaceSize', () => {
-        const workSpaceSize = component.getWorkSpaceSize();
+        const workSpaceSize = component.workSpaceSize;
         expect(component.canvasSize).toEqual({ x: workSpaceSize.x / 2, y: workSpaceSize.y / 2 });
     });
 

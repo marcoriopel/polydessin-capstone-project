@@ -21,7 +21,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 export class EditorComponent implements AfterViewInit {
     @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
 
-    private workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+    workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
@@ -114,9 +114,5 @@ export class EditorComponent implements AfterViewInit {
         this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
         this.canvasSize.x = this.previewSize.x;
         this.canvasSize.y = this.previewSize.y;
-    }
-
-    getWorkSpaceSize(): Vec2 {
-        return this.workSpaceSize;
     }
 }
