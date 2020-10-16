@@ -64,7 +64,7 @@ describe('EditorComponent', () => {
         } as KeyboardEvent;
         const brushButton = document.querySelector('#Pinceau') as HTMLElement;
         const spy = spyOn(brushButton, 'click');
-        component.handleKeyUp(keyEvent);
+        component.onKeyUp(keyEvent);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -73,7 +73,7 @@ describe('EditorComponent', () => {
             key: 'shift',
         } as KeyboardEvent;
         const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyUp');
-        component.handleKeyUp(keyEvent);
+        component.onKeyUp(keyEvent);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -82,7 +82,7 @@ describe('EditorComponent', () => {
             key: 'shift',
         } as KeyboardEvent;
         const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyDown');
-        component.handleKeyDown(keyEvent);
+        component.onKeyDown(keyEvent);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -158,13 +158,13 @@ describe('EditorComponent', () => {
     it('should call event.preventDefault when ctrl+o press', () => {
         const keyEvent = new KeyEventMock() as KeyboardEvent;
         const eventSpy = spyOn(keyEvent, 'preventDefault');
-        component.handleKeyDown(keyEvent);
+        component.onKeyDown(keyEvent);
         expect(eventSpy).toHaveBeenCalled();
     });
 
     it('should call openDialog when ctrl+o press', () => {
         const keyEvent = new KeyEventMock() as KeyboardEvent;
-        component.handleKeyDown(keyEvent);
+        component.onKeyDown(keyEvent);
         expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
     });
 });

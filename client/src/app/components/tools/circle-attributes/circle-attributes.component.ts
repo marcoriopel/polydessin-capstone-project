@@ -15,12 +15,12 @@ export class CircleAttributesComponent {
         this.fillStyle = circleService.fillStyle;
     }
 
-    handleBorderWidthChange(newWidth: number): void {
+    changeBorderWidth(newWidth: number): void {
         this.toolWidth = newWidth;
         this.circleService.changeWidth(newWidth);
     }
 
-    handleFillStyleChange(newFillStyle: number): void {
+    changeFillStyle(newFillStyle: number): void {
         this.circleService.changeFillStyle(newFillStyle);
     }
 }

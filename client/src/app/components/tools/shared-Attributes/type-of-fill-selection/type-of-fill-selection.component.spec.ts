@@ -32,7 +32,7 @@ describe('TypeOfFillSelectionComponent', () => {
         } as unknown) as InputEvent;
 
         const eventEmiterSpy = spyOn(component.valueChange, 'emit');
-        component.handleValueChange(event);
+        component.changeValue(event);
         // tslint:disable-next-line: no-magic-numbers
         expect(eventEmiterSpy).toHaveBeenCalledWith(3);
     });

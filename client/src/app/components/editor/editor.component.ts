@@ -60,7 +60,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     @HostListener('document:keyup', ['$event'])
-    handleKeyUp(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         const keyName: string | undefined = this.keyToolMapping.get(event.key.toString());
         if (keyName) {
             (document.querySelector('#' + keyName) as HTMLElement).click();
@@ -70,7 +70,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     @HostListener('document:keydown', ['$event'])
-    handleKeyDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'o' && event.ctrlKey) {
             event.preventDefault();
             this.newDrawingService.openWarning();
