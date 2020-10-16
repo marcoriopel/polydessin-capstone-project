@@ -100,7 +100,6 @@ export class LineService extends Tool {
             this.isShiftDoubleClick = false;
             return;
         }
-
         this.drawSegment();
     }
 
