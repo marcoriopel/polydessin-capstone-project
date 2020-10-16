@@ -296,7 +296,7 @@ export class LineService extends Tool {
         if (isPreview) {
             // Using the preview canvas
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.baseCtx.lineCap = 'round';
+            this.drawingService.previewCtx.lineCap = 'round';
             this.drawingService.previewCtx.lineWidth = lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);
