@@ -47,7 +47,7 @@ export class LineService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (event.button !== MouseButton.Left) {
+        if (event.button !== MouseButton.LEFT) {
             return;
         }
         this.isDrawing = true;
