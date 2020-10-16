@@ -9,8 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class EraserService extends Tool {
-    private pathData: Vec2[];
     name: string = TOOL_NAMES.ERASER_TOOL_NAME;
+    private pathData: Vec2[];
     width: number = 5;
 
     constructor(drawingService: DrawingService) {

@@ -14,18 +14,18 @@ import { TrigonometryService } from '@app/services/trigonometry/trigonometry.ser
 export class LineService extends Tool {
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
     isShiftDoubleClick: boolean = false;
+    shiftClick: Vec2 = { x: 0, y: 0 };
     isShiftKeyDown: boolean = false;
     endingClickCoordinates: Vec2;
     isDrawing: boolean = false;
     numberOfClicks: number = 0;
     mouseClicks: Vec2[] = [];
     storedLines: Line[] = [];
+    mouseEvent: MouseEvent;
+    isDot: boolean = false;
     lineWidth: number = 1;
     dotWidth: number = 1;
-    isDot: boolean = false;
     line: Line;
-    mouseEvent: MouseEvent;
-    shiftClick: Vec2 = { x: 0, y: 0 };
 
     constructor(
         public drawingService: DrawingService,

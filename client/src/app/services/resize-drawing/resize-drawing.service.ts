@@ -14,14 +14,10 @@ import {
     providedIn: 'root',
 })
 export class ResizeDrawingService {
-    canvasSize: Vec2;
-    mouseDownCoord: Vec2;
+    canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     mouseDown: boolean = false;
     serviceCaller: string;
-
-    constructor() {
-        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-    }
+    mouseDownCoord: Vec2;
 
     setDefaultCanvasSize(workSpaceSize: Vec2): Vec2 {
         if (workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
