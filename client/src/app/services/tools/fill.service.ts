@@ -46,6 +46,15 @@ export class FillService extends Tool {
         const stack: Vec2[] = [this.mouseDownCoord];
         const coloredPixels: Map<string, boolean> = new Map();
         const canvasData: ImageData = this.drawingService.getCanvasData();
+        const canvasDataCopy: ImageData = canvasData;
+
+        const primaryColor = this.colorSelectionService.primaryColor.slice(5);
+
+        const subStrings = primaryColor.split(',');
+        const r: number = parseInt(subStrings[0], 10);
+        const g: number = parseInt(subStrings[1], 10);
+        const b: number = parseInt(subStrings[2], 10);
+        const a: number = parseFloat(subStrings[3]) * 255;
 
         while (stack.length) {
             const currentPixel = (stack.pop() as unknown) as Vec2;
@@ -53,23 +62,37 @@ export class FillService extends Tool {
             if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;
             } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
-                this.drawingService.baseCtx.fillRect(currentPixel.x, currentPixel.y, 1, 1);
+                // this.drawingService.baseCtx.fillRect(currentPixel.x, currentPixel.y, 1, 1);
+                canvasDataCopy.data[index] = r;
+                canvasDataCopy.data[index + 1] = g;
+                canvasDataCopy.data[index + 2] = b;
+                canvasDataCopy.data[index + 3] = a;
+//                 console.log(canvasDataCopy.data === canvasData.data);
                 coloredPixels.set(this.Vec2ToString(currentPixel), true);
 
                 if (currentPixel.y - 1 >= 0) {
+                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x, y: currentPixel.y - 1 }))) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
+                    // }
                 }
                 if (currentPixel.y + 1 < this.drawingService.canvas.height) {
+                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x, y: currentPixel.y + 1 }))) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y + 1 });
+                    // }
                 }
                 if (currentPixel.x + 1 < this.drawingService.canvas.width) {
+                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x + 1, y: currentPixel.y }))) {
                     stack.push({ x: currentPixel.x + 1, y: currentPixel.y });
+                    // }
                 }
                 if (currentPixel.x - 1 >= 0) {
+                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x - 1, y: currentPixel.y }))) {
                     stack.push({ x: currentPixel.x - 1, y: currentPixel.y });
+                    // }
                 }
             }
         }
+        this.drawingService.baseCtx.putImageData(canvasDataCopy, 0, 0);
     }
 
     fill(): void {
