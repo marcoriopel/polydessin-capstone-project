@@ -41,62 +41,20 @@ export class FillService extends Tool {
         }
     }
 
-    // contiguousFill(): void {
-    //     // TODO
-    // }
-
-    // contiguousFill(pixel: Vec2): void {
-    //     const initialPixelData = this.initialPixelData;
-    //     const curentPixelData = this.drawingService.getPixelData(pixel);
-    //     if (
-    //         initialPixelData[0] - (this.tolerance * 255) / 100 <= curentPixelData[0] &&
-    //         curentPixelData[0] <= initialPixelData[0] + (this.tolerance * 255) / 100 &&
-    //         initialPixelData[1] - (this.tolerance * 255) / 100 <= curentPixelData[1] &&
-    //         curentPixelData[1] <= initialPixelData[1] + (this.tolerance * 255) / 100 &&
-    //         initialPixelData[2] - (this.tolerance * 255) / 100 <= curentPixelData[2] &&
-    //         curentPixelData[2] <= initialPixelData[2] + (this.tolerance * 255) / 100 &&
-    //         initialPixelData[3] - (this.tolerance * 255) / 100 <= curentPixelData[3] &&
-    //         curentPixelData[3] <= initialPixelData[3] + (this.tolerance * 255) / 100
-    //     ) {
-    //         this.drawingService.baseCtx.fillRect(pixel.x, pixel.y, 1, 1);
-
-    //         if (pixel.y - 1 >= 0) {
-    //             this.contiguousFill({ x: pixel.x, y: pixel.y - 1 });
-    //         }
-    //         if (pixel.y + 1 < this.drawingService.canvas.height) {
-    //             this.contiguousFill({ x: pixel.x, y: pixel.y + 1 });
-    //         }
-    //         if (pixel.x + 1 < this.drawingService.canvas.width) {
-    //             this.contiguousFill({ x: pixel.x + 1, y: pixel.y });
-    //         }
-    //         if (pixel.x - 1 >= 0) {
-    //             this.contiguousFill({ x: pixel.x - 1, y: pixel.y });
-    //         }
-    //     }
-    // }
-
     contiguousFill(): void {
         const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         const stack: Vec2[] = [this.mouseDownCoord];
+        const coloredPixels: Map<string, boolean> = new Map();
         const canvasData: ImageData = this.drawingService.getCanvasData();
 
         while (stack.length) {
             const currentPixel = (stack.pop() as unknown) as Vec2;
             const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * 4;
-            if (this.isPrimaryColor(currentPixel)) {
-                // console.log('same color pixel');
+            if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;
-            } else if (
-                pixelData[0] - (this.tolerance * 255) / 100 <= canvasData.data[index + 0] &&
-                canvasData.data[index + 0] <= pixelData[0] + (this.tolerance * 255) / 100 &&
-                pixelData[1] - (this.tolerance * 255) / 100 <= canvasData.data[index + 1] &&
-                canvasData.data[index + 1] <= pixelData[1] + (this.tolerance * 255) / 100 &&
-                pixelData[2] - (this.tolerance * 255) / 100 <= canvasData.data[index + 2] &&
-                canvasData.data[index + 2] <= pixelData[2] + (this.tolerance * 255) / 100 &&
-                pixelData[3] - (this.tolerance * 255) / 100 <= canvasData.data[index + 3] &&
-                canvasData.data[index + 3] <= pixelData[3] + (this.tolerance * 255) / 100
-            ) {
+            } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
                 this.drawingService.baseCtx.fillRect(currentPixel.x, currentPixel.y, 1, 1);
+                coloredPixels.set(this.Vec2ToString(currentPixel), true);
 
                 if (currentPixel.y - 1 >= 0) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
@@ -128,16 +86,7 @@ export class FillService extends Tool {
 
         let i;
         for (i = 0; i < canvasData.data.length; i += 4) {
-            if (
-                pixelData[0] - (this.tolerance * 255) / 100 <= canvasData.data[i] &&
-                canvasData.data[i] <= pixelData[0] + (this.tolerance * 255) / 100 &&
-                pixelData[1] - (this.tolerance * 255) / 100 <= canvasData.data[i + 1] &&
-                canvasData.data[i + 1] <= pixelData[1] + (this.tolerance * 255) / 100 &&
-                pixelData[2] - (this.tolerance * 255) / 100 <= canvasData.data[i + 2] &&
-                canvasData.data[i + 2] <= pixelData[2] + (this.tolerance * 255) / 100 &&
-                pixelData[3] - (this.tolerance * 255) / 100 <= canvasData.data[i + 3] &&
-                canvasData.data[i + 3] <= pixelData[3] + (this.tolerance * 255) / 100
-            ) {
+            if (this.isInToleranceRange(pixelData, canvasData, i)) {
                 canvasData.data[i] = r;
                 canvasData.data[i + 1] = g;
                 canvasData.data[i + 2] = b;
@@ -148,18 +97,21 @@ export class FillService extends Tool {
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
     }
 
-    isPrimaryColor(currentPixel: Vec2): boolean {
-        const primaryColor = this.colorSelectionService.primaryColor.slice(5);
+    Vec2ToString(pixel: Vec2): string {
+        return pixel.x.toString() + ',' + pixel.y.toString();
+    }
 
-        const subStrings = primaryColor.split(',');
-        const r: number = parseInt(subStrings[0], 10);
-        const g: number = parseInt(subStrings[1], 10);
-        const b: number = parseInt(subStrings[2], 10);
-        const a: number = parseFloat(subStrings[3]) * 255;
-
-        const pixelData = this.drawingService.getPixelData(currentPixel);
-
-        if (pixelData[0] === r && pixelData[1] === g && pixelData[2] === b && pixelData[3] === a) {
+    isInToleranceRange(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number): boolean {
+        if (
+            pixelData[0] - (this.tolerance * 255) / 100 <= canvasData.data[index + 0] &&
+            canvasData.data[index + 0] <= pixelData[0] + (this.tolerance * 255) / 100 &&
+            pixelData[1] - (this.tolerance * 255) / 100 <= canvasData.data[index + 1] &&
+            canvasData.data[index + 1] <= pixelData[1] + (this.tolerance * 255) / 100 &&
+            pixelData[2] - (this.tolerance * 255) / 100 <= canvasData.data[index + 2] &&
+            canvasData.data[index + 2] <= pixelData[2] + (this.tolerance * 255) / 100 &&
+            pixelData[3] - (this.tolerance * 255) / 100 <= canvasData.data[index + 3] &&
+            canvasData.data[index + 3] <= pixelData[3] + (this.tolerance * 255) / 100
+        ) {
             return true;
         } else {
             return false;
