@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { RGBA_INDEXER } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -46,15 +47,8 @@ export class FillService extends Tool {
         const stack: Vec2[] = [this.mouseDownCoord];
         const coloredPixels: Map<string, boolean> = new Map();
         const canvasData: ImageData = this.drawingService.getCanvasData();
-        const canvasDataCopy: ImageData = canvasData;
 
-        const primaryColor = this.colorSelectionService.primaryColor.slice(5);
-
-        const subStrings = primaryColor.split(',');
-        const r: number = parseInt(subStrings[0], 10);
-        const g: number = parseInt(subStrings[1], 10);
-        const b: number = parseInt(subStrings[2], 10);
-        const a: number = parseFloat(subStrings[3]) * 255;
+        const rgbaPrimaryColor = this.colorSelectionService.getRgbaPrimaryColor();
 
         while (stack.length) {
             const currentPixel = (stack.pop() as unknown) as Vec2;
@@ -62,58 +56,42 @@ export class FillService extends Tool {
             if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;
             } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
-                // this.drawingService.baseCtx.fillRect(currentPixel.x, currentPixel.y, 1, 1);
-                canvasDataCopy.data[index] = r;
-                canvasDataCopy.data[index + 1] = g;
-                canvasDataCopy.data[index + 2] = b;
-                canvasDataCopy.data[index + 3] = a;
-//                 console.log(canvasDataCopy.data === canvasData.data);
+                canvasData.data[index + RGBA_INDEXER.RED] = rgbaPrimaryColor.RED;
+                canvasData.data[index + RGBA_INDEXER.GREEN] = rgbaPrimaryColor.GREEN;
+                canvasData.data[index + RGBA_INDEXER.BLUE] = rgbaPrimaryColor.BLUE;
+                canvasData.data[index + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
                 coloredPixels.set(this.Vec2ToString(currentPixel), true);
 
                 if (currentPixel.y - 1 >= 0) {
-                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x, y: currentPixel.y - 1 }))) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
-                    // }
                 }
                 if (currentPixel.y + 1 < this.drawingService.canvas.height) {
-                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x, y: currentPixel.y + 1 }))) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y + 1 });
-                    // }
                 }
                 if (currentPixel.x + 1 < this.drawingService.canvas.width) {
-                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x + 1, y: currentPixel.y }))) {
                     stack.push({ x: currentPixel.x + 1, y: currentPixel.y });
-                    // }
                 }
                 if (currentPixel.x - 1 >= 0) {
-                    // if (!coloredPixels.has(this.Vec2ToString({ x: currentPixel.x - 1, y: currentPixel.y }))) {
                     stack.push({ x: currentPixel.x - 1, y: currentPixel.y });
-                    // }
                 }
             }
         }
-        this.drawingService.baseCtx.putImageData(canvasDataCopy, 0, 0);
+        this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
     }
 
     fill(): void {
         const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         const canvasData = this.drawingService.getCanvasData();
 
-        const primaryColor = this.colorSelectionService.primaryColor.slice(5);
-
-        const subStrings = primaryColor.split(',');
-        const r: number = parseInt(subStrings[0], 10);
-        const g: number = parseInt(subStrings[1], 10);
-        const b: number = parseInt(subStrings[2], 10);
-        const a: number = parseFloat(subStrings[3]) * 255;
+        const rgbaPrimaryColor = this.colorSelectionService.getRgbaPrimaryColor();
 
         let i;
         for (i = 0; i < canvasData.data.length; i += 4) {
             if (this.isInToleranceRange(pixelData, canvasData, i)) {
-                canvasData.data[i] = r;
-                canvasData.data[i + 1] = g;
-                canvasData.data[i + 2] = b;
-                canvasData.data[i + 3] = a;
+                canvasData.data[i + RGBA_INDEXER.RED] = rgbaPrimaryColor.RED;
+                canvasData.data[i + RGBA_INDEXER.GREEN] = rgbaPrimaryColor.GREEN;
+                canvasData.data[i + RGBA_INDEXER.BLUE] = rgbaPrimaryColor.BLUE;
+                canvasData.data[i + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
             }
         }
 
@@ -126,14 +104,14 @@ export class FillService extends Tool {
 
     isInToleranceRange(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number): boolean {
         if (
-            pixelData[0] - (this.tolerance * 255) / 100 <= canvasData.data[index + 0] &&
-            canvasData.data[index + 0] <= pixelData[0] + (this.tolerance * 255) / 100 &&
-            pixelData[1] - (this.tolerance * 255) / 100 <= canvasData.data[index + 1] &&
-            canvasData.data[index + 1] <= pixelData[1] + (this.tolerance * 255) / 100 &&
-            pixelData[2] - (this.tolerance * 255) / 100 <= canvasData.data[index + 2] &&
-            canvasData.data[index + 2] <= pixelData[2] + (this.tolerance * 255) / 100 &&
-            pixelData[3] - (this.tolerance * 255) / 100 <= canvasData.data[index + 3] &&
-            canvasData.data[index + 3] <= pixelData[3] + (this.tolerance * 255) / 100
+            pixelData[RGBA_INDEXER.RED] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.RED] &&
+            canvasData.data[index + RGBA_INDEXER.RED] <= pixelData[RGBA_INDEXER.RED] + (this.tolerance * 255) / 100 &&
+            pixelData[RGBA_INDEXER.GREEN] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.GREEN] &&
+            canvasData.data[index + RGBA_INDEXER.GREEN] <= pixelData[RGBA_INDEXER.GREEN] + (this.tolerance * 255) / 100 &&
+            pixelData[RGBA_INDEXER.BLUE] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.BLUE] &&
+            canvasData.data[index + RGBA_INDEXER.BLUE] <= pixelData[RGBA_INDEXER.BLUE] + (this.tolerance * 255) / 100 &&
+            pixelData[RGBA_INDEXER.ALPHA] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.ALPHA] &&
+            canvasData.data[index + RGBA_INDEXER.ALPHA] <= pixelData[RGBA_INDEXER.ALPHA] + (this.tolerance * 255) / 100
         ) {
             return true;
         } else {
