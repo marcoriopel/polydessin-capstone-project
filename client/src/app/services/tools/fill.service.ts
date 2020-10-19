@@ -14,7 +14,7 @@ export class FillService extends Tool {
     name: string = TOOL_NAMES.FILL_TOOL_NAME;
     maxTolerance: number = 100;
     minTolerance: number = 0;
-    tolerance: number = 0;
+    tolerance: number = this.minTolerance;
     mouseDownCoord: Vec2;
     initialPixelData: Uint8ClampedArray;
 

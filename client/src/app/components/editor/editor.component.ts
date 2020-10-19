@@ -47,6 +47,9 @@ export class EditorComponent implements AfterViewInit {
         this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
         this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+        this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
+        this.resizeDrawingService.previewSize = this.previewSize;
+        this.resizeDrawingService.canvasSize = this.canvasSize;
     }
 
     ngAfterViewInit(): void {
@@ -60,7 +63,7 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
-            this.setDefaultCanvasSize();
+            this.resizeDrawingService.setDefaultCanvasSize();
         });
     }
 
@@ -96,32 +99,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (this.resizeDrawingService.onMouseUp()) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempCanvas.width = this.canvasSize.x;
-            tempCanvas.height = this.canvasSize.y;
-            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempCanvasCtx.drawImage(this.drawingComponent.baseCanvas.nativeElement, 0, 0);
-
-            this.canvasSize.x = this.previewSize.x;
-            this.canvasSize.y = this.previewSize.y;
-            this.previewDiv.style.display = 'none';
-
-            setTimeout(() => {
-                let baseCtx: CanvasRenderingContext2D;
-                baseCtx = this.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-                baseCtx.drawImage(tempCanvas, 0, 0);
-            });
-        }
-    }
-
-    private setDefaultCanvasSize(): void {
-        this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
-    }
-
-    getWorkSpaceSize(): Vec2 {
-        return this.workSpaceSize;
+        this.resizeDrawingService.onMouseUp();
+        this.previewDiv.style.display = 'none';
     }
 }
