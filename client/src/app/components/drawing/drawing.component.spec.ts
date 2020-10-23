@@ -8,6 +8,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { DrawingComponent } from './drawing.component';
 
@@ -30,6 +31,7 @@ describe('DrawingComponent', () => {
             {} as CircleService,
             {} as LineService,
             {} as EraserService,
+            {} as PolygoneService,
         );
 
         TestBed.configureTestingModule({

@@ -93,6 +93,23 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >panorama_wide_angle</mat-icon
+            >
+        </label>
         <input
             type="radio"
             [id]="toolSelectionService.toolNames.ERASER_TOOL_NAME"

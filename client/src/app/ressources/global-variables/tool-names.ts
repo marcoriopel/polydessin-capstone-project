@@ -5,6 +5,7 @@ export interface ToolNames {
     CIRCLE_TOOL_NAME: string;
     LINE_TOOL_NAME: string;
     ERASER_TOOL_NAME: string;
+    POLYGONE_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -14,4 +15,5 @@ export const TOOL_NAMES: ToolNames = {
     CIRCLE_TOOL_NAME: 'Ellipse',
     LINE_TOOL_NAME: 'Ligne',
     ERASER_TOOL_NAME: 'Efface',
+    POLYGONE_TOOL_NAME: 'Polygone',
 };
