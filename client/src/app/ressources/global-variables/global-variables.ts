@@ -16,6 +16,7 @@ export const MAX_BORDER = 20;
 export const MIN_BORDER = 1;
 export const DASH_LENGTH = 5;
 export const DASH_SPACE_LENGTH = 3;
+export const ZOOM_PIPETTE = 16;
 
 export enum Quadrant {
     TOP_RIGHT = 0,

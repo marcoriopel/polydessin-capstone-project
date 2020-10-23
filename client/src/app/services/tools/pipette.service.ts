@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MouseButton, ZOOM_PIPETTE } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Subject } from 'rxjs';
 
 const MAX_OPACITY = 255;
+
 @Injectable({
     providedIn: 'root',
 })
 export class PipetteService extends Tool {
-    // private pathData: Vec2[];
+    onCanvas = new Subject();
     name: string = TOOL_NAMES.PIPETTE_TOOL_NAME;
     zoom: HTMLCanvasElement;
     zoomCtx: CanvasRenderingContext2D;
@@ -37,8 +39,8 @@ export class PipetteService extends Tool {
 
     showZoomPixel(event: MouseEvent, canvas: HTMLCanvasElement): void {
         this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
-        const hSource = this.zoom.height / 8;
-        const wSource = this.zoom.width / 8;
+        const hSource = this.zoom.height / ZOOM_PIPETTE;
+        const wSource = this.zoom.width / ZOOM_PIPETTE;
         const mousePosition = this.getPositionFromMouse(event);
         this.zoomCtx.drawImage(
             canvas,
@@ -61,14 +63,21 @@ export class PipetteService extends Tool {
         this.zoomCtx.fillStyle = color;
         this.zoomCtx.strokeStyle = 'white';
         this.zoomCtx.setLineDash([2, 1]);
-        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, 8, 8);
+        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
         this.zoomCtx.strokeStyle = 'black';
         this.zoomCtx.setLineDash([1, 2]);
-        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, 8, 8);
-        this.zoomCtx.fillRect(this.zoom.width / 2, this.zoom.height / 2, 8, 8);
+        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.fillRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
     }
 
     onMouseMove(event: MouseEvent): void {
         this.showZoomPixel(event, this.drawingService.canvas);
+    }
+    onMouseEnter(): void {
+        this.onCanvas.next(true);
+    }
+
+    onMouseLeave(): void {
+        this.onCanvas.next(false);
     }
 }
