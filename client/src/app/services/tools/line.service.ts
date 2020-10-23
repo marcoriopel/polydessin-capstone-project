@@ -66,8 +66,7 @@ export class LineService extends Tool {
         this.shiftClick = this.getPositionFromMouse(event);
 
         // Check if it is a double click
-        const isDoubleClick = this.checkIfDoubleClick();
-        if (isDoubleClick || this.isShiftDoubleClick) {
+        if (this.checkIfDoubleClick || this.isShiftDoubleClick) {
             this.isDrawing = false;
 
             // Handle case when user double click when there is no line
