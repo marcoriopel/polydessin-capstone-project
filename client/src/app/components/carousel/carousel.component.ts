@@ -58,6 +58,9 @@ export class CarouselComponent {
         console.log('bye');
     }
     loadExistingDrawings(): void {
+        this.drawings = [];
+        this.visibleDrawings = [];
+        this.visibleDrawingsIndexes = [];
         let numberDrawings = 0;
         this.databaseService.getDrawingData().subscribe((drawingData: DrawingData[]) => {
             drawingData.forEach((element: DrawingData) => {
@@ -100,8 +103,13 @@ export class CarouselComponent {
     }
 
     manageNumberDrawings(numberDrawings: number): void {
-        if (numberDrawings > 3) {
+        if (numberDrawings >= 3) {
             for (let i = 0; i < 3; i++) {
+                this.visibleDrawingsIndexes.push(i);
+                this.visibleDrawings.push(this.drawings[i]);
+            }
+        } else if (numberDrawings >= 1) {
+            for (let i = 0; i < numberDrawings; i++) {
                 this.visibleDrawingsIndexes.push(i);
                 this.visibleDrawings.push(this.drawings[i]);
             }

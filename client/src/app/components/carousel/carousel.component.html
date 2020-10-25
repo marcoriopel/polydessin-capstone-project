@@ -1,6 +1,6 @@
 <div class="carousel">
     <h1 mat-dialog-title>Carrousel de dessin</h1>
-    <div class="search">
+    <div *ngIf="visibleDrawings.length > 0; else elseBlock" class="search">
         <mat-card class="tags-card">
             <h3 mat-dialog-title>Filtrage par tags</h3>
             <mat-form-field class="tag-list">
@@ -41,6 +41,7 @@
         </mat-card>
     </div>
 </div>
+<ng-template #elseBlock>Aucun dessin trouvé en sauvegarde.</ng-template>
 <div mat-dialog-actions>
-    <button class="close" mat-button mat-dialog-close>Annuler</button>
+    <button class="close" mat-button mat-dialog-close>Fermer</button>
 </div>
