@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { LineStroke } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Pencil } from '@app/classes/tool-properties';
 
 
 @Injectable({
@@ -13,7 +13,7 @@ import { Pencil } from '@app/classes/tool-properties';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private pencilData: Pencil;
+    private pencilData: LineStroke;
     name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
     width: number = 1;
 
@@ -69,9 +69,11 @@ export class PencilService extends Tool {
 
     private updatePencilData(): void {
         this.pencilData = {
-            type: 'pencil',
+            type: 'lineStroke',
             path: this.pathData,
             lineWidth: this.width,
+            lineCap: 'butt',
+            pattern: 'none',
             primaryColor: this.colorSelectionService.primaryColor,
         };
     }

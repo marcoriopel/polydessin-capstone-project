@@ -1,18 +1,11 @@
 import { Vec2 } from './vec2';
 
-export interface Pencil {
+export interface LineStroke {
     type: string;
     path: Vec2[];
-    lineWidth: number;
-    primaryColor: string;
-}
-
-export interface Brush {
-    type: string;
-    path: Vec2[];
-    pattern: string;
     lineWidth: number;
     lineCap: string;
+    pattern: string;
     primaryColor: string;
 }
 
@@ -23,14 +16,6 @@ export interface Shape {
     primaryColor: string;
     secondaryColor: string;
     lineWidth: number;
-}
-
-export interface Eraser {
-    type: string;
-    path: Vec2[];
-    lineWidth: number;
-    primaryColor: string;
-    lineCap: string;
 }
 
 export interface Line {

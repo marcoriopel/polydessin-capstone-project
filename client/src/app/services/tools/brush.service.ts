@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { LineStroke } from '@app/classes/tool-properties';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -11,6 +12,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class BrushService extends Tool {
     name: string = TOOL_NAMES.BRUSH_TOOL_NAME;
+    private brushData: LineStroke;
     private pathData: Vec2[];
     width: number = 1;
     pattern: string;
@@ -32,10 +34,11 @@ export class BrushService extends Tool {
         } else {
             this.mouseDown = true;
             this.clearPath();
-            this.applyPattern(this.pattern);
+            //this.applyPattern(this.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.updateBrushData();
+            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -43,9 +46,11 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.updateBrushData();
+            this.drawingService.drawLineStroke(this.drawingService.baseCtx, this.brushData);
+            this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.applyPattern('none');
+            //this.applyPattern('none');
         }
         this.mouseDown = false;
         this.clearPath();
@@ -58,7 +63,8 @@ export class BrushService extends Tool {
 
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.updateBrushData();
+            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -83,15 +89,15 @@ export class BrushService extends Tool {
         this.drawingService.previewCtx.strokeRect(-this.drawingService.previewCtx.lineWidth, 0, 1, 0);
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.width;
-        ctx.lineCap = ctx.lineJoin = 'round';
-        ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.beginPath();
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
+    private updateBrushData(): void {
+        this.brushData = {
+            type: 'lineStroke',
+            path: this.pathData,
+            lineWidth: this.width,
+            lineCap: 'round',
+            pattern: this.pattern,
+            primaryColor: this.colorSelectionService.primaryColor,
+        };
     }
 
     private clearPath(): void {
