@@ -35,6 +35,10 @@ export class ResizeDrawingService {
 
         this.previewSize.x = this.canvasSize.x;
         this.previewSize.y = this.canvasSize.y;
+
+        setTimeout(() => {
+            this.drawingService.initializeBaseCanvas();
+        });
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -58,6 +62,7 @@ export class ResizeDrawingService {
             this.canvasSize.y = this.previewSize.y;
 
             setTimeout(() => {
+                this.drawingService.initializeBaseCanvas();
                 let baseCtx: CanvasRenderingContext2D;
                 baseCtx = this.drawingService.canvas.getContext('2d') as CanvasRenderingContext2D;
                 baseCtx.drawImage(tempCanvas, 0, 0);

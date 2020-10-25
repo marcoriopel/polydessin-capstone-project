@@ -13,10 +13,18 @@ export class DrawingService {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    initializeBaseCanvas(): void {
+        this.baseCtx.fillStyle = 'white';
+        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     isCanvasBlank(context: CanvasRenderingContext2D): boolean {
         const blank = document.createElement('canvas');
         blank.width = this.canvas.width;
         blank.height = this.canvas.height;
+        const blankCtx = blank.getContext('2d') as CanvasRenderingContext2D;
+        blankCtx.fillStyle = 'white';
+        blankCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         return context.canvas.toDataURL() === blank.toDataURL();
     }
