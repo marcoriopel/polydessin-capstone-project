@@ -21,7 +21,7 @@ describe('ResizeDrawingService', () => {
             clientX: 500,
             clientY: 500,
             target,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as unknown) as MouseEvent;
     });
 
@@ -46,7 +46,7 @@ describe('ResizeDrawingService', () => {
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
         const mouseEventRClick = {
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);

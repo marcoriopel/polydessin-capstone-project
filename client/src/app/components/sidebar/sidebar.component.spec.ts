@@ -65,8 +65,8 @@ describe('SidebarComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should call toolSelectionService.currentTool.handleCursor', () => {
-        const spy = spyOn(toolStub, 'handleCursor');
+    it('should call toolSelectionService.currentTool.setCursor', () => {
+        const spy = spyOn(toolStub, 'setCursor');
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
         expect(spy).toHaveBeenCalled();
@@ -85,7 +85,7 @@ describe('SidebarComponent', () => {
         expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
     });
 
-    it('should not change tool nor handle cursor on an invalid event', () => {
+    it('should not change tool nor set cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,
@@ -95,7 +95,7 @@ describe('SidebarComponent', () => {
             target,
         } as unknown) as InputEvent;
 
-        const cursorSpy = spyOn(toolStub, 'handleCursor');
+        const cursorSpy = spyOn(toolStub, 'setCursor');
         const toolSpy = spyOn(component.toolSelectionService, 'changeTool');
         component.onToolChange(event);
         expect(cursorSpy).not.toHaveBeenCalled();

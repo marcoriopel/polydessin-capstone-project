@@ -36,7 +36,6 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -45,7 +44,7 @@ describe('PencilService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -74,7 +73,7 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -116,18 +115,16 @@ describe('PencilService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
-    // Exemple de test d'intégration qui est quand même utile
     it(' should change the pixel of the canvas ', () => {
         mouseEvent = { offsetX: 0, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G

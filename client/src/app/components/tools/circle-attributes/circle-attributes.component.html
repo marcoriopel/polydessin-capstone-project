@@ -6,7 +6,7 @@
         [max]="circleService.maxBorderWidth"
         [step]="1"
         [value]="toolWidth"
-        (valueChange)="handleBorderWidthChange($event)"
+        (valueChange)="changeBorderWidth($event)"
     ></app-slider>
-    <app-type-of-fill-selection (valueChange)="handleFillStyleChange($event)" [currentFillStyle]="this.fillStyle"></app-type-of-fill-selection>
+    <app-type-of-fill-selection (valueChange)="changeFillStyle($event)" [currentFillStyle]="this.fillStyle"></app-type-of-fill-selection>
 </div>
