@@ -117,15 +117,6 @@ describe('EditorComponent', () => {
         expect(component.canvasSize).toEqual(expectedResult);
     });
 
-    // it('should resize canvas onMouseUp if resizeDrawingService.mouseDown is false', () => {
-    //     const expectedResult = { x: 500, y: 500 };
-    //     component.previewSize = { x: 500, y: 500 };
-    //     component.resizeDrawingService.mouseDown = true;
-    //     const mouseEvent = {} as MouseEvent;
-    //     component.onMouseUp(mouseEvent);
-    //     expect(component.canvasSize).toEqual(expectedResult);
-    // });
-
     it('should call resizeDrawingService.onMouseUp on mouseUp', () => {
         const eventSpy = spyOn(resizeDrawingService, 'onMouseUp');
         component.resizeDrawingService.mouseDown = true;
