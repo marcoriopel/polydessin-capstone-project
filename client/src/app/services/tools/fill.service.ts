@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { RGBA_INDEXER } from '@app/classes/rgba';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MAX_PERCENTAGE, MAX_TOLERANCE_VALUE, MIN_TOLERANCE_VALUE, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,8 +12,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class FillService extends Tool {
     name: string = TOOL_NAMES.FILL_TOOL_NAME;
-    maxTolerance: number = 100;
-    minTolerance: number = 0;
+    maxTolerance: number = MAX_TOLERANCE_VALUE;
+    minTolerance: number = MIN_TOLERANCE_VALUE;
     tolerance: number = this.minTolerance;
     mouseDownCoord: Vec2;
     initialPixelData: Uint8ClampedArray;
@@ -52,7 +52,7 @@ export class FillService extends Tool {
 
         while (stack.length) {
             const currentPixel = (stack.pop() as unknown) as Vec2;
-            const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * 4;
+            const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;
             } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
@@ -86,7 +86,7 @@ export class FillService extends Tool {
         const rgbaPrimaryColor = this.colorSelectionService.getRgbaPrimaryColor();
 
         let i;
-        for (i = 0; i < canvasData.data.length; i += 4) {
+        for (i = 0; i < canvasData.data.length; i += RGBA_LENGTH) {
             if (this.isInToleranceRange(pixelData, canvasData, i)) {
                 canvasData.data[i + RGBA_INDEXER.RED] = rgbaPrimaryColor.RED;
                 canvasData.data[i + RGBA_INDEXER.GREEN] = rgbaPrimaryColor.GREEN;
@@ -109,7 +109,7 @@ export class FillService extends Tool {
         const diffAlpha: number = Math.abs(pixelData[RGBA_INDEXER.ALPHA] - canvasData.data[index + RGBA_INDEXER.ALPHA]);
 
         // After which you can just find the average color difference in percentage.
-        const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (4 * 255)) * 100;
+        const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (RGBA_LENGTH * MAXIMUM_RGBA_VALUE)) * MAX_PERCENTAGE;
 
         if (diffPercentage > this.tolerance) {
             return false;

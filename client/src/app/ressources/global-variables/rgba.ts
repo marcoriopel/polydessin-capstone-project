@@ -1,3 +1,6 @@
+export const MAXIMUM_RGBA_VALUE = 255;
+export const RGBA_LENGTH = 4;
+
 export interface Rgba {
     RED: number;
     GREEN: number;

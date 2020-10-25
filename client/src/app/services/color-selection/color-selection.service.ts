@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rgba, RGBA_INDEXER } from '@app/classes/rgba';
+import { Rgba, RGBA_INDEXER } from '@app/ressources/global-variables/rgba';
 
 @Injectable({
     providedIn: 'root',
