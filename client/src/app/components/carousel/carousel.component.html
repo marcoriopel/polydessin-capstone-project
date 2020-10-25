@@ -1,6 +1,6 @@
 <div class="carousel">
     <h1 mat-dialog-title>Carrousel de dessin</h1>
-    <div *ngIf="visibleDrawings.length > 0; else elseBlock" class="search">
+    <div *ngIf="visibleDrawings.length > 0; else noDrawingBlock" class="search">
         <mat-card class="tags-card">
             <h3 mat-dialog-title>Filtrage par tags</h3>
             <mat-form-field class="tag-list">
@@ -21,7 +21,8 @@
             </mat-form-field>
         </mat-card>
         <mat-card class="slider">
-            <div class="mat-parent">
+            <p>{{ visibleDrawings.length }} dessin(s) trouvé(s)</p>
+            <div *ngIf="visibleDrawings.length > 1; else oneDrawingBlock" class="mat-parent">
                 <button class="control prev" (click)="onPreviousClick()">
                     <span class="arrow left"></span>
                 </button>
@@ -37,11 +38,19 @@
                     <span class="arrow right"></span>
                 </button>
             </div>
+            <ng-template #oneDrawingBlock>
+                <mat-card class="mat-child mat-child1">
+                    <p class="name">{{ visibleDrawings[0].name }}</p>
+                    <img class="image" [src]="visibleDrawings[0].drawingPng" />
+                    <u>TAGS</u>
+                    <i> - {{ visibleDrawings[0].tags }} - </i>
+                </mat-card>
+            </ng-template>
             <button class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
         </mat-card>
     </div>
 </div>
-<ng-template #elseBlock>Aucun dessin trouvé en sauvegarde.</ng-template>
+<ng-template #noDrawingBlock>Aucun dessin trouvé en sauvegarde.</ng-template>
 <div mat-dialog-actions>
     <button class="close" mat-button mat-dialog-close>Fermer</button>
 </div>

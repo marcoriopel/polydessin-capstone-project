@@ -42,9 +42,15 @@ export class CarouselComponent {
         console.log('hi');
     }
 
+    removeTag(tags: string): void {
+        console.log('bye');
+    }
+
     deleteDrawing(): void {
-        const id: string = this.visibleDrawings[1].id;
-        console.log('Deleting: ' + this.visibleDrawings[1].id);
+        let id: string = this.visibleDrawings[0].id;
+        if (this.visibleDrawings.length > 1) {
+            id = this.visibleDrawings[1].id;
+        }
         this.databaseService.deleteDrawing(id).subscribe(
             (data) => {
                 console.log(data);
@@ -54,9 +60,7 @@ export class CarouselComponent {
             },
         );
     }
-    removeTag(tags: string): void {
-        console.log('bye');
-    }
+
     loadExistingDrawings(): void {
         this.drawings = [];
         this.visibleDrawings = [];
@@ -72,9 +76,10 @@ export class CarouselComponent {
     }
 
     onPreviousClick(): void {
-        this.visibleDrawings[2] = this.visibleDrawings[1];
-        this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
-
+        if (this.drawings.length > 2) {
+            this.visibleDrawings[2] = this.visibleDrawings[1];
+            this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
+        }
         this.visibleDrawings[1] = this.visibleDrawings[0];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
         if (this.visibleDrawingsIndexes[0] === 0) {
@@ -87,18 +92,24 @@ export class CarouselComponent {
     }
 
     onNextClick(): void {
+        const tempdrawing = this.visibleDrawings[0];
+        const tempindex = this.visibleDrawingsIndexes[0];
         this.visibleDrawings[0] = this.visibleDrawings[1];
         this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
-
-        this.visibleDrawings[1] = this.visibleDrawings[2];
-        this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
-
-        if (this.visibleDrawingsIndexes[2] === this.drawings.length - 1) {
-            this.visibleDrawings[2] = this.drawings[0];
-            this.visibleDrawingsIndexes[2] = 0;
+        if (this.drawings.length === 2) {
+            this.visibleDrawings[1] = tempdrawing;
+            this.visibleDrawingsIndexes[1] = tempindex;
         } else {
-            this.visibleDrawings[2] = this.drawings[this.visibleDrawingsIndexes[2] + 1];
-            this.visibleDrawingsIndexes[2]++;
+            this.visibleDrawings[1] = this.visibleDrawings[2];
+            this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
+
+            if (this.visibleDrawingsIndexes[2] === this.drawings.length - 1) {
+                this.visibleDrawings[2] = this.drawings[0];
+                this.visibleDrawingsIndexes[2] = 0;
+            } else {
+                this.visibleDrawings[2] = this.drawings[this.visibleDrawingsIndexes[2] + 1];
+                this.visibleDrawingsIndexes[2]++;
+            }
         }
     }
 
