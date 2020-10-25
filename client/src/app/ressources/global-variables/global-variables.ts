@@ -19,6 +19,7 @@ export const DASH_SPACE_LENGTH = 3;
 export const MIN_TOLERANCE_VALUE = 0;
 export const MAX_TOLERANCE_VALUE = 100;
 export const MAX_PERCENTAGE = 100;
+export const RGBA_STRING_ = 100;
 
 export enum Quadrant {
     TOP_RIGHT = 0,

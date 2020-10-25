@@ -22,15 +22,19 @@ export class ResizeDrawingService {
     serviceCaller: string;
     workSpaceSize: Vec2;
 
-    constructor(private drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService) {}
 
     setDefaultCanvasSize(): void {
         if (this.workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
             this.canvasSize.x = this.workSpaceSize.x * HALF_RATIO;
+        } else {
+            this.canvasSize.x = MINIMUM_CANVAS_WIDTH;
         }
 
         if (this.workSpaceSize.y > MINIMUM_WORKSPACE_HEIGHT) {
             this.canvasSize.y = this.workSpaceSize.y * HALF_RATIO;
+        } else {
+            this.canvasSize.y = MINIMUM_CANVAS_HEIGHT;
         }
 
         this.previewSize.x = this.canvasSize.x;
