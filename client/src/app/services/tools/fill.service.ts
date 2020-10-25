@@ -102,28 +102,11 @@ export class FillService extends Tool {
         return pixel.x.toString() + ',' + pixel.y.toString();
     }
 
-    // isInToleranceRange(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number): boolean {
-    //     if (
-    //         pixelData[RGBA_INDEXER.RED] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.RED] &&
-    //         canvasData.data[index + RGBA_INDEXER.RED] <= pixelData[RGBA_INDEXER.RED] + (this.tolerance * 255) / 100 &&
-    //         pixelData[RGBA_INDEXER.GREEN] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.GREEN] &&
-    //         canvasData.data[index + RGBA_INDEXER.GREEN] <= pixelData[RGBA_INDEXER.GREEN] + (this.tolerance * 255) / 100 &&
-    //         pixelData[RGBA_INDEXER.BLUE] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.BLUE] &&
-    //         canvasData.data[index + RGBA_INDEXER.BLUE] <= pixelData[RGBA_INDEXER.BLUE] + (this.tolerance * 255) / 100 &&
-    //         pixelData[RGBA_INDEXER.ALPHA] - (this.tolerance * 255) / 100 <= canvasData.data[index + RGBA_INDEXER.ALPHA] &&
-    //         canvasData.data[index + RGBA_INDEXER.ALPHA] <= pixelData[RGBA_INDEXER.ALPHA] + (this.tolerance * 255) / 100
-    //     ) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     isInToleranceRange(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number): boolean {
         const diffRed: number = Math.abs(pixelData[RGBA_INDEXER.RED] - canvasData.data[index + RGBA_INDEXER.RED]);
         const diffGreen: number = Math.abs(pixelData[RGBA_INDEXER.GREEN] - canvasData.data[index + RGBA_INDEXER.GREEN]);
         const diffBlue: number = Math.abs(pixelData[RGBA_INDEXER.BLUE] - canvasData.data[index + RGBA_INDEXER.BLUE]);
-        const diffAlpha: number = Math.abs(pixelData[RGBA_INDEXER.BLUE] - canvasData.data[index + RGBA_INDEXER.BLUE]);
+        const diffAlpha: number = Math.abs(pixelData[RGBA_INDEXER.ALPHA] - canvasData.data[index + RGBA_INDEXER.ALPHA]);
 
         // After which you can just find the average color difference in percentage.
         const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (4 * 255)) * 100;
