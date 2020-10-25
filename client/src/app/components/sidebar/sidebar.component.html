@@ -125,6 +125,7 @@
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.undo()"
             >undo</mat-icon
         >
         <mat-icon
@@ -132,6 +133,7 @@
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.redo()"
             >redo</mat-icon
         >
     </div>
