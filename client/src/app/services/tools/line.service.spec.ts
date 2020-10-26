@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Line } from '@app/classes/line';
+import { StraightLine } from '@app/classes/line';
 import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -204,7 +204,7 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 11 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.mouseClicks.push(click2);
         service.numberOfClicks = 1;
@@ -259,7 +259,7 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.mouseClicks.push(click1);
         service.mouseClicks.push(click2);
@@ -276,7 +276,7 @@ describe('LineService', () => {
         const drawDotsSpy = spyOn<any>(service, 'drawDots');
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.isDot = true;
         service.storedLines.push(line);
         service.mouseClicks.push(click1);
@@ -295,7 +295,7 @@ describe('LineService', () => {
         const drawDotsSpy = spyOn<any>(service, 'drawDots');
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.isDot = false;
         service.storedLines.push(line);
         service.mouseClicks.push(click1);
@@ -344,7 +344,7 @@ describe('LineService', () => {
         service.isShiftDoubleClick = true;
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 21, y: 21 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.mouseClicks.push(click1);
         service.mouseClicks.push(click2);
@@ -405,7 +405,7 @@ describe('LineService', () => {
         service.isDrawing = false;
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -416,7 +416,7 @@ describe('LineService', () => {
         service.isDrawing = true;
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
@@ -436,7 +436,7 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 11 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
         service.storedLines.push(line);
 
@@ -562,7 +562,7 @@ describe('LineService', () => {
     it('should be a pixel on preview canvas on the line path (5px right on the horizontal) ', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 1, y: 0 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
 
         service.drawLine(click1, click2, true, 1);
@@ -577,7 +577,7 @@ describe('LineService', () => {
     it('should be a pixel on base canvas on the line path (5px right on the horizontal) ', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 1, y: 0 };
-        const line: Line = { startingPoint: click1, endingPoint: click2 };
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.storedLines.push(line);
 
         service.drawLine(click1, click2, false, 1);

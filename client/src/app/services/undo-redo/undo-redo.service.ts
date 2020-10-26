@@ -7,7 +7,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class UndoRedoService {
-
     constructor(public drawingService: DrawingService) {}
 
     undo(): void {
@@ -23,7 +22,7 @@ export class UndoRedoService {
 
     redo(): void {
         const redoStackLength = this.drawingService.redoStack.length;
-        const element = this.drawingService.redoStack[ redoStackLength - 1];
+        const element = this.drawingService.redoStack[redoStackLength - 1];
         if (redoStackLength) {
             this.drawElement(element);
             const modification = this.drawingService.redoStack.pop();
@@ -43,6 +42,9 @@ export class UndoRedoService {
                 break;
             case 'eraser':
                 this.drawingService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
+            case 'line':
+                this.drawingService.drawLine(this.drawingService.baseCtx, element as Line);
+                break;
         }
     }
 }

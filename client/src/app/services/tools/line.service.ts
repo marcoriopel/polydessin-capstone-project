@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Line } from '@app/classes/line';
+import { StraightLine } from '@app/classes/line';
 import { Tool } from '@app/classes/tool';
+import { Line } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -19,12 +20,13 @@ export class LineService extends Tool {
     isDrawing: boolean = false;
     numberOfClicks: number = 0;
     mouseClicks: Vec2[] = [];
-    storedLines: Line[] = [];
+    storedLines: StraightLine[] = [];
     mouseEvent: MouseEvent;
     isDot: boolean = false;
     lineWidth: number = 1;
     dotWidth: number = 1;
-    line: Line;
+    lineData: Line;
+    line: StraightLine;
 
     constructor(
         public drawingService: DrawingService,
@@ -84,14 +86,14 @@ export class LineService extends Tool {
             }
 
             // Draw line on base canvas
-            this.storedLines.forEach((line) => {
-                this.drawLine(line.startingPoint, line.endingPoint, false, this.lineWidth);
-            });
+            this.updateLineData();
+            this.drawingService.drawLine(this.drawingService.baseCtx, this.lineData);
+            this.drawingService.updateStack(this.lineData);
 
             // Draw the junction dots
-            if (this.isDot) {
-                this.drawDots(this.dotWidth, false);
-            }
+            // if (this.isDot) {
+            //     this.drawDots(this.dotWidth, false);
+            // }
 
             // Clear the preview canvas, the stored clikcs and the stored lines used for previewing
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -344,5 +346,21 @@ export class LineService extends Tool {
                 this.drawingService.baseCtx.stroke();
             }
         }
+    }
+
+    private updateLineData(): void {
+        this.lineData = {
+            type: 'line',
+            lineWidth: this.lineWidth,
+            lineCap: 'round',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            mouseClicks: this.mouseClicks,
+            storedLines: this.storedLines,
+            isDot: this.isDot,
+            line: this.line,
+            isShiftDoubleClick: this.isShiftDoubleClick,
+            dotWidth: this.dotWidth,
+        };
     }
 }

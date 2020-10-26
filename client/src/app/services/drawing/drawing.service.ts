@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Eraser, Fill, Line, Resize, Shape, Pencil, Brush } from '@app/classes/tool-properties';
+import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +12,7 @@ export class DrawingService {
     undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
     redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
 
-    constructor(){}
+    constructor() {}
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -33,7 +33,7 @@ export class DrawingService {
         }
     }
 
-    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void{
+    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void {
         ctx.lineWidth = pencil.lineWidth;
         ctx.strokeStyle = pencil.primaryColor;
         ctx.lineJoin = 'round';
@@ -78,5 +78,40 @@ export class DrawingService {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
+    }
+
+    drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
+        line.storedLines.forEach((element) => {
+            ctx.strokeStyle = line.primaryColor;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = line.lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(element.startingPoint.x, element.startingPoint.y);
+            ctx.lineTo(element.endingPoint.x, element.endingPoint.y);
+            ctx.stroke();
+        });
+
+        if (line.isDot) {
+            const LAST_DOT = line.mouseClicks.length;
+
+            // Remove the double click that doesnt need to be drawed on the canvas
+            line.mouseClicks[line.mouseClicks.length - 2] = line.mouseClicks[line.mouseClicks.length - 1];
+            line.mouseClicks.pop();
+
+            // If it's a double click holding shift adjust ending dot
+            if (line.isShiftDoubleClick) {
+                line.mouseClicks[line.mouseClicks.length - 1] = line.storedLines[line.storedLines.length - 1].endingPoint;
+            }
+
+            for (let i = 0; i < LAST_DOT - 1; i++) {
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = line.secondaryColor;
+                ctx.fillStyle = line.secondaryColor;
+                ctx.beginPath();
+                ctx.arc(line.mouseClicks[i].x, line.mouseClicks[i].y, line.dotWidth / 2, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
     }
 }

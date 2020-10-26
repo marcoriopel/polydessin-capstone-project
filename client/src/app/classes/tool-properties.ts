@@ -1,8 +1,9 @@
+import { StraightLine } from './line';
 import { Vec2 } from './vec2';
 
 export interface Pencil {
     type: string;
-    path: Vec2[]
+    path: Vec2[];
     lineWidth: number;
     primaryColor: string;
     lineCap: string;
@@ -38,12 +39,15 @@ export interface Shape {
 export interface Line {
     type: string;
     primaryColor: string;
-    secondarColor: string;
+    secondaryColor: string;
     mouseClicks: Vec2[];
+    isDot: boolean;
     lineCap: string;
     lineWidth: number;
-    startingPoint: Vec2;
-    endingPoint: Vec2;
+    line: StraightLine;
+    storedLines: StraightLine[];
+    isShiftDoubleClick: boolean;
+    dotWidth: number;
 }
 
 export interface Resize {
