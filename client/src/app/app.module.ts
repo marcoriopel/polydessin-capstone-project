@@ -10,6 +10,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -81,6 +82,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatTooltipModule,
         MatChipsModule,
         MatIconModule,
+        MatProgressSpinnerModule,
         MatExpansionModule,
         FormsModule,
         MatCheckboxModule,

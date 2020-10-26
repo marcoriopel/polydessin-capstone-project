@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
@@ -12,6 +12,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent {
+    gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     drawings: DrawingData[] = [];
     visibleDrawings: DrawingData[] = [];
@@ -28,16 +29,6 @@ export class CarouselComponent {
         this.loadExistingDrawings();
     }
 
-    @HostListener('document:keyup', ['$event'])
-    @HostListener('document:keydown', ['$event'])
-    handleKeyDown(event: KeyboardEvent): void {
-        // event.stopImmediatePropagation();
-        // event.stopPropagation();
-        // event.preventDefault();
-        // event.returnValue = false;
-        console.log(event);
-    }
-
     addTag(event: MatChipInputEvent): void {
         console.log('hi');
     }
@@ -47,6 +38,7 @@ export class CarouselComponent {
     }
 
     deleteDrawing(): void {
+        this.gotImages = false;
         let id: string = this.visibleDrawings[0].id;
         if (this.visibleDrawings.length > 1) {
             id = this.visibleDrawings[1].id;
@@ -54,6 +46,7 @@ export class CarouselComponent {
         this.databaseService.deleteDrawing(id).subscribe(
             (data) => {
                 console.log(data);
+                this.loadExistingDrawings();
             },
             (error) => {
                 this.dialog.open(ErrorAlertComponent);
@@ -62,6 +55,7 @@ export class CarouselComponent {
     }
 
     loadExistingDrawings(): void {
+        this.gotImages = false;
         this.drawings = [];
         this.visibleDrawings = [];
         this.visibleDrawingsIndexes = [];
@@ -73,6 +67,7 @@ export class CarouselComponent {
             });
             this.manageNumberDrawings(numberDrawings);
         });
+        this.gotImages = true;
     }
 
     onPreviousClick(): void {
