@@ -5,13 +5,12 @@
 }
 
 .toolName {
-    margin: 5px;
+    margin: 10px;
     align-items: center;
 }
 #zoom {
     background-color: #ffffff;
-    border-bottom: 3px;
-    border-right: 3px;
-    border-top: 10px;
-    border-left: 0px;
+    border-style: solid;
+    border-color: rgb(73, 85, 95);
+    border-radius: 30px;
 }

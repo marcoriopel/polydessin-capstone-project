@@ -12,14 +12,18 @@ const MAX_OPACITY = 255;
     providedIn: 'root',
 })
 export class PipetteService extends Tool {
-    onCanvas = new Subject();
+    onCanvas: Subject<boolean> = new Subject<boolean>();
     name: string = TOOL_NAMES.PIPETTE_TOOL_NAME;
     zoom: HTMLCanvasElement;
     zoomCtx: CanvasRenderingContext2D;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-        // this.clearPath();
+    }
+
+    handleCursor(): void {
+        const previewCanvas = this.drawingService.previewCanvas;
+        previewCanvas.style.cursor = 'crosshair';
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -37,41 +41,51 @@ export class PipetteService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    showZoomPixel(event: MouseEvent, canvas: HTMLCanvasElement): void {
+    showZoomPixel(event: MouseEvent): void {
         this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
-        const hSource = this.zoom.height / ZOOM_PIPETTE;
-        const wSource = this.zoom.width / ZOOM_PIPETTE;
-        const mousePosition = this.getPositionFromMouse(event);
-        this.zoomCtx.drawImage(
-            canvas,
-            mousePosition.x - wSource / 2,
-            mousePosition.y - hSource / 2,
-            wSource,
-            hSource,
-            0,
-            0,
-            this.zoom.width,
-            this.zoom.height,
-        );
-        this.handleCursorOnPixel(event);
+        this.handleNearBorder(event);
     }
 
-    handleCursorOnPixel(e: MouseEvent): void {
+    drawImage(height: number, width: number, x: number, y: number, event: MouseEvent): void {
+        const hSource = height / ZOOM_PIPETTE;
+        const wSource = width / ZOOM_PIPETTE;
+        this.zoomCtx.drawImage(this.drawingService.canvas, x - wSource / 2, y - hSource / 2, wSource, hSource, 0, 0, width, height);
+        this.handleCursorOnPixel(event, width, height);
+    }
+
+    handleCursorOnPixel(e: MouseEvent, width: number, height: number): void {
         const mousePosition = this.getPositionFromMouse(e);
         const pixelData = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
         const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[3] / MAX_OPACITY + ')';
         this.zoomCtx.fillStyle = color;
         this.zoomCtx.strokeStyle = 'white';
         this.zoomCtx.setLineDash([2, 1]);
-        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
         this.zoomCtx.strokeStyle = 'black';
         this.zoomCtx.setLineDash([1, 2]);
-        this.zoomCtx.strokeRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
-        this.zoomCtx.fillRect(this.zoom.width / 2, this.zoom.height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.fillRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+    }
+
+    handleNearBorder(e: MouseEvent): boolean {
+        let isNearBorder = false;
+        const mousePosition = this.getPositionFromMouse(e);
+        let height = this.zoom.height;
+        let width = this.zoom.width;
+        if (mousePosition.x < width / (2 * ZOOM_PIPETTE)) {
+            width = mousePosition.x * ZOOM_PIPETTE * 2;
+            isNearBorder = true;
+        }
+        if (mousePosition.y < height / (2 * ZOOM_PIPETTE)) {
+            height = mousePosition.y * ZOOM_PIPETTE * 2;
+            isNearBorder = true;
+        }
+        this.drawImage(height, width, mousePosition.x, mousePosition.y, e);
+        return isNearBorder;
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.showZoomPixel(event, this.drawingService.canvas);
+        this.showZoomPixel(event);
     }
     onMouseEnter(): void {
         this.onCanvas.next(true);
