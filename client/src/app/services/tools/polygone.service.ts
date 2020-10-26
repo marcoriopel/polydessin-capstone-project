@@ -21,6 +21,8 @@ export class PolygoneService extends Tool {
     width: number = 1;
     private center: Vec2;
     sides: number = 3;
+    centerX: number;
+    centerY: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -49,7 +51,12 @@ export class PolygoneService extends Tool {
     changeSides(sides: number): void {
         this.sides = sides;
     }
-
+    setCenterX(): void {
+        this.centerX = Math.abs(this.firstPoint.y - this.lastPoint.y);
+    }
+    setCenterY(): void {
+        this.centerY = Math.abs(this.firstPoint.y - this.lastPoint.y);
+    }
     set setSides(sides: number) {
         this.sides = sides;
     }
@@ -126,7 +133,7 @@ export class PolygoneService extends Tool {
         return Math.abs(this.lastPoint.x - this.firstPoint.x) / 2;
     }
 
-    private getCenter(): Vec2 {
+    getCenter(): Vec2 {
         let centerX = Math.abs(this.lastPoint.x - this.firstPoint.x) / 2;
         let centerY = Math.abs(this.lastPoint.y - this.firstPoint.y) / 2;
 

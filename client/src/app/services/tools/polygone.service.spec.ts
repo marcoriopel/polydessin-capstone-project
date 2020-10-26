@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-// import { Vec2 } from '@app/classes/vec2';
+import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -13,7 +13,8 @@ describe('PolygoneService', () => {
     let service: PolygoneService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    // let drawShapeSpy: jasmine.Spy<any>;
+    // tslint:disable-next-line: prefer-const
+    let drawShapeSpy: jasmine.Spy<any>;
     // let baseCtxStub: CanvasRenderingContext2D;
     // let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
@@ -22,7 +23,8 @@ describe('PolygoneService', () => {
     // let drawRectSpy: jasmine.Spy<any>;
     // let topLeftPointSpy: jasmine.Spy<any>;
     // let drawSquareSpy: jasmine.Spy<any>;
-    // let ctxFillSpy: jasmine.Spy<any>;
+    // tslint:disable-next-line: prefer-const
+    let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -66,9 +68,51 @@ describe('PolygoneService', () => {
         expect(service.fillStyle).toBe(FILL_STYLES.BORDER);
     });
 
+    it('should not change the fillStyle', () => {
+        service.fillStyle = FILL_STYLES.FILL;
+        service.changeFillStyle(FILL_STYLES.BORDER);
+        expect(service.fillStyle).not.toBe(FILL_STYLES.BORDER);
+    });
+
     it(' mouseDown should set mouseDown property to true on left click', () => {
         service.onMouseDown(mouseEvent);
         expect(service.mouseDown).toEqual(true);
+    });
+
+    it('should change width', () => {
+        service.width = 0;
+        service.changeWidth(1);
+        expect(service.width).toBe(1);
+    });
+
+    it('should not change width', () => {
+        service.width = 0;
+        service.changeWidth(1);
+        expect(service.width).not.toBe(1);
+    });
+
+    it('should change sides', () => {
+        service.setSides = 8;
+        service.changeSides(10);
+        expect(service.width).toBe(10);
+    });
+
+    it('should not change sides', () => {
+        service.setSides = 8;
+        service.changeSides(10);
+        expect(service.width).not.toBe(10);
+    });
+
+    it('should change line width', () => {
+        service.width = 0;
+        service.changeLineWidth(1);
+        expect(service.width).toBe(1);
+    });
+
+    it('should not change line width', () => {
+        service.width = 0;
+        service.changeLineWidth(1);
+        expect(service.width).not.toBe(1);
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
@@ -80,6 +124,16 @@ describe('PolygoneService', () => {
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
     });
+    it('should drawShape when mouse is down on mousemove', () => {
+        const mouseEventLClick = {
+            offsetX: 25,
+            offsetY: 26,
+            button: MouseButton.Left,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        service.onMouseMove(mouseEventLClick);
+        expect(drawShapeSpy).toHaveBeenCalled();
+    });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
@@ -91,5 +145,57 @@ describe('PolygoneService', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
         service.handleCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+    });
+
+    it('should not draw anything on detection of mouse up if it was not down', () => {
+        service.mouseDown = false;
+        service.onMouseUp(mouseEvent);
+        expect(drawShapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not draw anything on detection of mouse move if it was not down', () => {
+        service.mouseDown = false;
+        service.onMouseMove(mouseEvent);
+        expect(drawShapeSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call fillRect if option is not to draw only the border', () => {
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call fillRect if option is not to draw only the border', () => {
+        service.fillStyle = FILL_STYLES.FILL;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('should trouver the radius ', () => {
+        // top left is last point
+        service.firstPoint = { x: 3, y: 3 };
+        service.lastPoint = { x: 2, y: 2 };
+        const R = service.radius;
+        expect(R).toEqual(R);
+    });
+
+    it('should not equal the radius ', () => {
+        // top left is last point
+        service.firstPoint = { x: 3, y: 3 };
+        service.lastPoint = { x: 2, y: 2 };
+        const R = service.radius;
+        expect(R).not.toEqual(R);
+    });
+
+    it('should finTopLeftPoint if firstPoint is top right corner', () => {
+        service.firstPoint = { x: 5, y: 5 };
+        service.lastPoint = { x: 15, y: 15 };
+        service.setCenterX();
+        service.setCenterY();
+        const centerValue = service.getCenter();
+        const expectedValue: Vec2 = { x: 10, y: 10 };
+        expect(centerValue).toEqual(expectedValue);
     });
 });
