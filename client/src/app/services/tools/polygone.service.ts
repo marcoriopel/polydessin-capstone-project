@@ -17,7 +17,6 @@ export class PolygoneService extends Tool {
     firstPoint: Vec2;
     numberOfClicks: number = 0;
     fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
-    isDot: boolean = false;
     width: number = 1;
     private center: Vec2;
     sides: number = 3;
@@ -32,10 +31,6 @@ export class PolygoneService extends Tool {
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
-    }
-
-    changeJunction(isDot: boolean): void {
-        this.isDot = isDot;
     }
 
     changeWidth(newWidth: number): void {

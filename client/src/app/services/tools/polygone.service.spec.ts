@@ -94,25 +94,25 @@ describe('PolygoneService', () => {
     it('should change sides', () => {
         service.setSides = 8;
         service.changeSides(10);
-        expect(service.width).toBe(10);
+        expect(service.sides).toBe(10);
     });
 
     it('should not change sides', () => {
         service.setSides = 8;
         service.changeSides(10);
-        expect(service.width).not.toBe(10);
+        expect(service.sides).not.toBe(10);
     });
 
     it('should change line width', () => {
-        service.width = 0;
+        service.lineWidth = 0;
         service.changeLineWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.lineWidth).toBe(1);
     });
 
     it('should not change line width', () => {
-        service.width = 0;
+        service.lineWidth = 0;
         service.changeLineWidth(1);
-        expect(service.width).not.toBe(1);
+        expect(service.lineWidth).not.toBe(1);
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
