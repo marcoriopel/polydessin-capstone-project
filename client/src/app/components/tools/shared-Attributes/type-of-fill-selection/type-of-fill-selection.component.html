@@ -6,7 +6,7 @@
                 type="radio"
                 name="typeOfFill"
                 [value]="fillStyles.FILL_AND_BORDER"
-                (change)="this.handleValueChange($event)"
+                (change)="this.changeValue($event)"
                 [checked]="this.currentFillStyle === fillStyles.FILL_AND_BORDER"
             />
             <p>Plein avec contour</p>
@@ -16,7 +16,7 @@
                 type="radio"
                 name="typeOfFill"
                 [value]="fillStyles.FILL"
-                (change)="this.handleValueChange($event)"
+                (change)="this.changeValue($event)"
                 [checked]="this.currentFillStyle === fillStyles.FILL"
             />
             <p>Plein</p>
@@ -26,7 +26,7 @@
                 type="radio"
                 name="typeOfFill"
                 [value]="fillStyles.BORDER"
-                (change)="this.handleValueChange($event)"
+                (change)="this.changeValue($event)"
                 [checked]="this.currentFillStyle === fillStyles.BORDER"
             />
             <p>Contour</p>

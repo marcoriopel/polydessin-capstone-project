@@ -21,12 +21,12 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 export class EditorComponent implements AfterViewInit {
     @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
 
-    toolNames: ToolNames = TOOL_NAMES;
-    canvasSize: Vec2;
-    private workSpaceSize: Vec2;
-    previewSize: Vec2;
-    previewDiv: HTMLDivElement;
+    workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+    previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+    canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
+    toolNames: ToolNames = TOOL_NAMES;
+    previewDiv: HTMLDivElement;
 
     // TODO -> Add missing keys for new tools as we create them
     keyToolMapping: Map<string, string> = new Map([
@@ -44,9 +44,6 @@ export class EditorComponent implements AfterViewInit {
         public resizeDrawingService: ResizeDrawingService,
         public newDrawingService: NewDrawingService,
     ) {
-        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
         this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
         this.resizeDrawingService.previewSize = this.previewSize;
         this.resizeDrawingService.canvasSize = this.canvasSize;
@@ -68,7 +65,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     @HostListener('document:keyup', ['$event'])
-    handleKeyUp(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         const keyName: string | undefined = this.keyToolMapping.get(event.key.toString());
         if (keyName) {
             (document.querySelector('#' + keyName) as HTMLElement).click();
@@ -78,7 +75,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     @HostListener('document:keydown', ['$event'])
-    handleKeyDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'o' && event.ctrlKey) {
             event.preventDefault();
             this.newDrawingService.openWarning();

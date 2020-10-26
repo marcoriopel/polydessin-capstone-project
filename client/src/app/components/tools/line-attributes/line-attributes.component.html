@@ -6,7 +6,7 @@
         [max]="lineService.maxToolWidth"
         [step]="1"
         [value]="toolWidth"
-        (valueChange)="handleLineWidthChange($event)"
+        (valueChange)="changeLineWidth($event)"
     ></app-slider>
 
     <app-slider
@@ -15,7 +15,7 @@
         [max]="lineService.maxToolWidth"
         [step]="1"
         [value]="dotWith"
-        (valueChange)="handleDotWidthChange($event)"
+        (valueChange)="changeDotWidth($event)"
     ></app-slider>
 </div>
-<mat-checkbox (change)="handleJunctionPointChange($event.checked)" [checked]="isDot">Afficher jonction</mat-checkbox>
+<mat-checkbox (change)="changeJunctionPoint($event.checked)" [checked]="isDot">Afficher jonction</mat-checkbox>

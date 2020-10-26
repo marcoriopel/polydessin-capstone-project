@@ -46,7 +46,7 @@ export class ResizeDrawingService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             const target = event.target as HTMLElement;

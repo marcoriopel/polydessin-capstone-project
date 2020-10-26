@@ -34,10 +34,10 @@ export class FillService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.initialPixelData = this.drawingService.getPixelData(this.mouseDownCoord);
-        if (event.button === MouseButton.Left) {
+        if (event.button === MouseButton.LEFT) {
             this.drawingService.baseCtx.fillStyle = this.colorSelectionService.primaryColor;
             this.contiguousFill();
-        } else if (event.button === MouseButton.Right) {
+        } else if (event.button === MouseButton.RIGHT) {
             this.fill();
         }
     }
