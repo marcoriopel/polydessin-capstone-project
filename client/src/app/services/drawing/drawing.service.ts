@@ -39,10 +39,15 @@ export class DrawingService {
         ctx.lineJoin = 'round';
         ctx.lineCap = lineStroke.lineCap as CanvasLineCap;
         if (lineStroke.pattern === 'none') {
-            ctx.filter = lineStroke.pattern;
+            this.baseCtx.filter = 'none';
+            this.previewCtx.filter = 'none';
         } else {
-            ctx.filter = 'url(/assets/patterns.svg#' + lineStroke.pattern + ')';
+            this.baseCtx.filter = 'url(/assets/patterns.svg#' + lineStroke.pattern + ')';
+            this.previewCtx.filter = 'url(/assets/patterns.svg#' + lineStroke.pattern + ')';
         }
+        // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
+        this.baseCtx.strokeRect(-this.baseCtx.lineWidth, 0, 1, 0);
+        this.previewCtx.strokeRect(-this.previewCtx.lineWidth, 0, 1, 0);
         ctx.beginPath();
         for (const point of lineStroke.path) {
             ctx.lineTo(point.x, point.y);

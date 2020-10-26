@@ -12,7 +12,6 @@ export class UndoRedoService {
     constructor(public drawingService: DrawingService) {}
 
     undo(): void {
-        console.log(this.drawingService.undoStack);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);

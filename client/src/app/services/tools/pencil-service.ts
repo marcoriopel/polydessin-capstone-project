@@ -72,7 +72,7 @@ export class PencilService extends Tool {
             type: 'lineStroke',
             path: this.pathData,
             lineWidth: this.width,
-            lineCap: 'butt',
+            lineCap: 'round',
             pattern: 'none',
             primaryColor: this.colorSelectionService.primaryColor,
         };
