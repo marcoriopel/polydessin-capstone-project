@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
+import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingData } from '@common/communication/drawing-data';
 
@@ -109,8 +110,8 @@ export class CarouselComponent {
     }
 
     manageNumberDrawings(numberDrawings: number): void {
-        if (numberDrawings >= 3) {
-            for (let i = 0; i < 3; i++) {
+        if (numberDrawings >= MAX_NUMBER_VISIBLE_DRAWINGS) {
+            for (let i = 0; i < MAX_NUMBER_VISIBLE_DRAWINGS; i++) {
                 this.visibleDrawingsIndexes.push(i);
                 this.visibleDrawings.push(this.drawings[i]);
             }

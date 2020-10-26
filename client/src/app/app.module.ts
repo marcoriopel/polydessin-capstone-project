@@ -1,4 +1,3 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +18,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
-import { InAppRootOverlayContainer } from './components/app/in-app-root-overlay-container';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { ColorPickerComponent } from './components/color-picker/color-picker.component';
@@ -91,7 +89,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatInputModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
-    providers: [{ provide: OverlayContainer, useClass: InAppRootOverlayContainer }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
