@@ -173,7 +173,7 @@ describe('PolygoneService', () => {
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('should trouver the radius ', () => {
+    it('should find the radius ', () => {
         // top left is last point
         service.firstPoint = { x: 3, y: 3 };
         service.lastPoint = { x: 2, y: 2 };
