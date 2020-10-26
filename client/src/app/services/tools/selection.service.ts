@@ -22,12 +22,13 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (!this.isInSelection(event)) {
             this.mouseDown = event.button === MouseButton.LEFT;
-            if (!this.moveService.transformationOver) {
+            if (!this.moveService.transformationOver && this.mouseDown) {
                 this.moveService.transformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawingService.baseCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
             }
             if (this.mouseDown) {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.squareService.onMouseDown(event);
             }
         } else {
@@ -51,6 +52,12 @@ export class SelectionService extends Tool {
         } else if (this.transormation === 'move') {
             this.transormation = '';
             this.moveService.onMouseUp(event);
+            this.drawingService.previewCtx.strokeRect(
+                this.selection.startingPoint.x,
+                this.selection.startingPoint.y,
+                this.selection.width,
+                this.selection.height,
+            );
         }
     }
 

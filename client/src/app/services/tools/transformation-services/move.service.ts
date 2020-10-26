@@ -36,14 +36,7 @@ export class MoveService extends Tool {
         this.drawingService.baseCtx.fillStyle = currentFillStyle;
     }
 
-    onMouseUp(event: MouseEvent): void {
-        this.drawingService.previewCtx.strokeRect(
-            this.selection.startingPoint.x,
-            this.selection.startingPoint.y,
-            this.selection.width,
-            this.selection.height,
-        );
-    }
+    onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
