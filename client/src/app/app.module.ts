@@ -36,6 +36,7 @@ import { EraserAttributesComponent } from './components/tools/eraser-attributes/
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
+import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
@@ -58,6 +59,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         EraserAttributesComponent,
         LineAttributesComponent,
         PencilAttributesComponent,
+        PolygoneAttributesComponent,
         CarouselComponent,
         SliderComponent,
         SquareAttributesComponent,
