@@ -3,7 +3,7 @@
     <p>{{ title }}</p>
     <mat-slider [min]="min" [max]="max" [step]="step" [(value)]="value" (change)="this.changeValue()"> </mat-slider>
     <div id="sliderDetails">
-        <input type="number" [(value)]="value" (change)="this.changeValue()" [min]="min" [max]="max" readonly />
+        <input type="text" [(value)]="value" (change)="this.changeValue()" [min]="min" [max]="max" readonly />
         <div>
             <button (click)="decrementToolWidth()">-</button>
             <button (click)="incrementToolWidth()">+</button>
