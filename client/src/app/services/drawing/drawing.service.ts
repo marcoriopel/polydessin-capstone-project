@@ -19,7 +19,7 @@ export class DrawingService {
     }
 
     isCanvasBlank(context: CanvasRenderingContext2D): boolean {
-        const blank = new HTMLCanvasElement();
+        const blank = document.createElement('canvas');
         blank.width = this.canvas.width;
         blank.height = this.canvas.height;
         const blankCtx = blank.getContext('2d') as CanvasRenderingContext2D;
