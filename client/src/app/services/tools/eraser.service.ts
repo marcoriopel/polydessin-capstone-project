@@ -4,12 +4,15 @@ import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Eraser } from '@app/classes/tool-properties';
+
 
 @Injectable({
     providedIn: 'root',
 })
 export class EraserService extends Tool {
     name: string = TOOL_NAMES.ERASER_TOOL_NAME;
+    private eraserData: Eraser;
     private pathData: Vec2[];
     width: number = 5;
 
@@ -40,7 +43,9 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.updateEraserData();
+            this.drawingService.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
+            this.drawingService.updateStack(this.eraserData);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -48,7 +53,8 @@ export class EraserService extends Tool {
 
     onMouseLeave(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.updateEraserData();
+        this.drawingService.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -56,7 +62,8 @@ export class EraserService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.updateEraserData();
+            this.drawingService.drawEraserStroke(this.drawingService.previewCtx, this.eraserData);
         }
         this.squareCursor(event);
     }
@@ -81,16 +88,17 @@ export class EraserService extends Tool {
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.width;
-        ctx.strokeStyle = 'white';
-        ctx.lineCap = 'square';
-        ctx.beginPath();
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
-    }
+
+    // private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+    //     ctx.lineWidth = this.width;
+    //     ctx.strokeStyle = 'white';
+    //     ctx.lineCap = 'square';
+    //     ctx.beginPath();
+    //     for (const point of path) {
+    //         ctx.lineTo(point.x, point.y);
+    //     }
+    //     ctx.stroke();
+    // }
 
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = 1;
@@ -102,6 +110,17 @@ export class EraserService extends Tool {
         }
         ctx.fill();
         ctx.stroke();
+    }
+
+    private updateEraserData(): void {
+        this.eraserData = {
+            type: 'eraser',
+            path: this.pathData,
+            lineWidth: this.width,
+            lineCap: 'round',
+            fillStyle: 'white',
+            primaryColor: 'white',
+        };
     }
 
     private clearPath(): void {

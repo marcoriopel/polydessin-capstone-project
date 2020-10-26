@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { LineStroke } from '@app/classes/tool-properties';
+import { Pencil } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -13,7 +13,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
-    private pencilData: LineStroke;
+    private pencilData: Pencil;
     name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
     width: number = 1;
 
@@ -36,7 +36,7 @@ export class PencilService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.updatePencilData();
-            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawingService.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
     }
 
@@ -45,7 +45,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updatePencilData();
-            this.drawingService.drawLineStroke(this.drawingService.baseCtx, this.pencilData);
+            this.drawingService.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
             this.drawingService.updateStack(this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
@@ -59,7 +59,7 @@ export class PencilService extends Tool {
             this.pathData.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updatePencilData();
-            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawingService.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
     }
 
@@ -69,11 +69,10 @@ export class PencilService extends Tool {
 
     private updatePencilData(): void {
         this.pencilData = {
-            type: 'lineStroke',
+            type: 'pencil',
             path: this.pathData,
             lineWidth: this.width,
             lineCap: 'round',
-            pattern: 'none',
             primaryColor: this.colorSelectionService.primaryColor,
         };
     }

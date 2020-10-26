@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { LineStroke } from '@app/classes/tool-properties';
 import { Tool } from '@app/classes/tool';
+import { Brush } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -12,7 +12,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class BrushService extends Tool {
     name: string = TOOL_NAMES.BRUSH_TOOL_NAME;
-    private brushData: LineStroke;
+    private brushData: Brush;
     private pathData: Vec2[];
     width: number = 1;
     pattern: string;
@@ -37,7 +37,7 @@ export class BrushService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.updateBrushData();
-            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.brushData);
+            this.drawingService.drawBrushStroke(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -46,7 +46,7 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updateBrushData();
-            this.drawingService.drawLineStroke(this.drawingService.baseCtx, this.brushData);
+            this.drawingService.drawBrushStroke(this.drawingService.baseCtx, this.brushData);
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
@@ -62,7 +62,7 @@ export class BrushService extends Tool {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateBrushData();
-            this.drawingService.drawLineStroke(this.drawingService.previewCtx, this.brushData);
+            this.drawingService.drawBrushStroke(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -76,7 +76,7 @@ export class BrushService extends Tool {
 
     private updateBrushData(): void {
         this.brushData = {
-            type: 'lineStroke',
+            type: 'brush',
             path: this.pathData,
             lineWidth: this.width,
             lineCap: 'round',

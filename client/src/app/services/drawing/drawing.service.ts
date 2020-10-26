@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LineStroke, Fill, Line, Resize, Shape } from '@app/classes/tool-properties';
+import { Eraser, Fill, Line, Resize, Shape, Pencil, Brush } from '@app/classes/tool-properties';
 
 @Injectable({
     providedIn: 'root',
@@ -9,8 +9,8 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (LineStroke | Shape | Line | Resize | Fill)[] = [];
-    redoStack: (LineStroke | Shape | Line | Resize | Fill)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
 
     constructor(){}
 
@@ -26,30 +26,55 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: LineStroke | Shape | Line | Resize | Fill): void {
+    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill): void {
         this.undoStack.push(modification);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
         }
     }
 
-    drawLineStroke(ctx: CanvasRenderingContext2D, lineStroke: LineStroke): void {
-        ctx.lineWidth = lineStroke.lineWidth;
-        ctx.strokeStyle = lineStroke.primaryColor;
+    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void{
+        ctx.lineWidth = pencil.lineWidth;
+        ctx.strokeStyle = pencil.primaryColor;
         ctx.lineJoin = 'round';
-        ctx.lineCap = lineStroke.lineCap as CanvasLineCap;
-        if (lineStroke.pattern === 'none') {
+        ctx.lineCap = pencil.lineCap as CanvasLineCap;
+        ctx.beginPath();
+        for (const point of pencil.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+    }
+
+    drawBrushStroke(ctx: CanvasRenderingContext2D, brush: Brush): void {
+        ctx.lineWidth = brush.lineWidth;
+        ctx.strokeStyle = brush.primaryColor;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = brush.lineCap as CanvasLineCap;
+        if (brush.pattern === 'none') {
             this.baseCtx.filter = 'none';
             this.previewCtx.filter = 'none';
         } else {
-            this.baseCtx.filter = 'url(/assets/patterns.svg#' + lineStroke.pattern + ')';
-            this.previewCtx.filter = 'url(/assets/patterns.svg#' + lineStroke.pattern + ')';
+            this.baseCtx.filter = 'url(/assets/patterns.svg#' + brush.pattern + ')';
+            this.previewCtx.filter = 'url(/assets/patterns.svg#' + brush.pattern + ')';
         }
         // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
         this.baseCtx.strokeRect(-this.baseCtx.lineWidth, 0, 1, 0);
         this.previewCtx.strokeRect(-this.previewCtx.lineWidth, 0, 1, 0);
         ctx.beginPath();
-        for (const point of lineStroke.path) {
+        for (const point of brush.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+        this.baseCtx.filter = 'none';
+        this.previewCtx.filter = 'none';
+    }
+
+    drawEraserStroke(ctx: CanvasRenderingContext2D, eraser: Eraser): void {
+        ctx.lineWidth = eraser.lineWidth;
+        ctx.strokeStyle = 'white';
+        ctx.lineCap = 'square';
+        ctx.beginPath();
+        for (const point of eraser.path) {
             ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
