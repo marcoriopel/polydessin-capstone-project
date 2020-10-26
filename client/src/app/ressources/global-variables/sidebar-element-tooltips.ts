@@ -10,10 +10,13 @@ export interface SidebarElementTooltips {
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
     REDO_DESCRIPTION: string;
+    SAVE_DRAWING_DESCRIPTION: string;
+    CAROUSEL_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
-    NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl-O)',
+    CAROUSEL_DESCRIPTION: 'Carroussel de dessin (Ctrl + G)',
+    NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl + O)',
     PENCIL_TOOL_DESCRIPTION: 'Crayon (C)',
     BRUSH_TOOL_DESCRIPTION: 'Pinceau (W)',
     SQUARE_TOOL_DESCRIPTION: 'Rectangle (1)',
@@ -22,6 +25,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
     HELP_DESCRIPTION: "Guide d'utilisation",
-    UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
-    REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
+    UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
+    REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
+    SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
 };
