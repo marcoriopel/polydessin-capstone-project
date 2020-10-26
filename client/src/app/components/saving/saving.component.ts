@@ -57,7 +57,6 @@ export class SavingComponent {
         const drawing: DrawingData = { id: ID, drawingPng: drawingURL, name: this.name, tags: this.tags };
         this.databaseService.addDrawing(drawing).subscribe(
             (data) => {
-                console.log(data);
                 this.isSaveButtonDisabled = false;
                 this.saveConfirmMessage();
             },
@@ -67,7 +66,7 @@ export class SavingComponent {
         );
     }
 
-    handleNameChange(name: string): void {
+    changeName(name: string): void {
         this.name = name;
     }
 
