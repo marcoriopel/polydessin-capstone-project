@@ -1,5 +1,8 @@
 /* tslint:disable:no-unused-variable */
+import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SavingComponent } from './saving.component';
 
 describe('SavingComponent', () => {
@@ -9,6 +12,7 @@ describe('SavingComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [SavingComponent],
+            imports: [HttpClientModule, MatSnackBarModule, MatDialogModule],
         }).compileComponents();
     }));
 
