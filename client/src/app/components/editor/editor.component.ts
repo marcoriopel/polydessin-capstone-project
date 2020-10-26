@@ -37,7 +37,7 @@ export class EditorComponent implements AfterViewInit {
         ['l', this.toolNames.LINE_TOOL_NAME],
         ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
-        ['s', this.toolNames.SELECTION_TOOL_NAME],
+        ['3', this.toolNames.POLYGONE_TOOL_NAME],
     ]);
 
     constructor(
