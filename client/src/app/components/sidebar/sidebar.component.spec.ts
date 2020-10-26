@@ -10,6 +10,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
+import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -33,6 +34,7 @@ describe('SidebarComponent', () => {
             toolStub as SquareService,
             toolStub as CircleService,
             toolStub as LineService,
+            toolStub as FillService,
             toolStub as EraserService,
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
@@ -65,8 +67,8 @@ describe('SidebarComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should call toolSelectionService.currentTool.handleCursor', () => {
-        const spy = spyOn(toolStub, 'handleCursor');
+    it('should call toolSelectionService.currentTool.setCursor', () => {
+        const spy = spyOn(toolStub, 'setCursor');
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
         expect(spy).toHaveBeenCalled();
@@ -85,7 +87,7 @@ describe('SidebarComponent', () => {
         expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
     });
 
-    it('should not change tool nor handle cursor on an invalid event', () => {
+    it('should not change tool nor set cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,
@@ -95,7 +97,7 @@ describe('SidebarComponent', () => {
             target,
         } as unknown) as InputEvent;
 
-        const cursorSpy = spyOn(toolStub, 'handleCursor');
+        const cursorSpy = spyOn(toolStub, 'setCursor');
         const toolSpy = spyOn(component.toolSelectionService, 'changeTool');
         component.onToolChange(event);
         expect(cursorSpy).not.toHaveBeenCalled();
