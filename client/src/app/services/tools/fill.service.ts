@@ -51,7 +51,7 @@ export class FillService extends Tool {
         const rgbaPrimaryColor = this.colorSelectionService.getRgbaPrimaryColor();
 
         while (stack.length) {
-            const currentPixel = (stack.pop() as unknown) as Vec2;
+            const currentPixel = stack.pop() as Vec2;
             const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;

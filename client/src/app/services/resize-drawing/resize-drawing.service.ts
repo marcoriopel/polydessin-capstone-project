@@ -56,7 +56,7 @@ export class ResizeDrawingService {
 
     onMouseUp(): void {
         if (this.mouseDown) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
+            const tempCanvas: HTMLCanvasElement = new HTMLCanvasElement();
             tempCanvas.width = this.canvasSize.x;
             tempCanvas.height = this.canvasSize.y;
             const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;

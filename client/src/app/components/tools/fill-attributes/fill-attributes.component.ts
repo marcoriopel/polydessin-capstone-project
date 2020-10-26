@@ -13,7 +13,7 @@ export class FillAttributesComponent {
         this.tolerance = fillService.tolerance;
     }
 
-    handleToleranceChange(newTolerance: number): void {
+    changeTolerance(newTolerance: number): void {
         this.tolerance = newTolerance;
         this.fillService.changeTolerance(this.tolerance);
     }
