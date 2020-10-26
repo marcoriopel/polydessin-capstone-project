@@ -2,12 +2,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -39,6 +41,7 @@ import { SliderComponent } from './components/tools/shared-Attributes/slider/sli
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { UserguideComponent } from './components/userguide/userguide.component';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -69,6 +72,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
     ],
     imports: [
         BrowserModule,
+        MatCardModule,
         HttpClientModule,
         AppRoutingModule,
         MatSnackBarModule,
@@ -80,13 +84,13 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatTooltipModule,
         MatChipsModule,
         MatIconModule,
+        MatProgressSpinnerModule,
         MatExpansionModule,
         FormsModule,
         MatCheckboxModule,
         MatInputModule,
     ],
     entryComponents: [UserguideComponent, MainPageComponent],
-    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

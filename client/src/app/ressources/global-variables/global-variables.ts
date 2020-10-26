@@ -21,6 +21,7 @@ export const MAX_TOLERANCE_VALUE = 100;
 export const MAX_PERCENTAGE = 100;
 export const RGBA_STRING_ = 100;
 export const CONFIRM_SAVED_DURATION = 5000;
+export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;
 

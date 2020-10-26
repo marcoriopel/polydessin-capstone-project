@@ -10,8 +10,7 @@ export class NewDrawingService {
     constructor(public drawingService: DrawingService, public dialog: MatDialog) {}
 
     openWarning(): void {
-        const isNewDrawingModalOpen = document.querySelector('.newDrawingModal') !== null;
-        if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx) && !isNewDrawingModalOpen) {
+        if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
             this.dialog.open(NewDrawingModalComponent);
         }
     }
