@@ -27,7 +27,7 @@ export class SquareService extends Tool {
         super(drawingService);
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
@@ -49,7 +49,7 @@ export class SquareService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);

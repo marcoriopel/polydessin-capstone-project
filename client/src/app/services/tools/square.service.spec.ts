@@ -64,7 +64,7 @@ describe('SquareService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -93,7 +93,7 @@ describe('SquareService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -119,7 +119,7 @@ describe('SquareService', () => {
         const mouseEventLClick = {
             offsetX: 0,
             offsetY: 0,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
@@ -133,7 +133,7 @@ describe('SquareService', () => {
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
@@ -143,7 +143,7 @@ describe('SquareService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
@@ -185,7 +185,7 @@ describe('SquareService', () => {
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEventLClick);
@@ -285,7 +285,7 @@ describe('SquareService', () => {
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.fillStyle = FILL_STYLES.FILL;
         service.onMouseDown(mouseEvent);
@@ -298,7 +298,7 @@ describe('SquareService', () => {
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.fillStyle = FILL_STYLES.BORDER;
         service.onMouseDown(mouseEvent);

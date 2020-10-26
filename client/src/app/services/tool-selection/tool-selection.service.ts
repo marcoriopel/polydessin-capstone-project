@@ -4,6 +4,7 @@ import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-nam
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
+import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SelectionService } from '@app/services/tools/selection.service';
@@ -23,6 +24,7 @@ export class ToolSelectionService {
         squareService: SquareService,
         circleService: CircleService,
         lineService: LineService,
+        fillService: FillService,
         eraserService: EraserService,
         selectionService: SelectionService,
     ) {
@@ -32,6 +34,7 @@ export class ToolSelectionService {
             [this.toolNames.SQUARE_TOOL_NAME, squareService],
             [this.toolNames.CIRCLE_TOOL_NAME, circleService],
             [this.toolNames.LINE_TOOL_NAME, lineService],
+            [this.toolNames.FILL_TOOL_NAME, fillService],
             [this.toolNames.ERASER_TOOL_NAME, eraserService],
             [this.toolNames.SELECTION_TOOL_NAME, selectionService],
         ]);

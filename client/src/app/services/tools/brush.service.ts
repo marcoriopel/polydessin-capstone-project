@@ -17,16 +17,17 @@ export class BrushService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
+
         this.clearPath();
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (event.button !== MouseButton.Left) {
+        if (event.button !== MouseButton.LEFT) {
             return;
         } else {
             this.mouseDown = true;

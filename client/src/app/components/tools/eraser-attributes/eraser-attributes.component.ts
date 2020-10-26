@@ -13,7 +13,7 @@ export class EraserAttributesComponent {
         this.toolWidth = eraserService.width;
     }
 
-    handleWidthChange(newWidth: number): void {
+    changeWidth(newWidth: number): void {
         this.toolWidth = newWidth;
         this.eraserService.changeWidth(this.toolWidth);
     }

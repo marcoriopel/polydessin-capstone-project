@@ -32,13 +32,13 @@ describe('BrushAttributesComponent', () => {
     });
 
     it('should call changeWidth of brushService', () => {
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.brushService.changeWidth).toHaveBeenCalledWith(finalToolWidth);
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
