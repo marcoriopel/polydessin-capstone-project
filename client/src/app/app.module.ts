@@ -56,11 +56,8 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         EraserAttributesComponent,
         LineAttributesComponent,
         PencilAttributesComponent,
-<<<<<<< HEAD
         PolygoneAttributesComponent,
-=======
         CarouselComponent,
->>>>>>> 8e59ee58d5b17f237d73ad5f1d5214bfacc0f42e
         SliderComponent,
         SquareAttributesComponent,
         UserguideComponent,

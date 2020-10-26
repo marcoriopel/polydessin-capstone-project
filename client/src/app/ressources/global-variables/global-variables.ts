@@ -20,12 +20,9 @@ export const MIN_TOLERANCE_VALUE = 0;
 export const MAX_TOLERANCE_VALUE = 100;
 export const MAX_PERCENTAGE = 100;
 export const RGBA_STRING_ = 100;
-<<<<<<< HEAD
+export const CONFIRM_SAVED_DURATION = 5000;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;
-=======
-export const CONFIRM_SAVED_DURATION = 5000;
->>>>>>> 8e59ee58d5b17f237d73ad5f1d5214bfacc0f42e
 
 export enum Quadrant {
     TOP_RIGHT = 0,

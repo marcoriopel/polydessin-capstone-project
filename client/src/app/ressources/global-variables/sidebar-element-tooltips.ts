@@ -7,7 +7,6 @@ export interface SidebarElementTooltips {
     LINE_TOOL_DESCRIPTION: string;
     FILL_TOOL_DESCRIPTION: string;
     ERASER_TOOL_DESCRIPTION: string;
-    SELECT_TOOL_DESCRIPTION: string;
     POLYGONE_TOOL_DESCRIPTION: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
@@ -23,18 +22,12 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     BRUSH_TOOL_DESCRIPTION: 'Pinceau (W)',
     SQUARE_TOOL_DESCRIPTION: 'Rectangle (1)',
     CIRCLE_TOOL_DESCRIPTION: 'Ellipse (2)',
-    POLYGONE_TOOL_DESCRIPTION: 'Polygone(3)',
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
+    POLYGONE_TOOL_DESCRIPTION: 'Polygone(3)',
     HELP_DESCRIPTION: "Guide d'utilisation",
-<<<<<<< HEAD
-    UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
-    REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
-    SELECT_TOOL_DESCRIPTION: 'Selection par ellipse et rectangle(R)',
-=======
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
     SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
->>>>>>> 8e59ee58d5b17f237d73ad5f1d5214bfacc0f42e
 };
