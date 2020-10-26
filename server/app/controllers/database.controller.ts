@@ -29,7 +29,6 @@ export class DatabaseController {
         });
 
         this.router.delete('/deleteDrawing/:id', (req: Request, res: Response, next: NextFunction) => {
-            console.log(req);
             this.databaseService
                 .deleteDrawing(req.params.id)
                 .then(() => {

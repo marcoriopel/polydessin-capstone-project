@@ -17,7 +17,6 @@ export class DatabaseService {
     }
 
     deleteDrawing(id: string): Observable<string> {
-        console.log(id);
         return this.http.delete<string>(this.BASE_URL + '/deleteDrawing/' + id).pipe(catchError(this.handleError<string>('deleteDrawing')));
     }
 
