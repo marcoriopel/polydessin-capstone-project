@@ -11,7 +11,6 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
     @Input() canvasSize: Vec2;
@@ -33,7 +32,7 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
-        this.toolSelectionService.currentTool.handleCursor();
+        this.toolSelectionService.currentTool.setCursor();
     }
 
     @HostListener('mousemove', ['$event'])

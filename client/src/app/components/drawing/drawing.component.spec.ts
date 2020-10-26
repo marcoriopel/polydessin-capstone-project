@@ -6,6 +6,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
+import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -29,6 +30,7 @@ describe('DrawingComponent', () => {
             {} as SquareService,
             {} as CircleService,
             {} as LineService,
+            {} as FillService,
             {} as EraserService,
         );
 

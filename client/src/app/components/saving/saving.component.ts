@@ -4,6 +4,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
+import { CONFIRM_SAVED_DURATION } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DrawingData } from '@common/communication/drawing-data';
@@ -56,7 +57,6 @@ export class SavingComponent {
         const drawing: DrawingData = { id: ID, drawingPng: drawingURL, name: this.name, tags: this.tags };
         this.databaseService.addDrawing(drawing).subscribe(
             (data) => {
-                console.log(data);
                 this.isSaveButtonDisabled = false;
                 this.saveConfirmMessage();
             },
@@ -66,13 +66,13 @@ export class SavingComponent {
         );
     }
 
-    handleNameChange(name: string): void {
+    changeName(name: string): void {
         this.name = name;
     }
 
     saveConfirmMessage(): void {
         const config = new MatSnackBarConfig();
-        config.duration = 5000;
+        config.duration = CONFIRM_SAVED_DURATION;
         this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
     }
 }
