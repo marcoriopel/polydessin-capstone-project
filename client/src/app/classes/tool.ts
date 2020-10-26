@@ -31,5 +31,8 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    setCursor(): void {}
+    setCursor(): void {
+        const previewCanvas = this.drawingService.previewCanvas;
+        previewCanvas.style.cursor = 'crosshair';
+    }
 }
