@@ -21,12 +21,12 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 export class EditorComponent implements AfterViewInit {
     @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
 
-    toolNames: ToolNames = TOOL_NAMES;
-    canvasSize: Vec2;
-    private workSpaceSize: Vec2;
-    previewSize: Vec2;
-    previewDiv: HTMLDivElement;
+    workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+    previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+    canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
+    toolNames: ToolNames = TOOL_NAMES;
+    previewDiv: HTMLDivElement;
 
     // TODO -> Add missing keys for new tools as we create them
     keyToolMapping: Map<string, string> = new Map([
@@ -35,8 +35,10 @@ export class EditorComponent implements AfterViewInit {
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
+        ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['3', this.toolNames.POLYGONE_TOOL_NAME],
     ]);
 
     constructor(
@@ -44,9 +46,9 @@ export class EditorComponent implements AfterViewInit {
         public resizeDrawingService: ResizeDrawingService,
         public newDrawingService: NewDrawingService,
     ) {
-        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+        this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
+        this.resizeDrawingService.previewSize = this.previewSize;
+        this.resizeDrawingService.canvasSize = this.canvasSize;
     }
 
     ngAfterViewInit(): void {
@@ -60,12 +62,12 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
-            this.setDefaultCanvasSize();
+            this.resizeDrawingService.setDefaultCanvasSize();
         });
     }
 
     @HostListener('document:keyup', ['$event'])
-    handleKeyUp(event: KeyboardEvent): void {
+    onKeyUp(event: KeyboardEvent): void {
         const keyName: string | undefined = this.keyToolMapping.get(event.key.toString());
         if (keyName) {
             (document.querySelector('#' + keyName) as HTMLElement).click();
@@ -75,7 +77,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     @HostListener('document:keydown', ['$event'])
-    handleKeyDown(event: KeyboardEvent): void {
+    onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'o' && event.ctrlKey) {
             event.preventDefault();
             this.newDrawingService.openWarning();
@@ -96,32 +98,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (this.resizeDrawingService.onMouseUp()) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempCanvas.width = this.canvasSize.x;
-            tempCanvas.height = this.canvasSize.y;
-            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempCanvasCtx.drawImage(this.drawingComponent.baseCanvas.nativeElement, 0, 0);
-
-            this.canvasSize.x = this.previewSize.x;
-            this.canvasSize.y = this.previewSize.y;
-            this.previewDiv.style.display = 'none';
-
-            setTimeout(() => {
-                let baseCtx: CanvasRenderingContext2D;
-                baseCtx = this.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-                baseCtx.drawImage(tempCanvas, 0, 0);
-            });
-        }
-    }
-
-    private setDefaultCanvasSize(): void {
-        this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
-    }
-
-    getWorkSpaceSize(): Vec2 {
-        return this.workSpaceSize;
+        this.resizeDrawingService.onMouseUp();
+        this.previewDiv.style.display = 'none';
     }
 }

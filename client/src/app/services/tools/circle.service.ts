@@ -12,20 +12,20 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
-    mouseDown: boolean = false;
+    fillStyle: number = FILL_STYLES.FILL;
     isShiftKeyDown: boolean = false;
-    width: number = 1;
-    lastPoint: Vec2;
-    firstPoint: Vec2;
-    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
-    circleWidth: number;
+    mouseDown: boolean = false;
     circleHeight: number;
+    circleWidth: number;
+    width: number = 1;
+    firstPoint: Vec2;
+    lastPoint: Vec2;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
     }
 
-    handleCursor(): void {
+    setCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
@@ -59,7 +59,7 @@ export class CircleService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);

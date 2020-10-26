@@ -31,18 +31,18 @@ describe('SquareAttributesComponent', () => {
     });
 
     it('should call changeWidth of circleService', () => {
-        component.handleBorderWidthChange(finalToolWidth);
+        component.changeBorderWidth(finalToolWidth);
         expect(component.squareService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleBorderWidthChange(finalToolWidth);
+        component.changeBorderWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
     it('should call changeFillStyle of circleService', () => {
-        component.handleFillStyleChange(finalToolWidth);
+        component.changeFillStyle(finalToolWidth);
         expect(component.squareService.changeFillStyle).toHaveBeenCalled();
     });
 });

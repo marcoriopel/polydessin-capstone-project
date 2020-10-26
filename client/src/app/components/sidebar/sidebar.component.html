@@ -93,6 +93,38 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >panorama_wide_angle</mat-icon
+            >
+        </label>
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.FILL_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.FILL_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.FILL_TOOL_NAME">
+            <mat-icon
+                class="fas fa-fill-drip"
+                [matTooltip]="elementDescriptions.FILL_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
         <input
             type="radio"
             [id]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
@@ -124,9 +156,28 @@
                 >colorize</mat-icon
             >
         </label>
+        <!-- this is a temporary implementation for selection tool button -->
     </div>
 
     <div class="sidebarSection">
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openCarouselWindow()"
+            >collections</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.SAVE_DRAWING_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openSaveWindow()"
+            >save</mat-icon
+        >
         <mat-icon
             class="material-icons"
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
