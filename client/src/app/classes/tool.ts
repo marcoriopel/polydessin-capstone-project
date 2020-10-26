@@ -33,5 +33,5 @@ export abstract class Tool {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    handleCursor(): void {}
+    setCursor(): void {}
 }

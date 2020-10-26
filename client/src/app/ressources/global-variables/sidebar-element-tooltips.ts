@@ -5,9 +5,10 @@ export interface SidebarElementTooltips {
     SQUARE_TOOL_DESCRIPTION: string;
     CIRCLE_TOOL_DESCRIPTION: string;
     LINE_TOOL_DESCRIPTION: string;
-    POLYGONE_TOOL_DESCRIPTION: string;
+    FILL_TOOL_DESCRIPTION: string;
     ERASER_TOOL_DESCRIPTION: string;
     SELECT_TOOL_DESCRIPTION: string;
+    POLYGONE_TOOL_DESCRIPTION: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
     REDO_DESCRIPTION: string;
@@ -21,6 +22,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     CIRCLE_TOOL_DESCRIPTION: 'Ellipse (2)',
     POLYGONE_TOOL_DESCRIPTION: 'Polygone(3)',
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
+    FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',

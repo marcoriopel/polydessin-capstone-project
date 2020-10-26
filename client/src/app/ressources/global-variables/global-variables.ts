@@ -4,7 +4,7 @@ export const MINIMUM_CANVAS_HEIGHT = 250;
 export const MINIMUM_WORKSPACE_WIDTH = 500;
 export const MINIMUM_WORKSPACE_HEIGHT = 500;
 export const HALF_RATIO = 0.5;
-export const TOOLTIP_DELAY = 1000;
+export const TOOLTIP_DELAY = 500;
 export const MAXIMUM_DISTANCE_LINE_CONNECTION = 20;
 export const DEGREES_180 = 180;
 export const MAXIMUM_NUMBER_OF_COLORS = 10;
@@ -16,6 +16,10 @@ export const MAX_BORDER = 20;
 export const MIN_BORDER = 1;
 export const DASH_LENGTH = 5;
 export const DASH_SPACE_LENGTH = 3;
+export const MIN_TOLERANCE_VALUE = 0;
+export const MAX_TOLERANCE_VALUE = 100;
+export const MAX_PERCENTAGE = 100;
+export const RGBA_STRING_ = 100;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;
 
@@ -38,9 +42,9 @@ export enum LineAngle {
 }
 
 export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
+    LEFT = 0,
+    MIDDLE = 1,
+    RIGHT = 2,
+    BACK = 3,
+    FORWARD = 4,
 }

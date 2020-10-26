@@ -8,10 +8,15 @@
         </app-square-attributes>
         <app-circle-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.CIRCLE_TOOL_NAME">
         </app-circle-attributes>
+<<<<<<< HEAD
         <app-line-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.LINE_TOOL_NAME"> 
         </app-line-attributes>
         <app-polygone-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.POLYGONE_TOOL_NAME"> 
         </app-polygone-attributes>
+=======
+        <app-line-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.LINE_TOOL_NAME"> </app-line-attributes>
+        <app-fill-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.FILL_TOOL_NAME"> </app-fill-attributes>
+>>>>>>> 031776c711b6a75e55887c8041798e897ea66045
         <app-eraser-attributes *ngIf="toolSelectionService.currentTool.name === toolSelectionService.toolNames.ERASER_TOOL_NAME">
         </app-eraser-attributes>
     </div>

@@ -31,13 +31,13 @@ describe('PencilAttributesComponent', () => {
     });
 
     it('should call changeWidth of pencilService', () => {
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.pencilService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 });

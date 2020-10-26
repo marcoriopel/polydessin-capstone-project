@@ -55,7 +55,7 @@ describe('PolygoneService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -119,7 +119,7 @@ describe('PolygoneService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(service.mouseDown).toEqual(false);
@@ -128,7 +128,7 @@ describe('PolygoneService', () => {
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEventLClick);

@@ -62,7 +62,7 @@ export class PolygoneService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.Left;
+        this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
         }
