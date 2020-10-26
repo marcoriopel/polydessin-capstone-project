@@ -123,6 +123,15 @@
                 [matTooltipShowDelay]="tooltipShowDelay"
             ></mat-icon>
         </label>
+        <!-- this is a temporary implementation for selection tool button -->
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.SELECTION_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.SELECTION_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.SELECTION_TOOL_NAME"> </label>
     </div>
 
     <div class="sidebarSection">
