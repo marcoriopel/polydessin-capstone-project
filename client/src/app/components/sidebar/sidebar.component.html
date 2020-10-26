@@ -145,6 +145,24 @@
     <div class="sidebarSection">
         <mat-icon
             class="material-icons"
+            [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openCarouselWindow()"
+            >collections</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.SAVE_DRAWING_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openSaveWindow()"
+            >save</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
