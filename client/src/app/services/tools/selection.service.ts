@@ -21,7 +21,7 @@ export class SelectionService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         if (!this.isInSelection(event)) {
-            this.mouseDown = event.button === MouseButton.Left;
+            this.mouseDown = event.button === MouseButton.LEFT;
             if (!this.moveService.transformationOver) {
                 this.moveService.transformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
