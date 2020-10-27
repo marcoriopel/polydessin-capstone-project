@@ -7,6 +7,7 @@ import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { ExportComponent } from '../export/export.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -40,5 +41,8 @@ export class SidebarComponent {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+    openExportWindow(): void {
+        this.dialog.open(ExportComponent);
     }
 }

@@ -146,6 +146,15 @@
         >
         <mat-icon
             class="material-icons"
+            [matTooltip]="elementDescriptions.EXPORT_DRAWING_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openExportWindow()"
+            >save_alt</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"

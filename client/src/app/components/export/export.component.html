@@ -1,0 +1,7 @@
+<div class="exporting">
+    <h1 mat-dialog-title>Exportation du dessin</h1>
+    <mat-form-field appearance="fill" floatLabel="floatLabelControl.value">
+        <mat-label>Nom du dessin</mat-label>
+        <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
+    </mat-form-field>
+</div>
