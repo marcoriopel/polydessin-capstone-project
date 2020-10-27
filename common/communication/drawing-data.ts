@@ -15,3 +15,14 @@ export interface Drawing {
     id: string;
     drawingPng: string;
 }
+
+export interface DBData {
+    id: string;
+    name: string;
+    tags: string[];
+    fileName: string;
+}
+
+export const ID_NAME = 'id';
+export const NAME = 'name';
+export const TAGS_NAME = 'tags';

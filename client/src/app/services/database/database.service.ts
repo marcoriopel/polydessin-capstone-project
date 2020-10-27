@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DrawingData } from '@common/communication/drawing-data';
+import { DrawingData, ID_NAME, MetaData, NAME, TAGS_NAME } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -12,8 +12,15 @@ export class DatabaseService {
 
     constructor(private http: HttpClient) {}
 
-    addDrawing(drawingData: DrawingData): Observable<void> {
-        return this.http.post<void>(this.BASE_URL + '/addDrawing', drawingData).pipe(catchError(this.handleError<void>('addDrawing')));
+    addDrawing(meta: MetaData, blob: Blob): Observable<void> {
+        const formData = new FormData();
+        formData.append(ID_NAME, meta.id);
+        formData.append(NAME, meta.name);
+        meta.tags.forEach((tag: string) => {
+            formData.append(TAGS_NAME, tag);
+        });
+        formData.append('image', blob);
+        return this.http.post<void>(this.BASE_URL + '/addDrawing', formData).pipe(catchError(this.handleError<void>('addDrawing')));
     }
 
     deleteDrawing(id: string): Observable<string> {

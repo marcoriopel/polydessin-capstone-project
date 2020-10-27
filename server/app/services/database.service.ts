@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, FilterQuery, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
-import { Drawing, DrawingData, MetaData } from '../../../common/communication/drawing-data';
+import { DBData, Drawing, DrawingData, ID_NAME, MetaData, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
@@ -35,17 +35,22 @@ export class DatabaseService {
         this.client.close();
     }
 
-    async addDrawing(drawing: DrawingData): Promise<void> {
-        const metadata: MetaData = { id: drawing.id, name: drawing.name, tags: drawing.tags };
-        const drawingInfo: Drawing = { id: drawing.id, drawingPng: drawing.drawingPng };
-        const jsonContent = this.loadJSon();
-        const jsonObj = JSON.parse(jsonContent);
-
-        jsonObj.push(drawingInfo);
-        const data = JSON.stringify(jsonObj, null, 2);
-        fs.writeFileSync('drawing.json', data);
-
-        this.collection.insertOne(metadata).catch((err) => {
+    async addDrawing(formData: FormData, imageName: string): Promise<void> {
+        let metaTags: string[] = [];
+        let metaId = '';
+        let metaName = '';
+        const formId = formData[ID_NAME];
+        const formName = formData[NAME];
+        const formTags = formData[TAGS_NAME];
+        if (formId && formName) {
+            metaId = formId.toString();
+            metaName = formName.toString();
+        }
+        if (formTags) {
+            metaTags = formTags;
+        }
+        const DBDATA: DBData = { id: metaId, name: metaName, tags: metaTags, fileName: imageName };
+        this.collection.insertOne(DBDATA).catch((err) => {
             throw err;
         });
     }
