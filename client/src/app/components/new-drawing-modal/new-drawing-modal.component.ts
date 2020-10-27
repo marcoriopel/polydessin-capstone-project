@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 
 @Component({
     selector: 'app-new-drawing-modal',
@@ -8,10 +7,9 @@ import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawin
     styleUrls: ['./new-drawing-modal.component.scss'],
 })
 export class NewDrawingModalComponent {
-    constructor(public drawingService: DrawingService, public resizeDrawingService: ResizeDrawingService) {}
+    constructor(public drawingService: DrawingService) {}
 
     createNewDrawing(): void {
-        this.resizeDrawingService.setDefaultCanvasSize();
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }

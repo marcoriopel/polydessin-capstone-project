@@ -60,7 +60,7 @@ describe('SliderComponent', () => {
     it('should emit value', () => {
         spyOn(component.valueChange, 'emit');
         component.value = 1;
-        component.changeValue();
+        component.handleValueChange();
         expect(component.valueChange.emit).toHaveBeenCalledWith(1);
     });
 });

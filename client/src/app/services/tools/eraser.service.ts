@@ -9,8 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class EraserService extends Tool {
-    name: string = TOOL_NAMES.ERASER_TOOL_NAME;
     private pathData: Vec2[];
+    name: string = TOOL_NAMES.ERASER_TOOL_NAME;
     width: number = 5;
 
     constructor(drawingService: DrawingService) {
@@ -18,13 +18,13 @@ export class EraserService extends Tool {
         this.clearPath();
     }
 
-    setCursor(): void {
+    handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'none';
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (event.button !== MouseButton.LEFT) {
+        if (event.button !== MouseButton.Left) {
             return;
         } else {
             this.mouseDown = true;
@@ -82,12 +82,10 @@ export class EraserService extends Tool {
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
-
     private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = this.width;
         ctx.strokeStyle = 'white';
         ctx.lineCap = 'square';
-
         ctx.beginPath();
         for (const point of path) {
             ctx.lineTo(point.x, point.y);

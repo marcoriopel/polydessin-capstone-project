@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CarouselComponent } from '@app/components/carousel/carousel.component';
-import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserguideComponent } from '@app/components/userguide/userguide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
@@ -23,7 +21,7 @@ export class SidebarComponent {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {
             this.toolSelectionService.changeTool(target.value);
-            this.toolSelectionService.currentTool.setCursor();
+            this.toolSelectionService.currentTool.handleCursor();
         }
     }
 
@@ -33,12 +31,5 @@ export class SidebarComponent {
 
     openDialog(): void {
         this.newDrawingService.openWarning();
-    }
-
-    openSaveWindow(): void {
-        this.dialog.open(SavingComponent);
-    }
-    openCarouselWindow(): void {
-        this.dialog.open(CarouselComponent);
     }
 }

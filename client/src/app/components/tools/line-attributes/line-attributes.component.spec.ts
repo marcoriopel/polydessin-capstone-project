@@ -31,29 +31,29 @@ describe('LineAttributesComponent', () => {
     });
 
     it('should call changeDotWidth of lineService', () => {
-        component.changeDotWidth(finalToolWidth);
+        component.handleDotWidthChange(finalToolWidth);
         expect(component.lineService.changeDotWidth).toHaveBeenCalled();
     });
 
     it('should change dotWith', () => {
         component.dotWith = initialToolWidth;
-        component.changeDotWidth(finalToolWidth);
+        component.handleDotWidthChange(finalToolWidth);
         expect(component.dotWith).toBe(finalToolWidth);
     });
 
     it('should call changeLineWidth of lineService', () => {
-        component.changeLineWidth(finalToolWidth);
+        component.handleLineWidthChange(finalToolWidth);
         expect(component.lineService.changeLineWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.changeLineWidth(finalToolWidth);
+        component.handleLineWidthChange(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
     it('should call changeJunction of lineService', () => {
-        component.changeJunctionPoint(true);
+        component.handleJunctionPointChange(true);
         expect(component.lineService.changeJunction).toHaveBeenCalled();
     });
 });

@@ -15,12 +15,12 @@ export class SquareAttributesComponent {
         this.fillStyle = squareService.fillStyle;
     }
 
-    changeBorderWidth(newWidth: number): void {
+    handleBorderWidthChange(newWidth: number): void {
         this.toolWidth = newWidth;
         this.squareService.changeWidth(newWidth);
     }
 
-    changeFillStyle(newFillStyle: number): void {
+    handleFillStyleChange(newFillStyle: number): void {
         this.squareService.changeFillStyle(newFillStyle);
     }
 }

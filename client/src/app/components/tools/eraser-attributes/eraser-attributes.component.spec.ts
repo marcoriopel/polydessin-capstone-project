@@ -31,13 +31,13 @@ describe('EraserAttributesComponent', () => {
     });
 
     it('should call changeWidth of eraserService', () => {
-        component.changeWidth(finalToolWidth);
+        component.handleWidthChange(finalToolWidth);
         expect(component.eraserService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.changeWidth(finalToolWidth);
+        component.handleWidthChange(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 });

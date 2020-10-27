@@ -17,17 +17,17 @@ export class LineAttributesComponent {
         this.isDot = lineService.isDot;
     }
 
-    changeDotWidth(newWidth: number): void {
+    handleDotWidthChange(newWidth: number): void {
         this.dotWith = newWidth;
         this.lineService.changeDotWidth(newWidth);
     }
 
-    changeLineWidth(newWidth: number): void {
+    handleLineWidthChange(newWidth: number): void {
         this.toolWidth = newWidth;
         this.lineService.changeLineWidth(newWidth);
     }
 
-    changeJunctionPoint(isChecked: boolean): void {
+    handleJunctionPointChange(isChecked: boolean): void {
         this.lineService.changeJunction(isChecked);
     }
 }

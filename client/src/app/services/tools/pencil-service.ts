@@ -6,6 +6,10 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+// Ceci est une implémentation de base de l'outil Crayon pour aider à débuter le projet
+// L'implémentation ici ne couvre pas tous les critères d'accepetation du projet
+// Vous êtes encouragés de modifier et compléter le code.
+// N'oubliez pas de regarder les tests dans le fichier spec.ts aussi!
 @Injectable({
     providedIn: 'root',
 })
@@ -19,13 +23,13 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
-    setCursor(): void {
+    handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (event.button !== MouseButton.LEFT) {
+        if (event.button !== MouseButton.Left) {
             return;
         } else {
             this.mouseDown = true;
@@ -52,6 +56,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
+            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawLine(this.drawingService.previewCtx, this.pathData);
         }

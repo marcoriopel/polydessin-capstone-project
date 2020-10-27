@@ -7,8 +7,6 @@ import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
     providedIn: 'root',
 })
 export class TrigonometryService {
-    MAX_DISTANCE_BETWEEN_TWO_DOTS: number = 20;
-
     findClosestAngle(quadrant: Quadrant, angleDegree: number): LineAngle {
         switch (quadrant) {
             case Quadrant.TOP_RIGHT: {
@@ -92,13 +90,5 @@ export class TrigonometryService {
         } else {
             return false;
         }
-    }
-
-    distanceBetweenTwoDots(firstDot: Vec2, secondDot: Vec2): number {
-        // Phytagore
-        const a = secondDot.x - firstDot.x;
-        const b = secondDot.y - firstDot.y;
-        const c = Math.sqrt(a * a + b * b);
-        return c;
     }
 }

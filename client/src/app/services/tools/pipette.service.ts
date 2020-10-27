@@ -33,9 +33,9 @@ export class PipetteService extends Tool {
         const pixelData = pixel.data;
         const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[3] / MAX_OPACITY + ')';
 
-        if (event.button === MouseButton.LEFT) {
+        if (event.button === MouseButton.Left) {
             this.colorSelectionService.setPrimaryColor(color);
-        } else if (event.button === MouseButton.RIGHT) {
+        } else if (event.button === MouseButton.Right) {
             this.colorSelectionService.setSecondaryColor(color);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);

@@ -47,7 +47,7 @@ describe('LineService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.LEFT,
+            button: MouseButton.Left,
         } as MouseEvent;
     });
 
@@ -57,7 +57,7 @@ describe('LineService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.setCursor();
+        service.handleCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
@@ -65,7 +65,7 @@ describe('LineService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.RIGHT,
+            button: MouseButton.Right,
         } as MouseEvent;
         service.isDrawing = false;
         service.onMouseUp(mouseEvent);

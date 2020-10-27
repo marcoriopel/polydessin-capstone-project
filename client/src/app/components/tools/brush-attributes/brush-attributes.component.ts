@@ -16,7 +16,7 @@ export class BrushAttributesComponent {
         this.brushService.setPattern(this.patternNames.FIRST_PATTERN);
     }
 
-    changeWidth(newWidth: number): void {
+    handleWidthChange(newWidth: number): void {
         this.toolWidth = newWidth;
         this.brushService.changeWidth(this.toolWidth);
     }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
@@ -27,7 +26,7 @@ export class SquareService extends Tool {
         super(drawingService);
     }
 
-    setCursor(): void {
+    handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
@@ -49,7 +48,7 @@ export class SquareService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDown = event.button === MouseButton.LEFT;
+        this.mouseDown = event.button === MouseButton.Left;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
@@ -92,9 +91,7 @@ export class SquareService extends Tool {
         }
     }
 
-    drawShape(ctx: CanvasRenderingContext2D): Rectangle {
-        let rectancle;
-
+    private drawShape(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -106,9 +103,9 @@ export class SquareService extends Tool {
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {
-            rectancle = this.drawSquare(ctx);
+            this.drawSquare(ctx);
         } else {
-            rectancle = this.drawRectangle(ctx);
+            this.drawRectangle(ctx);
         }
 
         if (ctx === this.drawingService.baseCtx) {
@@ -116,10 +113,9 @@ export class SquareService extends Tool {
         }
 
         ctx.stroke();
-        return rectancle;
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D): Rectangle {
+    private drawRectangle(ctx: CanvasRenderingContext2D): void {
         this.setRectangleHeight();
         this.setRectangleWidth();
         const topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
@@ -127,11 +123,9 @@ export class SquareService extends Tool {
         if (this.fillStyle !== FILL_STYLES.BORDER) {
             ctx.fillRect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
         }
-
-        return { startingPoint: topLeftPoint, width: this.rectangleWidth, height: this.rectangleHeight };
     }
 
-    private drawSquare(ctx: CanvasRenderingContext2D): Rectangle {
+    private drawSquare(ctx: CanvasRenderingContext2D): void {
         this.setRectangleHeight();
         this.setRectangleWidth();
         const squareWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
@@ -141,8 +135,6 @@ export class SquareService extends Tool {
         if (this.fillStyle !== FILL_STYLES.BORDER) {
             ctx.fillRect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
         }
-
-        return { startingPoint: topLeftPoint, width: squareWidth, height: squareWidth };
     }
 
     /*

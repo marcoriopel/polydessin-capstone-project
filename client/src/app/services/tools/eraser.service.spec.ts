@@ -37,6 +37,7 @@ describe('EraserService', () => {
         service = TestBed.inject(EraserService);
         drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
 
+        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -46,7 +47,7 @@ describe('EraserService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.LEFT,
+            button: MouseButton.Left,
         } as MouseEvent;
     });
 
@@ -75,7 +76,7 @@ describe('EraserService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.RIGHT,
+            button: MouseButton.Right,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -124,6 +125,7 @@ describe('EraserService', () => {
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
+        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         // tslint:disable:no-magic-numbers
         expect(imageData.data[0]).toEqual(255); // R
@@ -134,7 +136,7 @@ describe('EraserService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
-        service.setCursor();
+        service.handleCursor();
         expect(previewCanvasStub.style.cursor).toEqual('none');
     });
 

@@ -33,15 +33,9 @@ describe('DrawingService', () => {
         expect(hasColoredPixels).toEqual(false);
     });
 
-    it('should return true if the canvas is blank', () => {
-        service.initializeBaseCanvas();
-        expect(service.isCanvasBlank(service.baseCtx)).toEqual(true);
-    });
-
-    it('should return false if the canvas is not blank', () => {
-        service.initializeBaseCanvas();
-        service.baseCtx.fillStyle = 'red';
-        service.baseCtx.fillRect(0, 0, 1, 1);
-        expect(service.isCanvasBlank(service.baseCtx)).toEqual(false);
+    it('should know if the canvas is blank', () => {
+        const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
+        const hasBlankBuffer = pixelBuffer.some((color) => color !== 0);
+        expect(service.isCanvasBlank(service.baseCtx)).toEqual(!hasBlankBuffer);
     });
 });

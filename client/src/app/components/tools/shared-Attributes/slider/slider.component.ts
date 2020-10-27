@@ -18,17 +18,17 @@ export class SliderComponent {
         if (this.value > this.min) {
             --this.value;
         }
-        this.changeValue();
+        this.handleValueChange();
     }
 
     incrementToolWidth(): void {
         if (this.value < this.max) {
             ++this.value;
         }
-        this.changeValue();
+        this.handleValueChange();
     }
 
-    changeValue(): void {
+    handleValueChange(): void {
         this.valueChange.emit(this.value);
     }
 }
