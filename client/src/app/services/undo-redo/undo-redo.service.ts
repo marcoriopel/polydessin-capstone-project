@@ -10,6 +10,7 @@ export class UndoRedoService {
     constructor(public drawingService: DrawingService) {}
 
     undo(): void {
+        console.log(this.drawingService.undoStack);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);
@@ -42,6 +43,7 @@ export class UndoRedoService {
                 break;
             case 'eraser':
                 this.drawingService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
+                break;
             case 'line':
                 this.drawingService.drawLine(this.drawingService.baseCtx, element as Line);
                 break;

@@ -13,6 +13,7 @@ import { TrigonometryService } from '@app/services/trigonometry/trigonometry.ser
 })
 export class LineService extends Tool {
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
+    hasLastPointBeenChanged: boolean = false;
     isShiftDoubleClick: boolean = false;
     shiftClick: Vec2 = { x: 0, y: 0 };
     isShiftKeyDown: boolean = false;
@@ -83,17 +84,14 @@ export class LineService extends Tool {
                 // Replace the ending point received from the click coordinates with the inital point of the line
                 this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
+                this.hasLastPointBeenChanged = true;
             }
 
             // Draw line on base canvas
             this.updateLineData();
             this.drawingService.drawLine(this.drawingService.baseCtx, this.lineData);
             this.drawingService.updateStack(this.lineData);
-
-            // Draw the junction dots
-            // if (this.isDot) {
-            //     this.drawDots(this.dotWidth, false);
-            // }
+            this.hasLastPointBeenChanged = false;
 
             // Clear the preview canvas, the stored clikcs and the stored lines used for previewing
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -360,6 +358,7 @@ export class LineService extends Tool {
             isDot: this.isDot,
             line: this.line,
             isShiftDoubleClick: this.isShiftDoubleClick,
+            hasLastPointBeenChaged: this.hasLastPointBeenChanged,
             dotWidth: this.dotWidth,
         };
     }

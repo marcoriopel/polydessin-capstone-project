@@ -36,6 +36,14 @@ export interface Shape {
     lineWidth: number;
 }
 
+export interface rectangle {
+    rectangleWidth: number;
+    rectangleHeight: number;
+    topLeftPoint: Vec2;
+    fillStyle: number;
+    isShiftDown: boolean;
+}
+
 export interface Line {
     type: string;
     primaryColor: string;
@@ -47,6 +55,7 @@ export interface Line {
     line: StraightLine;
     storedLines: StraightLine[];
     isShiftDoubleClick: boolean;
+    hasLastPointBeenChaged: boolean;
     dotWidth: number;
 }
 

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Eraser } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Eraser } from '@app/classes/tool-properties';
-
 
 @Injectable({
     providedIn: 'root',
@@ -67,6 +66,7 @@ export class EraserService extends Tool {
         }
         this.squareCursor(event);
     }
+
     private squareCursor(event: MouseEvent): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
@@ -89,17 +89,6 @@ export class EraserService extends Tool {
         this.width = newWidth;
     }
 
-    // private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-    //     ctx.lineWidth = this.width;
-    //     ctx.strokeStyle = 'white';
-    //     ctx.lineCap = 'square';
-    //     ctx.beginPath();
-    //     for (const point of path) {
-    //         ctx.lineTo(point.x, point.y);
-    //     }
-    //     ctx.stroke();
-    // }
-
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = 1;
         ctx.strokeStyle = 'white';
@@ -117,7 +106,7 @@ export class EraserService extends Tool {
             type: 'eraser',
             path: this.pathData,
             lineWidth: this.width,
-            lineCap: 'round',
+            lineCap: 'square',
             fillStyle: 'white',
             primaryColor: 'white',
         };

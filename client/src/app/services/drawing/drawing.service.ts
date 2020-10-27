@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
+import { Vec2 } from '@app/classes/vec2';
 
 @Injectable({
     providedIn: 'root',
@@ -93,11 +94,13 @@ export class DrawingService {
 
         if (line.isDot) {
             const LAST_DOT = line.mouseClicks.length;
+            let doubleClickPoint: Vec2 | undefined;
 
             // Remove the double click that doesnt need to be drawed on the canvas
-            line.mouseClicks[line.mouseClicks.length - 2] = line.mouseClicks[line.mouseClicks.length - 1];
-            line.mouseClicks.pop();
-
+            if (line.hasLastPointBeenChaged) {
+                line.mouseClicks[line.mouseClicks.length - 2] = line.mouseClicks[line.mouseClicks.length - 1];
+                doubleClickPoint = line.mouseClicks.pop();
+            }
             // If it's a double click holding shift adjust ending dot
             if (line.isShiftDoubleClick) {
                 line.mouseClicks[line.mouseClicks.length - 1] = line.storedLines[line.storedLines.length - 1].endingPoint;
@@ -111,6 +114,10 @@ export class DrawingService {
                 ctx.arc(line.mouseClicks[i].x, line.mouseClicks[i].y, line.dotWidth / 2, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.stroke();
+            }
+
+            if (line.hasLastPointBeenChaged) {
+                line.mouseClicks.push(doubleClickPoint as Vec2);
             }
         }
     }
