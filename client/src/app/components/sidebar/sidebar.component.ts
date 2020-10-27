@@ -1,24 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserguideComponent } from '@app/components/userguide/userguide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
+import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-variables/tool-names';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
+    selectedTool: string = this.toolSelectionService.toolNames.PENCIL_TOOL_NAME;
+    private hotKeySubscription: Subscription;
+    toolNames: ToolNames = TOOL_NAMES;
+    constructor(
+        public toolSelectionService: ToolSelectionService,
+        public dialog: MatDialog,
+        public newDrawingService: NewDrawingService,
+        public hotkeyService: HotkeyService,
+    ) {}
 
-    constructor(public toolSelectionService: ToolSelectionService, public dialog: MatDialog, public newDrawingService: NewDrawingService) {}
-
+    ngOnInit(): void {
+        this.hotKeySubscription = this.hotkeyService.getKey().subscribe((tool) => {
+            if (TOOL_NAMES_ARRAY.includes(tool)) {
+                this.selectedTool = tool;
+            }
+        });
+    }
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {
@@ -40,5 +57,9 @@ export class SidebarComponent {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+
+    ngOnDestroy(): void {
+        this.hotKeySubscription.unsubscribe();
     }
 }
