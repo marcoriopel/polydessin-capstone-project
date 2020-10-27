@@ -1,6 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
-import { MAXIMUM_ZOOM_HEIGHT, MAXIMUM_ZOOM_WIDTH } from '@app/ressources/global-variables/global-variables';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PipetteService } from '@app/services/tools/pipette.service';
 
 @Component({
@@ -11,12 +9,8 @@ import { PipetteService } from '@app/services/tools/pipette.service';
 export class PipetteAttributesComponent implements AfterViewInit, OnInit {
     @ViewChild('zoom', { static: false }) zoom: ElementRef<HTMLCanvasElement>;
 
-    @Input() zoomSize: Vec2;
-
     private zoomCtx: CanvasRenderingContext2D;
-    constructor(public pipetteService: PipetteService) {
-        this.zoomSize = { x: MAXIMUM_ZOOM_WIDTH, y: MAXIMUM_ZOOM_HEIGHT };
-    }
+    constructor(public pipetteService: PipetteService) {}
 
     ngOnInit(): void {
         this.pipetteService.onCanvas.subscribe((data: boolean) => {
@@ -32,12 +26,5 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
         this.zoomCtx = this.zoom.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.pipetteService.zoomCtx = this.zoomCtx;
         this.pipetteService.zoom = this.zoom.nativeElement;
-    }
-    get width(): number {
-        return this.zoomSize.x;
-    }
-
-    get height(): number {
-        return this.zoomSize.y;
     }
 }

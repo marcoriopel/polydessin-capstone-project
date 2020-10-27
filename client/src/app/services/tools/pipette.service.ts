@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { MouseButton, ZOOM_PIPETTE } from '@app/ressources/global-variables/global-variables';
+import { MouseButton, ZOOM_PIPETTE, ZOOM_RADIUS } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -43,13 +43,20 @@ export class PipetteService extends Tool {
 
     showZoomPixel(event: MouseEvent): void {
         this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
-        this.handleNearBorder(event);
+        const mousePosition = this.getPositionFromMouse(event);
+        // if (!this.handleNearBorder(event)) {
+        this.drawImage(this.zoom.height, this.zoom.width, mousePosition.x, mousePosition.y, event);
+        // }
     }
 
     drawImage(height: number, width: number, x: number, y: number, event: MouseEvent): void {
         const hSource = height / ZOOM_PIPETTE;
         const wSource = width / ZOOM_PIPETTE;
+        this.zoomCtx.beginPath();
+        this.zoomCtx.arc(this.zoom.width / 2, this.zoom.height / 2, ZOOM_RADIUS, 0, 2 * Math.PI);
+        this.zoomCtx.clip();
         this.zoomCtx.drawImage(this.drawingService.canvas, x - wSource / 2, y - hSource / 2, wSource, hSource, 0, 0, width, height);
+        this.zoomCtx.closePath();
         this.handleCursorOnPixel(event, width, height);
     }
 
@@ -57,6 +64,7 @@ export class PipetteService extends Tool {
         const mousePosition = this.getPositionFromMouse(e);
         const pixelData = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
         const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[3] / MAX_OPACITY + ')';
+        this.zoomCtx.beginPath();
         this.zoomCtx.fillStyle = color;
         this.zoomCtx.strokeStyle = 'white';
         this.zoomCtx.setLineDash([2, 1]);
@@ -65,22 +73,22 @@ export class PipetteService extends Tool {
         this.zoomCtx.setLineDash([1, 2]);
         this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
         this.zoomCtx.fillRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.closePath();
     }
 
     handleNearBorder(e: MouseEvent): boolean {
         let isNearBorder = false;
         const mousePosition = this.getPositionFromMouse(e);
-        let height = this.zoom.height;
-        let width = this.zoom.width;
-        if (mousePosition.x < width / (2 * ZOOM_PIPETTE)) {
-            width = mousePosition.x * ZOOM_PIPETTE * 2;
+        if (mousePosition.x <= this.drawingService.canvas.width || mousePosition.x <= 0) {
             isNearBorder = true;
         }
-        if (mousePosition.y < height / (2 * ZOOM_PIPETTE)) {
-            height = mousePosition.y * ZOOM_PIPETTE * 2;
+        if (mousePosition.y < this.drawingService.canvas.height || mousePosition.y <= 0) {
             isNearBorder = true;
         }
-        this.drawImage(height, width, mousePosition.x, mousePosition.y, e);
+        if (isNearBorder) {
+            this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
+            this.onCanvas.next(true);
+        }
         return isNearBorder;
     }
 
