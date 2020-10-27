@@ -27,7 +27,6 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
-        selectionService: SelectionService,
         polygoneService: PolygoneService,
         selectionService: SelectionService,
     ) {
