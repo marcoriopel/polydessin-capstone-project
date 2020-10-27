@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
@@ -11,17 +13,25 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
 import { DrawingComponent } from './drawing.component';
+import SpyObj = jasmine.SpyObj;
 
 class ToolStub extends Tool {}
 
 describe('DrawingComponent', () => {
+    let matdialogSpy: SpyObj<MatDialog>;
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let toolSelectionStub: ToolSelectionService;
+    let hotkeyStub: any;
 
     beforeEach(async(() => {
+        hotkeyStub = {
+            onKeyDown: () => 0,
+        };
+        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
         toolSelectionStub = new ToolSelectionService(
@@ -37,9 +47,11 @@ describe('DrawingComponent', () => {
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
             providers: [
+                { provide: MatDialogModule, useValue: matdialogSpy },
                 { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: HotkeyService, useValue: hotkeyStub },
             ],
         }).compileComponents();
     }));

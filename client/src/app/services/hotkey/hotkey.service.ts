@@ -7,6 +7,9 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class HotkeyService {
+    constructor() {
+        this.isHotkeyEnabled = true;
+    }
     toolName: Subject<string> = new Subject<string>();
     toolNames: ToolNames = TOOL_NAMES;
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;

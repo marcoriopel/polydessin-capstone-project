@@ -1,4 +1,4 @@
-import { ContentChildren, Injectable, OnDestroy, QueryList } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
@@ -19,8 +19,7 @@ import { Subscription } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
-export class ToolSelectionService implements OnDestroy {
-    @ContentChildren(HotkeyService) hotKeys: QueryList<HotkeyService>;
+export class ToolSelectionService implements OnInit, OnDestroy {
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     toolNames: ToolNames = TOOL_NAMES;
     private tools: Map<string, Tool>;
@@ -29,6 +28,7 @@ export class ToolSelectionService implements OnDestroy {
     dialog: MatDialog;
     hotkeyService: HotkeyService;
     newDrawingService: NewDrawingService;
+
     constructor(
         pencilService: PencilService,
         brushService: BrushService,
@@ -47,8 +47,10 @@ export class ToolSelectionService implements OnDestroy {
             [this.toolNames.FILL_TOOL_NAME, fillService],
             [this.toolNames.ERASER_TOOL_NAME, eraserService],
         ]);
-
         this.currentTool = pencilService;
+    }
+
+    ngOnInit(): void {
         this.hotKeySubscription = this.hotkeyService.getKey().subscribe((tool) => {
             if (this.tools.has(tool)) {
                 this.changeTool(tool);

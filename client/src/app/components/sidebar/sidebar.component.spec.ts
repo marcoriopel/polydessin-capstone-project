@@ -1,7 +1,8 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -26,33 +27,33 @@ describe('SidebarComponent', () => {
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         toolStub = new ToolStub({} as DrawingService);
         toolSelectionStub = new ToolSelectionService(
             toolStub as PencilService,
-            toolStub as BrushService,
-            toolStub as SquareService,
-            toolStub as CircleService,
-            toolStub as LineService,
-            toolStub as FillService,
-            toolStub as EraserService,
+            {} as BrushService,
+            {} as SquareService,
+            {} as CircleService,
+            {} as LineService,
+            {} as FillService,
+            {} as EraserService,
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            imports: [MatDialogModule, BrowserAnimationsModule],
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
-                { provide: MatDialog, useValue: matdialogSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
             ],
         }).compileComponents();
-    }));
+    });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
+        await fixture.whenStable();
         fixture.detectChanges();
     });
 
@@ -74,10 +75,11 @@ describe('SidebarComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('should call open of MatDialog', () => {
+    it('should call open of MatDialog', async(() => {
+        // spyOn(hotkeyServiceStub, 'getKey').and.returnValue(of('Crayon'));
         component.openUserguide();
         expect(matdialogSpy.open).toHaveBeenCalled();
-    });
+    }));
 
     it('should call openWarning', () => {
         const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
