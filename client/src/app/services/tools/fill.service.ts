@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Fill } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE, MAX_TOLERANCE_VALUE, MIN_TOLERANCE_VALUE, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
@@ -17,6 +18,8 @@ export class FillService extends Tool {
     tolerance: number = this.minTolerance;
     mouseDownCoord: Vec2;
     initialPixelData: Uint8ClampedArray;
+    fillData: Fill;
+    canvasData: ImageData;
 
     constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -76,7 +79,10 @@ export class FillService extends Tool {
                 }
             }
         }
+        this.canvasData = canvasData;
+        this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
+        this.drawingService.updateStack(this.fillData);
     }
 
     fill(): void {
@@ -94,8 +100,10 @@ export class FillService extends Tool {
                 canvasData.data[i + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
             }
         }
-
+        this.canvasData = canvasData;
+        this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
+        this.drawingService.updateStack(this.fillData);
     }
 
     Vec2ToString(pixel: Vec2): string {
@@ -116,5 +124,12 @@ export class FillService extends Tool {
         } else {
             return true;
         }
+    }
+
+    updateFillData(): void {
+        this.fillData = {
+            type: 'fill',
+            imageData: this.canvasData,
+        };
     }
 }

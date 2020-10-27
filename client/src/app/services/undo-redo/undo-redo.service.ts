@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 // import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -32,7 +32,7 @@ export class UndoRedoService {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle): void {
+    drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
         switch (element.type) {
             case 'pencil':
                 this.drawingService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -51,6 +51,9 @@ export class UndoRedoService {
                 break;
             case 'ellipse':
                 this.drawingService.drawEllipse(this.drawingService.baseCtx, element as Ellipse);
+                break;
+            case 'fill':
+                this.drawingService.drawFill(element as Fill);
                 break;
         }
     }

@@ -38,6 +38,7 @@ export class DrawingService {
 
     updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
         this.undoStack.push(modification);
+        console.log(this.undoStack);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
         }
@@ -167,6 +168,10 @@ export class DrawingService {
             ctx.fill();
         }
         ctx.stroke();
+    }
+
+    drawFill(fill: Fill): void {
+        this.baseCtx.putImageData(fill.imageData, 0, 0);
     }
 
     getPixelData(pixelCoord: Vec2): Uint8ClampedArray {

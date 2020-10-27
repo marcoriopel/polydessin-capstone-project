@@ -81,7 +81,6 @@ export interface Resize {
 }
 
 export interface Fill {
-    // TODO
     type: string;
-    imageData: string;
+    imageData: ImageData;
 }
