@@ -1,0 +1,20 @@
+<div class="carousel">
+    <h1 mat-dialog-title>Carroussel de dessin</h1>
+    <div mat-dialog-content class="text">
+        <p>Il n'y a pas de dessin de sauvegardé sur le serveur pour le moment.</p>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            mat-stroked-button
+            mat-button
+            tabindex="-1"
+            [disabled]="isOpenButtonDisabled"
+            id="open"
+            (click)="openSelectedDrawing()"
+            mat-dialog-close
+        >
+            Ouvrir
+        </button>
+        <button mat-button mat-button tabindex="-1" mat-dialog-close>Fermer</button>
+    </div>
+</div>

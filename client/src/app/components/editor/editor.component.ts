@@ -35,6 +35,7 @@ export class EditorComponent implements AfterViewInit {
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
+        ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
     ]);
 
@@ -42,7 +43,11 @@ export class EditorComponent implements AfterViewInit {
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
         public newDrawingService: NewDrawingService,
-    ) {}
+    ) {
+        this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
+        this.resizeDrawingService.previewSize = this.previewSize;
+        this.resizeDrawingService.canvasSize = this.canvasSize;
+    }
 
     ngAfterViewInit(): void {
         setTimeout(() => {
@@ -55,7 +60,7 @@ export class EditorComponent implements AfterViewInit {
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
-            this.setDefaultCanvasSize();
+            this.resizeDrawingService.setDefaultCanvasSize();
         });
     }
 
@@ -91,28 +96,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (this.resizeDrawingService.onMouseUp()) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempCanvas.width = this.canvasSize.x;
-            tempCanvas.height = this.canvasSize.y;
-            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempCanvasCtx.drawImage(this.drawingComponent.baseCanvas.nativeElement, 0, 0);
-
-            this.canvasSize.x = this.previewSize.x;
-            this.canvasSize.y = this.previewSize.y;
-            this.previewDiv.style.display = 'none';
-
-            setTimeout(() => {
-                let baseCtx: CanvasRenderingContext2D;
-                baseCtx = this.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-                baseCtx.drawImage(tempCanvas, 0, 0);
-            });
-        }
-    }
-
-    private setDefaultCanvasSize(): void {
-        this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
+        this.resizeDrawingService.onMouseUp();
+        this.previewDiv.style.display = 'none';
     }
 }

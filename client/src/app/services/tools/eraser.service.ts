@@ -88,6 +88,21 @@ export class EraserService extends Tool {
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
+<<<<<<< HEAD
+=======
+
+    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
+        ctx.lineWidth = this.width;
+        ctx.strokeStyle = 'white';
+        ctx.lineCap = 'square';
+
+        ctx.beginPath();
+        for (const point of path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+    }
+>>>>>>> 8e59ee58d5b17f237d73ad5f1d5214bfacc0f42e
 
     private drawRect(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
         ctx.lineWidth = 1;
