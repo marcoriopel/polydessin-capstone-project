@@ -14,6 +14,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 
 import SpyObj = jasmine.SpyObj;
@@ -37,11 +38,8 @@ describe('SidebarComponent', () => {
             toolStub as LineService,
             toolStub as FillService,
             toolStub as EraserService,
-<<<<<<< HEAD
             toolStub as PolygoneService,
-=======
             toolStub as SelectionService,
->>>>>>> ca9154cf872a22200b3b6a7c6902297b0484b6f3
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
