@@ -27,6 +27,7 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        selectionService: SelectionService,
         polygoneService: PolygoneService,
         selectionService: SelectionService,
     ) {
@@ -36,6 +37,7 @@ export class ToolSelectionService {
             [this.toolNames.SQUARE_TOOL_NAME, squareService],
             [this.toolNames.CIRCLE_TOOL_NAME, circleService],
             [this.toolNames.LINE_TOOL_NAME, lineService],
+            [this.toolNames.SELECTION_TOOL_NAME, selectionService],
             [this.toolNames.FILL_TOOL_NAME, fillService],
             [this.toolNames.ERASER_TOOL_NAME, eraserService],
             [this.toolNames.POLYGONE_TOOL_NAME, polygoneService],
