@@ -48,6 +48,10 @@ export class UndoRedoService {
                 break;
             case 'rectangle':
                 this.drawingService.drawRectangle(this.drawingService.baseCtx, element as Rectangle);
+                break;
+            case 'ellipse':
+                this.drawingService.drawEllipse(this.drawingService.baseCtx, element as Ellipse);
+                break;
         }
     }
 }

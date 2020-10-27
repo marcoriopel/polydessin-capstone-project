@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 
@@ -11,8 +11,8 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
 
     constructor() {}
 
@@ -36,7 +36,7 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle): void {
+    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
         this.undoStack.push(modification);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
@@ -143,6 +143,28 @@ export class DrawingService {
         ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
         if (rectangle.fillStyle !== FILL_STYLES.BORDER) {
             ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        }
+        ctx.stroke();
+    }
+
+    drawEllipse(ctx: CanvasRenderingContext2D, ellipse: Ellipse): void {
+        ctx.fillStyle = ellipse.primaryColor;
+        ctx.strokeStyle = ellipse.secondaryColor;
+        ctx.lineWidth = ellipse.lineWidth;
+
+        if (ellipse.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = ellipse.primaryColor;
+            ctx.lineWidth = 1;
+        }
+
+        ctx.beginPath();
+        if (ellipse.isShiftDown) {
+            ctx.arc(ellipse.center.x, ellipse.center.y, Math.min(ellipse.radius.x, ellipse.radius.y), 0, Math.PI * 2, false);
+        } else {
+            ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
+        }
+        if (ellipse.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fill();
         }
         ctx.stroke();
     }

@@ -48,6 +48,17 @@ export interface Rectangle {
     lineWidth: number;
 }
 
+export interface Ellipse {
+    type: string;
+    primaryColor: string;
+    secondaryColor: string;
+    fillStyle: number;
+    isShiftDown: boolean;
+    center: Vec2;
+    radius: Vec2;
+    lineWidth: number;
+}
+
 export interface Line {
     type: string;
     primaryColor: string;
