@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 // import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -10,7 +10,6 @@ export class UndoRedoService {
     constructor(public drawingService: DrawingService) {}
 
     undo(): void {
-        console.log(this.drawingService.undoStack);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);
@@ -33,7 +32,7 @@ export class UndoRedoService {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill): void {
+    drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle): void {
         switch (element.type) {
             case 'pencil':
                 this.drawingService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -47,6 +46,8 @@ export class UndoRedoService {
             case 'line':
                 this.drawingService.drawLine(this.drawingService.baseCtx, element as Line);
                 break;
+            case 'rectangle':
+                this.drawingService.drawRectangle(this.drawingService.baseCtx, element as Rectangle);
         }
     }
 }

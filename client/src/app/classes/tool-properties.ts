@@ -36,12 +36,16 @@ export interface Shape {
     lineWidth: number;
 }
 
-export interface rectangle {
-    rectangleWidth: number;
-    rectangleHeight: number;
+export interface Rectangle {
+    type: string;
+    primaryColor: string;
+    secondaryColor: string;
+    width: number;
+    height: number;
     topLeftPoint: Vec2;
     fillStyle: number;
     isShiftDown: boolean;
+    lineWidth: number;
 }
 
 export interface Line {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 
 @Injectable({
     providedIn: 'root',
@@ -10,8 +11,8 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle)[] = [];
 
     constructor() {}
 
@@ -35,7 +36,7 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill): void {
+    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle): void {
         this.undoStack.push(modification);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
@@ -128,6 +129,22 @@ export class DrawingService {
                 line.mouseClicks.push(doubleClickPoint as Vec2);
             }
         }
+    }
+
+    drawRectangle(ctx: CanvasRenderingContext2D, rectangle: Rectangle): void {
+        ctx.fillStyle = rectangle.primaryColor;
+        ctx.strokeStyle = rectangle.secondaryColor;
+        ctx.lineWidth = rectangle.lineWidth;
+        if (rectangle.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = rectangle.primaryColor;
+            ctx.lineWidth = 1;
+        }
+        ctx.beginPath();
+        ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        if (rectangle.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        }
+        ctx.stroke();
     }
 
     getPixelData(pixelCoord: Vec2): Uint8ClampedArray {

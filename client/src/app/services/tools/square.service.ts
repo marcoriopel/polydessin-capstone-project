@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Rectangle } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -13,8 +14,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class SquareService extends Tool {
     name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
     mouseDown: boolean = false;
+    rectangleData: Rectangle;
     isShiftKeyDown: boolean = false;
     width: number = 1;
+    topLeftPoint: Vec2;
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
@@ -92,48 +95,20 @@ export class SquareService extends Tool {
     }
 
     private drawShape(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = this.colorSelectionService.primaryColor;
-        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.lineWidth = this.width;
-
-        if (this.fillStyle === FILL_STYLES.FILL) {
-            ctx.strokeStyle = this.colorSelectionService.primaryColor;
-            ctx.lineWidth = 1;
-        }
-        ctx.beginPath();
-
+        this.setRectangleHeight();
+        this.setRectangleWidth();
         if (this.isShiftKeyDown) {
-            this.drawSquare(ctx);
-        } else {
-            this.drawRectangle(ctx);
+            this.rectangleWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
+            this.rectangleHeight = this.rectangleWidth;
         }
+        this.topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
+
+        this.updateRectangleData();
+        this.drawingService.drawRectangle(ctx, this.rectangleData);
 
         if (ctx === this.drawingService.baseCtx) {
+            this.drawingService.updateStack(this.rectangleData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
-
-        ctx.stroke();
-    }
-
-    private drawRectangle(ctx: CanvasRenderingContext2D): void {
-        this.setRectangleHeight();
-        this.setRectangleWidth();
-        const topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
-        ctx.rect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fillRect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
-        }
-    }
-
-    private drawSquare(ctx: CanvasRenderingContext2D): void {
-        this.setRectangleHeight();
-        this.setRectangleWidth();
-        const squareWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
-        const topLeftPoint = this.findTopLeftPoint(squareWidth, squareWidth);
-
-        ctx.rect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fillRect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
         }
     }
 
@@ -162,5 +137,19 @@ export class SquareService extends Tool {
         }
 
         return { x, y };
+    }
+
+    private updateRectangleData(): void {
+        this.rectangleData = {
+            type: 'rectangle',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            height: this.rectangleHeight,
+            width: this.rectangleWidth,
+            topLeftPoint: this.topLeftPoint,
+            fillStyle: this.fillStyle,
+            isShiftDown: this.isShiftKeyDown,
+            lineWidth: this.width,
+        };
     }
 }
