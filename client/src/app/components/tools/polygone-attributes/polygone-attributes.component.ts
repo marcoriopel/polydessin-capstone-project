@@ -14,6 +14,7 @@ export class PolygoneAttributesComponent {
     constructor(public polygoneService: PolygoneService) {
         this.toolWidth = polygoneService.width;
         this.fillStyle = polygoneService.fillStyle;
+        this.sides = polygoneService.sides;
     }
 
     handleBorderWidthChange(newWidth: number): void {

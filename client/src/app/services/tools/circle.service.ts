@@ -20,6 +20,7 @@ export class CircleService extends Tool {
     width: number = 1;
     firstPoint: Vec2;
     lastPoint: Vec2;
+    quadrant: number;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -114,13 +115,34 @@ export class CircleService extends Tool {
         }
     }
 
-    private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+    drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
         this.setCircleHeight();
         this.setCircleWidth();
+        this.quadrant = this.findQuadrant();
         const ellipseRadiusX = this.circleWidth / 2;
         const ellipseRadiusY = this.circleHeight / 2;
-        const ellipseCenterX = point.x + ellipseRadiusX;
-        const ellipseCenterY = point.y + ellipseRadiusY;
+        const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
+        let ellipseCenterX = point.x + circleRadius;
+        let ellipseCenterY = point.y + circleRadius;
+        switch(this.quadrant) {
+            case 1:
+                ellipseCenterX = this.firstPoint.x - circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
+              break;
+            case 2:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
+              break;
+            case 3:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
+              break;
+            case 4:
+                ellipseCenterX = this.firstPoint.x - circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
+              break;
+            default:
+        }
         ctx.beginPath();
         ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
         if (this.fillStyle !== FILL_STYLES.BORDER) {
@@ -149,26 +171,54 @@ export class CircleService extends Tool {
      to find the top left point of the rectangle or the square
      */
     findTopLeftPoint(): Vec2 {
+        this.quadrant = this.findQuadrant();
+
         const point1 = this.firstPoint;
         const point2 = this.lastPoint;
-        // firstPoint is top left corner lastPoint is bottom right corner
-        let x = point1.x;
-        let y = point1.y;
-        if (point1.x > point2.x && point1.y > point2.y) {
+        let x: number = 0;
+        let y: number = 0;
+        switch(this.quadrant) {
+            case 1:
+            // firstPoint is top left corner lastPoint is bottom right corner
+                x = point2.x;
+                y = point2.y;
+              break;
+            case 2:
             // firstPoint is bottom right corner lastPoint is top left corner
-            x = point2.x;
-            y = point2.y;
-        } else if (point1.x > point2.x && point1.y < point2.y) {
+                x = point1.x;
+                y = point2.y;
+              break;
+            case 3:
             // firstPoint is top right corner lastPoint is bottom left corner
-            x = point2.x;
-            y = point1.y;
-        } else if (point1.x < point2.x && point1.y > point2.y) {
+                x = point1.x;
+                y = point1.y;
+              break;
+            case 4:
             // firstPoint is bottom left corner lastPoint is top right corner
-            x = point1.x;
-            y = point2.y;
+                x = point2.x;
+                y = point1.y;
+              break;
+            default:
         }
 
         return { x, y };
+    }
+
+    findQuadrant(): number {
+        const point1 = this.firstPoint;
+        const point2 = this.lastPoint;
+        if (point1.x > point2.x && point1.y > point2.y) {
+            // firstPoint is bottom right corner lastPoint is top left corner
+            return 1;
+        } else if (point1.x > point2.x && point1.y < point2.y) {
+            // firstPoint is top right corner lastPoint is bottom left corner
+            return 4;
+        } else if (point1.x < point2.x && point1.y > point2.y) {
+            // firstPoint is bottom left corner lastPoint is top right corner
+            return 2;
+        }
+        // firstPoint is top left corner lastPoint is bottom right corner
+        return 3;
     }
 
     setCircleWidth(): void {

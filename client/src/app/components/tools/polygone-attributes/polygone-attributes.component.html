@@ -13,7 +13,7 @@
     [min]="polygoneService.minSides"
     [max]="polygoneService.maxSides"
     [step]="1"
-    [value]="toolWidth"
+    [value]="sides"
     (valueChange)="handlePolygoneSides($event)"
 ></app-slider>
     <app-type-of-fill-selection (valueChange)="handleFillStyleChange($event)" [currentFillStyle]="this.fillStyle"></app-type-of-fill-selection>

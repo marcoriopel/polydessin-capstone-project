@@ -10,6 +10,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { DrawingComponent } from './drawing.component';
 
@@ -34,6 +35,7 @@ describe('DrawingComponent', () => {
             {} as FillService,
             {} as EraserService,
             {} as PolygoneService,
+            {} as SelectionService,
         );
 
         TestBed.configureTestingModule({
