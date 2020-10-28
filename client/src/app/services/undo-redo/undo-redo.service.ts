@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
+import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
 @Injectable({
@@ -18,6 +19,7 @@ export class UndoRedoService {
         public squareService: SquareService,
         public pencilService: PencilService,
         public eraserService: EraserService,
+        public lineService: LineService,
     ) {}
 
     undo(): void {
@@ -55,7 +57,7 @@ export class UndoRedoService {
                 this.eraserService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
                 break;
             case 'line':
-                this.drawingService.drawLine(this.drawingService.baseCtx, element as Line);
+                this.lineService.drawFullLine(this.drawingService.baseCtx, element as Line);
                 break;
             case 'rectangle':
                 this.squareService.drawRectangle(this.drawingService.baseCtx, element as Rectangle);

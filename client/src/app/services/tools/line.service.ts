@@ -89,7 +89,7 @@ export class LineService extends Tool {
 
             // Draw line on base canvas
             this.updateLineData();
-            this.drawingService.drawLine(this.drawingService.baseCtx, this.lineData);
+            this.drawFullLine(this.drawingService.baseCtx, this.lineData);
             this.drawingService.updateStack(this.lineData);
             this.hasLastPointBeenChanged = false;
 
@@ -342,6 +342,47 @@ export class LineService extends Tool {
                 this.drawingService.baseCtx.arc(this.mouseClicks[i].x, this.mouseClicks[i].y, width / 2, 0, 2 * Math.PI);
                 this.drawingService.baseCtx.fill();
                 this.drawingService.baseCtx.stroke();
+            }
+        }
+    }
+
+    drawFullLine(ctx: CanvasRenderingContext2D, line: Line): void {
+        line.storedLines.forEach((element) => {
+            ctx.strokeStyle = line.primaryColor;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = line.lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(element.startingPoint.x, element.startingPoint.y);
+            ctx.lineTo(element.endingPoint.x, element.endingPoint.y);
+            ctx.stroke();
+        });
+
+        if (line.isDot) {
+            const LAST_DOT = line.mouseClicks.length;
+            let doubleClickPoint: Vec2 | undefined;
+
+            // Remove the double click that doesnt need to be drawed on the canvas
+            if (line.hasLastPointBeenChaged) {
+                line.mouseClicks[line.mouseClicks.length - 2] = line.mouseClicks[line.mouseClicks.length - 1];
+                doubleClickPoint = line.mouseClicks.pop();
+            }
+            // If it's a double click holding shift adjust ending dot
+            if (line.isShiftDoubleClick) {
+                line.mouseClicks[line.mouseClicks.length - 1] = line.storedLines[line.storedLines.length - 1].endingPoint;
+            }
+
+            for (let i = 0; i < LAST_DOT - 1; i++) {
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = line.secondaryColor;
+                ctx.fillStyle = line.secondaryColor;
+                ctx.beginPath();
+                ctx.arc(line.mouseClicks[i].x, line.mouseClicks[i].y, line.dotWidth / 2, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            }
+
+            if (line.hasLastPointBeenChaged) {
+                line.mouseClicks.push(doubleClickPoint as Vec2);
             }
         }
     }
