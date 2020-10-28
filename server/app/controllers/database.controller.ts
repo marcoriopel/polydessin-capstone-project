@@ -1,10 +1,11 @@
 import { TYPES } from '@app/types';
+import { DBData } from '@common/communication/drawing-data';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
-import { DrawingData } from '../../../common/communication/drawing-data';
+import * as path from 'path';
 import { DatabaseService } from '../services/database.service';
 
 @injectable()
@@ -29,6 +30,7 @@ export class DatabaseController {
 
         this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
+            console.log(savedFileName);
             this.databaseService
                 .addDrawing(req.body, savedFileName)
                 .then(() => {
@@ -39,22 +41,44 @@ export class DatabaseController {
                 });
         });
 
-        this.router.delete('/deleteDrawing/:id', (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .deleteDrawing(req.params.id)
-                .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
+        // this.router.delete('/deleteDrawing/:id', (req: Request, res: Response, next: NextFunction) => {
+        //     this.databaseService
+        //         .deleteDrawing(req.params.id)
+        //         .then(() => {
+        //             res.sendStatus(Httpstatus.StatusCodes.OK);
+        //         })
+        //         .catch((error: Error) => {
+        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+        //         });
+        // });
+
+        // this.router.get('/getDrawingData', (req: Request, res: Response, next: NextFunction) => {
+        //     const files: string[] = fs.readdirSync(this.DIR);
+        //     this.databaseService
+        //         .getDrawingData(files)
+        //         .then((drawings: FormData[]) => {
+        //             res.send(files);
+        //         })
+        //         .catch((error: Error) => {
+        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+        //         });
+        // });
+        this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
+            const files: string[] = fs.readdirSync(this.DIR);
+            if (files.includes(req.params.filename)) {
+                console.log(path.join(__dirname, '../images/'));
+                res.contentType('image/png');
+                res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
+            } else {
+                res.status(Httpstatus.StatusCodes.NOT_FOUND);
+            }
         });
 
-        this.router.get('/getDrawingData', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/getDBData/', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
-                .getDrawingData()
-                .then((drawings: DrawingData[]) => {
-                    res.json(drawings);
+                .getDBData()
+                .then((dbData: DBData[]) => {
+                    res.send(dbData);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);

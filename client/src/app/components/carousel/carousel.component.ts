@@ -4,8 +4,10 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
+import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
-import { DrawingData } from '@common/communication/drawing-data';
+import { DBData, DrawingData } from '@common/communication/drawing-data';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-carousel',
@@ -13,6 +15,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent {
+    databaseMetadata: DBData[] = [];
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     drawings: DrawingData[] = [];
@@ -26,8 +29,69 @@ export class CarouselComponent {
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
 
-    constructor(public databaseService: DatabaseService, public dialog: MatDialog) {
-        this.loadExistingDrawings();
+    constructor(public databaseService: DatabaseService, public dialog: MatDialog, public carouselService: CarouselService) {
+        this.loadfirstDrawings();
+    }
+
+    loadfirstDrawings(): void {
+        this.gotImages = false;
+        this.loadAllDBData().subscribe((data: DBData[]) => {
+            for (const element of data) {
+                if (this.visibleDrawings.length >= MAX_NUMBER_VISIBLE_DRAWINGS) {
+                    break;
+                }
+                this.loadDrawing(element);
+            }
+
+            this.gotImages = true;
+        });
+    }
+    master(): void {
+        this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
+            dBData.forEach((element: DBData) => {
+                this.databaseService.getDrawingPng(element.fileName).subscribe(
+                    (file: Blob) => {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);
+                        reader.onload = () => {
+                            let imageURL: string = reader.result as string;
+                            imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
+                            const drawingElement: DrawingData = { id: element.id, drawingPng: imageURL, name: element.name, tags: element.tags };
+                            this.visibleDrawings.push(drawingElement);
+                        };
+                    },
+                    (error) => {
+                        console.log(error);
+                    },
+                );
+            });
+            this.gotImages = true;
+        });
+    }
+
+    loadDrawing(element: DBData): void {
+        this.databaseService.getDrawingPng(element.fileName).subscribe(
+            (file: Blob) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    let imageURL: string = reader.result as string;
+                    imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
+                    const drawingElement: DrawingData = { id: element.id, drawingPng: imageURL, name: element.name, tags: element.tags };
+                    this.visibleDrawings.push(drawingElement);
+                };
+            },
+            (error) => {
+                console.log(error);
+            },
+        );
+    }
+
+    loadAllDBData(): Observable<DBData[]> {
+        this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
+            this.databaseMetadata = dBData;
+        });
+        return this.databaseService.getAllDBData();
     }
 
     addTag(event: MatChipInputEvent): void {
@@ -47,28 +111,12 @@ export class CarouselComponent {
         this.databaseService.deleteDrawing(id).subscribe(
             (data) => {
                 console.log(data);
-                this.loadExistingDrawings();
+                // this.loadExistingDrawings();
             },
             (error) => {
                 this.dialog.open(ErrorAlertComponent);
             },
         );
-    }
-
-    loadExistingDrawings(): void {
-        this.gotImages = false;
-        this.drawings = [];
-        this.visibleDrawings = [];
-        this.visibleDrawingsIndexes = [];
-        let numberDrawings = 0;
-        this.databaseService.getDrawingData().subscribe((drawingData: DrawingData[]) => {
-            drawingData.forEach((element: DrawingData) => {
-                numberDrawings++;
-                this.drawings.push(element);
-            });
-            this.manageNumberDrawings(numberDrawings);
-        });
-        this.gotImages = true;
     }
 
     onPreviousClick(): void {

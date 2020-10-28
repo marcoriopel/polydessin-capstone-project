@@ -72,7 +72,6 @@ export class SavingComponent {
 
     changeName(name: string): void {
         this.name = name;
-        console.log(this.name);
     }
 
     saveConfirmMessage(): void {

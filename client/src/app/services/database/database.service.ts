@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DrawingData, ID_NAME, MetaData, NAME, TAGS_NAME } from '@common/communication/drawing-data';
+import { DBData, ID_NAME, MetaData, NAME, TAGS_NAME } from '@common/communication/drawing-data';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -27,8 +27,17 @@ export class DatabaseService {
         return this.http.delete<string>(this.BASE_URL + '/deleteDrawing/' + id).pipe(catchError(this.handleError<string>('deleteDrawing')));
     }
 
-    getDrawingData(): Observable<DrawingData[]> {
-        return this.http.get<DrawingData[]>(this.BASE_URL + '/getDrawingData').pipe(catchError(this.handleError<DrawingData[]>('getDrawing')));
+    getDrawingData(): Observable<FormData[]> {
+        return this.http.get<FormData[]>(this.BASE_URL + '/getDrawingData').pipe(catchError(this.handleError<FormData[]>('getDrawing')));
+    }
+
+    getAllDBData(): Observable<DBData[]> {
+        return this.http.get<DBData[]>(this.BASE_URL + '/getDBData').pipe(catchError(this.handleError<DBData[]>('getAllDBData')));
+    }
+    getDrawingPng(filename: string): Observable<Blob> {
+        return this.http
+            .get<Blob>(this.BASE_URL + '/getDrawingPng/' + filename, { responseType: 'blob' as 'json' })
+            .pipe(catchError(this.handleError<Blob>('getDrawingPng')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

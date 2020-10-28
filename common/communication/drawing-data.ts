@@ -11,11 +11,6 @@ export interface MetaData {
     tags: string[];
 }
 
-export interface Drawing {
-    id: string;
-    drawingPng: string;
-}
-
 export interface DBData {
     id: string;
     name: string;
