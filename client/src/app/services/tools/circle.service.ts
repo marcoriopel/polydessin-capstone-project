@@ -104,7 +104,7 @@ export class CircleService extends Tool {
         this.ellipseCenter = { x: topLeftPoint.x + this.ellipseRadius.x, y: topLeftPoint.y + this.ellipseRadius.y };
 
         this.updateEllipseData();
-        this.drawingService.drawEllipse(ctx, this.ellipseData);
+        this.drawEllipse(ctx, this.ellipseData);
 
         if (ctx === this.drawingService.previewCtx) {
             ctx.beginPath();
@@ -119,6 +119,28 @@ export class CircleService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
+    }
+
+    drawEllipse(ctx: CanvasRenderingContext2D, ellipse: Ellipse): void {
+        ctx.fillStyle = ellipse.primaryColor;
+        ctx.strokeStyle = ellipse.secondaryColor;
+        ctx.lineWidth = ellipse.lineWidth;
+
+        if (ellipse.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = ellipse.primaryColor;
+            ctx.lineWidth = 1;
+        }
+
+        ctx.beginPath();
+        if (ellipse.isShiftDown) {
+            ctx.arc(ellipse.center.x, ellipse.center.y, Math.min(ellipse.radius.x, ellipse.radius.y), 0, Math.PI * 2, false);
+        } else {
+            ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
+        }
+        if (ellipse.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fill();
+        }
+        ctx.stroke();
     }
 
     /*

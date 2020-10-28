@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
-import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 
 @Injectable({
     providedIn: 'root',
@@ -44,18 +43,6 @@ export class DrawingService {
         }
     }
 
-    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void {
-        ctx.lineWidth = pencil.lineWidth;
-        ctx.strokeStyle = pencil.primaryColor;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = pencil.lineCap as CanvasLineCap;
-        ctx.beginPath();
-        for (const point of pencil.path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
-    }
-
     drawBrushStroke(ctx: CanvasRenderingContext2D, brush: Brush): void {
         ctx.lineWidth = brush.lineWidth;
         ctx.strokeStyle = brush.primaryColor;
@@ -78,17 +65,6 @@ export class DrawingService {
         ctx.stroke();
         this.baseCtx.filter = 'none';
         this.previewCtx.filter = 'none';
-    }
-
-    drawEraserStroke(ctx: CanvasRenderingContext2D, eraser: Eraser): void {
-        ctx.lineWidth = eraser.lineWidth;
-        ctx.strokeStyle = 'white';
-        ctx.lineCap = 'square';
-        ctx.beginPath();
-        for (const point of eraser.path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
     }
 
     drawLine(ctx: CanvasRenderingContext2D, line: Line): void {
@@ -132,42 +108,22 @@ export class DrawingService {
         }
     }
 
-    drawRectangle(ctx: CanvasRenderingContext2D, rectangle: Rectangle): void {
-        ctx.fillStyle = rectangle.primaryColor;
-        ctx.strokeStyle = rectangle.secondaryColor;
-        ctx.lineWidth = rectangle.lineWidth;
-        if (rectangle.fillStyle === FILL_STYLES.FILL) {
-            ctx.strokeStyle = rectangle.primaryColor;
-            ctx.lineWidth = 1;
-        }
-        ctx.beginPath();
-        ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
-        if (rectangle.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
-        }
-        ctx.stroke();
-    }
-
-    drawEllipse(ctx: CanvasRenderingContext2D, ellipse: Ellipse): void {
-        ctx.fillStyle = ellipse.primaryColor;
-        ctx.strokeStyle = ellipse.secondaryColor;
-        ctx.lineWidth = ellipse.lineWidth;
-
-        if (ellipse.fillStyle === FILL_STYLES.FILL) {
-            ctx.strokeStyle = ellipse.primaryColor;
-            ctx.lineWidth = 1;
-        }
-
-        ctx.beginPath();
-        if (ellipse.isShiftDown) {
-            ctx.arc(ellipse.center.x, ellipse.center.y, Math.min(ellipse.radius.x, ellipse.radius.y), 0, Math.PI * 2, false);
-        } else {
-            ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
-        }
-        if (ellipse.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fill();
-        }
-        ctx.stroke();
+    resizeCanvas(resize: Resize): void {
+        console.log('did something');
+        const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
+        tempCanvas.width = resize.canvasSize.x;
+        tempCanvas.height = resize.canvasSize.y;
+        const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+        tempCanvasCtx.drawImage(this.canvas, 0, 0);
+        setTimeout(() => {
+            this.initializeBaseCanvas();
+            let baseCtx: CanvasRenderingContext2D;
+            baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+            baseCtx.drawImage(tempCanvas, 0, 0);
+        });
+        // this.canvas.width = resize.canvasSize.x;
+        // this.canvas.height = resize.canvasSize.y;
+        // this.baseCtx.putImageData(resize.imageData, 0, 0);
     }
 
     drawFill(fill: Fill): void {

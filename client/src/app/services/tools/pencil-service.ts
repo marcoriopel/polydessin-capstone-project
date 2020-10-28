@@ -7,7 +7,6 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
-
 @Injectable({
     providedIn: 'root',
 })
@@ -36,7 +35,7 @@ export class PencilService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.updatePencilData();
-            this.drawingService.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
     }
 
@@ -45,7 +44,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updatePencilData();
-            this.drawingService.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
+            this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
             this.drawingService.updateStack(this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
@@ -59,8 +58,20 @@ export class PencilService extends Tool {
             this.pathData.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updatePencilData();
-            this.drawingService.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
+    }
+
+    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void {
+        ctx.lineWidth = pencil.lineWidth;
+        ctx.strokeStyle = pencil.primaryColor;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = pencil.lineCap as CanvasLineCap;
+        ctx.beginPath();
+        for (const point of pencil.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
     }
 
     changeWidth(newWidth: number): void {

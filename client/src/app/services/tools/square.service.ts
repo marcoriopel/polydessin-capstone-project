@@ -104,12 +104,28 @@ export class SquareService extends Tool {
         this.topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
 
         this.updateRectangleData();
-        this.drawingService.drawRectangle(ctx, this.rectangleData);
+        this.drawRectangle(ctx, this.rectangleData);
 
         if (ctx === this.drawingService.baseCtx) {
             this.drawingService.updateStack(this.rectangleData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
+    }
+
+    drawRectangle(ctx: CanvasRenderingContext2D, rectangle: Rectangle): void {
+        ctx.fillStyle = rectangle.primaryColor;
+        ctx.strokeStyle = rectangle.secondaryColor;
+        ctx.lineWidth = rectangle.lineWidth;
+        if (rectangle.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = rectangle.primaryColor;
+            ctx.lineWidth = 1;
+        }
+        ctx.beginPath();
+        ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        if (rectangle.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        }
+        ctx.stroke();
     }
 
     /*

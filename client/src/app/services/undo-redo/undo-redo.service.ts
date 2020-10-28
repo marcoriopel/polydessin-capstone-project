@@ -2,12 +2,23 @@ import { Injectable } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
 // import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { CircleService } from '@app/services/tools/circle.service';
+import { EraserService } from '@app/services/tools/eraser.service';
+import { PencilService } from '@app/services/tools/pencil-service';
+import { SquareService } from '@app/services/tools/square.service';
 @Injectable({
     providedIn: 'root',
 })
 export class UndoRedoService {
-    constructor(public drawingService: DrawingService) {}
+    constructor(
+        public drawingService: DrawingService,
+        public circleService: CircleService,
+        public resizeDrawingService: ResizeDrawingService,
+        public squareService: SquareService,
+        public pencilService: PencilService,
+        public eraserService: EraserService,
+    ) {}
 
     undo(): void {
         const modification = this.drawingService.undoStack.pop();
@@ -35,25 +46,28 @@ export class UndoRedoService {
     drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
         switch (element.type) {
             case 'pencil':
-                this.drawingService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
+                this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
                 break;
             case 'brush':
                 this.drawingService.drawBrushStroke(this.drawingService.baseCtx, element as Brush);
                 break;
             case 'eraser':
-                this.drawingService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
+                this.eraserService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
                 break;
             case 'line':
                 this.drawingService.drawLine(this.drawingService.baseCtx, element as Line);
                 break;
             case 'rectangle':
-                this.drawingService.drawRectangle(this.drawingService.baseCtx, element as Rectangle);
+                this.squareService.drawRectangle(this.drawingService.baseCtx, element as Rectangle);
                 break;
             case 'ellipse':
-                this.drawingService.drawEllipse(this.drawingService.baseCtx, element as Ellipse);
+                this.circleService.drawEllipse(this.drawingService.baseCtx, element as Ellipse);
                 break;
             case 'fill':
                 this.drawingService.drawFill(element as Fill);
+                break;
+            case 'resize':
+                this.drawingService.resizeCanvas(element as Resize);
                 break;
         }
     }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import {
@@ -21,6 +22,8 @@ export class ResizeDrawingService {
     mouseDown: boolean = false;
     serviceCaller: string;
     workSpaceSize: Vec2;
+    resizeData: Resize;
+    imageData: ImageData;
 
     constructor(public drawingService: DrawingService) {}
 
@@ -64,6 +67,9 @@ export class ResizeDrawingService {
 
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
+            this.imageData = this.drawingService.getCanvasData();
+            this.updateResizeData();
+            this.drawingService.updateStack(this.resizeData);
 
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
@@ -133,5 +139,13 @@ export class ResizeDrawingService {
             }
             this.mouseDownCoord = mousePosition;
         }
+    }
+
+    private updateResizeData(): void {
+        this.resizeData = {
+            type: 'resize',
+            imageData: this.imageData,
+            canvasSize: this.canvasSize,
+        };
     }
 }

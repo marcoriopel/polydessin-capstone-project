@@ -43,7 +43,7 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updateEraserData();
-            this.drawingService.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
+            this.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
             this.drawingService.updateStack(this.eraserData);
         }
         this.mouseDown = false;
@@ -53,7 +53,7 @@ export class EraserService extends Tool {
     onMouseLeave(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.updateEraserData();
-        this.drawingService.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
+        this.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -62,7 +62,7 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updateEraserData();
-            this.drawingService.drawEraserStroke(this.drawingService.previewCtx, this.eraserData);
+            this.drawEraserStroke(this.drawingService.previewCtx, this.eraserData);
         }
         this.squareCursor(event);
     }
@@ -83,6 +83,17 @@ export class EraserService extends Tool {
             this.width,
             this.width,
         );
+    }
+
+    drawEraserStroke(ctx: CanvasRenderingContext2D, eraser: Eraser): void {
+        ctx.lineWidth = eraser.lineWidth;
+        ctx.strokeStyle = 'white';
+        ctx.lineCap = 'square';
+        ctx.beginPath();
+        for (const point of eraser.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
     }
 
     changeWidth(newWidth: number): void {

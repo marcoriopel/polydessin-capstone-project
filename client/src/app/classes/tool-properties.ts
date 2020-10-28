@@ -75,9 +75,9 @@ export interface Line {
 }
 
 export interface Resize {
-    // TODO
     type: string;
-    imageData: string;
+    imageData: ImageData;
+    canvasSize: Vec2;
 }
 
 export interface Fill {
