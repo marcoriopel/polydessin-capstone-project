@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CarouselComponent } from '@app/components/carousel/carousel.component';
-import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserguideComponent } from '@app/components/userguide/userguide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
+import { OpenWindowsService } from '@app/services/open-windows/open-windows.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { ExportComponent } from '../export/export.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -18,7 +16,12 @@ export class SidebarComponent {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(public toolSelectionService: ToolSelectionService, public dialog: MatDialog, public newDrawingService: NewDrawingService) {}
+    constructor(
+        public toolSelectionService: ToolSelectionService,
+        public dialog: MatDialog,
+        public newDrawingService: NewDrawingService,
+        public openWindowsService: OpenWindowsService,
+    ) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
@@ -33,16 +36,16 @@ export class SidebarComponent {
     }
 
     openDialog(): void {
-        this.newDrawingService.openWarning();
+        this.openWindowsService.openWarningWindow();
     }
 
     openSaveWindow(): void {
-        this.dialog.open(SavingComponent);
+        this.openWindowsService.openSaveWindow();
     }
     openCarouselWindow(): void {
-        this.dialog.open(CarouselComponent);
+        this.openWindowsService.openCarouselWindow();
     }
     openExportWindow(): void {
-        this.dialog.open(ExportComponent);
+        this.openWindowsService.openExportWindow();
     }
 }

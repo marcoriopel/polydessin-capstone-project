@@ -41,7 +41,7 @@ describe('NewDrawingService', () => {
         service.drawingService.canvas = canvas;
         service.drawingService.baseCtx = baseCtxStub;
 
-        service.openWarning();
+        service.openWarningWindow();
         expect(drawingServiceSpy.isCanvasBlank(baseCtxStub)).toBeFalsy();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });

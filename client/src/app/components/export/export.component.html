@@ -1,7 +1,43 @@
 <div class="exporting">
     <h1 mat-dialog-title>Exportation du dessin</h1>
-    <mat-form-field appearance="fill" floatLabel="floatLabelControl.value">
-        <mat-label>Nom du dessin</mat-label>
-        <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
-    </mat-form-field>
+    <p><img id="image" [src]="imageUrl" height="200px" width="300px" /></p>
+    <div>
+        <label>Exporter par: </label>
+        <mat-tab-group>
+            <mat-tab label="Fichier">
+                <mat-form-field class="name" appearance="fill">
+                    <mat-label>Nom du dessin</mat-label>
+                    <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
+                </mat-form-field>
+            </mat-tab>
+            <mat-tab label="Courriel">
+                <mat-form-field class="name" appearance="fill">
+                    <mat-label>Nom du dessin</mat-label>
+                    <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
+                </mat-form-field>
+                <mat-form-field class="email" appearance="fill">
+                    <mat-label>Adresse Courriel</mat-label>
+                    <input #courriel (change)="this.changeEmailAddress(courriel.value)" matInput placeholder="@hotmai.com" />
+                </mat-form-field>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+
+    <div>
+        <label>Filtre</label>
+        <div class="radioContainer">
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" />
+            <label>Aucun filtre</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
+            <label>Noir et blanc</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SEPHIA" (change)="this.changeFilter($event)" />
+            <label>Sephia</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SATURATE" (change)="this.changeFilter($event)" />
+            <label>Saturate</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.INVERT" (change)="this.changeFilter($event)" />
+            <label>Invert</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLUR" (change)="this.changeFilter($event)" />
+            <label>Embrouiller</label>
+        </div>
+    </div>
 </div>
