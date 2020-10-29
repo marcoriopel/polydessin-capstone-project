@@ -34,6 +34,41 @@ export class CarouselComponent {
         this.loadfirstDrawings();
     }
 
+    async resizedataURL(datas: string, maxWidth: number, maxHeight: number): Promise<string> {
+        return new Promise((resolve, reject) => {
+            // We create an image to receive the Data URI
+            const img = document.createElement('img');
+
+            // When the event "onload" is triggered we can resize the image.
+            img.onload = () => {
+                const ratioX = maxWidth / img.width;
+                const ratioY = maxHeight / img.height;
+                const ratio = Math.min(ratioX, ratioY);
+
+                const newWidth = img.width * ratio;
+                const newHeight = img.height * ratio;
+                // We create a canvas and get its context.
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+                // We set the dimensions at the wanted size.
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+
+                // We resize the image with the canvas method drawImage();
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+                const dataURI = canvas.toDataURL();
+
+                // This is the return of the Promise
+                resolve(dataURI);
+            };
+
+            // We put the Data URI in the image's src attribute
+            img.src = datas;
+        });
+    } // Use it like : var newDataURI = await resizedataURL('yourDataURIHere', 50, 50);
+
     loadfirstDrawings(): void {
         this.drawings = [];
         this.visibleDrawings = [];
@@ -45,12 +80,15 @@ export class CarouselComponent {
                     this.databaseService.getDrawingPng(element.fileName).subscribe((image: Blob) => {
                         const reader = new FileReader();
                         reader.readAsDataURL(image);
-                        reader.onload = () => {
+                        reader.onload = async () => {
                             let imageURL: string = reader.result as string;
                             imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
+                            const imageResized = await this.resizedataURL(imageURL, 200, 200);
+                            const image2 = new Image();
+                            image2.src = imageResized;
                             const drawingElement: DrawingData = {
                                 id: element.id,
-                                drawingPng: imageURL,
+                                drawingPng: imageResized,
                                 name: element.name,
                                 tags: element.tags,
                                 fileName: element.fileName,

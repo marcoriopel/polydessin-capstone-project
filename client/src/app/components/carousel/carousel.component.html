@@ -33,8 +33,10 @@
                     <mat-card class="mat-child" [class]="'mat-child' + i">
                         <p class="name">{{ drawing.name }}</p>
                         <img class="image" [src]="drawing.drawingPng" />
-                        <u>TAGS</u>
-                        <i> - {{ drawing.tags }} - </i>
+                        <div class="drawing-tags">
+                            <u>TAGS</u>
+                            <i> - {{ drawing.tags }} - </i>
+                        </div>
                     </mat-card>
                 </ng-container>
                 <button class="control next" (click)="onNextClick()">
@@ -53,7 +55,7 @@
         </mat-card>
     </div>
     <div *ngIf="visibleDrawings.length == 0 && gotImages === true" #noDrawingBlock>Aucun dessin en sauvegarde</div>
-    <div mat-dialog-actions>
-        <button class="close" mat-button mat-dialog-close>Fermer</button>
-    </div>
+</div>
+<div mat-dialog-actions>
+    <button class="close" mat-button mat-dialog-close>Fermer</button>
 </div>

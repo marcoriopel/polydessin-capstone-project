@@ -26,11 +26,11 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+    width: 250px;
+    height: 300px;
 }
 
 .image {
-    height: 200px;
-    width: 200px;
     position: relative;
     top: 0;
     left: 0;
