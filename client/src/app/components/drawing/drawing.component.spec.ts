@@ -14,6 +14,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
+import { Subject } from 'rxjs';
 import { DrawingComponent } from './drawing.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -27,19 +28,20 @@ describe('DrawingComponent', () => {
     let toolStub: ToolStub;
     let drawingStub: DrawingService;
     let toolSelectionStub: ToolSelectionService;
-    let hotkeyStub: any;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let obs: Subject<string>;
 
     beforeEach(async(() => {
-        hotkeyStub = {
-            onKeyDown: () => 0,
-        };
+        obs = new Subject<string>();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
 
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
         toolSelectionStub = new ToolSelectionService(
             {} as MatDialog,
-            {} as HotkeyService,
+            hotkeyServiceSpy as HotkeyService,
             toolStub as PencilService,
             {} as BrushService,
             {} as SquareService,
@@ -58,7 +60,7 @@ describe('DrawingComponent', () => {
                 { provide: PencilService, useValue: toolStub },
                 { provide: DrawingService, useValue: drawingStub },
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
-                { provide: HotkeyService, useValue: hotkeyStub },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
             ],
         }).compileComponents();
     }));

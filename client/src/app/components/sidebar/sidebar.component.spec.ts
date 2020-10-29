@@ -6,16 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { BrushService } from '@app/services/tools/brush.service';
-import { CircleService } from '@app/services/tools/circle.service';
-import { EraserService } from '@app/services/tools/eraser.service';
-import { FillService } from '@app/services/tools/fill.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { SquareService } from '@app/services/tools/square.service';
 
 import SpyObj = jasmine.SpyObj;
 class ToolStub extends Tool {}
@@ -24,32 +16,25 @@ describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let toolStub: ToolStub;
-    let toolSelectionStub: ToolSelectionService;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
+    let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let currentToolSpy: SpyObj<Tool>;
 
     beforeEach(() => {
         toolStub = new ToolStub({} as DrawingService);
-        toolSelectionStub = new ToolSelectionService(
-            {} as MatDialog,
-            {} as HotkeyService,
-            toolStub as PencilService,
-            {} as BrushService,
-            {} as SquareService,
-            {} as CircleService,
-            {} as LineService,
-            {} as FillService,
-            {} as EraserService,
-            {} as NewDrawingService,
-        );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool']);
+        toolSelectionServiceSpy.changeTool.and.returnValue();
+        currentToolSpy = jasmine.createSpyObj('Tool', ['setCursor']);
+        toolSelectionServiceSpy.currentTool = currentToolSpy;
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
             imports: [MatDialogModule, BrowserAnimationsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [
-                { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
             ],
         }).compileComponents();

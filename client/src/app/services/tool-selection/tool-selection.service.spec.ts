@@ -5,21 +5,25 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
 describe('ToolSelectionService', () => {
     let service: ToolSelectionService;
     let eraserService: EraserService;
     let pencilService: PencilService;
-    let hotkeyService: HotkeyService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let matdialogSpy: SpyObj<MatDialog>;
+    let obs: Subject<string>;
 
     beforeEach(() => {
+        obs = new Subject<string>();
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
-        hotkeyService = new HotkeyService();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         TestBed.configureTestingModule({
             providers: [
-                { provide: HotkeyService, useValue: hotkeyService },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: MatDialog, useValue: matdialogSpy },
             ],
         });
