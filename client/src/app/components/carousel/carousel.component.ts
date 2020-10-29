@@ -42,13 +42,19 @@ export class CarouselComponent {
         this.databaseService.getAllDBData().subscribe((data: DBData[]) => {
             if (data != null) {
                 for (const element of data) {
-                    this.databaseService.getDrawingPng(element.fileName).subscribe((el: Blob) => {
+                    this.databaseService.getDrawingPng(element.fileName).subscribe((image: Blob) => {
                         const reader = new FileReader();
-                        reader.readAsDataURL(el);
+                        reader.readAsDataURL(image);
                         reader.onload = () => {
                             let imageURL: string = reader.result as string;
                             imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
-                            const drawingElement: DrawingData = { id: element.id, drawingPng: imageURL, name: element.name, tags: element.tags };
+                            const drawingElement: DrawingData = {
+                                id: element.id,
+                                drawingPng: imageURL,
+                                name: element.name,
+                                tags: element.tags,
+                                fileName: element.fileName,
+                            };
                             if (this.visibleDrawings.length === MAX_NUMBER_VISIBLE_DRAWINGS) {
                                 this.drawings.push(drawingElement);
                             } else {
@@ -82,16 +88,15 @@ export class CarouselComponent {
 
     deleteDrawing(): void {
         this.gotImages = false;
-        let id: string = this.visibleDrawings[0].id;
+        let fileName: string = this.visibleDrawings[0].fileName;
         if (this.visibleDrawings.length > 1) {
-            id = this.visibleDrawings[1].id;
+            fileName = this.visibleDrawings[1].fileName;
         }
-        this.databaseService.deleteDrawing(id).subscribe(
-            (data) => {
-                console.log(data);
-                // this.loadExistingDrawings();
+        this.databaseService.deleteDrawing(fileName).subscribe(
+            () => {
+                this.loadfirstDrawings();
             },
-            (error) => {
+            () => {
                 this.dialog.open(ErrorAlertComponent);
             },
         );

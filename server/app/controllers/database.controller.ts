@@ -41,28 +41,17 @@ export class DatabaseController {
                 });
         });
 
-        // this.router.delete('/deleteDrawing/:id', (req: Request, res: Response, next: NextFunction) => {
-        //     this.databaseService
-        //         .deleteDrawing(req.params.id)
-        //         .then(() => {
-        //             res.sendStatus(Httpstatus.StatusCodes.OK);
-        //         })
-        //         .catch((error: Error) => {
-        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-        //         });
-        // });
+        this.router.delete('/deleteDrawing/:fileName', (req: Request, res: Response, next: NextFunction) => {
+            this.databaseService
+                .deleteDrawing(req.params.fileName)
+                .then(() => {
+                    res.sendStatus(Httpstatus.StatusCodes.OK);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
 
-        // this.router.get('/getDrawingData', (req: Request, res: Response, next: NextFunction) => {
-        //     const files: string[] = fs.readdirSync(this.DIR);
-        //     this.databaseService
-        //         .getDrawingData(files)
-        //         .then((drawings: FormData[]) => {
-        //             res.send(files);
-        //         })
-        //         .catch((error: Error) => {
-        //             res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-        //         });
-        // });
         this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
             const files: string[] = fs.readdirSync(this.DIR);
             if (files.includes(req.params.filename)) {

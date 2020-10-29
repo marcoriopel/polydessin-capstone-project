@@ -3,6 +3,7 @@ export interface DrawingData {
     drawingPng: string;
     name: string;
     tags: string[];
+    fileName: string;
 }
 
 export interface MetaData {

@@ -23,8 +23,8 @@ export class DatabaseService {
         return this.http.post<void>(this.BASE_URL + '/addDrawing', formData).pipe(catchError(this.handleError<void>('addDrawing')));
     }
 
-    deleteDrawing(id: string): Observable<string> {
-        return this.http.delete<string>(this.BASE_URL + '/deleteDrawing/' + id).pipe(catchError(this.handleError<string>('deleteDrawing')));
+    deleteDrawing(fileName: string): Observable<string> {
+        return this.http.delete<string>(this.BASE_URL + '/deleteDrawing/' + fileName).pipe(catchError(this.handleError<string>('deleteDrawing')));
     }
 
     getDrawingData(): Observable<FormData[]> {

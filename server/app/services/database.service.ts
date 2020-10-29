@@ -1,5 +1,6 @@
+import * as fs from 'fs';
 import { injectable } from 'inversify';
-import { Collection, FilterQuery, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
 import { DBData, ID_NAME, MetaData, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
 
@@ -53,19 +54,12 @@ export class DatabaseService {
             throw err;
         });
     }
-
-    // async deleteDrawing(idToDelete: string): Promise<void> {
-    //     const jsonContent = this.loadJSon();
-    //     let jsonObj = JSON.parse(jsonContent);
-    //     jsonObj = jsonObj.filter((drawing: Drawing) => {
-    //         return drawing.id !== idToDelete;
-    //     });
-    //     const data = JSON.stringify(jsonObj, null, 2);
-    //     fs.writeFileSync('drawing.json', data);
-    //     this.collection.findOneAndDelete({ id: idToDelete }).catch((err) => {
-    //         throw err;
-    //     });
-    // }
+    async deleteDrawing(fileNameToDelete: string): Promise<void> {
+        fs.unlinkSync('./images/' + fileNameToDelete);
+        this.collection.findOneAndDelete({ fileName: fileNameToDelete }).catch((err) => {
+            throw err;
+        });
+    }
 
     // loadJSon(): string {
     //     return fs.readFileSync('drawing.json').toString();
@@ -118,26 +112,26 @@ export class DatabaseService {
     //         });
     // }
 
-    async getDrawingsPng(files: string[]): Promise<string[]> {
-        const filterQuery: FilterQuery<DBData> = { fileName: { $in: files } };
-        const images: string[] = [];
-        return this.collection
-            .find(filterQuery)
-            .toArray()
-            .then((dBData: DBData[]) => {
-                files.forEach((file: string) => {
-                    dBData.forEach((dataFromDB: DBData) => {
-                        if (file === dataFromDB.fileName) {
-                            images.push(file);
-                        }
-                    });
-                });
-                return images;
-            })
-            .catch(() => {
-                throw new Error('Error trying to retrieve metadata');
-            });
-    }
+    // async getDrawingsPng(files: string[]): Promise<string[]> {
+    //     const filterQuery: FilterQuery<DBData> = { fileName: { $in: files } };
+    //     const images: string[] = [];
+    //     return this.collection
+    //         .find(filterQuery)
+    //         .toArray()
+    //         .then((dBData: DBData[]) => {
+    //             files.forEach((file: string) => {
+    //                 dBData.forEach((dataFromDB: DBData) => {
+    //                     if (file === dataFromDB.fileName) {
+    //                         images.push(file);
+    //                     }
+    //                 });
+    //             });
+    //             return images;
+    //         })
+    //         .catch(() => {
+    //             throw new Error('Error trying to retrieve metadata');
+    //         });
+    // }
 
     async getDBData(): Promise<DBData[]> {
         return this.collection
