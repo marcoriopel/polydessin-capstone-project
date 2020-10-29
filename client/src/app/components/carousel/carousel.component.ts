@@ -6,9 +6,9 @@ import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.com
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
-import { DBData, DrawingData } from '@common/communication/drawing-data';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { DBData, DrawingData, ImageData } from '@common/communication/drawing-data';
 import { Observable } from 'rxjs';
-// import { flatMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-carousel',
@@ -22,6 +22,7 @@ export class CarouselComponent {
     drawings: DrawingData[] = [];
     visibleDrawings: DrawingData[] = [];
     visibleDrawingsIndexes: number[] = [];
+    imageData: ImageData[] = [];
     visible: boolean = true;
     name: string = '';
     selectable: boolean = true;
@@ -30,44 +31,69 @@ export class CarouselComponent {
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
 
-    constructor(public databaseService: DatabaseService, public dialog: MatDialog, public carouselService: CarouselService) {
+    constructor(
+        public databaseService: DatabaseService,
+        public dialog: MatDialog,
+        public carouselService: CarouselService,
+        public drawingService: DrawingService,
+    ) {
         this.loadfirstDrawings();
     }
 
-    async resizedataURL(datas: string, maxWidth: number, maxHeight: number): Promise<string> {
+    // code inspired from https://stackoverflow.com/questions/20958078/resize-a-base-64-image-in-javascript-without-using-canvas
+    // and https://stackoverflow.com/questions/6501797/resize-image-proportionally-with-maxheight-and-maxwidth-constraints
+    async resizedataURL(datas: string, maxWidth: number, maxHeight: number, imageId: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            // We create an image to receive the Data URI
             const img = document.createElement('img');
 
-            // When the event "onload" is triggered we can resize the image.
             img.onload = () => {
                 const ratioX = maxWidth / img.width;
                 const ratioY = maxHeight / img.height;
                 const ratio = Math.min(ratioX, ratioY);
-
                 const newWidth = img.width * ratio;
                 const newHeight = img.height * ratio;
-                // We create a canvas and get its context.
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-                // We set the dimensions at the wanted size.
                 canvas.width = newWidth;
                 canvas.height = newHeight;
 
-                // We resize the image with the canvas method drawImage();
                 ctx.drawImage(img, 0, 0, newWidth, newHeight);
 
                 const dataURI = canvas.toDataURL();
 
-                // This is the return of the Promise
                 resolve(dataURI);
             };
 
-            // We put the Data URI in the image's src attribute
             img.src = datas;
         });
-    } // Use it like : var newDataURI = await resizedataURL('yourDataURIHere', 50, 50);
+    }
+
+    loadSelectedDrawing(id: number): void {
+        if (id < 1) {
+            this.onPreviousClick();
+        } else if (id > 1) {
+            this.onNextClick();
+        } else {
+            if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
+                this.dialog.open(ErrorAlertComponent);
+            } else {
+                const img = new Image();
+                img.onload = () => {
+                    this.drawingService.canvas.width = img.width;
+                    this.drawingService.canvas.height = img.height;
+
+                    this.drawingService.baseCtx.drawImage(img, 0, 0, img.width, img.height);
+                };
+                for (const image of this.imageData) {
+                    if (image.id === this.visibleDrawings[1].id) {
+                        img.src = image.drawingPng;
+                    }
+                }
+                this.dialog.closeAll();
+            }
+        }
+    }
 
     loadfirstDrawings(): void {
         this.drawings = [];
@@ -83,7 +109,8 @@ export class CarouselComponent {
                         reader.onload = async () => {
                             let imageURL: string = reader.result as string;
                             imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
-                            const imageResized = await this.resizedataURL(imageURL, 200, 200);
+                            this.imageData.push({ id: element.id, drawingPng: imageURL });
+                            const imageResized = await this.resizedataURL(imageURL, 200, 200, element.id);
                             const image2 = new Image();
                             image2.src = imageResized;
                             const drawingElement: DrawingData = {

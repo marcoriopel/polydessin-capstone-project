@@ -19,6 +19,11 @@ export interface DBData {
     fileName: string;
 }
 
+export interface ImageData {
+    id: string;
+    drawingPng: string;
+}
+
 export const ID_NAME = 'id';
 export const NAME = 'name';
 export const TAGS_NAME = 'tags';

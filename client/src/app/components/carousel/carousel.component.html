@@ -20,7 +20,7 @@
                         (matChipInputTokenEnd)="addTag($event)"
                     />
                 </mat-chip-list>
-                <mat-hint>Pas d'espace, Max 15 charactères</mat-hint>
+                <mat-hint>- Pas d'espace, <br />- Max 15 charactères <br />- Max 5 étiquettes</mat-hint>
             </mat-form-field>
         </mat-card>
         <mat-card class="slider">
@@ -30,11 +30,13 @@
                     <span class="arrow left"></span>
                 </button>
                 <ng-container *ngFor="let drawing of visibleDrawings; let i = index">
-                    <mat-card class="mat-child" [class]="'mat-child' + i">
+                    <mat-card id="i" (click)="loadSelectedDrawing(i)" class="mat-child" [class]="'mat-child' + i">
                         <p class="name">{{ drawing.name }}</p>
-                        <img class="image" [src]="drawing.drawingPng" />
-                        <div class="drawing-tags">
-                            <u>TAGS</u>
+                        <div class="image-container">
+                            <img class="image" [src]="drawing.drawingPng" />
+                        </div>
+                        <div><u>TAGS</u></div>
+                        <div>
                             <i> - {{ drawing.tags }} - </i>
                         </div>
                     </mat-card>
@@ -44,7 +46,7 @@
                 </button>
             </div>
             <ng-template #oneDrawingBlock>
-                <mat-card class="mat-child mat-child1">
+                <mat-card (click)="loadSelectedDrawing(0)" class="mat-child mat-child1">
                     <p class="name">{{ visibleDrawings[0].name }}</p>
                     <img class="image" [src]="visibleDrawings[0].drawingPng" />
                     <u>TAGS</u>
