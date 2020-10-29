@@ -7,7 +7,7 @@ import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.com
 import { CONFIRM_SAVED_DURATION } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { DrawingData } from '@common/communication/drawing-data';
+import { MetaData } from '@common/communication/drawing-data';
 
 @Component({
     selector: 'app-saving',
@@ -52,18 +52,22 @@ export class SavingComponent {
 
     addDrawing(): void {
         this.isSaveButtonDisabled = true;
-        const ID: string = new Date().getUTCMilliseconds() + '';
-        const drawingURL: string = this.drawingService.baseCtx.canvas.toDataURL();
-        const drawing: DrawingData = { id: ID, drawingPng: drawingURL, name: this.name, tags: this.tags };
-        this.databaseService.addDrawing(drawing).subscribe(
-            (data) => {
-                this.isSaveButtonDisabled = false;
-                this.saveConfirmMessage();
-            },
-            (error) => {
-                this.dialog.open(ErrorAlertComponent);
-            },
-        );
+        this.drawingService.baseCtx.canvas.toBlob(async (blob) => {
+            await blob;
+            const ID: string = new Date().getUTCMilliseconds() + '';
+            if (blob) {
+                const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
+                this.databaseService.addDrawing(meta, blob).subscribe(
+                    (data) => {
+                        this.isSaveButtonDisabled = false;
+                        this.saveConfirmMessage();
+                    },
+                    (error) => {
+                        this.dialog.open(ErrorAlertComponent);
+                    },
+                );
+            }
+        });
     }
 
     changeName(name: string): void {

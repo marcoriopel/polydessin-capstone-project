@@ -93,6 +93,23 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            name="tool"
+            [value]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            (change)="onToolChange($event)"
+        />
+        <label [for]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >panorama_wide_angle</mat-icon
+            >
+        </label>
         <input
             type="radio"
             [id]="toolSelectionService.toolNames.FILL_TOOL_NAME"
@@ -123,49 +140,49 @@
                 [matTooltipShowDelay]="tooltipShowDelay"
             ></mat-icon>
         </label>
-    </div>
 
-    <div class="sidebarSection">
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            mat-button
-            (click)="openCarouselWindow()"
-            >collections</mat-icon
-        >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.SAVE_DRAWING_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            mat-button
-            (click)="openSaveWindow()"
-            >save</mat-icon
-        >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            mat-button
-            (click)="openUserguide()"
-            >help</mat-icon
-        >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >undo</mat-icon
-        >
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >redo</mat-icon
-        >
+        <div class="sidebarSection">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                mat-button
+                (click)="openCarouselWindow()"
+                >collections</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.SAVE_DRAWING_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                mat-button
+                (click)="openSaveWindow()"
+                >save</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                mat-button
+                (click)="openUserguide()"
+                >help</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >undo</mat-icon
+            >
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >redo</mat-icon
+            >
+        </div>
     </div>
 </div>
