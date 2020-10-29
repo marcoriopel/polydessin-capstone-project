@@ -1,28 +1,54 @@
 <div class="saving">
     <h1 mat-dialog-title>Sauvegarde du dessin</h1>
-    <mat-form-field appearance="fill" floatLabel="floatLabelControl.value">
-        <mat-label>Nom du dessin</mat-label>
-        <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
-    </mat-form-field>
-
-    <mat-form-field class="example-chip-list">
-        <mat-chip-list #chipList aria-label="Tag selection">
-            <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="removeTag(tag)">
-                {{ tag }}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
+    <form class="saving" autocomplete="off" [formGroup]="ownerForm">
+        <mat-form-field appearance="fill" floatLabel="floatLabelControl.value">
+            <mat-label>Nom du dessin</mat-label>
             <input
-                placeholder="Tags du dessin:"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="addOnBlur"
-                (matChipInputTokenEnd)="addTag($event)"
+                matInput
+                #name
+                type="text"
+                id="name"
+                [required]="true"
+                formControlName="name"
+                (keyup)="this.changeName(name.value)"
+                placeholder="Ex: Forêt Boréal"
             />
-        </mat-chip-list>
-        <mat-hint>Pas d'espace, Max 15 charactères</mat-hint>
-    </mat-form-field>
+            <mat-hint align="end">Not more then 100 characters long.</mat-hint>
+            <mat-error *ngIf="hasError('name', 'required')">Nom est requis</mat-error>
+            <mat-error *ngIf="hasError('name', 'maxlength')">Nom est trop long (max 15 charactères)</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="chip-list">
+            <mat-chip-list #chipList aria-label="Tag selection">
+                <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+                    {{ tag }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input
+                    #tag
+                    type="text"
+                    id="tag"
+                    (keyup)="this.currentTagInput(tag.value)"
+                    placeholder="Tags du dessin:"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="addTag($event)"
+                />
+            </mat-chip-list>
+            <mat-error>Too many chips</mat-error>
+            <mat-hint align="end">Not more then 100 characters long.</mat-hint>
+            <!-- <mat-hint
+                ><i class="longTag-notification" *ngIf="isLastTagInvalid">Tag trop long <br /></i> - Pas d'espace, <br />- Max 15 charactères <br />-
+                Max 5 étiquettes<br />
+            </mat-hint> -->
+            <div class="maxTags-notification" *ngIf="maxTags">Nombre maximum de tags</div>
+        </mat-form-field>
+    </form>
     <div mat-dialog-actions>
-        <button mat-stroked-button [disabled]="isSaveButtonDisabled" id="save" (click)="addDrawing()" mat-dialog-close>Sauvegarder</button>
+        <button mat-stroked-button [disabled]="!ownerForm.valid || isSaveButtonDisabled" id="save" (click)="addDrawing()" mat-dialog-close>
+            Sauvegarder
+        </button>
         <button mat-button mat-dialog-close>Annuler</button>
     </div>
 </div>
