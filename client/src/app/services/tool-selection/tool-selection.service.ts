@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
@@ -14,22 +14,19 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
-import { Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
-export class ToolSelectionService implements OnInit, OnDestroy {
+export class ToolSelectionService {
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     toolNames: ToolNames = TOOL_NAMES;
     private tools: Map<string, Tool>;
     currentTool: Tool;
-    private hotKeySubscription: Subscription;
-    dialog: MatDialog;
-    hotkeyService: HotkeyService;
-    newDrawingService: NewDrawingService;
 
     constructor(
+        public dialog: MatDialog,
+        public hotkeyService: HotkeyService,
         pencilService: PencilService,
         brushService: BrushService,
         squareService: SquareService,
@@ -37,6 +34,7 @@ export class ToolSelectionService implements OnInit, OnDestroy {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        public newDrawingService: NewDrawingService,
     ) {
         this.tools = new Map<string, Tool>([
             [this.toolNames.PENCIL_TOOL_NAME, pencilService],
@@ -48,10 +46,7 @@ export class ToolSelectionService implements OnInit, OnDestroy {
             [this.toolNames.ERASER_TOOL_NAME, eraserService],
         ]);
         this.currentTool = pencilService;
-    }
-
-    ngOnInit(): void {
-        this.hotKeySubscription = this.hotkeyService.getKey().subscribe((tool) => {
+        this.hotkeyService.getKey().subscribe((tool) => {
             if (this.tools.has(tool)) {
                 this.changeTool(tool);
             } else {
@@ -83,9 +78,5 @@ export class ToolSelectionService implements OnInit, OnDestroy {
 
     getCurrentToolName(): string {
         return this.currentTool.name;
-    }
-
-    ngOnDestroy(): void {
-        this.hotKeySubscription.unsubscribe();
     }
 }

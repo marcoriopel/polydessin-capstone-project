@@ -1,4 +1,4 @@
-import { DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Tool } from '@app/classes/tool';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -30,6 +31,8 @@ describe('SidebarComponent', () => {
     beforeEach(() => {
         toolStub = new ToolStub({} as DrawingService);
         toolSelectionStub = new ToolSelectionService(
+            {} as MatDialog,
+            {} as HotkeyService,
             toolStub as PencilService,
             {} as BrushService,
             {} as SquareService,
@@ -37,11 +40,13 @@ describe('SidebarComponent', () => {
             {} as LineService,
             {} as FillService,
             {} as EraserService,
+            {} as NewDrawingService,
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         TestBed.configureTestingModule({
             imports: [MatDialogModule, BrowserAnimationsModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [
                 { provide: ToolSelectionService, useValue: toolSelectionStub },
@@ -76,7 +81,6 @@ describe('SidebarComponent', () => {
     });
 
     it('should call open of MatDialog', async(() => {
-        // spyOn(hotkeyServiceStub, 'getKey').and.returnValue(of('Crayon'));
         component.openUserguide();
         expect(matdialogSpy.open).toHaveBeenCalled();
     }));

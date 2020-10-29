@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
@@ -9,18 +9,16 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
     selectedTool: string = this.toolSelectionService.toolNames.PENCIL_TOOL_NAME;
-    private hotKeySubscription: Subscription;
     toolNames: ToolNames = TOOL_NAMES;
     constructor(
         public toolSelectionService: ToolSelectionService,
@@ -30,7 +28,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.hotKeySubscription = this.hotkeyService.getKey().subscribe((tool) => {
+        this.hotkeyService.getKey().subscribe((tool) => {
             if (TOOL_NAMES_ARRAY.includes(tool)) {
                 this.selectedTool = tool;
             }
@@ -57,9 +55,5 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
-    }
-
-    ngOnDestroy(): void {
-        this.hotKeySubscription.unsubscribe();
     }
 }

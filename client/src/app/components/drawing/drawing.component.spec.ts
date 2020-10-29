@@ -1,9 +1,11 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
@@ -13,6 +15,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
 import { DrawingComponent } from './drawing.component';
+
 import SpyObj = jasmine.SpyObj;
 
 class ToolStub extends Tool {}
@@ -35,6 +38,8 @@ describe('DrawingComponent', () => {
         toolStub = new ToolStub({} as DrawingService);
         drawingStub = new DrawingService();
         toolSelectionStub = new ToolSelectionService(
+            {} as MatDialog,
+            {} as HotkeyService,
             toolStub as PencilService,
             {} as BrushService,
             {} as SquareService,
@@ -42,10 +47,12 @@ describe('DrawingComponent', () => {
             {} as LineService,
             {} as FillService,
             {} as EraserService,
+            {} as NewDrawingService,
         );
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 { provide: MatDialogModule, useValue: matdialogSpy },
                 { provide: PencilService, useValue: toolStub },
