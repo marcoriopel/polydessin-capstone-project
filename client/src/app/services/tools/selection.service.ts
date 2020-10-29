@@ -10,6 +10,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 @Injectable({
     providedIn: 'root',
 })
+// tslint:disable-next-line: prettier
 export class SelectionService extends Tool {
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionData: ImageData;

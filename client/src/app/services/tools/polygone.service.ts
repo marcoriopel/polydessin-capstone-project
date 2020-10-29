@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, FOUR, MouseButton, ONE, THREE, TWOO } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
+import { ShapeService } from './shapes/shape.service';
 
 @Injectable({
     providedIn: 'root',
@@ -15,48 +16,47 @@ export class PolygoneService extends Tool {
     name: string = TOOL_NAMES.POLYGONE_TOOL_NAME;
     lastPoint: Vec2;
     firstPoint: Vec2;
-    numberOfClicks: number = 0;
     fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     width: number = 1;
-    center: Vec2;
+    // center: Vec2;
     sides: number = 3;
-    centerX: number;
-    centerY: number;
-    circleHeight: number;
-    circleWidth: number;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public circleService: CircleService,
+        public shapeService: ShapeService,
+    ) {
         super(drawingService);
-        // this.clearPath();
     }
 
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
-
     changeFillStyle(newFillStyle: number): void {
         this.fillStyle = newFillStyle;
     }
-
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
-
     changeSides(sides: number): void {
         this.sides = sides;
     }
-
     setCenterX(): void {
-        this.centerX = Math.abs(this.firstPoint.y - this.lastPoint.y);
+        this.shapeService.centerX = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
-
     setCenterY(): void {
-        this.centerY = Math.abs(this.firstPoint.y - this.lastPoint.y);
+        this.shapeService.centerY = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
-
     set setSides(sides: number) {
         this.sides = sides;
+    }
+    setCircleWidth(): void {
+        this.shapeService.circleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+    }
+    setCircleHeight(): void {
+        this.shapeService.circleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -80,7 +80,7 @@ export class PolygoneService extends Tool {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.center = this.getCenter();
+            this.shapeService.center = this.shapeService.getCenter();
             this.drawCircle(this.drawingService.previewCtx);
             this.drawPolygone(this.drawingService.previewCtx);
         }
@@ -88,13 +88,12 @@ export class PolygoneService extends Tool {
 
     drawCircle(ctx: CanvasRenderingContext2D): void {
         this.circleService.changeFillStyle(FILL_STYLES.BORDER);
-        this.circleService.firstPoint = this.firstPoint;
-        this.circleService.lastPoint = this.lastPoint;
-        this.circleService.drawCircle(ctx, this.findTopLeftPointC());
+        this.circleService.firstPoint = this.shapeService.firstPoint;
+        this.circleService.lastPoint = this.shapeService.lastPoint;
+        this.circleService.drawCircle(ctx, this.shapeService.findTopLeftPointC());
     }
 
     drawPolygone(ctx: CanvasRenderingContext2D): void {
-        const tpL = this.findTopLeftPointC();
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -104,36 +103,45 @@ export class PolygoneService extends Tool {
             ctx.lineWidth = 1;
         }
         ctx.beginPath();
-        this.circleService.firstPoint = this.firstPoint;
-        this.circleService.lastPoint = this.lastPoint;
-        this.setCircleHeight();
-        this.setCircleWidth();
-        const ellipseRadiusX = this.circleWidth / 2;
-        const ellipseRadiusY = this.circleHeight / 2;
+        this.shapeService.firstPoint = this.firstPoint;
+        this.shapeService.lastPoint = this.lastPoint;
+        this.shapeService.setCircleHeight();
+        this.shapeService.setCircleWidth();
+        const ellipseRadiusX = this.shapeService.circleWidth / 2;
+        const ellipseRadiusY = this.shapeService.circleHeight / 2;
         const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
-        const quadrant = this.circleService.findQuadrant();
-        const center:Vec2 = {x:0, y:0};
+        const quadrant = this.shapeService.findQuadrant();
+        const center: Vec2 = { x: 0, y: 0 };
 
-        const point1 = this.firstPoint;
-        const point2 = this.lastPoint;
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            ctx.stroke();
+            ctx.lineWidth = this.width;
+        } else {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.setLineDash([0]);
+        }
 
-        switch(quadrant) {
-            case 1:
+        switch (quadrant) {
+            case ONE:
                 center.x = this.firstPoint.x - circleRadius;
                 center.y = this.firstPoint.y - circleRadius;
-              break;
-            case 2:
+                break;
+            case TWOO:
                 center.x = this.firstPoint.x + circleRadius;
                 center.y = this.firstPoint.y - circleRadius;
-              break;
-            case 3:
+                break;
+            case THREE:
                 center.x = this.firstPoint.x + circleRadius;
                 center.y = this.firstPoint.y + circleRadius;
-              break;
-            case 4:
+                break;
+            case FOUR:
                 center.x = this.firstPoint.x - circleRadius;
                 center.y = this.firstPoint.y + circleRadius;
-              break;
+                break;
             default:
         }
 
@@ -151,50 +159,5 @@ export class PolygoneService extends Tool {
         }
         ctx.stroke();
         ctx.closePath();
-    }
-
-    get radius(): number {
-        return Math.abs(this.lastPoint.x - this.firstPoint.x) / 2;
-    }
-
-    getCenter(): Vec2 {
-        let centerX = Math.floor(this.lastPoint.x - this.firstPoint.x) / 2;
-        let centerY = Math.floor(this.lastPoint.y - this.firstPoint.y) / 2;
-
-        centerX = this.firstPoint.x > this.lastPoint.x ? this.lastPoint.x + centerX : this.lastPoint.x - centerX;
-        centerY = this.firstPoint.y > this.lastPoint.y ? this.lastPoint.y + centerY : this.lastPoint.y - centerY;
-        const center: Vec2 = { x: centerX, y: centerY };
-        return center;
-    }
-
-    findTopLeftPointC(): Vec2 {
-        const point1 = this.firstPoint;
-        const point2 = this.lastPoint;
-        // firstPoint is top left corner lastPoint is bottom right corner
-        let x = point1.x;
-        let y = point1.y;
-        if (point1.x > point2.x && point1.y > point2.y) {
-            // firstPoint is bottom right corner lastPoint is top left corner
-            x = point2.x;
-            y = point2.y;
-        } else if (point1.x > point2.x && point1.y < point2.y) {
-            // firstPoint is top right corner lastPoint is bottom left corner
-            x = point2.x;
-            y = point1.y;
-        } else if (point1.x < point2.x && point1.y > point2.y) {
-            // firstPoint is bottom left corner lastPoint is top right corner
-            x = point1.x;
-            y = point2.y;
-        }
-
-        return { x, y };
-    }
-
-    setCircleWidth(): void {
-        this.circleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
-    }
-
-    setCircleHeight(): void {
-        this.circleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 }

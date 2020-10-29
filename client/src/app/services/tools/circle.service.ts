@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, FOUR, MouseButton, ONE, THREE, TWOO } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -124,23 +124,23 @@ export class CircleService extends Tool {
         const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
         let ellipseCenterX = point.x + circleRadius;
         let ellipseCenterY = point.y + circleRadius;
-        switch(this.quadrant) {
-            case 1:
+        switch (this.quadrant) {
+            case ONE:
                 ellipseCenterX = this.firstPoint.x - circleRadius;
                 ellipseCenterY = this.firstPoint.y - circleRadius;
-              break;
-            case 2:
+                break;
+            case TWOO:
                 ellipseCenterX = this.firstPoint.x + circleRadius;
                 ellipseCenterY = this.firstPoint.y - circleRadius;
-              break;
-            case 3:
+                break;
+            case THREE:
                 ellipseCenterX = this.firstPoint.x + circleRadius;
                 ellipseCenterY = this.firstPoint.y + circleRadius;
-              break;
-            case 4:
+                break;
+            case FOUR:
                 ellipseCenterX = this.firstPoint.x - circleRadius;
                 ellipseCenterY = this.firstPoint.y + circleRadius;
-              break;
+                break;
             default:
         }
         ctx.beginPath();
@@ -175,29 +175,29 @@ export class CircleService extends Tool {
 
         const point1 = this.firstPoint;
         const point2 = this.lastPoint;
-        let x: number = 0;
-        let y: number = 0;
-        switch(this.quadrant) {
-            case 1:
-            // firstPoint is top left corner lastPoint is bottom right corner
+        let x = 0;
+        let y = 0;
+        switch (this.quadrant) {
+            case ONE:
+                // firstPoint is top left corner lastPoint is bottom right corner
                 x = point2.x;
                 y = point2.y;
-              break;
-            case 2:
-            // firstPoint is bottom right corner lastPoint is top left corner
+                break;
+            case TWOO:
+                // firstPoint is bottom right corner lastPoint is top left corner
                 x = point1.x;
                 y = point2.y;
-              break;
-            case 3:
-            // firstPoint is top right corner lastPoint is bottom left corner
+                break;
+            case THREE:
+                // firstPoint is top right corner lastPoint is bottom left corner
                 x = point1.x;
                 y = point1.y;
-              break;
-            case 4:
-            // firstPoint is bottom left corner lastPoint is top right corner
+                break;
+            case FOUR:
+                // firstPoint is bottom left corner lastPoint is top right corner
                 x = point2.x;
                 y = point1.y;
-              break;
+                break;
             default:
         }
 
@@ -209,16 +209,16 @@ export class CircleService extends Tool {
         const point2 = this.lastPoint;
         if (point1.x > point2.x && point1.y > point2.y) {
             // firstPoint is bottom right corner lastPoint is top left corner
-            return 1;
+            return ONE;
         } else if (point1.x > point2.x && point1.y < point2.y) {
             // firstPoint is top right corner lastPoint is bottom left corner
-            return 4;
+            return FOUR;
         } else if (point1.x < point2.x && point1.y > point2.y) {
             // firstPoint is bottom left corner lastPoint is top right corner
-            return 2;
+            return TWOO;
         }
         // firstPoint is top left corner lastPoint is bottom right corner
-        return 3;
+        return THREE;
     }
 
     setCircleWidth(): void {
