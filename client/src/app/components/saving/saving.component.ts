@@ -1,5 +1,7 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component } from '@angular/core';
+import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
+import { AfterViewChecked, Component, OnInit, ViewChild } from '@angular/core';
+// import { AfterViewChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -14,28 +16,63 @@ import { MetaData } from '@common/communication/drawing-data';
     templateUrl: './saving.component.html',
     styleUrls: ['./saving.component.scss'],
 })
-export class SavingComponent {
+export class SavingComponent implements AfterViewChecked, OnInit {
     isSaveButtonDisabled: boolean = false;
     visible: boolean = true;
+    currentTag: string = '';
     name: string = '';
-    selectable: boolean = true;
-    removable: boolean = true;
+    maxTags: boolean = false;
+    isLastTagInvalid: boolean = false;
     addOnBlur: boolean = true;
-    readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+    readonly separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
     tags: string[] = [];
+    ownerForm: FormGroup;
     constructor(
+        // private cdRef: ChangeDetectorRef,
         public databaseService: DatabaseService,
         public drawingService: DrawingService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog,
     ) {}
+    @ViewChild('chipList') chipList: any;
+
+    ngOnInit(): void {
+        this.ownerForm = new FormGroup({
+            name: new FormControl(this.name, [Validators.required, Validators.maxLength(15)]),
+        });
+    }
+
+    ngAfterViewChecked(): void {
+        // this.cdRef.detectChanges();
+    }
+    currentTagInput(tag: string): void {
+        this.chipList.errorState = false;
+        if (tag.length > 15) {
+            this.chipList.errorState = true;
+        }
+        this.currentTag = tag;
+        this.ownerForm.markAllAsTouched();
+    }
+    hasError(controlName: string, errorName: string): boolean {
+        return this.ownerForm.controls[controlName].hasError(errorName);
+    }
 
     addTag(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
 
         if ((value || '').trim()) {
-            this.tags.push(value.trim());
+            if (this.tags.length < 5) {
+                if (value.length > 15) {
+                    this.isLastTagInvalid = true;
+                } else {
+                    this.tags.push(value.trim());
+                    this.isLastTagInvalid = false;
+                }
+            }
+            if (this.tags.length === 5) {
+                this.maxTags = true;
+            }
         }
         if (input) {
             input.value = '';
@@ -44,7 +81,7 @@ export class SavingComponent {
 
     removeTag(tags: string): void {
         const index = this.tags.indexOf(tags);
-
+        if (this.maxTags) this.maxTags = false;
         if (index >= 0) {
             this.tags.splice(index, 1);
         }
@@ -72,6 +109,8 @@ export class SavingComponent {
 
     changeName(name: string): void {
         this.name = name;
+        this.ownerForm.markAllAsTouched();
+        console.log(this.name);
     }
 
     saveConfirmMessage(): void {
