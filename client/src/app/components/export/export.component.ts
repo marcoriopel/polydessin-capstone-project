@@ -17,39 +17,55 @@ export class ExportComponent implements OnInit {
         BLUR: FILTER_STYLES.BLUR,
     };
     differentFilter: string[] = ['none', 'grayscale(100%)', 'sepia(100%)', 'saturate(8)', 'invert(100%)', 'blur(5px)'];
+    typeOfFile: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
     emailAdress: string = '';
-    imageUrl: string;
+    imagesrc: string;
+    urlImage: string;
+    filterCanvas: HTMLCanvasElement;
 
     constructor(public drawingService: DrawingService) {}
 
     changeName(name: string): void {
         this.name = name;
     }
-    changeEmailAddress(mail: string): void {
-        this.emailAdress = mail;
-    }
 
     changeFilter(event: Event): void {
         const target = event.target as HTMLInputElement;
-        console.log(target.value);
         const filterNumber: number = Number(target.value);
-        const image = document.getElementById('image');
-        const canvasFilter = document.getElementById('canvas') as HTMLCanvasElement;
+        const canvasFilter = document.createElement('canvas') as HTMLCanvasElement;
         const canvasFilterCtx = canvasFilter.getContext('2d');
-        canvasFilterCtx?.drawImage(this.drawingService.canvas, this.drawingService.canvas.width, this.drawingService.canvas.height);
-
-        if (image != null && canvasFilterCtx != null) {
-            image.style.filter = this.differentFilter[filterNumber];
+        canvasFilter.height = this.drawingService.canvas.height;
+        canvasFilter.width = this.drawingService.canvas.width;
+        if (canvasFilterCtx != null) {
             canvasFilterCtx.filter = this.differentFilter[filterNumber];
-            this.imageUrl = canvasFilter.toDataURL();
-            canvasFilterCtx.filter = 'none';
+            canvasFilterCtx.drawImage(this.drawingService.canvas, 0, 0);
+            this.filterCanvas = canvasFilter;
+            this.imagesrc = canvasFilterCtx.canvas.toDataURL();
+            this.urlImage = this.imagesrc;
         }
     }
+
+    getImageUrl(event: Event): void {
+        const target = event.target as HTMLInputElement;
+        const typeNumber: number = Number(target.value);
+        if (this.filterCanvas != null) {
+            this.urlImage = this.filterCanvas.toDataURL(this.typeOfFile[typeNumber]);
+        }
+    }
+
     ngOnInit(): void {
         const image: HTMLImageElement = new Image();
         image.src = this.drawingService.baseCtx.canvas.toDataURL();
-        this.imageUrl = image.src;
+        this.imagesrc = image.src;
+        this.urlImage = this.imagesrc;
+    }
+
+    exportLocally(): void {
+        const link = document.createElement('a');
+        link.href = this.urlImage;
+        link.setAttribute('download', this.name);
+        link.click();
     }
 }
