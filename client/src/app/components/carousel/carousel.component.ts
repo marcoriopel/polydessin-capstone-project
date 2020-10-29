@@ -8,6 +8,7 @@ import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DBData, DrawingData } from '@common/communication/drawing-data';
 import { Observable } from 'rxjs';
+// import { flatMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-carousel',
@@ -34,57 +35,35 @@ export class CarouselComponent {
     }
 
     loadfirstDrawings(): void {
+        this.drawings = [];
+        this.visibleDrawings = [];
+        this.visibleDrawingsIndexes = [];
         this.gotImages = false;
-        this.loadAllDBData().subscribe((data: DBData[]) => {
-            for (const element of data) {
-                if (this.visibleDrawings.length >= MAX_NUMBER_VISIBLE_DRAWINGS) {
-                    break;
-                }
-                this.loadDrawing(element);
-            }
-
-            this.gotImages = true;
-        });
-    }
-    master(): void {
-        this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
-            dBData.forEach((element: DBData) => {
-                this.databaseService.getDrawingPng(element.fileName).subscribe(
-                    (file: Blob) => {
+        this.databaseService.getAllDBData().subscribe((data: DBData[]) => {
+            if (data != null) {
+                for (const element of data) {
+                    this.databaseService.getDrawingPng(element.fileName).subscribe((el: Blob) => {
                         const reader = new FileReader();
-                        reader.readAsDataURL(file);
+                        reader.readAsDataURL(el);
                         reader.onload = () => {
                             let imageURL: string = reader.result as string;
                             imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
                             const drawingElement: DrawingData = { id: element.id, drawingPng: imageURL, name: element.name, tags: element.tags };
-                            this.visibleDrawings.push(drawingElement);
+                            if (this.visibleDrawings.length === MAX_NUMBER_VISIBLE_DRAWINGS) {
+                                this.drawings.push(drawingElement);
+                            } else {
+                                this.visibleDrawings.push(drawingElement);
+                                this.visibleDrawingsIndexes.push(this.drawings.length);
+                                this.drawings.push(drawingElement);
+                            }
+                            if (element === data[data.length - 1]) {
+                                this.gotImages = true;
+                            }
                         };
-                    },
-                    (error) => {
-                        console.log(error);
-                    },
-                );
-            });
-            this.gotImages = true;
+                    });
+                }
+            }
         });
-    }
-
-    loadDrawing(element: DBData): void {
-        this.databaseService.getDrawingPng(element.fileName).subscribe(
-            (file: Blob) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    let imageURL: string = reader.result as string;
-                    imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
-                    const drawingElement: DrawingData = { id: element.id, drawingPng: imageURL, name: element.name, tags: element.tags };
-                    this.visibleDrawings.push(drawingElement);
-                };
-            },
-            (error) => {
-                console.log(error);
-            },
-        );
     }
 
     loadAllDBData(): Observable<DBData[]> {
@@ -93,7 +72,6 @@ export class CarouselComponent {
         });
         return this.databaseService.getAllDBData();
     }
-
     addTag(event: MatChipInputEvent): void {
         console.log('hi');
     }
