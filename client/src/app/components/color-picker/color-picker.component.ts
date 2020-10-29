@@ -1,12 +1,13 @@
-import { Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 @Component({
     selector: 'app-color-picker',
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
 })
-export class ColorPickerComponent {
+export class ColorPickerComponent implements AfterViewInit {
     primaryColor: string;
     secondaryColor: string;
     primaryOpacity: number;
@@ -15,7 +16,7 @@ export class ColorPickerComponent {
     minOpacity: number = 0;
     maxOpacity: number = MAX_OPACITY;
 
-    constructor(public colorSelectionService: ColorSelectionService) {
+    constructor(public colorSelectionService: ColorSelectionService, public pipetteService: PipetteService) {
         this.primaryColor = '#000000';
         this.secondaryColor = '#000000';
         this.primaryOpacity = MAX_OPACITY;
@@ -34,6 +35,7 @@ export class ColorPickerComponent {
     }
 
     changePrimaryColor(color: string): void {
+        console.log(color);
         this.primaryColor = color;
         this.colors.unshift(this.primaryColor);
         if (this.colors.length > MAXIMUM_NUMBER_OF_COLORS) {
@@ -133,5 +135,18 @@ export class ColorPickerComponent {
         const b: number = parseInt(color.slice(-2), 16);
         const rgba: string = 'rgba(' + r + ',' + g + ',' + b + ',' + (opacity / MAX_OPACITY).toString() + ')';
         return rgba;
+    }
+
+    ngAfterViewInit(): void {
+        this.pipetteService.primaryColor.subscribe((data: string[]) => {
+            this.changePrimaryColor(data[0]);
+            const primary = document.getElementById('primary') as HTMLInputElement;
+            if (primary != null) {
+                primary.value = data[0];
+            }
+        });
+        this.pipetteService.secondaryColor.subscribe((data: string[]) => {
+            this.changeSecondaryColor(data[0]);
+        });
     }
 }

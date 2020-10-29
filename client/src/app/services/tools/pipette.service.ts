@@ -12,7 +12,10 @@ const MAX_OPACITY = 255;
     providedIn: 'root',
 })
 export class PipetteService extends Tool {
+    color: string[] = ['#000000', '0'];
     onCanvas: Subject<boolean> = new Subject<boolean>();
+    primaryColor: Subject<string[]> = new Subject<string[]>();
+    secondaryColor: Subject<string[]> = new Subject<string[]>();
     name: string = TOOL_NAMES.PIPETTE_TOOL_NAME;
     zoom: HTMLCanvasElement;
     zoomCtx: CanvasRenderingContext2D;
@@ -31,12 +34,17 @@ export class PipetteService extends Tool {
         const mousePosition = this.getPositionFromMouse(event);
         const pixel = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
         const pixelData = pixel.data;
-        const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[3] / MAX_OPACITY + ')';
+        this.color[0] =
+            '#' +
+            (pixelData[0] | (1 << 8)).toString(16).slice(1) +
+            (pixelData[1] | (1 << 8)).toString(16).slice(1) +
+            (pixelData[2] | (1 << 8)).toString(16).slice(1);
+        this.color[1] = pixelData[3].toString();
 
         if (event.button === MouseButton.Left) {
-            this.colorSelectionService.setPrimaryColor(color);
+            this.primaryColor.next(this.color);
         } else if (event.button === MouseButton.Right) {
-            this.colorSelectionService.setSecondaryColor(color);
+            this.secondaryColor.next(this.color);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
