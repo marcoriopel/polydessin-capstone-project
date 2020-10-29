@@ -37,11 +37,7 @@ describe('SidebarComponent', () => {
             toolStub as LineService,
             toolStub as FillService,
             toolStub as EraserService,
-<<<<<<< HEAD
             toolStub as PolygoneService,
-=======
-            toolStub as SelectionService,
->>>>>>> ca9154cf872a22200b3b6a7c6902297b0484b6f3
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);

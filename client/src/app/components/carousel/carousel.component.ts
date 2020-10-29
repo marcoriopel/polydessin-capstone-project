@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
+import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
@@ -69,27 +70,39 @@ export class CarouselComponent {
         });
     }
 
+    imageToCanvas(id: number): void {
+        const img = new Image();
+        img.onload = () => {
+            this.drawingService.canvas.width = img.width;
+            this.drawingService.canvas.height = img.height;
+
+            this.drawingService.baseCtx.drawImage(img, 0, 0, img.width, img.height);
+        };
+        for (const image of this.imageData) {
+            // need to change hardcode below
+            if (image.id === this.visibleDrawings[1].id) {
+                img.src = image.drawingPng;
+            }
+        }
+    }
+
     loadSelectedDrawing(id: number): void {
+        // need to change hardcode below
         if (id < 1) {
             this.onPreviousClick();
         } else if (id > 1) {
             this.onNextClick();
         } else {
             if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
-                this.dialog.open(ErrorAlertComponent);
-            } else {
-                const img = new Image();
-                img.onload = () => {
-                    this.drawingService.canvas.width = img.width;
-                    this.drawingService.canvas.height = img.height;
-
-                    this.drawingService.baseCtx.drawImage(img, 0, 0, img.width, img.height);
-                };
-                for (const image of this.imageData) {
-                    if (image.id === this.visibleDrawings[1].id) {
-                        img.src = image.drawingPng;
+                const test = this.dialog.open(LoadSelectedDrawingAlertComponent);
+                test.afterClosed().subscribe((optionChosen: string) => {
+                    if (optionChosen === 'Oui') {
+                        this.imageToCanvas(id);
+                        this.dialog.closeAll();
                     }
-                }
+                });
+            } else {
+                this.imageToCanvas(id);
                 this.dialog.closeAll();
             }
         }
@@ -101,38 +114,39 @@ export class CarouselComponent {
         this.visibleDrawingsIndexes = [];
         this.gotImages = false;
         this.databaseService.getAllDBData().subscribe((data: DBData[]) => {
-            if (data != null) {
-                for (const element of data) {
-                    this.databaseService.getDrawingPng(element.fileName).subscribe((image: Blob) => {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(image);
-                        reader.onload = async () => {
-                            let imageURL: string = reader.result as string;
-                            imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
-                            this.imageData.push({ id: element.id, drawingPng: imageURL });
-                            const imageResized = await this.resizedataURL(imageURL, 200, 200, element.id);
-                            const image2 = new Image();
-                            image2.src = imageResized;
-                            const drawingElement: DrawingData = {
-                                id: element.id,
-                                drawingPng: imageResized,
-                                name: element.name,
-                                tags: element.tags,
-                                fileName: element.fileName,
-                            };
-                            if (this.visibleDrawings.length === MAX_NUMBER_VISIBLE_DRAWINGS) {
-                                this.drawings.push(drawingElement);
-                            } else {
-                                this.visibleDrawings.push(drawingElement);
-                                this.visibleDrawingsIndexes.push(this.drawings.length);
-                                this.drawings.push(drawingElement);
-                            }
-                            if (element === data[data.length - 1]) {
-                                this.gotImages = true;
-                            }
+            if (data.length === 0) {
+                this.gotImages = true;
+            }
+            for (const element of data) {
+                this.databaseService.getDrawingPng(element.fileName).subscribe((image: Blob) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(image);
+                    reader.onload = async () => {
+                        let imageURL: string = reader.result as string;
+                        imageURL = imageURL.replace('data:application/octet-stream', 'data:image/png');
+                        this.imageData.push({ id: element.id, drawingPng: imageURL });
+                        const imageResized = await this.resizedataURL(imageURL, 200, 200, element.id);
+                        const image2 = new Image();
+                        image2.src = imageResized;
+                        const drawingElement: DrawingData = {
+                            id: element.id,
+                            drawingPng: imageResized,
+                            name: element.name,
+                            tags: element.tags,
+                            fileName: element.fileName,
                         };
-                    });
-                }
+                        if (this.visibleDrawings.length === MAX_NUMBER_VISIBLE_DRAWINGS) {
+                            this.drawings.push(drawingElement);
+                        } else {
+                            this.visibleDrawings.push(drawingElement);
+                            this.visibleDrawingsIndexes.push(this.drawings.length);
+                            this.drawings.push(drawingElement);
+                        }
+                        if (element === data[data.length - 1]) {
+                            this.gotImages = true;
+                        }
+                    };
+                });
             }
         });
     }
@@ -201,20 +215,6 @@ export class CarouselComponent {
             } else {
                 this.visibleDrawings[2] = this.drawings[this.visibleDrawingsIndexes[2] + 1];
                 this.visibleDrawingsIndexes[2]++;
-            }
-        }
-    }
-
-    manageNumberDrawings(numberDrawings: number): void {
-        if (numberDrawings >= MAX_NUMBER_VISIBLE_DRAWINGS) {
-            for (let i = 0; i < MAX_NUMBER_VISIBLE_DRAWINGS; i++) {
-                this.visibleDrawingsIndexes.push(i);
-                this.visibleDrawings.push(this.drawings[i]);
-            }
-        } else if (numberDrawings >= 1) {
-            for (let i = 0; i < numberDrawings; i++) {
-                this.visibleDrawingsIndexes.push(i);
-                this.visibleDrawings.push(this.drawings[i]);
             }
         }
     }
