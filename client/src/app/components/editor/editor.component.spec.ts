@@ -10,7 +10,6 @@ import { Subject } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
-// tslint:disable: no-magic-numbers
 
 describe('EditorComponent', () => {
     let component: EditorComponent;

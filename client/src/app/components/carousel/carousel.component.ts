@@ -17,9 +17,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
     openSelectedDrawing(): void {
         this.databaseService.getDrawingData().subscribe((drawingData: DrawingData[]) => {
-            drawingData.forEach((element: DrawingData) => {
-                console.log(element.id);
-            });
+            // tslint:disable-next-line: no-empty
+            drawingData.forEach((element: DrawingData) => {});
         });
     }
     ngOnDestroy(): void {
