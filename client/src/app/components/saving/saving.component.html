@@ -40,10 +40,6 @@
             </mat-chip-list>
             <mat-error *ngIf="hasTagError(tag.value)">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
             <mat-hint align="end">Max 5 étiquettes - Max 15 char./étiquette.</mat-hint>
-            <!-- <mat-hint
-                ><i class="longTag-notification" *ngIf="isLastTagInvalid">Tag trop long <br /></i> - Pas d'espace, <br />- Max 15 charactères <br />-
-                Max 5 étiquettes<br />
-            </mat-hint> -->
             <div class="maxTags-notification" *ngIf="maxTags">Nombre maximum d'étiquettes</div>
         </mat-form-field>
     </form>
