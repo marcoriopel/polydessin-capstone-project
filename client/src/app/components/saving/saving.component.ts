@@ -1,5 +1,5 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,7 +15,7 @@ import { MetaData } from '@common/communication/drawing-data';
     templateUrl: './saving.component.html',
     styleUrls: ['./saving.component.scss'],
 })
-export class SavingComponent implements OnInit {
+export class SavingComponent implements AfterViewChecked, OnInit {
     isSaveButtonDisabled: boolean = false;
     visible: boolean = true;
     currentTag: string = '';
@@ -31,24 +31,36 @@ export class SavingComponent implements OnInit {
         public drawingService: DrawingService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog,
+        private cdRef: ChangeDetectorRef,
     ) {}
     @ViewChild('chipList') chipList: MatChipList;
 
     ngOnInit(): void {
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
+            tags: new FormControl(this.currentTag, [Validators.maxLength(MAX_NAME_LENGTH)]),
         });
     }
+
+    ngAfterViewChecked(): void {
+        this.cdRef.detectChanges();
+    }
+
     currentTagInput(tag: string): void {
-        this.chipList.errorState = false;
+        this.currentTag = tag;
         if (tag.length > MAX_TAG_LENGTH) {
             this.chipList.errorState = true;
+            this.chipList._markAsTouched();
+        } else {
+            this.chipList.errorState = false;
         }
-        this.currentTag = tag;
-        this.ownerForm.markAllAsTouched();
     }
     hasError(controlName: string, errorName: string): boolean {
         return this.ownerForm.controls[controlName].hasError(errorName);
+    }
+
+    hasTagError(tag: string): boolean {
+        return tag.length > MAX_TAG_LENGTH;
     }
 
     addTag(event: MatChipInputEvent): void {
