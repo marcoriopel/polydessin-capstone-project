@@ -3,7 +3,7 @@
     <div *ngIf="gotImages === false">
         <mat-spinner></mat-spinner>
     </div>
-    <div *ngIf="visibleDrawings.length > 0 && gotImages === true" class="search">
+    <div *ngIf="databaseMetadata.length > 0 && gotImages === true" class="search">
         <mat-card class="tags-card">
             <h3 mat-dialog-title>Filtrage par tags</h3>
             <mat-form-field class="tag-list">
@@ -24,39 +24,82 @@
             </mat-form-field>
         </mat-card>
         <mat-card class="slider">
-            <p>{{ drawings.length }} dessin(s) trouvé(s)</p>
-            <div *ngIf="visibleDrawings.length > 1; else oneDrawingBlock" class="mat-parent">
+            <p>{{ databaseMetadata.length }} dessin(s) trouvé(s)</p>
+            <div *ngIf="visibleDrawingsIndexes.length > 2" class="mat-parent">
                 <button class="control prev" (click)="onPreviousClick()">
                     <span class="arrow left"></span>
                 </button>
-                <ng-container *ngFor="let drawing of visibleDrawings; let i = index">
-                    <mat-card id="i" (click)="loadSelectedDrawing(i)" class="mat-child" [class]="'mat-child' + i">
-                        <p class="name">{{ drawing.name }}</p>
+                <ng-container *ngFor="let drawingIndex of visibleDrawingsIndexes; let carouselPosition = index">
+                    <mat-card
+                        [id]="carouselPosition"
+                        (click)="onPreviewClick(carouselPosition)"
+                        [ngClass]="{ 'selected-drawing': carouselPosition === drawingOfInterest, 'mat-child': carouselPosition != drawingOfInterest }"
+                    >
+                        <p class="name">{{ databaseMetadata[drawingIndex].name }}</p>
                         <div class="image-container">
-                            <img class="image" [src]="drawing.drawingPng" />
+                            <img class="image" [src]="IMAGE_BASE_PATH + databaseMetadata[drawingIndex].fileName" />
                         </div>
+                        <button *ngIf="carouselPosition === drawingOfInterest" class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
                         <div><u>TAGS</u></div>
-                        <div>
-                            <i> - {{ drawing.tags }} - </i>
+                        <div *ngIf="isArray(databaseMetadata[drawingIndex]); else oneTag" class="preview-tags">
+                            <i *ngFor="let tag of databaseMetadata[drawingIndex].tags"> {{ tag }} <br /></i>
                         </div>
+                        <ng-template #oneTag class="preview-tags">
+                            <i> {{ databaseMetadata[drawingIndex].tags }} <br /></i>
+                        </ng-template>
                     </mat-card>
                 </ng-container>
                 <button class="control next" (click)="onNextClick()">
                     <span class="arrow right"></span>
                 </button>
             </div>
-            <ng-template #oneDrawingBlock>
-                <mat-card (click)="loadSelectedDrawing(0)" class="mat-child mat-child1">
-                    <p class="name">{{ visibleDrawings[0].name }}</p>
-                    <img class="image" [src]="visibleDrawings[0].drawingPng" />
+            <div *ngIf="visibleDrawingsIndexes.length === 2" class="mat-parent">
+                <button class="control prev" (click)="onClickTwoDrawings()">
+                    <span class="arrow left"></span>
+                </button>
+                <ng-container *ngFor="let drawingIndex of visibleDrawingsIndexes; let carouselPosition = index">
+                    <mat-card
+                        [id]="carouselPosition"
+                        (click)="onPreviewClick(carouselPosition)"
+                        [ngClass]="{ 'selected-drawing': carouselPosition === drawingOfInterest, 'mat-child': carouselPosition != drawingOfInterest }"
+                    >
+                        <p class="name">{{ databaseMetadata[drawingIndex].name }}</p>
+                        <div class="image-container">
+                            <img class="image" [src]="IMAGE_BASE_PATH + databaseMetadata[drawingIndex].fileName" />
+                        </div>
+                        <button *ngIf="carouselPosition === drawingOfInterest" class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
+                        <div><u>TAGS</u></div>
+                        <div *ngIf="isArray(databaseMetadata[drawingIndex]); else oneTag" class="preview-tags">
+                            <i *ngFor="let tag of databaseMetadata[drawingIndex].tags"> {{ tag }} <br /></i>
+                        </div>
+                        <ng-template #oneTag class="preview-tags">
+                            <i> {{ databaseMetadata[drawingIndex].tags }} <br /></i>
+                        </ng-template>
+                    </mat-card>
+                </ng-container>
+                <button class="control next" (click)="onClickTwoDrawings()">
+                    <span class="arrow right"></span>
+                </button>
+            </div>
+            <div *ngIf="visibleDrawingsIndexes.length === 1" class="mat-parent">
+                <mat-card (click)="loadSelectedDrawing(0)" class="selected-drawing">
+                    <p class="name">{{ databaseMetadata[0].name }}</p>
+                    <div class="image-container">
+                        <img class="image" [src]="IMAGE_BASE_PATH + databaseMetadata[0].fileName" />
+                    </div>
+                    <button class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
                     <u>TAGS</u>
-                    <i> - {{ visibleDrawings[0].tags }} - </i>
+                    <div *ngIf="isArray(databaseMetadata[0]); else oneTag" class="preview-tags">
+                        <i *ngFor="let tag of databaseMetadata[0].tags"> {{ tag }} <br /></i>
+                    </div>
+                    <ng-template #oneTag class="preview-tags">
+                        <i> {{ databaseMetadata[0].tags }} <br /></i>
+                    </ng-template>
                 </mat-card>
-            </ng-template>
-            <button class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
+            </div>
         </mat-card>
     </div>
-    <div *ngIf="visibleDrawings.length == 0 && gotImages === true" #noDrawingBlock>Aucun dessin en sauvegarde</div>
+    <div *ngIf="databaseMetadata.length == 0 && gotImages === true">Aucun dessin en sauvegarde</div>
 </div>
 <div mat-dialog-actions>
     <button class="close" mat-button mat-dialog-close>Fermer</button>

@@ -30,7 +30,6 @@ export class DatabaseController {
 
         this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
-            console.log(savedFileName);
             this.databaseService
                 .addDrawing(req.body, savedFileName)
                 .then(() => {
@@ -55,7 +54,6 @@ export class DatabaseController {
         this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
             const files: string[] = fs.readdirSync(this.DIR);
             if (files.includes(req.params.filename)) {
-                console.log(path.join(__dirname, '../images/'));
                 res.contentType('image/png');
                 res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
             } else {

@@ -110,7 +110,6 @@ export class SavingComponent implements AfterViewChecked, OnInit {
     changeName(name: string): void {
         this.name = name;
         this.ownerForm.markAllAsTouched();
-        console.log(this.name);
     }
 
     saveConfirmMessage(): void {
