@@ -158,11 +158,23 @@ export class CarouselComponent {
         return this.databaseService.getAllDBData();
     }
     addTag(event: MatChipInputEvent): void {
-        console.log('hi');
+        const input = event.input;
+        const value = event.value;
+
+        if ((value || '').trim()) {
+            this.tags.push(value.trim());
+        }
+        if (input) {
+            input.value = '';
+        }
     }
 
     removeTag(tags: string): void {
-        console.log('bye');
+        const index = this.tags.indexOf(tags);
+
+        if (index >= 0) {
+            this.tags.splice(index, 1);
+        }
     }
 
     deleteDrawing(): void {
