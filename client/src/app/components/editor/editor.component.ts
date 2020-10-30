@@ -9,7 +9,6 @@ import {
     MINIMUM_WORKSPACE_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
-import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
@@ -33,7 +32,6 @@ export class EditorComponent implements AfterViewInit {
         public hotkeyService: HotkeyService,
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
-        public newDrawingService: NewDrawingService,
     ) {
         this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
         this.resizeDrawingService.previewSize = this.previewSize;
@@ -57,16 +55,16 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        this.toolSelectionService.currentTool.onKeyUp(event);
+        this.toolSelectionService.currentToolKeyUp(event);
     }
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
+        event.preventDefault();
         if (this.keyToolArray.includes(event.key.toString())) {
-            event.preventDefault();
             this.hotkeyService.onKeyDown(event);
         } else {
-            this.toolSelectionService.currentTool.onKeyDown(event);
+            this.toolSelectionService.currentToolKeyDown(event);
         }
     }
 

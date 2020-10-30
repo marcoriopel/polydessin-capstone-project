@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
-import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -20,7 +20,6 @@ import { SquareService } from '@app/services/tools/square.service';
 })
 export class ToolSelectionService {
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
-    toolNames: ToolNames = TOOL_NAMES;
     private tools: Map<string, Tool>;
     currentTool: Tool;
 
@@ -37,13 +36,13 @@ export class ToolSelectionService {
         public newDrawingService: NewDrawingService,
     ) {
         this.tools = new Map<string, Tool>([
-            [this.toolNames.PENCIL_TOOL_NAME, pencilService],
-            [this.toolNames.BRUSH_TOOL_NAME, brushService],
-            [this.toolNames.SQUARE_TOOL_NAME, squareService],
-            [this.toolNames.CIRCLE_TOOL_NAME, circleService],
-            [this.toolNames.LINE_TOOL_NAME, lineService],
-            [this.toolNames.FILL_TOOL_NAME, fillService],
-            [this.toolNames.ERASER_TOOL_NAME, eraserService],
+            [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
+            [TOOL_NAMES.BRUSH_TOOL_NAME, brushService],
+            [TOOL_NAMES.SQUARE_TOOL_NAME, squareService],
+            [TOOL_NAMES.CIRCLE_TOOL_NAME, circleService],
+            [TOOL_NAMES.LINE_TOOL_NAME, lineService],
+            [TOOL_NAMES.FILL_TOOL_NAME, fillService],
+            [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService.getKey().subscribe((tool) => {
@@ -78,5 +77,33 @@ export class ToolSelectionService {
 
     getCurrentToolName(): string {
         return this.currentTool.name;
+    }
+
+    setCurrentToolCursor(): void {
+        this.currentTool.setCursor();
+    }
+
+    currentToolKeyUp(event: KeyboardEvent): void {
+        this.currentTool.onKeyUp(event);
+    }
+
+    currentToolKeyDown(event: KeyboardEvent): void {
+        this.currentTool.onKeyDown(event);
+    }
+
+    currentToolMouseMove(event: MouseEvent): void {
+        this.currentTool.onMouseMove(event);
+    }
+
+    currentToolMouseDown(event: MouseEvent): void {
+        this.currentTool.onMouseDown(event);
+    }
+
+    currentToolMouseUp(event: MouseEvent): void {
+        this.currentTool.onMouseUp(event);
+    }
+
+    currentToolMouseLeave(): void {
+        this.currentTool.onMouseLeave();
     }
 }

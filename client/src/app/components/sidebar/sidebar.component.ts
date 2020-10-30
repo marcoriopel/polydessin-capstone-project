@@ -18,8 +18,9 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 export class SidebarComponent implements OnInit {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
-    selectedTool: string = this.toolSelectionService.toolNames.PENCIL_TOOL_NAME;
     toolNames: ToolNames = TOOL_NAMES;
+    selectedTool: string = this.toolNames.PENCIL_TOOL_NAME;
+
     constructor(
         public toolSelectionService: ToolSelectionService,
         public dialog: MatDialog,
@@ -38,7 +39,7 @@ export class SidebarComponent implements OnInit {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {
             this.toolSelectionService.changeTool(target.value);
-            this.toolSelectionService.currentTool.setCursor();
+            this.toolSelectionService.setCurrentToolCursor();
         }
     }
 
