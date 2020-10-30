@@ -4,6 +4,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
+import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -48,13 +49,14 @@ export class CarouselComponent {
             this.gotImages = true;
         });
     }
+
     isArray(object: DBData): boolean {
         return Array.isArray(object.tags);
     }
 
     manageShownDrawings(): void {
         for (let i = 0; i < this.databaseMetadata.length; i++) {
-            if (i >= 3) {
+            if (i >= MAX_NUMBER_VISIBLE_DRAWINGS) {
                 break;
             }
             if (i === 1) {
