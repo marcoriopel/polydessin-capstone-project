@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class MoveService extends Tool {
+    initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: Rectangle;
     selectionData: ImageData;
     transformationOver: boolean = true;
@@ -21,6 +22,10 @@ export class MoveService extends Tool {
     }
 
     initialize(selection: Rectangle, selectionData: ImageData): void {
+        this.initialSelection.startingPoint.x = selection.startingPoint.x;
+        this.initialSelection.startingPoint.y = selection.startingPoint.y;
+        this.initialSelection.height = selection.height;
+        this.initialSelection.width = selection.width;
         this.selection = selection;
         this.selectionData = selectionData;
     }
@@ -28,7 +33,7 @@ export class MoveService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (this.transformationOver) {
             this.transformationOver = false;
-            this.clearSelectionBackground();
+            this.clearSelectionBackground(this.drawingService.previewCtx);
             this.printSelectionOnPreview();
         }
     }
@@ -39,6 +44,7 @@ export class MoveService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selection.startingPoint.x += event.movementX;
         this.selection.startingPoint.y += event.movementY;
+        this.clearSelectionBackground(this.drawingService.previewCtx);
         this.printSelectionOnPreview();
     }
 
@@ -82,7 +88,7 @@ export class MoveService extends Tool {
             this.printSelectionOnPreview();
             if (this.transformationOver) {
                 this.transformationOver = false;
-                this.clearSelectionBackground();
+                this.clearSelectionBackground(this.drawingService.previewCtx);
             }
         }
     }
@@ -104,16 +110,16 @@ export class MoveService extends Tool {
         }
     }
 
-    clearSelectionBackground(): void {
-        const currentFillStyle = this.drawingService.baseCtx.fillStyle;
-        this.drawingService.baseCtx.fillStyle = 'white';
-        this.drawingService.baseCtx.fillRect(
-            this.selection.startingPoint.x,
-            this.selection.startingPoint.y,
-            this.selection.width,
-            this.selection.height,
+    clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
+        const currentFillStyle = ctx.fillStyle;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(
+            this.initialSelection.startingPoint.x,
+            this.initialSelection.startingPoint.y,
+            this.initialSelection.width,
+            this.initialSelection.height,
         );
-        this.drawingService.baseCtx.fillStyle = currentFillStyle;
+        ctx.fillStyle = currentFillStyle;
     }
 
     printSelectionOnPreview(): void {

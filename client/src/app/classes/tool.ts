@@ -37,4 +37,6 @@ export abstract class Tool {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
     }
+
+    reset(): void {}
 }

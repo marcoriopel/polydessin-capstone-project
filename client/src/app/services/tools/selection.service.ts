@@ -25,6 +25,7 @@ export class SelectionService extends Tool {
             if (!this.moveService.transformationOver && this.mouseDown) {
                 this.moveService.transformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
                 this.drawingService.baseCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
             }
             if (this.mouseDown) {
@@ -89,6 +90,14 @@ export class SelectionService extends Tool {
         } else {
             return false;
         }
+    }
+
+    reset(): void {
+        this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+        this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+        this.mouseDown = false;
+        this.transormation = '';
+        this.moveService.transformationOver = true;
     }
 
     private setSelectionData(selection: Rectangle): void {

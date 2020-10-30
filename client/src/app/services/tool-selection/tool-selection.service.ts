@@ -47,6 +47,7 @@ export class ToolSelectionService {
     changeTool(toolName: string): void {
         const selectedTool = this.tools.get(toolName);
         if (selectedTool) {
+            this.currentTool.reset();
             this.currentTool = selectedTool;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
