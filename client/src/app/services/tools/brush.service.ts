@@ -34,10 +34,11 @@ export class BrushService extends Tool {
         } else {
             this.mouseDown = true;
             this.clearPath();
+            this.applyPattern(this.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
             this.updateBrushData();
-            this.drawingService.drawBrushStroke(this.drawingService.previewCtx, this.brushData);
+            this.drawLine(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -46,9 +47,10 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.updateBrushData();
-            this.drawingService.drawBrushStroke(this.drawingService.baseCtx, this.brushData);
+            this.drawLine(this.drawingService.baseCtx, this.brushData);
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.applyPattern('none');
         }
         this.mouseDown = false;
         this.clearPath();
@@ -62,7 +64,7 @@ export class BrushService extends Tool {
             // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateBrushData();
-            this.drawingService.drawBrushStroke(this.drawingService.previewCtx, this.brushData);
+            this.drawLine(this.drawingService.previewCtx, this.brushData);
         }
     }
 
@@ -72,6 +74,31 @@ export class BrushService extends Tool {
 
     setPattern(pattern: string): void {
         this.pattern = pattern;
+    }
+
+    drawLine(ctx: CanvasRenderingContext2D, brush: Brush): void {
+        this.applyPattern(brush.pattern);
+        ctx.lineWidth = brush.lineWidth;
+        ctx.lineCap = ctx.lineJoin = 'round';
+        ctx.strokeStyle = brush.primaryColor;
+        ctx.beginPath();
+        for (const point of brush.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
+    }
+
+    applyPattern(pattern: string): void {
+        if (pattern === 'none') {
+            this.drawingService.baseCtx.filter = 'none';
+            this.drawingService.previewCtx.filter = 'none';
+        } else {
+            this.drawingService.baseCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
+            this.drawingService.previewCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
+        }
+        // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
+        this.drawingService.baseCtx.strokeRect(-this.drawingService.baseCtx.lineWidth, 0, 1, 0);
+        this.drawingService.previewCtx.strokeRect(-this.drawingService.previewCtx.lineWidth, 0, 1, 0);
     }
 
     private updateBrushData(): void {

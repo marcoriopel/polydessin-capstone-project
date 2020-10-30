@@ -43,48 +43,6 @@ export class DrawingService {
         }
     }
 
-    drawBrushStroke(ctx: CanvasRenderingContext2D, brush: Brush): void {
-        ctx.lineWidth = brush.lineWidth;
-        ctx.strokeStyle = brush.primaryColor;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = brush.lineCap as CanvasLineCap;
-        if (brush.pattern === 'none') {
-            this.baseCtx.filter = 'none';
-            this.previewCtx.filter = 'none';
-        } else {
-            this.baseCtx.filter = 'url(/assets/patterns.svg#' + brush.pattern + ')';
-            this.previewCtx.filter = 'url(/assets/patterns.svg#' + brush.pattern + ')';
-        }
-        // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
-        this.baseCtx.strokeRect(-this.baseCtx.lineWidth, 0, 1, 0);
-        this.previewCtx.strokeRect(-this.previewCtx.lineWidth, 0, 1, 0);
-        ctx.beginPath();
-        for (const point of brush.path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
-        this.baseCtx.filter = 'none';
-        this.previewCtx.filter = 'none';
-    }
-
-    resizeCanvas(resize: Resize): void {
-        console.log('did something');
-        const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-        tempCanvas.width = resize.canvasSize.x;
-        tempCanvas.height = resize.canvasSize.y;
-        const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-        tempCanvasCtx.drawImage(this.canvas, 0, 0);
-        setTimeout(() => {
-            this.initializeBaseCanvas();
-            let baseCtx: CanvasRenderingContext2D;
-            baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-            baseCtx.drawImage(tempCanvas, 0, 0);
-        });
-        // this.canvas.width = resize.canvasSize.x;
-        // this.canvas.height = resize.canvasSize.y;
-        // this.baseCtx.putImageData(resize.imageData, 0, 0);
-    }
-
     drawFill(fill: Fill): void {
         this.baseCtx.putImageData(fill.imageData, 0, 0);
     }

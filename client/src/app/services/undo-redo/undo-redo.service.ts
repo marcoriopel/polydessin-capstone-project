@@ -8,6 +8,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
 import { SquareService } from '@app/services/tools/square.service';
+import { BrushService } from '../tools/brush.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -20,9 +21,11 @@ export class UndoRedoService {
         public pencilService: PencilService,
         public eraserService: EraserService,
         public lineService: LineService,
+        public brushService: BrushService,
     ) {}
 
     undo(): void {
+        this.resizeDrawingService.restoreCanvas(resize);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);
@@ -34,6 +37,7 @@ export class UndoRedoService {
     }
 
     redo(): void {
+        this.resizeDrawingService.setDefaultCanvasSize();
         const redoStackLength = this.drawingService.redoStack.length;
         const element = this.drawingService.redoStack[redoStackLength - 1];
         if (redoStackLength) {
@@ -51,7 +55,7 @@ export class UndoRedoService {
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
                 break;
             case 'brush':
-                this.drawingService.drawBrushStroke(this.drawingService.baseCtx, element as Brush);
+                this.brushService.drawLine(this.drawingService.baseCtx, element as Brush);
                 break;
             case 'eraser':
                 this.eraserService.drawEraserStroke(this.drawingService.baseCtx, element as Eraser);
@@ -69,7 +73,9 @@ export class UndoRedoService {
                 this.drawingService.drawFill(element as Fill);
                 break;
             case 'resize':
-                this.drawingService.resizeCanvas(element as Resize);
+                const resizeData = element as Resize;
+                console.log('called?');
+                this.resizeDrawingService.resizeCanvas(resizeData.mouseEvent);
                 break;
         }
     }

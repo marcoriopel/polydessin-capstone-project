@@ -24,6 +24,7 @@ export class ResizeDrawingService {
     workSpaceSize: Vec2;
     resizeData: Resize;
     imageData: ImageData;
+    mouseEvent: MouseEvent;
 
     constructor(public drawingService: DrawingService) {}
 
@@ -67,9 +68,6 @@ export class ResizeDrawingService {
 
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
-            this.imageData = this.drawingService.getCanvasData();
-            this.updateResizeData();
-            this.drawingService.updateStack(this.resizeData);
 
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
@@ -77,6 +75,9 @@ export class ResizeDrawingService {
                 baseCtx = this.drawingService.canvas.getContext('2d') as CanvasRenderingContext2D;
                 baseCtx.drawImage(tempCanvas, 0, 0);
             });
+            this.imageData = this.drawingService.getCanvasData();
+            this.updateResizeData();
+            this.drawingService.updateStack(this.resizeData);
         }
         this.mouseDown = false;
     }
@@ -141,11 +142,16 @@ export class ResizeDrawingService {
         }
     }
 
+    restoreDefaultCanvas();
+
+    restorePreviousCanvas(resize: Resize, isDefault: boolean): void {}
+
     private updateResizeData(): void {
         this.resizeData = {
             type: 'resize',
             imageData: this.imageData,
             canvasSize: this.canvasSize,
+            mouseEvent: this.mouseEvent,
         };
     }
 }
