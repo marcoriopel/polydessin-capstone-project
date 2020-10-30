@@ -25,6 +25,8 @@ export abstract class Tool {
 
     onKeyDown(event: KeyboardEvent): void {}
 
+    onKeyPress(event: KeyboardEvent): void {}
+
     onKeyUp(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {

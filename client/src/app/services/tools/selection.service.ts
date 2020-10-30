@@ -73,6 +73,7 @@ export class SelectionService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
+        this.moveService.onKeyUp(event);
         this.strokeSelection();
     }
 

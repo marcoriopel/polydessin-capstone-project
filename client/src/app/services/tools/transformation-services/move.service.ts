@@ -11,6 +11,10 @@ export class MoveService extends Tool {
     selection: Rectangle;
     selectionData: ImageData;
     transformationOver: boolean = true;
+    isArrowKeyLeftPressed: boolean = false;
+    isArrowKeyUpPressed: boolean = false;
+    isArrowKeyRightPressed: boolean = false;
+    isArrowKeyDownPressed: boolean = false;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -39,23 +43,38 @@ export class MoveService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        let isArrowKey = true;
+        let isArrowKey = false;
 
         switch (event.key) {
             case ARROW_KEYS.LEFT:
-                this.selection.startingPoint.x -= 3;
+                this.isArrowKeyLeftPressed = true;
+                isArrowKey = true;
                 break;
             case ARROW_KEYS.UP:
-                this.selection.startingPoint.y -= 3;
+                this.isArrowKeyUpPressed = true;
+                isArrowKey = true;
                 break;
             case ARROW_KEYS.RIGHT:
-                this.selection.startingPoint.x += 3;
+                this.isArrowKeyRightPressed = true;
+                isArrowKey = true;
                 break;
             case ARROW_KEYS.DOWN:
-                this.selection.startingPoint.y += 3;
+                this.isArrowKeyDownPressed = true;
+                isArrowKey = true;
                 break;
-            default:
-                isArrowKey = false;
+        }
+
+        if (this.isArrowKeyLeftPressed) {
+            this.selection.startingPoint.x -= 3;
+        }
+        if (this.isArrowKeyUpPressed) {
+            this.selection.startingPoint.y -= 3;
+        }
+        if (this.isArrowKeyRightPressed) {
+            this.selection.startingPoint.x += 3;
+        }
+        if (this.isArrowKeyDownPressed) {
+            this.selection.startingPoint.y += 3;
         }
 
         if (isArrowKey) {
@@ -68,7 +87,22 @@ export class MoveService extends Tool {
         }
     }
 
-    onKeyUp(event: KeyboardEvent): void {}
+    onKeyUp(event: KeyboardEvent): void {
+        switch (event.key) {
+            case ARROW_KEYS.LEFT:
+                this.isArrowKeyLeftPressed = false;
+                break;
+            case ARROW_KEYS.UP:
+                this.isArrowKeyUpPressed = false;
+                break;
+            case ARROW_KEYS.RIGHT:
+                this.isArrowKeyRightPressed = false;
+                break;
+            case ARROW_KEYS.DOWN:
+                this.isArrowKeyDownPressed = false;
+                break;
+        }
+    }
 
     clearSelectionBackground(): void {
         const currentFillStyle = this.drawingService.baseCtx.fillStyle;
