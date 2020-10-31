@@ -18,7 +18,6 @@ export class PolygoneService extends Tool {
     firstPoint: Vec2;
     fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     width: number = 1;
-    // center: Vec2;
     sides: number = 3;
 
     constructor(
@@ -91,6 +90,7 @@ export class PolygoneService extends Tool {
         this.circleService.firstPoint = this.shapeService.firstPoint;
         this.circleService.lastPoint = this.shapeService.lastPoint;
         this.circleService.drawCircle(ctx, this.shapeService.findTopLeftPointC());
+        this.LineDashh(this.drawingService.previewCtx);
     }
 
     drawPolygone(ctx: CanvasRenderingContext2D): void {
@@ -112,18 +112,6 @@ export class PolygoneService extends Tool {
         const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
         const quadrant = this.shapeService.findQuadrant();
         const center: Vec2 = { x: 0, y: 0 };
-
-        if (ctx === this.drawingService.previewCtx) {
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-            ctx.stroke();
-            ctx.lineWidth = this.width;
-        } else {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.setLineDash([0]);
-        }
 
         switch (quadrant) {
             case ONE:
@@ -159,5 +147,19 @@ export class PolygoneService extends Tool {
         }
         ctx.stroke();
         ctx.closePath();
+    }
+
+    LineDashh(ctx: CanvasRenderingContext2D): void {
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            ctx.stroke();
+            ctx.lineWidth = this.width;
+        } else {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.setLineDash([0]);
+        }
     }
 }

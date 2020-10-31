@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { FOUR, ONE, THREE, TWOO } from '@app/ressources/global-variables/global-variables';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +15,9 @@ export class ShapeService {
     centerY: number;
     quadrant: number;
     center: Vec2;
+    width: number = 1;
 
+    constructor(protected drawingService: DrawingService) {}
     findQuadrant(): number {
         const point1 = this.firstPoint;
         const point2 = this.lastPoint;
