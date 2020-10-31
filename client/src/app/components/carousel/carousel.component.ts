@@ -1,9 +1,9 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component } from '@angular/core';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { Component, ViewChild } from '@angular/core';
+import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
-import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
+import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -21,10 +21,10 @@ export class CarouselComponent {
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
     visible: boolean = true;
+    currentTag: string = '';
+    maxTags: boolean = false;
     name: string = '';
     drawingOfInterest: number = 0;
-    selectable: boolean = true;
-    removable: boolean = true;
     addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
@@ -38,6 +38,7 @@ export class CarouselComponent {
     ) {
         this.loadDBData();
     }
+    @ViewChild('chipList') chipList: MatChipList;
 
     loadDBData(): void {
         this.gotImages = false;
@@ -116,7 +117,14 @@ export class CarouselComponent {
         const value = event.value;
 
         if ((value || '').trim()) {
-            this.tags.push(value.trim());
+            if (this.tags.length < MAX_NUMBER_TAG) {
+                if (value.length < MAX_TAG_LENGTH) {
+                    this.tags.push(value.trim());
+                }
+            }
+            if (this.tags.length === MAX_NUMBER_TAG) {
+                this.maxTags = true;
+            }
         }
         if (input) {
             input.value = '';
@@ -203,6 +211,28 @@ export class CarouselComponent {
             this.visibleDrawingsIndexes[2] = 0;
         } else {
             this.visibleDrawingsIndexes[2]++;
+        }
+    }
+
+    hasLengthTagError(tag: string): boolean {
+        return tag.length > MAX_NAME_LENGTH;
+    }
+
+    hasTagError(tag: string): boolean {
+        if (tag.indexOf(' ') < 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    currentTagInput(tag: string): void {
+        this.currentTag = tag;
+        if (tag.length > MAX_TAG_LENGTH || tag.indexOf(' ') >= 0) {
+            this.chipList.errorState = true;
+            this.chipList._markAsTouched();
+        } else {
+            this.chipList.errorState = false;
         }
     }
 }
