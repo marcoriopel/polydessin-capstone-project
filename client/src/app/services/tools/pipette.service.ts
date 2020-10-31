@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Vec2 } from '@app/classes/vec2';
 import { MouseButton, ZOOM_PIPETTE, ZOOM_RADIUS } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Subject } from 'rxjs';
 
 const MAX_OPACITY = 255;
 
@@ -13,12 +13,13 @@ const MAX_OPACITY = 255;
 })
 export class PipetteService extends Tool {
     color: string[] = ['#000000', '0'];
-    onCanvas: Subject<boolean> = new Subject<boolean>();
-    primaryColor: Subject<string[]> = new Subject<string[]>();
-    secondaryColor: Subject<string[]> = new Subject<string[]>();
+    onCanvas: EventEmitter<boolean> = new EventEmitter<boolean>();
+    primaryColor: EventEmitter<string[]> = new EventEmitter<string[]>();
+    secondaryColor: EventEmitter<string[]> = new EventEmitter<string[]>();
     name: string = TOOL_NAMES.PIPETTE_TOOL_NAME;
     zoom: HTMLCanvasElement;
     zoomCtx: CanvasRenderingContext2D;
+    isNearBorder: boolean = false;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -31,8 +32,8 @@ export class PipetteService extends Tool {
 
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = true;
-        const mousePosition = this.getPositionFromMouse(event);
-        const pixel = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1);
+        this.mouseDownCoord = this.getPositionFromMouse(event);
+        const pixel = this.drawingService.baseCtx.getImageData(this.mouseDownCoord.x, this.mouseDownCoord.y, 1, 1);
         const pixelData = pixel.data;
         this.color[0] =
             '#' +
@@ -42,30 +43,44 @@ export class PipetteService extends Tool {
         this.color[1] = pixelData[3].toString();
 
         if (event.button === MouseButton.Left) {
-            this.primaryColor.next(this.color);
-        } else if (event.button === MouseButton.Right) {
-            this.secondaryColor.next(this.color);
+            this.primaryColor.emit(this.color);
+        }
+        if (event.button === MouseButton.Right) {
+            this.secondaryColor.emit(this.color);
         }
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     showZoomPixel(event: MouseEvent): void {
-        this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
-        const mousePosition = this.getPositionFromMouse(event);
-        // if (!this.handleNearBorder(event)) {
-        this.drawImage(this.zoom.height, this.zoom.width, mousePosition.x, mousePosition.y, event);
-        // }
+        this.clearCanvas();
+        if (!this.isNearBorder) {
+            this.drawOnZoom(event);
+        }
     }
 
-    drawImage(height: number, width: number, x: number, y: number, event: MouseEvent): void {
-        const hSource = height / ZOOM_PIPETTE;
-        const wSource = width / ZOOM_PIPETTE;
+    drawOnZoom(event: MouseEvent): void {
+        const x = this.getPositionFromMouse(event).x;
+        const y = this.getPositionFromMouse(event).y;
+
+        const hSource = this.zoom.height / ZOOM_PIPETTE;
+        const wSource = this.zoom.width / ZOOM_PIPETTE;
+
         this.zoomCtx.beginPath();
         this.zoomCtx.arc(this.zoom.width / 2, this.zoom.height / 2, ZOOM_RADIUS, 0, 2 * Math.PI);
         this.zoomCtx.clip();
-        this.zoomCtx.drawImage(this.drawingService.canvas, x - wSource / 2, y - hSource / 2, wSource, hSource, 0, 0, width, height);
+        this.zoomCtx.drawImage(
+            this.drawingService.canvas,
+            x - wSource / 2,
+            y - hSource / 2,
+            wSource,
+            hSource,
+            0,
+            0,
+            this.zoom.width,
+            this.zoom.height,
+        );
         this.zoomCtx.closePath();
-        this.handleCursorOnPixel(event, width, height);
+        this.handleCursorOnPixel(event, this.zoom.width, this.zoom.height);
     }
 
     handleCursorOnPixel(e: MouseEvent, width: number, height: number): void {
@@ -84,30 +99,33 @@ export class PipetteService extends Tool {
         this.zoomCtx.closePath();
     }
 
-    handleNearBorder(e: MouseEvent): boolean {
-        let isNearBorder = false;
-        const mousePosition = this.getPositionFromMouse(e);
-        if (mousePosition.x <= this.drawingService.canvas.width || mousePosition.x <= 0) {
-            isNearBorder = true;
+    handleNearBorder(mousePosition: Vec2): void {
+        this.isNearBorder = false;
+        if (mousePosition.x >= this.drawingService.canvas.width || mousePosition.x <= 0) {
+            this.isNearBorder = true;
         }
-        if (mousePosition.y < this.drawingService.canvas.height || mousePosition.y <= 0) {
-            isNearBorder = true;
+        if (mousePosition.y > this.drawingService.canvas.height || mousePosition.y <= 0) {
+            this.isNearBorder = true;
         }
-        if (isNearBorder) {
-            this.zoomCtx.clearRect(1, 1, this.zoom.width, this.zoom.height);
-            this.onCanvas.next(true);
+        if (this.isNearBorder) {
+            this.clearCanvas();
+            this.onCanvas.emit(false);
         }
-        return isNearBorder;
+    }
+
+    clearCanvas(): void {
+        this.zoomCtx.clearRect(0, 0, this.zoom.width, this.zoom.height);
     }
 
     onMouseMove(event: MouseEvent): void {
+        this.handleNearBorder(this.getPositionFromMouse(event));
         this.showZoomPixel(event);
     }
     onMouseEnter(): void {
-        this.onCanvas.next(true);
+        this.onCanvas.emit(true);
     }
 
     onMouseLeave(): void {
-        this.onCanvas.next(false);
+        this.onCanvas.emit(false);
     }
 }
