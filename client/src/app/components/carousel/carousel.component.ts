@@ -16,6 +16,7 @@ import { DBData } from '@common/communication/drawing-data';
 })
 export class CarouselComponent {
     databaseMetadata: DBData[] = [];
+    filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
@@ -42,8 +43,10 @@ export class CarouselComponent {
         this.gotImages = false;
         this.databaseMetadata = [];
         this.visibleDrawingsIndexes = [];
+        this.filteredMetadata = [];
         this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
             this.databaseMetadata = dBData;
+            this.filteredMetadata = dBData;
             this.manageShownDrawings();
             this.gotImages = true;
         });
@@ -54,7 +57,7 @@ export class CarouselComponent {
     }
 
     manageShownDrawings(): void {
-        for (let i = 0; i < this.databaseMetadata.length; i++) {
+        for (let i = 0; i < this.filteredMetadata.length; i++) {
             if (i >= MAX_NUMBER_VISIBLE_DRAWINGS) {
                 break;
             }
@@ -63,9 +66,10 @@ export class CarouselComponent {
             }
             this.visibleDrawingsIndexes.push(i);
         }
+        this.gotImages = true;
     }
     onPreviewClick(positionIndex: number): void {
-        if (this.databaseMetadata.length === 2) {
+        if (this.filteredMetadata.length === 2) {
             if (positionIndex === this.drawingOfInterest) this.loadSelectedDrawing(positionIndex);
             else this.onClickTwoDrawings();
         } else {
@@ -95,7 +99,7 @@ export class CarouselComponent {
     }
 
     applySelectedDrawing(index: number): void {
-        this.databaseService.getDrawingPng(this.databaseMetadata[index].fileName).subscribe((image: Blob) => {
+        this.databaseService.getDrawingPng(this.filteredMetadata[index].fileName).subscribe((image: Blob) => {
             const img = URL.createObjectURL(image);
             const drawing = new Image();
             drawing.src = img;
@@ -117,21 +121,48 @@ export class CarouselComponent {
         if (input) {
             input.value = '';
         }
+        this.showDrawingsWithFilter();
     }
 
     removeTag(tags: string): void {
         const index = this.tags.indexOf(tags);
-
         if (index >= 0) {
             this.tags.splice(index, 1);
         }
+        this.showDrawingsWithFilter();
+    }
+
+    showDrawingsWithFilter(): void {
+        this.gotImages = false;
+        this.filteredMetadata = [];
+        this.visibleDrawingsIndexes = [];
+        if (this.tags.length === 0) {
+            this.filteredMetadata = this.databaseMetadata;
+        }
+        for (const data of this.databaseMetadata) {
+            if (data.tags.length > 0) {
+                if (Array.isArray(data.tags)) {
+                    for (const tag of data.tags) {
+                        if (this.tags.includes(tag)) {
+                            this.filteredMetadata.push(data);
+                            break;
+                        }
+                    }
+                } else {
+                    if (this.tags.includes(data.tags)) {
+                        this.filteredMetadata.push(data);
+                    }
+                }
+            }
+        }
+        this.manageShownDrawings();
     }
 
     deleteDrawing(): void {
         this.gotImages = false;
-        let fileName: string = this.databaseMetadata[this.visibleDrawingsIndexes[0]].fileName;
-        if (this.databaseMetadata.length > 1) {
-            fileName = this.databaseMetadata[this.visibleDrawingsIndexes[this.drawingOfInterest]].fileName;
+        let fileName: string = this.filteredMetadata[this.visibleDrawingsIndexes[0]].fileName;
+        if (this.filteredMetadata.length > 1) {
+            fileName = this.filteredMetadata[this.visibleDrawingsIndexes[this.drawingOfInterest]].fileName;
         }
         this.databaseService.deleteDrawing(fileName).subscribe(
             () => {
@@ -152,23 +183,23 @@ export class CarouselComponent {
     }
 
     onPreviousClick(): void {
-        if (this.databaseMetadata.length > 2) {
+        if (this.filteredMetadata.length > 2) {
             this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         }
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
         if (this.visibleDrawingsIndexes[0] === 0) {
-            this.visibleDrawingsIndexes[0] = this.databaseMetadata.length - 1;
+            this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
         } else {
             this.visibleDrawingsIndexes[0]--;
         }
     }
 
     onNextClick(): void {
-        if (this.databaseMetadata.length > 2) {
+        if (this.filteredMetadata.length > 2) {
             this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
         }
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
-        if (this.visibleDrawingsIndexes[2] === this.databaseMetadata.length - 1) {
+        if (this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1) {
             this.visibleDrawingsIndexes[2] = 0;
         } else {
             this.visibleDrawingsIndexes[2]++;
