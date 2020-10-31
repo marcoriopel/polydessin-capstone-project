@@ -12,7 +12,7 @@ export class DatabaseService {
 
     constructor(private http: HttpClient) {}
 
-    addDrawing(meta: MetaData, blob: Blob): Observable<void> {
+    addDrawing(meta: MetaData, blob: Blob): Observable<string> {
         const formData = new FormData();
         formData.append(ID_NAME, meta.id);
         formData.append(NAME, meta.name);
@@ -20,7 +20,7 @@ export class DatabaseService {
             formData.append(TAGS_NAME, tag);
         });
         formData.append('image', blob);
-        return this.http.post<void>(this.BASE_URL + '/addDrawing', formData).pipe(catchError(this.handleError<void>('addDrawing')));
+        return this.http.post<string>(this.BASE_URL + '/addDrawing', formData).pipe(catchError(this.handleError<string>('addDrawing')));
     }
 
     deleteDrawing(fileName: string): Observable<string> {

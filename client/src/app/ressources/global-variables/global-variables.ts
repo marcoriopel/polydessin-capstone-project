@@ -24,7 +24,9 @@ export const CONFIRM_SAVED_DURATION = 5000;
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;
-
+export const MAX_TAG_LENGTH = 15;
+export const MAX_NAME_LENGTH = 15;
+export const MAX_NUMBER_TAG = 5;
 export enum Quadrant {
     TOP_RIGHT = 0,
     TOP_LEFT = 1,

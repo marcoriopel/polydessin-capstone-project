@@ -76,7 +76,6 @@ export class PolygoneService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.center = this.getCenter();
-            console.log(this.firstPoint.x);
             this.drawCircularPerimeter(this.drawingService.previewCtx);
             this.drawPolygone(this.drawingService.previewCtx);
         }

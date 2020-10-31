@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -24,7 +24,6 @@ import { ColorPickerComponent } from './components/color-picker/color-picker.com
 import { DrawingDetailComponent } from './components/drawing-detail/drawing-detail.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { LoadSelectedDrawingAlertComponent } from './components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
@@ -48,7 +47,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         AppComponent,
         EditorComponent,
         SidebarComponent,
-        ErrorAlertComponent,
         DrawingComponent,
         MainPageComponent,
         LoadSelectedDrawingAlertComponent,
@@ -76,6 +74,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         BrowserModule,
         MatCardModule,
         HttpClientModule,
+        ReactiveFormsModule,
         AppRoutingModule,
         MatSnackBarModule,
         BrowserAnimationsModule,
