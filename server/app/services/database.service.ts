@@ -36,6 +36,27 @@ export class DatabaseService {
         this.client.close();
     }
 
+    isValidData(dBData: DBData): boolean {
+        if (dBData.name.length === 0) {
+            return false;
+        }
+        if (dBData.tags.length > 5) {
+            return false;
+        }
+        if (Array.isArray(dBData.tags)) {
+            for (const tag in dBData.tags) {
+                if (tag.length > 15) {
+                    return false;
+                }
+            }
+        } else {
+            const oneTag = dBData.tags as string;
+            if (oneTag.length > 15) {
+                return false;
+            }
+        }
+        return true;
+    }
     async addDrawing(formData: FormData, imageName: string): Promise<void> {
         let metaTags: string[] = [];
         let metaId = '';
@@ -51,9 +72,14 @@ export class DatabaseService {
             metaTags = formTags;
         }
         const DBDATA: DBData = { id: metaId, name: metaName, tags: metaTags, fileName: imageName };
-        this.collection.insertOne(DBDATA).catch((err) => {
-            throw err;
-        });
+        if (!this.isValidData(DBDATA)) {
+            fs.unlinkSync('./images/' + DBDATA.fileName);
+            throw new Error('Data is not valid');
+        } else {
+            this.collection.insertOne(DBDATA).catch((err) => {
+                throw err;
+            });
+        }
     }
     async deleteDrawing(fileNameToDelete: string): Promise<void> {
         fs.unlinkSync('./images/' + fileNameToDelete);

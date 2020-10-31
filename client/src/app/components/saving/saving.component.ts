@@ -4,7 +4,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
 import { CONFIRM_SAVED_DURATION, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -97,8 +96,8 @@ export class SavingComponent implements AfterViewChecked, OnInit {
         this.isSaveButtonDisabled = true;
         this.drawingService.baseCtx.canvas.toBlob(async (blob) => {
             await blob;
-            const ID: string = new Date().getUTCMilliseconds() + '';
             if (blob) {
+                const ID: string = new Date().getUTCMilliseconds() + '';
                 const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
                 this.databaseService.addDrawing(meta, blob).subscribe(
                     (data) => {
@@ -106,7 +105,9 @@ export class SavingComponent implements AfterViewChecked, OnInit {
                         this.saveConfirmMessage();
                     },
                     (error) => {
-                        this.dialog.open(ErrorAlertComponent);
+                        console.log(error);
+                        this.isSaveButtonDisabled = false;
+                        this.saveErrorModal();
                     },
                 );
             }
@@ -118,9 +119,18 @@ export class SavingComponent implements AfterViewChecked, OnInit {
         this.ownerForm.markAllAsTouched();
     }
 
+    saveErrorModal(): void {
+        this.dialog.afterAllClosed.subscribe(() => {
+            const config = new MatSnackBarConfig();
+            this.snackBar.open('Erreur dans la sauvegarde du dessin', 'Fermer', config);
+        });
+    }
+
     saveConfirmMessage(): void {
-        const config = new MatSnackBarConfig();
-        config.duration = CONFIRM_SAVED_DURATION;
-        this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
+        this.dialog.afterAllClosed.subscribe(() => {
+            const config = new MatSnackBarConfig();
+            config.duration = CONFIRM_SAVED_DURATION;
+            this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
+        });
     }
 }

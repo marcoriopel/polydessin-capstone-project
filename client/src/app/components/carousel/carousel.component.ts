@@ -2,7 +2,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.component';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { CarouselService } from '@app/services/carousel/carousel.service';
@@ -127,7 +126,7 @@ export class CarouselComponent {
                 this.loadDBData();
             },
             () => {
-                this.dialog.open(ErrorAlertComponent);
+                // this.dialog.open(ErrorAlertComponent);
             },
         );
     }
