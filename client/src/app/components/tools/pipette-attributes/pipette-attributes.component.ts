@@ -13,7 +13,7 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
     constructor(public pipetteService: PipetteService) {}
 
     ngOnInit(): void {
-        this.pipetteService.onCanvas.subscribe((data: boolean) => {
+        this.pipetteService.mouseOut.subscribe((data: boolean) => {
             if (data) {
                 this.zoom.nativeElement.style.visibility = 'visible';
             } else {
@@ -21,6 +21,7 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
             }
         });
     }
+
     ngAfterViewInit(): void {
         this.zoom.nativeElement.style.visibility = 'hidden';
         this.zoomCtx = this.zoom.nativeElement.getContext('2d') as CanvasRenderingContext2D;

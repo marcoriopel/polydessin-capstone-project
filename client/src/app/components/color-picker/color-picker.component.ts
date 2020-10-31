@@ -142,17 +142,13 @@ export class ColorPickerComponent implements AfterViewInit {
             this.changePrimaryColor(data[0]);
             this.primaryOpacity = Math.round((Number(data[1]) / 255) * MAX_OPACITY);
             const primary = document.getElementById('primary') as HTMLInputElement;
-            if (primary != null) {
-                primary.value = data[0];
-            }
+            primary.value = data[0];
         });
         this.pipetteService.secondaryColor.subscribe((data: string[]) => {
             this.changeSecondaryColor(data[0]);
             this.secondaryOpacity = Math.round((Number(data[1]) / 255) * MAX_OPACITY);
             const secondary = document.getElementById('secondary') as HTMLInputElement;
-            if (secondary != null) {
-                secondary.value = data[0];
-            }
+            secondary.value = data[0];
         });
     }
 }

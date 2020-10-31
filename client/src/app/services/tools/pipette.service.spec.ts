@@ -153,7 +153,7 @@ describe('PipetteService', () => {
     });
 
     it('Should emit an event and clear zoom when mouse near a border', () => {
-        const eventEmiterSpy = spyOn(service.onCanvas, 'emit');
+        const eventEmiterSpy = spyOn(service.mouseOut, 'next');
         const clearCanvasSpy = spyOn(service, 'clearCanvas');
         const mouseDownCoord = { x: 0, y: 0 };
         service.handleNearBorder(mouseDownCoord);
@@ -162,13 +162,13 @@ describe('PipetteService', () => {
     });
 
     it('Should emit a event on mouse leave', () => {
-        const eventEmiterSpy = spyOn(service.onCanvas, 'emit');
+        const eventEmiterSpy = spyOn(service.mouseOut, 'next');
         service.onMouseLeave();
         expect(eventEmiterSpy).toHaveBeenCalledWith(false);
     });
 
     it('Should emit a event on mouse enter', () => {
-        const eventEmiterSpy = spyOn(service.onCanvas, 'emit');
+        const eventEmiterSpy = spyOn(service.mouseOut, 'next');
         service.onMouseEnter();
         expect(eventEmiterSpy).toHaveBeenCalledWith(true);
     });

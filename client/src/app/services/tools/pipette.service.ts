@@ -1,10 +1,11 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton, ZOOM_PIPETTE, ZOOM_RADIUS } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Subject } from 'rxjs';
 
 const MAX_OPACITY = 255;
 
@@ -12,8 +13,8 @@ const MAX_OPACITY = 255;
     providedIn: 'root',
 })
 export class PipetteService extends Tool {
+    @Output() mouseOut: Subject<boolean> = new Subject();
     color: string[] = ['#000000', '0'];
-    onCanvas: EventEmitter<boolean> = new EventEmitter<boolean>();
     primaryColor: EventEmitter<string[]> = new EventEmitter<string[]>();
     secondaryColor: EventEmitter<string[]> = new EventEmitter<string[]>();
     name: string = TOOL_NAMES.PIPETTE_TOOL_NAME;
@@ -48,7 +49,7 @@ export class PipetteService extends Tool {
         if (event.button === MouseButton.Right) {
             this.secondaryColor.emit(this.color);
         }
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     showZoomPixel(event: MouseEvent): void {
@@ -109,7 +110,7 @@ export class PipetteService extends Tool {
         }
         if (this.isNearBorder) {
             this.clearCanvas();
-            this.onCanvas.emit(false);
+            this.mouseOut.next(false);
         }
     }
 
@@ -122,10 +123,10 @@ export class PipetteService extends Tool {
         this.showZoomPixel(event);
     }
     onMouseEnter(): void {
-        this.onCanvas.emit(true);
+        this.mouseOut.next(true);
     }
 
     onMouseLeave(): void {
-        this.onCanvas.emit(false);
+        this.mouseOut.next(false);
     }
 }
