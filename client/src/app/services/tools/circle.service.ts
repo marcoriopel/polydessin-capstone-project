@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Trigonometry } from '@app/classes/math/trigonometry';
 import { Tool } from '@app/classes/tool';
 import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -24,6 +25,10 @@ export class CircleService extends Tool {
     width: number = 1;
     firstPoint: Vec2;
     lastPoint: Vec2;
+    circleHeight: number;
+    circleWidth: number;
+    quadrant: number;
+    trigonometry: Trigonometry = new Trigonometry();
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -143,6 +148,42 @@ export class CircleService extends Tool {
         ctx.stroke();
     }
 
+    drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
+        this.setCircleHeight();
+        this.setCircleWidth();
+        this.quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
+        const ellipseRadiusX = this.circleWidth / 2;
+        const ellipseRadiusY = this.circleHeight / 2;
+        const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
+        let ellipseCenterX = point.x + circleRadius;
+        let ellipseCenterY = point.y + circleRadius;
+        switch (this.quadrant) {
+            case 1:
+                ellipseCenterX = this.firstPoint.x - circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
+                break;
+            case 2:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
+                break;
+            case 3:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
+                break;
+            case 4:
+                ellipseCenterX = this.firstPoint.x - circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
+                break;
+            default:
+        }
+        ctx.beginPath();
+        ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
+        if (this.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fill();
+        }
+        ctx.stroke();
+    }
+
     /*
      to find the top left point of the rectangle or the square
      */
@@ -188,5 +229,13 @@ export class CircleService extends Tool {
             isShiftDown: this.isShiftKeyDown,
             lineWidth: this.width,
         };
+    }
+
+    setCircleWidth(): void {
+        this.circleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+    }
+
+    setCircleHeight(): void {
+        this.circleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 }

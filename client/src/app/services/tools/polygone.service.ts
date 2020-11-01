@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Trigonometry } from '@app/classes/math/trigonometry';
 import { Tool } from '@app/classes/tool';
-import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -87,19 +86,30 @@ export class PolygoneService extends Tool {
         }
     }
 
+    // drawCircle(ctx: CanvasRenderingContext2D): void {
+    //     const topLeftPoint = this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint);
+    //     const centerMin = Math.min(topLeftPoint.x + this.circleWidth / 2, topLeftPoint.y + this.circleHeight / 2);
+    //     console.log('x: ' + topLeftPoint.x + this.circleWidth / 2 + ', y: ' + topLeftPoint.y + this.circleHeight / 2);
+    //     console.log('center: ' + centerMin);
+    //     const ellipseData: Ellipse = {
+    //         type: 'ellipse',
+    //         primaryColor: this.colorSelectionService.primaryColor,
+    //         secondaryColor: this.colorSelectionService.secondaryColor,
+    //         fillStyle: FILL_STYLES.BORDER,
+    //         isShiftDown: true,
+    //         center: { x: centerMin, y: centerMin },
+    //         radius: { x: this.circleWidth / 2, y: this.circleHeight / 2 },
+    //         lineWidth: 1,
+    //     };
+    //     this.circleService.drawEllipse(ctx, ellipseData);
+    //     this.LineDashh(this.drawingService.previewCtx);
+    // }
+
     drawCircle(ctx: CanvasRenderingContext2D): void {
-        const topLeftPoint = this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint);
-        const ellipseData: Ellipse = {
-            type: 'ellipse',
-            primaryColor: this.colorSelectionService.primaryColor,
-            secondaryColor: this.colorSelectionService.secondaryColor,
-            fillStyle: FILL_STYLES.BORDER,
-            isShiftDown: true,
-            center: { x: topLeftPoint.x + this.circleWidth / 2, y: topLeftPoint.y + this.circleHeight / 2 },
-            radius: { x: this.circleWidth / 2, y: this.circleHeight / 2 },
-            lineWidth: 1,
-        };
-        this.circleService.drawEllipse(ctx, ellipseData);
+        this.circleService.changeFillStyle(FILL_STYLES.BORDER);
+        this.circleService.firstPoint = this.firstPoint;
+        this.circleService.lastPoint = this.lastPoint;
+        this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint));
         this.LineDashh(this.drawingService.previewCtx);
     }
 
@@ -125,21 +135,21 @@ export class PolygoneService extends Tool {
         const center: Vec2 = { x: 0, y: 0 };
 
         switch (quadrant) {
-            case Quadrant.TOP_RIGHT:
+            case 1:
                 center.x = this.firstPoint.x - circleRadius;
-                center.y = this.firstPoint.y + circleRadius;
+                center.y = this.firstPoint.y - circleRadius;
                 break;
-            case Quadrant.TOP_LEFT:
-                center.x = this.firstPoint.x + circleRadius;
-                center.y = this.firstPoint.y + circleRadius;
-                break;
-            case Quadrant.BOTTOM_LEFT:
+            case 2:
                 center.x = this.firstPoint.x + circleRadius;
                 center.y = this.firstPoint.y - circleRadius;
                 break;
-            case Quadrant.BOTTOM_RIGHT:
+            case 3:
+                center.x = this.firstPoint.x + circleRadius;
+                center.y = this.firstPoint.y + circleRadius;
+                break;
+            case 4:
                 center.x = this.firstPoint.x - circleRadius;
-                center.y = this.firstPoint.y - circleRadius;
+                center.y = this.firstPoint.y + circleRadius;
                 break;
             default:
         }

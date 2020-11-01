@@ -101,16 +101,16 @@ export class Trigonometry {
     findQuadrant(firstPoint: Vec2, lastPoint: Vec2): number {
         if (firstPoint.x > lastPoint.x && firstPoint.y > lastPoint.y) {
             // firstPoint is bottom right corner lastPoint is top left corner
-            return Quadrant.BOTTOM_RIGHT;
+            return 1;
         } else if (firstPoint.x > lastPoint.x && firstPoint.y < lastPoint.y) {
             // firstPoint is top right corner lastPoint is bottom left corner
-            return Quadrant.TOP_RIGHT;
+            return 4;
         } else if (firstPoint.x < lastPoint.x && firstPoint.y > lastPoint.y) {
             // firstPoint is bottom left corner lastPoint is top right corner
-            return Quadrant.BOTTOM_LEFT;
+            return 2;
         }
         // firstPoint is top left corner lastPoint is bottom right corner
-        return Quadrant.TOP_LEFT;
+        return 3;
     }
 
     calculateCircleWidth(firstPoint: Vec2, lastPoint: Vec2): number {
@@ -158,22 +158,22 @@ export class Trigonometry {
         let x = 0;
         let y = 0;
         switch (quadrant) {
-            case Quadrant.TOP_LEFT:
+            case 1:
                 // firstPoint is top left corner lastPoint is bottom right corner
                 x = lastPoint.x;
                 y = lastPoint.y;
                 break;
-            case Quadrant.BOTTOM_RIGHT:
+            case 2:
                 // firstPoint is bottom right corner lastPoint is top left corner
                 x = firstPoint.x;
                 y = lastPoint.y;
                 break;
-            case Quadrant.TOP_RIGHT:
+            case 3:
                 // firstPoint is top right corner lastPoint is bottom left corner
                 x = firstPoint.x;
                 y = firstPoint.y;
                 break;
-            case Quadrant.BOTTOM_LEFT:
+            case 4:
                 // firstPoint is bottom left corner lastPoint is top right corner
                 x = lastPoint.x;
                 y = firstPoint.y;
