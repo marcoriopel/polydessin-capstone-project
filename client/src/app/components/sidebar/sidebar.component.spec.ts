@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -10,7 +10,6 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
@@ -58,7 +57,7 @@ describe('SidebarComponent', () => {
         expect(toolSelectionServiceSpy.changeTool).toHaveBeenCalled();
     });
 
-    it('should call toolSelectionService.currentTool.setCursor', () => {
+    it('should call toolSelectionService.setCurrentToolCursor', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
         expect(toolSelectionServiceSpy.setCurrentToolCursor).toHaveBeenCalled();
@@ -70,7 +69,7 @@ describe('SidebarComponent', () => {
     });
 
     it('should call openWarning', () => {
-        const button = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
+        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
         fixture.detectChanges();
         button.triggerEventHandler('click', null);
         fixture.detectChanges();

@@ -26,7 +26,7 @@ export class EditorComponent implements AfterViewInit {
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
 
-    keyToolArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's'];
+    shortcutsArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's'];
 
     constructor(
         public hotkeyService: HotkeyService,
@@ -61,7 +61,7 @@ export class EditorComponent implements AfterViewInit {
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.keyToolArray.includes(event.key.toString())) {
+        if (this.shortcutsArray.includes(event.key.toString())) {
             this.hotkeyService.onKeyDown(event);
         } else {
             this.toolSelectionService.currentToolKeyDown(event);

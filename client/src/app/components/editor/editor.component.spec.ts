@@ -68,15 +68,7 @@ describe('EditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should click brush button', () => {
-        keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
-        const eventSpy = spyOn(keyboardEvent, 'preventDefault');
-        component.onKeyDown(keyboardEvent);
-        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
-        expect(eventSpy).toHaveBeenCalled();
-    });
-
-    it('should call toolSectionService.currentTool.onKeyUp', () => {
+    it('should call toolSectionService.currentToolKeyUp', () => {
         const keyEvent = {
             key: 'shift',
         } as KeyboardEvent;
