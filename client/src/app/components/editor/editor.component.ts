@@ -26,7 +26,7 @@ export class EditorComponent implements AfterViewInit {
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
 
-    keyToolArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g'];
+    keyToolArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's'];
 
     constructor(
         public hotkeyService: HotkeyService,
