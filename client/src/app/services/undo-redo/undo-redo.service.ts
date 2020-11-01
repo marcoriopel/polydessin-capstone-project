@@ -25,7 +25,6 @@ export class UndoRedoService {
     ) {}
 
     undo(): void {
-        this.resizeDrawingService.restoreCanvas(resize);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);

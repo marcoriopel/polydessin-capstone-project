@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StraightLine } from '@app/classes/line';
+import { Trigonometry } from '@app/classes/math/trigonometry';
 import { Tool } from '@app/classes/tool';
 import { Line } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -7,7 +8,6 @@ import { LineAngle, MouseButton, Quadrant } from '@app/ressources/global-variabl
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { TrigonometryService } from '@app/services/trigonometry/trigonometry.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -28,12 +28,9 @@ export class LineService extends Tool {
     dotWidth: number = 1;
     lineData: Line;
     line: StraightLine;
+    trigonometry: Trigonometry = new Trigonometry();
 
-    constructor(
-        public drawingService: DrawingService,
-        public colorSelectionService: ColorSelectionService,
-        public trigonometryService: TrigonometryService,
-    ) {
+    constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
     }
 
@@ -79,8 +76,8 @@ export class LineService extends Tool {
                 return;
             }
             // Check if the last point is 20px away from initial point
-            const distance = this.trigonometryService.distanceBetweenTwoDots(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2]);
-            if (distance < this.trigonometryService.MAX_DISTANCE_BETWEEN_TWO_DOTS) {
+            const distance = this.trigonometry.distanceBetweenTwoDots(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2]);
+            if (distance < this.trigonometry.MAX_DISTANCE_BETWEEN_TWO_DOTS) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
                 this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
@@ -234,7 +231,7 @@ export class LineService extends Tool {
         opposite = this.mouseClicks[this.mouseClicks.length - 1].y - mouseCoordinates.y;
 
         hypothenuse = Math.sqrt(Math.pow(opposite, 2) + Math.pow(adjacent, 2));
-        quadrant = this.trigonometryService.findCursorQuadrant(adjacent, opposite);
+        quadrant = this.trigonometry.findCursorQuadrant(adjacent, opposite);
 
         // Make adjacent and opposite values positive if they are negative
         adjacent = Math.abs(adjacent);
@@ -244,8 +241,8 @@ export class LineService extends Tool {
             hypothenuse = 1;
         }
         angleRadians = Math.asin(opposite / hypothenuse);
-        angleDegree = this.trigonometryService.radiansToDegrees(angleRadians);
-        lineAngle = this.trigonometryService.findClosestAngle(quadrant, angleDegree);
+        angleDegree = this.trigonometry.radiansToDegrees(angleRadians);
+        lineAngle = this.trigonometry.findClosestAngle(quadrant, angleDegree);
         this.adjustEndingPoint(lineAngle, mouseCoordinates, adjacent);
     }
 

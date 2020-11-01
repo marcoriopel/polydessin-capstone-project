@@ -142,10 +142,6 @@ export class ResizeDrawingService {
         }
     }
 
-    restoreDefaultCanvas();
-
-    restorePreviousCanvas(resize: Resize, isDefault: boolean): void {}
-
     private updateResizeData(): void {
         this.resizeData = {
             type: 'resize',
