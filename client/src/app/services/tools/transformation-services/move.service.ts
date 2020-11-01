@@ -90,7 +90,7 @@ export class MoveService extends Tool {
                 this.isArrowKeyLeftPressed === true
             ) {
                 if (this.intervalId === 0) {
-                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
+                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this) as any;
                 }
             }
         }, CONFIRM_KEY_PRESS_DURATION);

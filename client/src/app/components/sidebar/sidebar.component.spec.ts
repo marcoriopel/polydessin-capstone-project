@@ -1,60 +1,49 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { Tool } from '@app/classes/tool';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { BrushService } from '@app/services/tools/brush.service';
-import { CircleService } from '@app/services/tools/circle.service';
-import { EraserService } from '@app/services/tools/eraser.service';
-import { FillService } from '@app/services/tools/fill.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { SelectionService } from '@app/services/tools/selection.service';
-import { SquareService } from '@app/services/tools/square.service';
+import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-class ToolStub extends Tool {}
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
-    let toolStub: ToolStub;
-    let toolSelectionStub: ToolSelectionService;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
+    let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let obs: Subject<string>;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
-        toolSelectionStub = new ToolSelectionService(
-            toolStub as PencilService,
-            toolStub as BrushService,
-            toolStub as SquareService,
-            toolStub as CircleService,
-            toolStub as LineService,
-            toolStub as FillService,
-            toolStub as EraserService,
-            toolStub as SelectionService,
-        );
-        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+    beforeEach(() => {
+        obs = new Subject<string>();
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'setCurrentToolCursor']);
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+
         TestBed.configureTestingModule({
+            imports: [BrowserAnimationsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [
-                { provide: ToolSelectionService, useValue: toolSelectionStub },
-                { provide: MatDialog, useValue: matdialogSpy },
+                { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
+                { provide: MatDialog, useValue: matdialogSpy },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
             ],
         }).compileComponents();
-    }));
+    });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
+        await fixture.whenStable();
         fixture.detectChanges();
     });
 
@@ -63,17 +52,15 @@ describe('SidebarComponent', () => {
     });
 
     it('should call toolSelectionService.changeTool', () => {
-        const spy = spyOn(component.toolSelectionService, 'changeTool');
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
-        expect(spy).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.changeTool).toHaveBeenCalled();
     });
 
-    it('should call toolSelectionService.currentTool.setCursor', () => {
-        const spy = spyOn(toolStub, 'setCursor');
+    it('should call toolSelectionService.setCurrentToolCursor', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
-        expect(spy).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.setCurrentToolCursor).toHaveBeenCalled();
     });
 
     it('should call open of MatDialog', () => {
@@ -94,15 +81,11 @@ describe('SidebarComponent', () => {
         const target = ({
             value,
         } as unknown) as HTMLInputElement;
-
         const event = ({
             target,
         } as unknown) as InputEvent;
-
-        const cursorSpy = spyOn(toolStub, 'setCursor');
-        const toolSpy = spyOn(component.toolSelectionService, 'changeTool');
         component.onToolChange(event);
-        expect(cursorSpy).not.toHaveBeenCalled();
-        expect(toolSpy).not.toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.setCurrentToolCursor).not.toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.changeTool).not.toHaveBeenCalled();
     });
 });

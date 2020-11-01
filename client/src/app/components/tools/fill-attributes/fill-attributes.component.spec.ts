@@ -1,5 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FillAttributesComponent } from './fill-attributes.component';
 
 describe('FillAttributesComponent', () => {
@@ -8,6 +8,7 @@ describe('FillAttributesComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [FillAttributesComponent],
         }).compileComponents();
     }));
