@@ -16,6 +16,7 @@ export class MoveService extends Tool {
     isArrowKeyUpPressed: boolean = false;
     isArrowKeyRightPressed: boolean = false;
     isArrowKeyDownPressed: boolean = false;
+    intervalId: number = 0;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -33,7 +34,6 @@ export class MoveService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (this.transformationOver) {
             this.transformationOver = false;
-            this.clearSelectionBackground(this.drawingService.previewCtx);
             this.printSelectionOnPreview();
         }
     }
@@ -44,7 +44,6 @@ export class MoveService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selection.startingPoint.x += event.movementX;
         this.selection.startingPoint.y += event.movementY;
-        this.clearSelectionBackground(this.drawingService.previewCtx);
         this.printSelectionOnPreview();
     }
 
@@ -53,42 +52,53 @@ export class MoveService extends Tool {
 
         switch (event.key) {
             case ARROW_KEYS.LEFT:
+                if (this.isArrowKeyLeftPressed === false) {
+                    this.selection.startingPoint.x -= 3;
+                }
                 this.isArrowKeyLeftPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.UP:
+                if (this.isArrowKeyUpPressed === false) {
+                    this.selection.startingPoint.y -= 3;
+                }
                 this.isArrowKeyUpPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.RIGHT:
+                if (this.isArrowKeyRightPressed === false) {
+                    this.selection.startingPoint.x += 3;
+                }
                 this.isArrowKeyRightPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.DOWN:
+                if (this.isArrowKeyDownPressed === false) {
+                    this.selection.startingPoint.y += 3;
+                }
                 this.isArrowKeyDownPressed = true;
                 isArrowKey = true;
                 break;
         }
 
-        if (this.isArrowKeyLeftPressed) {
-            this.selection.startingPoint.x -= 3;
-        }
-        if (this.isArrowKeyUpPressed) {
-            this.selection.startingPoint.y -= 3;
-        }
-        if (this.isArrowKeyRightPressed) {
-            this.selection.startingPoint.x += 3;
-        }
-        if (this.isArrowKeyDownPressed) {
-            this.selection.startingPoint.y += 3;
-        }
+        setTimeout(() => {
+            if (
+                this.isArrowKeyDownPressed === true ||
+                this.isArrowKeyRightPressed === true ||
+                this.isArrowKeyUpPressed === true ||
+                this.isArrowKeyLeftPressed === true
+            ) {
+                if (this.intervalId === 0) {
+                    this.intervalId = setInterval(this.move, 100, this);
+                }
+            }
+        }, 500);
 
         if (isArrowKey) {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.printSelectionOnPreview();
             if (this.transformationOver) {
                 this.transformationOver = false;
-                this.clearSelectionBackground(this.drawingService.previewCtx);
             }
         }
     }
@@ -108,6 +118,18 @@ export class MoveService extends Tool {
                 this.isArrowKeyDownPressed = false;
                 break;
         }
+
+        if (this.intervalId !== 0) {
+            if (
+                this.isArrowKeyDownPressed === false &&
+                this.isArrowKeyRightPressed === false &&
+                this.isArrowKeyUpPressed === false &&
+                this.isArrowKeyLeftPressed === false
+            ) {
+                clearInterval(this.intervalId);
+                this.intervalId = 0;
+            }
+        }
     }
 
     clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
@@ -123,6 +145,28 @@ export class MoveService extends Tool {
     }
 
     printSelectionOnPreview(): void {
+        this.clearSelectionBackground(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
+    }
+
+    private move(self: MoveService): void {
+        if (self.isArrowKeyLeftPressed) {
+            self.selection.startingPoint.x -= 3;
+        }
+        if (self.isArrowKeyUpPressed) {
+            self.selection.startingPoint.y -= 3;
+        }
+        if (self.isArrowKeyRightPressed) {
+            self.selection.startingPoint.x += 3;
+        }
+        if (self.isArrowKeyDownPressed) {
+            self.selection.startingPoint.y += 3;
+        }
+
+        self.drawingService.clearCanvas(self.drawingService.previewCtx);
+        self.printSelectionOnPreview();
+        if (self.transformationOver) {
+            self.transformationOver = false;
+        }
     }
 }
