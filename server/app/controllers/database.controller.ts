@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
-import * as path from 'path';
 import { DatabaseService } from '../services/database.service';
 
 @injectable()
@@ -51,17 +50,7 @@ export class DatabaseController {
                 });
         });
 
-        this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
-            const files: string[] = fs.readdirSync(this.DIR);
-            if (files.includes(req.params.filename)) {
-                res.contentType('image/png');
-                res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
-            } else {
-                res.status(Httpstatus.StatusCodes.NOT_FOUND);
-            }
-        });
-
-        this.router.get('/getDBData/', (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/getDBData', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDBData()
                 .then((dbData: DBData[]) => {

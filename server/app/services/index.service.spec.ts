@@ -1,7 +1,7 @@
-import { TYPES } from '@app/types';
-import { Message } from '@common/communication/message';
 import { expect } from 'chai';
+import { Message } from '../../../common/communication/message';
 import { Stubbed, testingContainer } from '../../test/test-utils';
+import { TYPES } from '../types';
 import { DateService } from './date.service';
 import { IndexService } from './index.service';
 
