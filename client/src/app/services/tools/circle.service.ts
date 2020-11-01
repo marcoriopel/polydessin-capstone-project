@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Trigonometry } from '@app/classes/math/trigonometry';
 import { Tool } from '@app/classes/tool';
 import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -25,8 +24,6 @@ export class CircleService extends Tool {
     width: number = 1;
     firstPoint: Vec2;
     lastPoint: Vec2;
-    quadrant: number;
-    trigonometry: Trigonometry = new Trigonometry();
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -89,8 +86,8 @@ export class CircleService extends Tool {
         }
     }
 
-    drawShape(ctx: CanvasRenderingContext2D): void {
-        const topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
+    private drawShape(ctx: CanvasRenderingContext2D): void {
+        const topLeftPoint = this.findTopLeftPoint();
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -144,6 +141,32 @@ export class CircleService extends Tool {
             ctx.fill();
         }
         ctx.stroke();
+    }
+
+    /*
+     to find the top left point of the rectangle or the square
+     */
+    findTopLeftPoint(): Vec2 {
+        const point1 = this.firstPoint;
+        const point2 = this.lastPoint;
+        // firstPoint is top left corner lastPoint is bottom right corner
+        let x = point1.x;
+        let y = point1.y;
+        if (point1.x > point2.x && point1.y > point2.y) {
+            // firstPoint is bottom right corner lastPoint is top left corner
+            x = point2.x;
+            y = point2.y;
+        } else if (point1.x > point2.x && point1.y < point2.y) {
+            // firstPoint is top right corner lastPoint is bottom left corner
+            x = point2.x;
+            y = point1.y;
+        } else if (point1.x < point2.x && point1.y > point2.y) {
+            // firstPoint is bottom left corner lastPoint is top right corner
+            x = point1.x;
+            y = point2.y;
+        }
+
+        return { x, y };
     }
 
     setellipseWidth(): void {

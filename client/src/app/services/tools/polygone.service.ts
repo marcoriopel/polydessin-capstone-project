@@ -88,13 +88,14 @@ export class PolygoneService extends Tool {
     }
 
     drawCircle(ctx: CanvasRenderingContext2D): void {
+        const topLeftPoint = this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint);
         const ellipseData: Ellipse = {
             type: 'ellipse',
             primaryColor: this.colorSelectionService.primaryColor,
             secondaryColor: this.colorSelectionService.secondaryColor,
             fillStyle: FILL_STYLES.BORDER,
             isShiftDown: true,
-            center: this.trigonometry.getCenter(this.firstPoint, this.lastPoint),
+            center: { x: topLeftPoint.x + this.circleWidth / 2, y: topLeftPoint.y + this.circleHeight / 2 },
             radius: { x: this.circleWidth / 2, y: this.circleHeight / 2 },
             lineWidth: 1,
         };

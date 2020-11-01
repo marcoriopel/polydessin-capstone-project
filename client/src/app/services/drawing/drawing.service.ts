@@ -37,7 +37,6 @@ export class DrawingService {
 
     updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
         this.undoStack.push(modification);
-        console.log(this.undoStack);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
         }

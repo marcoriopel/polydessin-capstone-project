@@ -73,7 +73,6 @@ export class UndoRedoService {
                 break;
             case 'resize':
                 const resizeData = element as Resize;
-                console.log('called?');
                 this.resizeDrawingService.resizeCanvas(resizeData.mouseEvent);
                 break;
         }
