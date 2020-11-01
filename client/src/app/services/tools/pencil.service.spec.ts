@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from './pencil-service';
+import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
 describe('PencilService', () => {

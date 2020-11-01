@@ -2,10 +2,10 @@ import { AfterViewInit, Component } from '@angular/core';
 
 @Component({
     selector: 'app-userguide',
-    templateUrl: './userguide.component.html',
-    styleUrls: ['./userguide.component.scss'],
+    templateUrl: './user-guide.component.html',
+    styleUrls: ['./user-guide.component.scss'],
 })
-export class UserguideComponent implements AfterViewInit {
+export class UserGuideComponent implements AfterViewInit {
     disableAnimation: boolean = true;
 
     ngAfterViewInit(): void {

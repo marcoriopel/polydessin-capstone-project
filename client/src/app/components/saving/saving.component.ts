@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
@@ -7,6 +7,7 @@ import { ErrorAlertComponent } from '@app/components/error-alert/error-alert.com
 import { CONFIRM_SAVED_DURATION } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { DrawingData } from '@common/communication/drawing-data';
 
 @Component({
@@ -14,7 +15,7 @@ import { DrawingData } from '@common/communication/drawing-data';
     templateUrl: './saving.component.html',
     styleUrls: ['./saving.component.scss'],
 })
-export class SavingComponent {
+export class SavingComponent implements OnInit, OnDestroy {
     isSaveButtonDisabled: boolean = false;
     visible: boolean = true;
     name: string = '';
@@ -28,7 +29,12 @@ export class SavingComponent {
         public drawingService: DrawingService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog,
+        public hotkeyService: HotkeyService,
     ) {}
+
+    ngOnInit(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
+    }
 
     addTag(event: MatChipInputEvent): void {
         const input = event.input;
@@ -74,5 +80,9 @@ export class SavingComponent {
         const config = new MatSnackBarConfig();
         config.duration = CONFIRM_SAVED_DURATION;
         this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
+    }
+
+    ngOnDestroy(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
     }
 }

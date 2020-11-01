@@ -1,16 +1,32 @@
 import { TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { EraserService } from '@app/services/tools/eraser.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil.service';
+import { Subject } from 'rxjs';
+import SpyObj = jasmine.SpyObj;
 
 describe('ToolSelectionService', () => {
     let service: ToolSelectionService;
     let eraserService: EraserService;
     let pencilService: PencilService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let matdialogSpy: SpyObj<MatDialog>;
+    let obs: Subject<string>;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        obs = new Subject<string>();
+        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: MatDialog, useValue: matdialogSpy },
+            ],
+        });
         service = TestBed.inject(ToolSelectionService);
         eraserService = TestBed.inject(EraserService);
         pencilService = TestBed.inject(PencilService);
