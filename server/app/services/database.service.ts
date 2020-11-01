@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
-import { DBData, ID_NAME, MetaData, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
+import { DBData, MetaData } from '../../../common/communication/drawing-data';
 
 // CHANGE the URL for your database information
 const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
@@ -40,38 +40,25 @@ export class DatabaseService {
         if (dBData.name.length === 0) {
             return false;
         }
+
+        if (dBData.name.length > 15) {
+            return false;
+        }
+
         if (dBData.tags.length > 5) {
             return false;
         }
+
         if (Array.isArray(dBData.tags)) {
-            for (const tag in dBData.tags) {
+            for (const tag of dBData.tags) {
                 if (tag.length > 15) {
                     return false;
                 }
             }
-        } else {
-            const oneTag = dBData.tags as string;
-            if (oneTag.length > 15) {
-                return false;
-            }
         }
         return true;
     }
-    async addDrawing(formData: FormData, imageName: string): Promise<void> {
-        let metaTags: string[] = [];
-        let metaId = '';
-        let metaName = '';
-        const formId = formData[ID_NAME];
-        const formName = formData[NAME];
-        const formTags = formData[TAGS_NAME];
-        if (formId && formName) {
-            metaId = formId.toString();
-            metaName = formName.toString();
-        }
-        if (formTags) {
-            metaTags = formTags;
-        }
-        const DBDATA: DBData = { id: metaId, name: metaName, tags: metaTags, fileName: imageName };
+    async addDrawing(DBDATA: DBData): Promise<void> {
         if (!this.isValidData(DBDATA)) {
             fs.unlinkSync('./images/' + DBDATA.fileName);
             throw new Error('Data is not valid');
@@ -96,6 +83,7 @@ export class DatabaseService {
                 const dBDataverified: DBData[] = [];
                 const files: string[] = fs.readdirSync(this.DIR);
                 for (const data of dBData) {
+                    console.log(files);
                     if (files.includes(data.fileName)) {
                         dBDataverified.push(data);
                     }

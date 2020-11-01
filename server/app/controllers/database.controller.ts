@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
+import { ID_NAME, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
 import { DatabaseService } from '../services/database.service';
 
 @injectable()
@@ -29,8 +30,17 @@ export class DatabaseController {
 
         this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
+            let drawingTags: string[];
+            if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
+            else drawingTags = req.body[TAGS_NAME];
+            const DBDATA: DBData = {
+                id: req.body[ID_NAME],
+                name: req.body[NAME],
+                tags: drawingTags,
+                fileName: savedFileName,
+            };
             this.databaseService
-                .addDrawing(req.body, savedFileName)
+                .addDrawing(DBDATA)
                 .then(() => {
                     res.sendStatus(Httpstatus.StatusCodes.OK);
                 })
