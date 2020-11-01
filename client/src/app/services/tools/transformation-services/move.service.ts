@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
-import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables'
+import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class MoveService extends Tool {
     isArrowKeyUpPressed: boolean = false;
     isArrowKeyRightPressed: boolean = false;
     isArrowKeyDownPressed: boolean = false;
-    intervalId: number = 0;
+    intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -38,8 +38,6 @@ export class MoveService extends Tool {
             this.printSelectionOnPreview();
         }
     }
-
-    onMouseUp(event: MouseEvent): void {}
 
     onMouseMove(event: MouseEvent): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -89,8 +87,8 @@ export class MoveService extends Tool {
                 this.isArrowKeyUpPressed === true ||
                 this.isArrowKeyLeftPressed === true
             ) {
-                if (this.intervalId === 0) {
-                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this) as any;
+                if (this.intervalId === undefined) {
+                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
                 }
             }
         }, CONFIRM_KEY_PRESS_DURATION);
@@ -116,7 +114,7 @@ export class MoveService extends Tool {
                 break;
         }
 
-        if (this.intervalId !== 0) {
+        if (this.intervalId !== undefined) {
             if (
                 this.isArrowKeyDownPressed === false &&
                 this.isArrowKeyRightPressed === false &&
@@ -124,7 +122,7 @@ export class MoveService extends Tool {
                 this.isArrowKeyLeftPressed === false
             ) {
                 clearInterval(this.intervalId);
-                this.intervalId = 0;
+                this.intervalId = undefined;
             }
         }
     }
