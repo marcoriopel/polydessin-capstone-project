@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
-import { UserguideComponent } from '@app/components/userguide/userguide.component';
+import { UserGuideComponent } from '@app/components/userguide/user-guide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-variables/tool-names';
@@ -44,7 +44,7 @@ export class SidebarComponent implements OnInit {
     }
 
     openUserguide(): void {
-        this.dialog.open(UserguideComponent);
+        this.dialog.open(UserGuideComponent);
     }
 
     openDialog(): void {

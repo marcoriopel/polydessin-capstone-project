@@ -4,7 +4,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { EraserService } from '@app/services/tools/eraser.service';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil.service';
 import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 

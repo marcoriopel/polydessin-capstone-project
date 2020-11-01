@@ -37,7 +37,7 @@ import { PencilAttributesComponent } from './components/tools/pencil-attributes/
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
-import { UserguideComponent } from './components/userguide/userguide.component';
+import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
     declarations: [
@@ -47,7 +47,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         ErrorAlertComponent,
         DrawingComponent,
         MainPageComponent,
-        UserguideComponent,
+        UserGuideComponent,
         DrawingDetailComponent,
         GeneralDetailComponent,
         AttributePanelComponent,
@@ -59,7 +59,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         CarouselComponent,
         SliderComponent,
         SquareAttributesComponent,
-        UserguideComponent,
         NewDrawingModalComponent,
         ColorPickerComponent,
         SavingComponent,
@@ -85,7 +84,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatCheckboxModule,
         MatInputModule,
     ],
-    entryComponents: [UserguideComponent, MainPageComponent],
+    entryComponents: [UserGuideComponent, MainPageComponent],
     providers: [],
     bootstrap: [AppComponent],
 })
