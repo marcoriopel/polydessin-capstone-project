@@ -6,6 +6,8 @@ export interface ToolNames {
     LINE_TOOL_NAME: string;
     FILL_TOOL_NAME: string;
     ERASER_TOOL_NAME: string;
+    POLYGONE_TOOL_NAME: string;
+    SELECTION_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -16,4 +18,6 @@ export const TOOL_NAMES: ToolNames = {
     LINE_TOOL_NAME: 'Ligne',
     FILL_TOOL_NAME: 'Sceau',
     ERASER_TOOL_NAME: 'Efface',
+    POLYGONE_TOOL_NAME: 'Polygone',
+    SELECTION_TOOL_NAME: 'Selection',
 };

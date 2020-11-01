@@ -7,6 +7,8 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 
 @Injectable({
@@ -25,6 +27,8 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        polygoneService: PolygoneService,
+        selectionService: SelectionService,
     ) {
         this.tools = new Map<string, Tool>([
             [this.toolNames.PENCIL_TOOL_NAME, pencilService],
@@ -32,8 +36,11 @@ export class ToolSelectionService {
             [this.toolNames.SQUARE_TOOL_NAME, squareService],
             [this.toolNames.CIRCLE_TOOL_NAME, circleService],
             [this.toolNames.LINE_TOOL_NAME, lineService],
+            [this.toolNames.SELECTION_TOOL_NAME, selectionService],
             [this.toolNames.FILL_TOOL_NAME, fillService],
             [this.toolNames.ERASER_TOOL_NAME, eraserService],
+            [this.toolNames.POLYGONE_TOOL_NAME, polygoneService],
+            [this.toolNames.SELECTION_TOOL_NAME, selectionService],
         ]);
 
         this.currentTool = pencilService;
