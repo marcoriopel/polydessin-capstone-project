@@ -92,7 +92,7 @@ export class CircleService extends Tool {
     }
 
     private drawShape(ctx: CanvasRenderingContext2D): void {
-        const topLeftPoint = this.findTopLeftPoint();
+        const topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -182,32 +182,6 @@ export class CircleService extends Tool {
             ctx.fill();
         }
         ctx.stroke();
-    }
-
-    /*
-     to find the top left point of the rectangle or the square
-     */
-    findTopLeftPoint(): Vec2 {
-        const point1 = this.firstPoint;
-        const point2 = this.lastPoint;
-        // firstPoint is top left corner lastPoint is bottom right corner
-        let x = point1.x;
-        let y = point1.y;
-        if (point1.x > point2.x && point1.y > point2.y) {
-            // firstPoint is bottom right corner lastPoint is top left corner
-            x = point2.x;
-            y = point2.y;
-        } else if (point1.x > point2.x && point1.y < point2.y) {
-            // firstPoint is top right corner lastPoint is bottom left corner
-            x = point2.x;
-            y = point1.y;
-        } else if (point1.x < point2.x && point1.y > point2.y) {
-            // firstPoint is bottom left corner lastPoint is top right corner
-            x = point1.x;
-            y = point2.y;
-        }
-
-        return { x, y };
     }
 
     setellipseWidth(): void {
