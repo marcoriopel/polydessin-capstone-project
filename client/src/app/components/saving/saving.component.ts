@@ -16,7 +16,6 @@ import { MetaData } from '@common/communication/drawing-data';
 })
 export class SavingComponent implements AfterViewChecked, OnInit {
     isSaveButtonDisabled: boolean = false;
-    visible: boolean = true;
     currentTag: string = '';
     name: string = '';
     maxTags: boolean = false;

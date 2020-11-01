@@ -18,7 +18,6 @@ export class CarouselComponent {
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
-    visible: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
     selectable: boolean = true;
