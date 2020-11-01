@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
+import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables'
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -53,28 +54,28 @@ export class MoveService extends Tool {
         switch (event.key) {
             case ARROW_KEYS.LEFT:
                 if (this.isArrowKeyLeftPressed === false) {
-                    this.selection.startingPoint.x -= 3;
+                    this.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
                 }
                 this.isArrowKeyLeftPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.UP:
                 if (this.isArrowKeyUpPressed === false) {
-                    this.selection.startingPoint.y -= 3;
+                    this.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
                 }
                 this.isArrowKeyUpPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.RIGHT:
                 if (this.isArrowKeyRightPressed === false) {
-                    this.selection.startingPoint.x += 3;
+                    this.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
                 }
                 this.isArrowKeyRightPressed = true;
                 isArrowKey = true;
                 break;
             case ARROW_KEYS.DOWN:
                 if (this.isArrowKeyDownPressed === false) {
-                    this.selection.startingPoint.y += 3;
+                    this.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
                 }
                 this.isArrowKeyDownPressed = true;
                 isArrowKey = true;
@@ -89,17 +90,13 @@ export class MoveService extends Tool {
                 this.isArrowKeyLeftPressed === true
             ) {
                 if (this.intervalId === 0) {
-                    this.intervalId = setInterval(this.move, 100, this);
+                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
                 }
             }
-        }, 500);
+        }, CONFIRM_KEY_PRESS_DURATION);
 
         if (isArrowKey) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.printSelectionOnPreview();
-            if (this.transformationOver) {
-                this.transformationOver = false;
-            }
         }
     }
 
@@ -145,28 +142,28 @@ export class MoveService extends Tool {
     }
 
     printSelectionOnPreview(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        if (this.transformationOver) {
+            this.transformationOver = false;
+        }
     }
 
     private move(self: MoveService): void {
         if (self.isArrowKeyLeftPressed) {
-            self.selection.startingPoint.x -= 3;
+            self.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
         }
         if (self.isArrowKeyUpPressed) {
-            self.selection.startingPoint.y -= 3;
+            self.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
         }
         if (self.isArrowKeyRightPressed) {
-            self.selection.startingPoint.x += 3;
+            self.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
         }
         if (self.isArrowKeyDownPressed) {
-            self.selection.startingPoint.y += 3;
+            self.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
         }
 
-        self.drawingService.clearCanvas(self.drawingService.previewCtx);
         self.printSelectionOnPreview();
-        if (self.transformationOver) {
-            self.transformationOver = false;
-        }
     }
 }
