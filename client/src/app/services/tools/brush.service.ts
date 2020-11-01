@@ -51,6 +51,12 @@ export class BrushService extends Tool {
         this.clearPath();
     }
 
+    onMouseLeave(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
+    }
+
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);

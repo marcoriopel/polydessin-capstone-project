@@ -4,7 +4,6 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
-import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { DBData } from '@common/communication/drawing-data';
@@ -29,12 +28,7 @@ export class CarouselComponent {
     tags: string[] = [];
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
-    constructor(
-        public databaseService: DatabaseService,
-        public dialog: MatDialog,
-        public carouselService: CarouselService,
-        public drawingService: DrawingService,
-    ) {
+    constructor(public databaseService: DatabaseService, public dialog: MatDialog, public drawingService: DrawingService) {
         this.loadDBData();
     }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MIN_ERASER_TOOL_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -12,6 +12,7 @@ export class EraserService extends Tool {
     name: string = TOOL_NAMES.ERASER_TOOL_NAME;
     private pathData: Vec2[];
     width: number = 5;
+    minToolWidth: number = MIN_ERASER_TOOL_WIDTH;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -49,6 +50,7 @@ export class EraserService extends Tool {
     onMouseLeave(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {

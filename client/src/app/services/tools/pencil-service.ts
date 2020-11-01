@@ -24,6 +24,12 @@ export class PencilService extends Tool {
         previewCanvas.style.cursor = 'crosshair';
     }
 
+    onMouseLeave(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawLine(this.drawingService.baseCtx, this.pathData);
+        this.clearPath();
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (event.button !== MouseButton.LEFT) {
             return;
