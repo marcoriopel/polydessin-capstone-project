@@ -9,6 +9,8 @@ import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { MetaData } from '@common/communication/drawing-data';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-saving',
@@ -16,6 +18,7 @@ import { MetaData } from '@common/communication/drawing-data';
     styleUrls: ['./saving.component.scss'],
 })
 export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
+    destroy$: Subject<boolean> = new Subject<boolean>();
     isSaveButtonDisabled: boolean = false;
     currentTag: string = '';
     name: string = '';
@@ -96,21 +99,22 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     addDrawing(): void {
         this.isSaveButtonDisabled = true;
-        this.drawingService.baseCtx.canvas.toBlob(async (blob) => {
-            await blob;
+        this.drawingService.baseCtx.canvas.toBlob((blob) => {
             if (blob) {
                 const ID: string = new Date().getUTCMilliseconds() + '';
                 const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
                 this.databaseService.addDrawing(meta, blob).subscribe(
                     (data) => {
+                        console.log('data');
                         this.isSaveButtonDisabled = false;
                         this.saveConfirmMessage();
                     },
-                    (error) => {
-                        console.log(error);
-                        this.isSaveButtonDisabled = false;
-                        this.saveErrorModal();
-                    },
+                    // (error) => {
+                    //     console.log(error);
+                    //     console.log('error');
+                    //     this.isSaveButtonDisabled = false;
+                    //     this.saveErrorModal();
+                    // },
                 );
             }
         });
@@ -122,14 +126,14 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
     }
 
     saveErrorModal(): void {
-        this.dialog.afterAllClosed.subscribe(() => {
+        this.dialog.afterAllClosed.pipe(takeUntil(this.destroy$)).subscribe(() => {
             const config = new MatSnackBarConfig();
             this.snackBar.open('Erreur dans la sauvegarde du dessin', 'Fermer', config);
         });
     }
 
     saveConfirmMessage(): void {
-        this.dialog.afterAllClosed.subscribe(() => {
+        this.dialog.afterAllClosed.pipe(takeUntil(this.destroy$)).subscribe(() => {
             const config = new MatSnackBarConfig();
             config.duration = CONFIRM_SAVED_DURATION;
             this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
@@ -138,5 +142,7 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

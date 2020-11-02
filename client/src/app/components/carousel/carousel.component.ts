@@ -9,6 +9,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { DBData } from '@common/communication/drawing-data';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-carousel',
@@ -16,6 +18,7 @@ import { DBData } from '@common/communication/drawing-data';
     styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent implements OnInit, OnDestroy {
+    destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
     isArrowEventsChecked: boolean = true;
     gotImages: boolean = false;
@@ -66,11 +69,14 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.gotImages = false;
         this.databaseMetadata = [];
         this.visibleDrawingsIndexes = [];
-        this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
-            this.databaseMetadata = dBData;
-            this.manageShownDrawings();
-            this.gotImages = true;
-        });
+        this.databaseService
+            .getAllDBData()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((dBData: DBData[]) => {
+                this.databaseMetadata = dBData;
+                this.manageShownDrawings();
+                this.gotImages = true;
+            });
     }
 
     isArray(object: DBData): boolean {
@@ -106,12 +112,14 @@ export class CarouselComponent implements OnInit, OnDestroy {
     loadSelectedDrawing(positionIndex: number): void {
         if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
             const test = this.dialog.open(LoadSelectedDrawingAlertComponent);
-            test.afterClosed().subscribe((optionChosen: string) => {
-                if (optionChosen === 'Oui') {
-                    this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
-                    this.dialog.closeAll();
-                }
-            });
+            test.afterClosed()
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((optionChosen: string) => {
+                    if (optionChosen === 'Oui') {
+                        this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
+                        this.dialog.closeAll();
+                    }
+                });
         } else {
             this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
             this.dialog.closeAll();
@@ -119,15 +127,18 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     applySelectedDrawing(index: number): void {
-        this.databaseService.getDrawingPng(this.databaseMetadata[index].fileName).subscribe((image: Blob) => {
-            const img = URL.createObjectURL(image);
-            const drawing = new Image();
-            drawing.src = img;
-            drawing.onload = () => {
-                this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-                this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-            };
-        });
+        this.databaseService
+            .getDrawingPng(this.databaseMetadata[index].fileName)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((image: Blob) => {
+                const img = URL.createObjectURL(image);
+                const drawing = new Image();
+                drawing.src = img;
+                drawing.onload = () => {
+                    this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+                    this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+                };
+            });
     }
 
     addTag(event: MatChipInputEvent): void {
@@ -144,14 +155,17 @@ export class CarouselComponent implements OnInit, OnDestroy {
         if (this.databaseMetadata.length > 1) {
             fileName = this.databaseMetadata[this.visibleDrawingsIndexes[this.drawingOfInterest]].fileName;
         }
-        this.databaseService.deleteDrawing(fileName).subscribe(
-            () => {
-                this.loadDBData();
-            },
-            () => {
-                // this.dialog.open(ErrorAlertComponent);
-            },
-        );
+        this.databaseService
+            .deleteDrawing(fileName)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                () => {
+                    this.loadDBData();
+                },
+                () => {
+                    // this.dialog.open(ErrorAlertComponent);
+                },
+            );
     }
 
     onClickTwoDrawings(): void {
@@ -187,5 +201,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

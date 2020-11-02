@@ -85,7 +85,7 @@ describe('ToolSelectionService', () => {
     it('should call openWarning of newdrawing on newDrawing call', () => {
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         obs.next(SIDEBAR_ELEMENTS.NEW_DRAWING_NAME);
-        expect(newDrawingServiceSpy);
+        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
     });
 
     it('should open carousel component on call', () => {

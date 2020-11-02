@@ -53,8 +53,6 @@ export class DatabaseService {
         return true;
     }
     async addDrawing(DBDATA: DBData): Promise<void> {
-        console.log(this.isValidData(DBDATA));
-        console.log(DBDATA.tags);
         if (!this.isValidData(DBDATA)) {
             fs.unlinkSync('./images/' + DBDATA.fileName);
             throw new Error('Data is not valid');

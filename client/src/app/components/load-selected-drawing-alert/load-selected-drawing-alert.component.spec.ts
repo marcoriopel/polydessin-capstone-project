@@ -1,7 +1,9 @@
 /* tslint:disable:no-unused-variable */
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { LoadSelectedDrawingAlertComponent } from './load-selected-drawing-alert.component';
+
 import SpyObj = jasmine.SpyObj;
 
 describe('LoadSelectedDrawingAlertComponent', () => {
@@ -12,6 +14,7 @@ describe('LoadSelectedDrawingAlertComponent', () => {
     beforeEach(() => {
         matdialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [LoadSelectedDrawingAlertComponent],
             providers: [{ provide: MatDialogRef, useValue: matdialogRefSpy }],
         }).compileComponents();

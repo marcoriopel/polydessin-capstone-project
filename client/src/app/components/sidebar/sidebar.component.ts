@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
@@ -9,13 +9,16 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
+    destroy$: Subject<boolean> = new Subject<boolean>();
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
     toolNames: ToolNames = TOOL_NAMES;
@@ -29,11 +32,14 @@ export class SidebarComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.hotkeyService.getKey().subscribe((tool) => {
-            if (TOOL_NAMES_ARRAY.includes(tool)) {
-                this.selectedTool = tool;
-            }
-        });
+        this.hotkeyService
+            .getKey()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((tool) => {
+                if (TOOL_NAMES_ARRAY.includes(tool)) {
+                    this.selectedTool = tool;
+                }
+            });
     }
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
@@ -56,5 +62,10 @@ export class SidebarComponent implements OnInit {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

@@ -1,18 +1,17 @@
 import { DatabaseService } from '@app/services/database.service';
 import { TYPES } from '@app/types';
-import { DBData, ID_NAME, NAME, TAGS_NAME } from '@common/communication/drawing-data';
+import { DBData } from '@common/communication/drawing-data';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
-import * as multer from 'multer';
 import * as path from 'path';
 
 @injectable()
 export class DatabaseController {
     router: Router;
 
-    upload: multer.Multer = multer();
+    // upload: multer.Multer = multer();
     DIR: string = './images';
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
@@ -26,28 +25,33 @@ export class DatabaseController {
 
     private configureRouter(): void {
         this.router = Router();
-        const upload = multer({ dest: this.DIR });
+        // const upload = multer({ dest: this.DIR });
 
-        this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
-            const savedFileName = req.file.filename;
-            let drawingTags: string[];
-            if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
-            else drawingTags = req.body[TAGS_NAME];
-            if (!Array.isArray(drawingTags)) drawingTags = [drawingTags];
-            const DBDATA: DBData = {
-                id: req.body[ID_NAME],
-                name: req.body[NAME],
-                tags: drawingTags,
-                fileName: savedFileName,
-            };
-            this.databaseService
-                .addDrawing(DBDATA)
-                .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
+        this.router.post('/addDrawing', (req: Request, res: Response, next: NextFunction) => {
+            // const savedFileName = req.file.filename;
+            // let drawingTags: string[];
+            // if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
+            // else drawingTags = req.body[TAGS_NAME];
+            // if (!Array.isArray(drawingTags)) drawingTags = [drawingTags];
+            // const DBDATA: DBData = {
+            //     id: '34232',
+            //     name: '324324',
+            //     tags: [],
+            //     fileName: 'savedFileName',
+            // };
+            // console.log(req.body);
+            res.sendStatus(Httpstatus.StatusCodes.OK);
+            // this.databaseService
+            //     .addDrawing(DBDATA)
+            //     .then(() => {
+            //         res.sendStatus(Httpstatus.StatusCodes.OK);
+            //         // res.send('dfsdf');
+            //         // res.status(Httpstatus.StatusCodes.NOT_FOUND).send('oops');
+            //     })
+            //     .catch((error: Error) => {
+            //         console.log('here');
+            //         res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+            //     });
         });
 
         this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
