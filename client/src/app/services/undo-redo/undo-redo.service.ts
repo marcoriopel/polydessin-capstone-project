@@ -28,6 +28,11 @@ export class UndoRedoService {
 
     undo(): void {
         console.log(this.drawingService.undoStack);
+        const canvasRestoreData: Resize = {
+            type: 'resize',
+            canvasSize: { x: this.resizeDrawingService.workSpaceSize.x, y: this.resizeDrawingService.workSpaceSize.y },
+        };
+        this.resizeDrawingService.resizeCanvas(canvasRestoreData);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);
@@ -74,8 +79,7 @@ export class UndoRedoService {
                 this.drawingService.drawFill(element as Fill);
                 break;
             case 'resize':
-                const resizeData = element as Resize;
-                this.resizeDrawingService.resizeCanvas(resizeData.mouseEvent);
+                this.resizeDrawingService.resizeCanvas(element as Resize);
                 break;
             case 'polygone':
                 this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);

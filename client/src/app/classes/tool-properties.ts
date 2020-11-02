@@ -80,9 +80,7 @@ export interface Polygone {
 
 export interface Resize {
     type: string;
-    imageData: ImageData;
     canvasSize: Vec2;
-    mouseEvent: MouseEvent;
 }
 
 export interface Fill {
