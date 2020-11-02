@@ -77,6 +77,10 @@ export class PolygoneService extends Tool {
             this.drawPolygone(this.drawingService.baseCtx, this.polygoneData);
             this.drawingService.updateStack(this.polygoneData);
             this.mouseDown = false;
+
+            // Temp fix
+            this.circleWidth = 0;
+            this.circleHeight = 0;
         }
     }
 
