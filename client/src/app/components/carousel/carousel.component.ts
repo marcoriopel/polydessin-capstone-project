@@ -42,8 +42,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.loadDBData();
     }
 
-    @HostListener('document:keydown', ['$event'])
+    @HostListener('keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
+        // event.stopPropagation();
         if (event.key === 'ArrowLeft') {
             this.onPreviousClick();
         } else if (event.key === 'ArrowRight') {

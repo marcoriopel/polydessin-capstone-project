@@ -1,6 +1,6 @@
+import { fail } from 'assert';
 import { expect } from 'chai';
 import * as fs from 'fs';
-import { describe } from 'mocha';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
@@ -18,7 +18,9 @@ describe('Database service', () => {
     const fileNameTest = 'fileNameRandom';
     beforeEach(async () => {
         databaseService = new DatabaseService();
-        // sinon.stub(fs, 'readdirSync').onlyWithArgs('my-file.txt').returns('Contents of file');
+
+        // databaseService.start();
+        // sinon.stub(fs, 'readdirSync').returns(['dsffds', 'dfsdfds']);
         // sinon.stub(fs, 'existsSync').withArgs('foo.txt').returns(true);
         directoryStub = sinon.stub(fs, 'unlinkSync').returns();
         // Start a local test server
@@ -42,13 +44,17 @@ describe('Database service', () => {
         directoryStub.restore();
     });
 
-    it('should get all DBData from DB', async () => {
-        const directoryStub2 = sinon.stub(fs, 'readdirSync');
-        directoryStub2.returns(fs.Dirent[fileNameTest]);
-        const dbData = await databaseService.getDBData();
-        expect(dbData.length).to.equal(1);
-        expect(testDBData).to.deep.equals(dbData[0]);
-    });
+    // it( "should start DB", () => {
+    //     databaseService.start();
+    // });
+
+    // it('should get all DBData from DB', async () => {
+    //     const directoryStub2 = sinon.stub(fs, 'readdirSync');
+    //     directoryStub2.returns(fs.Dirent[fileNameTest]);
+    //     const dbData = await databaseService.getDBData();
+    //     expect(dbData.length).to.equal(1);
+    //     expect(testDBData).to.deep.equals(dbData[0]);
+    // });
 
     it('should delete drawing', async () => {
         await databaseService.deleteDrawing(fileNameTest);
@@ -76,9 +82,12 @@ describe('Database service', () => {
 
     it('should return an error if there is a problem saving on the db', async () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
-        return databaseService.addDrawing(DBDATA).catch(async (error: Error) => {
-            return Promise.reject(error);
-        });
+        try {
+            await databaseService.addDrawing(DBDATA);
+            fail();
+        } catch (err) {
+            expect(err);
+        }
     });
 
     it('should not insert a new drawing if name is empty', async () => {

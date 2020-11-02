@@ -14,14 +14,14 @@ export class DatabaseService {
     collection: Collection<MetaData>;
     client: MongoClient;
     DIR: string = './images';
-
+    mongoURL: string = DATABASE_URL;
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     start(): void {
-        MongoClient.connect(DATABASE_URL, this.options)
+        MongoClient.connect(this.mongoURL, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
@@ -64,14 +64,14 @@ export class DatabaseService {
             fs.unlinkSync('./images/' + DBDATA.fileName);
             throw new Error('Data is not valid');
         } else {
-            this.collection.insertOne(DBDATA).catch((err) => {
+            await this.collection.insertOne(DBDATA).catch((err) => {
                 throw err;
             });
         }
     }
     async deleteDrawing(fileNameToDelete: string): Promise<void> {
         fs.unlinkSync('./images/' + fileNameToDelete);
-        this.collection.findOneAndDelete({ fileName: fileNameToDelete }).catch((err) => {
+        await this.collection.findOneAndDelete({ fileName: fileNameToDelete }).catch((err) => {
             throw err;
         });
     }

@@ -31,15 +31,11 @@ export class HotkeyService {
 
     onKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.isHotkeyEnabled) {
-            const keyName: string | undefined = this.keyMapping.get(event.key.toString());
-            if (keyName && this.keysNeedCtrl.includes(keyName)) {
-                if (event.ctrlKey) {
-                    this.toolName.next(keyName);
-                }
-            } else if (keyName) {
-                this.toolName.next(keyName);
-            }
+        if (!this.isHotkeyEnabled) return;
+        const keyName: string | undefined = this.keyMapping.get(event.key.toString());
+        if (!keyName) return;
+        if (!this.keysNeedCtrl.includes(keyName) || (this.keysNeedCtrl.includes(keyName) && event.ctrlKey)) {
+            this.toolName.next(keyName);
         }
     }
     getKey(): Observable<string> {
