@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Trigonometry } from '@app/classes/math/trigonometry';
 import { Tool } from '@app/classes/tool';
+import { Polygone } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -25,6 +26,7 @@ export class PolygoneService extends Tool {
     centerY: number;
     center: Vec2;
     trigonometry: Trigonometry = new Trigonometry();
+    polygoneData: Polygone;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
         super(drawingService);
@@ -71,7 +73,9 @@ export class PolygoneService extends Tool {
         if (this.mouseDown) {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawPolygone(this.drawingService.baseCtx);
+            this.updatePolygoneData();
+            this.drawPolygone(this.drawingService.baseCtx, this.polygoneData);
+            this.drawingService.updateStack(this.polygoneData);
             this.mouseDown = false;
         }
     }
@@ -82,28 +86,10 @@ export class PolygoneService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.center = this.trigonometry.getCenter(this.firstPoint, this.lastPoint);
             this.drawCircle(this.drawingService.previewCtx);
-            this.drawPolygone(this.drawingService.previewCtx);
+            this.updatePolygoneData();
+            this.drawPolygone(this.drawingService.previewCtx, this.polygoneData);
         }
     }
-
-    // drawCircle(ctx: CanvasRenderingContext2D): void {
-    //     const topLeftPoint = this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint);
-    //     const centerMin = Math.min(topLeftPoint.x + this.circleWidth / 2, topLeftPoint.y + this.circleHeight / 2);
-    //     console.log('x: ' + topLeftPoint.x + this.circleWidth / 2 + ', y: ' + topLeftPoint.y + this.circleHeight / 2);
-    //     console.log('center: ' + centerMin);
-    //     const ellipseData: Ellipse = {
-    //         type: 'ellipse',
-    //         primaryColor: this.colorSelectionService.primaryColor,
-    //         secondaryColor: this.colorSelectionService.secondaryColor,
-    //         fillStyle: FILL_STYLES.BORDER,
-    //         isShiftDown: true,
-    //         center: { x: centerMin, y: centerMin },
-    //         radius: { x: this.circleWidth / 2, y: this.circleHeight / 2 },
-    //         lineWidth: 1,
-    //     };
-    //     this.circleService.drawEllipse(ctx, ellipseData);
-    //     this.LineDashh(this.drawingService.previewCtx);
-    // }
 
     drawCircle(ctx: CanvasRenderingContext2D): void {
         this.circleService.changeFillStyle(FILL_STYLES.BORDER);
@@ -113,10 +99,10 @@ export class PolygoneService extends Tool {
         this.LineDash(this.drawingService.previewCtx);
     }
 
-    drawPolygone(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = this.colorSelectionService.primaryColor;
-        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.lineWidth = this.width;
+    drawPolygone(ctx: CanvasRenderingContext2D, polygoneData: Polygone): void {
+        ctx.fillStyle = polygoneData.primaryColor;
+        ctx.strokeStyle = polygoneData.secondaryColor;
+        ctx.lineWidth = polygoneData.lineWidth;
 
         if (this.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
@@ -124,43 +110,43 @@ export class PolygoneService extends Tool {
         }
 
         ctx.beginPath();
-        this.firstPoint = this.firstPoint;
-        this.lastPoint = this.lastPoint;
+        this.firstPoint = polygoneData.firstPoint;
+        this.lastPoint = polygoneData.lastPoint;
         this.setCircleHeight();
         this.setCircleWidth();
-        const ellipseRadiusX = this.circleWidth / 2;
-        const ellipseRadiusY = this.circleHeight / 2;
+        const ellipseRadiusX = polygoneData.circleWidth / 2;
+        const ellipseRadiusY = polygoneData.circleHeight / 2;
         const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
-        const quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
+        const quadrant = this.trigonometry.findQuadrant(polygoneData.firstPoint, polygoneData.lastPoint);
         const center: Vec2 = { x: 0, y: 0 };
 
         switch (quadrant) {
             case 1:
-                center.x = this.firstPoint.x - circleRadius;
-                center.y = this.firstPoint.y - circleRadius;
+                center.x = polygoneData.firstPoint.x - circleRadius;
+                center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
             case 2:
-                center.x = this.firstPoint.x + circleRadius;
-                center.y = this.firstPoint.y - circleRadius;
+                center.x = polygoneData.firstPoint.x + circleRadius;
+                center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
             case 3:
-                center.x = this.firstPoint.x + circleRadius;
-                center.y = this.firstPoint.y + circleRadius;
+                center.x = polygoneData.firstPoint.x + circleRadius;
+                center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
             case 4:
-                center.x = this.firstPoint.x - circleRadius;
-                center.y = this.firstPoint.y + circleRadius;
+                center.x = polygoneData.firstPoint.x - circleRadius;
+                center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
             default:
         }
 
         ctx.moveTo(center.x, center.y - circleRadius);
-        ctx.lineWidth = this.width;
+        ctx.lineWidth = polygoneData.lineWidth;
 
         for (let i = 0; i <= this.sides + 1; i++) {
             ctx.lineTo(
-                center.x + circleRadius * Math.cos((i * 2 * Math.PI) / this.sides - Math.PI / 2),
-                center.y + circleRadius * Math.sin((i * 2 * Math.PI) / this.sides - Math.PI / 2),
+                center.x + circleRadius * Math.cos((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
+                center.y + circleRadius * Math.sin((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
             );
             if (this.fillStyle !== FILL_STYLES.BORDER) {
                 ctx.fill();
@@ -182,5 +168,20 @@ export class PolygoneService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
+    }
+
+    private updatePolygoneData(): void {
+        this.polygoneData = {
+            type: 'polygone',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            fillStyle: this.fillStyle,
+            lineWidth: this.width,
+            circleHeight: this.circleHeight,
+            circleWidth: this.circleWidth,
+            firstPoint: this.firstPoint,
+            lastPoint: this.lastPoint,
+            sides: this.sides,
+        };
     }
 }

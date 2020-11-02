@@ -27,15 +27,6 @@ export interface Eraser {
     primaryColor: string;
 }
 
-// REFACTOR
-export interface Shape {
-    type: string;
-    numberOfEdges: number;
-    primaryColor: string;
-    secondaryColor: string;
-    lineWidth: number;
-}
-
 export interface Rectangle {
     type: string;
     primaryColor: string;
@@ -72,6 +63,19 @@ export interface Line {
     isShiftDoubleClick: boolean;
     hasLastPointBeenChaged: boolean;
     dotWidth: number;
+}
+
+export interface Polygone {
+    type: string;
+    primaryColor: string;
+    secondaryColor: string;
+    fillStyle: number;
+    lineWidth: number;
+    circleHeight: number;
+    circleWidth: number;
+    firstPoint: Vec2;
+    lastPoint: Vec2;
+    sides: number;
 }
 
 export interface Resize {

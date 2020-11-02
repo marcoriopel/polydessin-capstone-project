@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 
 @Injectable({
@@ -10,8 +10,8 @@ export class DrawingService {
     previewCtx: CanvasRenderingContext2D;
     canvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
 
     constructor() {}
 
@@ -35,7 +35,7 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
+    updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse): void {
         this.undoStack.push(modification);
         if (this.redoStack.length !== 0) {
             this.redoStack = [];

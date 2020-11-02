@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Rectangle, Resize, Shape } from '@app/classes/tool-properties';
-// import { Brush, Eraser, Fill, Line, Pencil, Resize, Shape } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
+// import { Brush, Eraser, Fill, Line, Pencil, Resize, Polygone } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil-service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { BrushService } from '../tools/brush.service';
 @Injectable({
@@ -22,9 +23,11 @@ export class UndoRedoService {
         public eraserService: EraserService,
         public lineService: LineService,
         public brushService: BrushService,
+        public polygoneService: PolygoneService,
     ) {}
 
     undo(): void {
+        console.log(this.drawingService.undoStack);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
             this.drawingService.redoStack.push(modification);
@@ -36,7 +39,6 @@ export class UndoRedoService {
     }
 
     redo(): void {
-        this.resizeDrawingService.setDefaultCanvasSize();
         const redoStackLength = this.drawingService.redoStack.length;
         const element = this.drawingService.redoStack[redoStackLength - 1];
         if (redoStackLength) {
@@ -48,7 +50,7 @@ export class UndoRedoService {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Shape | Line | Resize | Fill | Rectangle | Ellipse): void {
+    drawElement(element: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse): void {
         switch (element.type) {
             case 'pencil':
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -74,6 +76,9 @@ export class UndoRedoService {
             case 'resize':
                 const resizeData = element as Resize;
                 this.resizeDrawingService.resizeCanvas(resizeData.mouseEvent);
+                break;
+            case 'polygone':
+                this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);
                 break;
         }
     }
