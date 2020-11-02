@@ -77,47 +77,6 @@ describe('FillService', () => {
         expect(fillSpy).toHaveBeenCalled();
     });
 
-    // it('test1', () => {
-    //     // create a dummy canvas with an empty rectangle
-    //     const canvas: HTMLCanvasElement = document.createElement('canvas');
-    //     canvas.height = 10;
-    //     canvas.width = 10;
-    //     const baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    //     baseCtx.fillStyle = 'white';
-    //     baseCtx.fillRect(0, 0, canvas.width, canvas.height);
-    //     baseCtx.strokeStyle = 'black';
-    //     baseCtx.strokeRect(0, 0, 5, 5);
-
-    //     // set the position of mouseDown event inside the rectangle
-    //     service.mouseDownCoord = { x: 1, y: 1 };
-
-    //     // set up drawingServiceSpy with mock retrun values for test
-    //     drawingServiceSpy.canvas = canvas;
-    //     drawingServiceSpy.getPixelData.and.returnValue(baseCtx.getImageData(service.mouseDownCoord.x, service.mouseDownCoord.y, 1, 1).data);
-    //     drawingServiceSpy.getCanvasData.and.returnValue(baseCtx.getImageData(0, 0, canvas.width, canvas.height));
-
-    //     // set rgba primary color to blue
-    //     const rgba: Rgba = {
-    //         RED: 0,
-    //         GREEN: 0,
-    //         BLUE: 255,
-    //         ALPHA: 255,
-    //     };
-    //     colorSelectionServiceSpy.getRgbaPrimaryColor.and.returnValue(rgba);
-
-    //     // fill empty rectangle on canvas
-    //     baseCtx.fillStyle = 'blue';
-    //     baseCtx.fillRect(1, 1, 3, 3);
-
-    //     // start the test
-    //     service.contiguousFill();
-
-    //     const expectedImageData: ImageData = baseCtx.getImageData(0, 0, canvas.width, canvas.height);
-
-    //     expect(baseCtxSpy.putImageData).toHaveBeenCalled();
-    //     expect(baseCtxSpy.putImageData).toHaveBeenCalledWith(expectedImageData, 0, 0);
-    // });
-
     it('contiguousFill should only fill rectangle on canvas', () => {
         // create a dummy canvas with a filled rectangle
         const canvasCompare: HTMLCanvasElement = document.createElement('canvas');
