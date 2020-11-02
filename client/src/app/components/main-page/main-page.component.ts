@@ -13,7 +13,7 @@ export class MainPageComponent {
     constructor(public dialog: MatDialog) {}
 
     openUserguide(): void {
-        this.dialog.open(UserguideComponent);
+        this.dialog.open(UserGuideComponent);
     }
 
     openCarousel(): void {

@@ -14,13 +14,13 @@
     <div class="toggleButtonGroup sidebarSection">
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.PENCIL_TOOL_NAME"
+            [id]="this.toolNames.PENCIL_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.PENCIL_TOOL_NAME"
+            [value]="this.toolNames.PENCIL_TOOL_NAME"
             (change)="onToolChange($event)"
-            checked
+            [checked]="selectedTool.includes(this.toolNames.PENCIL_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.PENCIL_TOOL_NAME">
+        <label [for]="this.toolNames.PENCIL_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.PENCIL_TOOL_DESCRIPTION"
@@ -31,12 +31,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.BRUSH_TOOL_NAME"
+            [id]="this.toolNames.BRUSH_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.BRUSH_TOOL_NAME"
+            [value]="this.toolNames.BRUSH_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.BRUSH_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.BRUSH_TOOL_NAME">
+        <label [for]="this.toolNames.BRUSH_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.BRUSH_TOOL_DESCRIPTION"
@@ -47,12 +48,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.SQUARE_TOOL_NAME"
+            [id]="this.toolNames.SQUARE_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.SQUARE_TOOL_NAME"
+            [value]="this.toolNames.SQUARE_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.SQUARE_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.SQUARE_TOOL_NAME">
+        <label [for]="this.toolNames.SQUARE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.SQUARE_TOOL_DESCRIPTION"
@@ -63,12 +65,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME"
+            [id]="this.toolNames.CIRCLE_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME"
+            [value]="this.toolNames.CIRCLE_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.CIRCLE_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.CIRCLE_TOOL_NAME">
+        <label [for]="this.toolNames.CIRCLE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.CIRCLE_TOOL_DESCRIPTION"
@@ -79,12 +82,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.LINE_TOOL_NAME"
+            [id]="this.toolNames.LINE_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.LINE_TOOL_NAME"
+            [value]="this.toolNames.LINE_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.LINE_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.LINE_TOOL_NAME">
+        <label [for]="this.toolNames.LINE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.LINE_TOOL_DESCRIPTION"
@@ -112,12 +116,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.FILL_TOOL_NAME"
+            [id]="this.toolNames.FILL_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.FILL_TOOL_NAME"
+            [value]="this.toolNames.FILL_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.FILL_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.FILL_TOOL_NAME">
+        <label [for]="this.toolNames.FILL_TOOL_NAME">
             <mat-icon
                 class="fas fa-fill-drip"
                 [matTooltip]="elementDescriptions.FILL_TOOL_DESCRIPTION"
@@ -127,12 +132,13 @@
         </label>
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
+            [id]="this.toolNames.ERASER_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.ERASER_TOOL_NAME"
+            [value]="this.toolNames.ERASER_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.ERASER_TOOL_NAME)"
         />
-        <label [for]="toolSelectionService.toolNames.ERASER_TOOL_NAME">
+        <label [for]="this.toolNames.ERASER_TOOL_NAME">
             <mat-icon
                 class="fas fa-eraser"
                 [matTooltip]="elementDescriptions.ERASER_TOOL_DESCRIPTION"

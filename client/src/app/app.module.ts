@@ -15,7 +15,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
@@ -40,7 +40,7 @@ import { PolygoneAttributesComponent } from './components/tools/polygone-attribu
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
-import { UserguideComponent } from './components/userguide/userguide.component';
+import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
     declarations: [
@@ -49,6 +49,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         SidebarComponent,
         DrawingComponent,
         MainPageComponent,
+        UserGuideComponent,
         LoadSelectedDrawingAlertComponent,
         UserguideComponent,
         DrawingDetailComponent,
@@ -63,7 +64,6 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         CarouselComponent,
         SliderComponent,
         SquareAttributesComponent,
-        UserguideComponent,
         NewDrawingModalComponent,
         ColorPickerComponent,
         SavingComponent,
@@ -73,6 +73,7 @@ import { UserguideComponent } from './components/userguide/userguide.component';
     imports: [
         BrowserModule,
         MatCardModule,
+        NoopAnimationsModule,
         HttpClientModule,
         ReactiveFormsModule,
         AppRoutingModule,
@@ -91,7 +92,8 @@ import { UserguideComponent } from './components/userguide/userguide.component';
         MatCheckboxModule,
         MatInputModule,
     ],
-    entryComponents: [UserguideComponent, MainPageComponent],
+    entryComponents: [UserGuideComponent, MainPageComponent],
+    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -132,4 +132,8 @@ export class SavingComponent implements AfterViewChecked, OnInit {
             this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
         });
     }
+
+    ngOnDestroy(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
+    }
 }
