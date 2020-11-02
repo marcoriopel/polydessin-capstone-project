@@ -22,11 +22,6 @@ export class FillService extends Tool {
         super(drawingService);
     }
 
-    handleCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     changeTolerance(newTolerance: number): void {
         this.tolerance = newTolerance;
     }

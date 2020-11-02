@@ -6,6 +6,7 @@ export interface ToolNames {
     LINE_TOOL_NAME: string;
     FILL_TOOL_NAME: string;
     ERASER_TOOL_NAME: string;
+    SELECTION_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -16,6 +17,7 @@ export const TOOL_NAMES: ToolNames = {
     LINE_TOOL_NAME: 'Ligne',
     FILL_TOOL_NAME: 'Sceau',
     ERASER_TOOL_NAME: 'Efface',
+    SELECTION_TOOL_NAME: 'Selection',
 };
 
 export const TOOL_NAMES_ARRAY: string[] = [

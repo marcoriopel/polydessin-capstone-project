@@ -62,14 +62,19 @@ export class ResizeDrawingService {
             const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
             tempCanvasCtx.drawImage(this.drawingService.canvas, 0, 0);
 
+            const tempPreviewCanvas: HTMLCanvasElement = document.createElement('canvas');
+            tempPreviewCanvas.width = this.canvasSize.x;
+            tempPreviewCanvas.height = this.canvasSize.y;
+            const tempPreviewCanvasCtx: CanvasRenderingContext2D = tempPreviewCanvas.getContext('2d') as CanvasRenderingContext2D;
+            tempPreviewCanvasCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
+
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
 
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
-                let baseCtx: CanvasRenderingContext2D;
-                baseCtx = this.drawingService.canvas.getContext('2d') as CanvasRenderingContext2D;
-                baseCtx.drawImage(tempCanvas, 0, 0);
+                this.drawingService.baseCtx.drawImage(tempCanvas, 0, 0);
+                this.drawingService.previewCtx.drawImage(tempPreviewCanvas, 0, 0);
             });
         }
         this.mouseDown = false;
