@@ -1,14 +1,9 @@
+import { DATABASE_COLLECTION, DATABASE_NAME, DATABASE_URL } from '@app/ressources/global-variables';
+import { DBData, MetaData } from '@common/communication/drawing-data';
 import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
 import 'reflect-metadata';
-import { DBData, MetaData } from '../../../common/communication/drawing-data';
-
-// CHANGE the URL for your database information
-const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
-const DATABASE_NAME = 'database';
-const DATABASE_COLLECTION = 'Drawings';
-
 @injectable()
 export class DatabaseService {
     collection: Collection<MetaData>;

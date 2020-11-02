@@ -17,6 +17,7 @@ import { DBData } from '@common/communication/drawing-data';
 })
 export class CarouselComponent implements OnInit, OnDestroy {
     databaseMetadata: DBData[] = [];
+    isArrowEventsChecked: boolean = true;
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
@@ -42,9 +43,18 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.loadDBData();
     }
 
-    @HostListener('keydown', ['$event'])
+    disableEvents(): void {
+        this.isArrowEventsChecked = false;
+    }
+
+    enableEvents(): void {
+        this.isArrowEventsChecked = true;
+    }
+
+    @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        // event.stopPropagation();
+        console.log(this.isArrowEventsChecked);
+        if (!this.isArrowEventsChecked) return;
         if (event.key === 'ArrowLeft') {
             this.onPreviousClick();
         } else if (event.key === 'ArrowRight') {

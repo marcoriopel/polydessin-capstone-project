@@ -1,13 +1,12 @@
+import { DatabaseService } from '@app/services/database.service';
 import { TYPES } from '@app/types';
-import { DBData } from '@common/communication/drawing-data';
+import { DBData, ID_NAME, NAME, TAGS_NAME } from '@common/communication/drawing-data';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
 import * as path from 'path';
-import { ID_NAME, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
-import { DatabaseService } from '../services/database.service';
 
 @injectable()
 export class DatabaseController {

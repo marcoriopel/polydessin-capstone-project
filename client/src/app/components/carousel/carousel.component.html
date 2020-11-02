@@ -13,6 +13,8 @@
                         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                     </mat-chip>
                     <input
+                        on-focus="disableEvents()"
+                        on-focusout="enableEvents()"
                         placeholder="Tags:"
                         [matChipInputFor]="chipList"
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
