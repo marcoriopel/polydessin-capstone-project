@@ -16,7 +16,7 @@ export class TypeOfFillSelectionComponent {
         BORDER: FILL_STYLES.BORDER,
     };
 
-    handleValueChange(event: Event): void {
+    changeValue(event: Event): void {
         const target = event.target as HTMLInputElement;
         this.valueChange.emit(Number(target.value));
     }

@@ -8,20 +8,15 @@ import { PipetteService } from '@app/services/tools/pipette.service';
     styleUrls: ['./color-picker.component.scss'],
 })
 export class ColorPickerComponent implements AfterViewInit {
-    primaryColor: string;
-    secondaryColor: string;
-    primaryOpacity: number;
-    secondaryOpacity: number;
+    primaryColor: string = '#000000';
+    secondaryColor: string = '#000000';
     colors: string[] = ['#000000'];
     minOpacity: number = 0;
     maxOpacity: number = MAX_OPACITY;
+    primaryOpacity: number = MAX_OPACITY;
+    secondaryOpacity: number = MAX_OPACITY;
 
     constructor(public colorSelectionService: ColorSelectionService, public pipetteService: PipetteService) {
-        this.primaryColor = '#000000';
-        this.secondaryColor = '#000000';
-        this.primaryOpacity = MAX_OPACITY;
-        this.secondaryOpacity = MAX_OPACITY;
-
         // Initial values for the colors on application opening
         this.colorSelectionService.setPrimaryColor(this.primaryColor);
         this.colorSelectionService.setSecondaryColor(this.secondaryColor);

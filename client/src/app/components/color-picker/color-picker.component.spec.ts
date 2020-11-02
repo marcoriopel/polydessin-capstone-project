@@ -44,13 +44,13 @@ describe('ColorPickerComponent', () => {
         mouseEventClickLeft = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
 
         mouseEventClickRight = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
     });
 

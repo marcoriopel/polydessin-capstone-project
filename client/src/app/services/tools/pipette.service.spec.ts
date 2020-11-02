@@ -58,12 +58,12 @@ describe('PipetteService', () => {
         mouseEventLeft = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
         mouseEventRight = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
     });
 

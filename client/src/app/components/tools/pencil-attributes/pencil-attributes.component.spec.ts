@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil.service';
 import { PencilAttributesComponent } from './pencil-attributes.component';
 
 describe('PencilAttributesComponent', () => {
@@ -31,13 +31,13 @@ describe('PencilAttributesComponent', () => {
     });
 
     it('should call changeWidth of pencilService', () => {
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.pencilService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleWidthChange(finalToolWidth);
+        component.changeWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 });

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { PencilService } from './pencil-service';
+import { PencilService } from './pencil.service';
 
 // tslint:disable:no-any
 describe('PencilService', () => {
@@ -45,7 +45,7 @@ describe('PencilService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -74,7 +74,7 @@ describe('PencilService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('PencilService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 

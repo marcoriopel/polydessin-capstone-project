@@ -43,10 +43,10 @@ export class PipetteService extends Tool {
             (pixelData[2] | (1 << 8)).toString(16).slice(1);
         this.color[1] = pixelData[3].toString();
 
-        if (event.button === MouseButton.Left) {
+        if (event.button === MouseButton.LEFT) {
             this.primaryColor.emit(this.color);
         }
-        if (event.button === MouseButton.Right) {
+        if (event.button === MouseButton.RIGHT) {
             this.secondaryColor.emit(this.color);
         }
         // this.drawingService.clearCanvas(this.drawingService.previewCtx);

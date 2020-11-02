@@ -7,25 +7,24 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { TrigonometryService } from '@app/services/trigonometry/trigonometry.service';
-
 @Injectable({
     providedIn: 'root',
 })
 export class LineService extends Tool {
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
     isShiftDoubleClick: boolean = false;
+    shiftClick: Vec2 = { x: 0, y: 0 };
     isShiftKeyDown: boolean = false;
     endingClickCoordinates: Vec2;
     isDrawing: boolean = false;
     numberOfClicks: number = 0;
     mouseClicks: Vec2[] = [];
     storedLines: Line[] = [];
+    mouseEvent: MouseEvent;
+    isDot: boolean = false;
     lineWidth: number = 1;
     dotWidth: number = 1;
-    isDot: boolean = false;
     line: Line;
-    mouseEvent: MouseEvent;
-    shiftClick: Vec2 = { x: 0, y: 0 };
 
     constructor(
         public drawingService: DrawingService,
@@ -48,7 +47,7 @@ export class LineService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (event.button !== MouseButton.Left) {
+        if (event.button !== MouseButton.LEFT) {
             return;
         }
         this.isDrawing = true;
@@ -77,7 +76,8 @@ export class LineService extends Tool {
                 return;
             }
             // Check if the last point is 20px away from initial point
-            if (this.trigonometryService.checkIf20pxAway(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2])) {
+            const distance = this.trigonometryService.distanceBetweenTwoDots(this.mouseClicks[0], this.mouseClicks[this.numberOfClicks - 2]);
+            if (distance < this.trigonometryService.MAX_DISTANCE_BETWEEN_TWO_DOTS) {
                 // Replace the ending point received from the click coordinates with the inital point of the line
                 this.mouseClicks[this.mouseClicks.length - 1] = this.mouseClicks[0];
                 this.storedLines[this.storedLines.length - 1].endingPoint = this.mouseClicks[0];
@@ -100,7 +100,6 @@ export class LineService extends Tool {
             this.isShiftDoubleClick = false;
             return;
         }
-
         this.drawSegment();
     }
 
@@ -287,16 +286,11 @@ export class LineService extends Tool {
         }
     }
 
-    handleCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
             // Using the preview canvas
             this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.primaryColor;
-            this.drawingService.baseCtx.lineCap = 'round';
+            this.drawingService.previewCtx.lineCap = 'round';
             this.drawingService.previewCtx.lineWidth = lineWidth;
             this.drawingService.previewCtx.beginPath();
             this.drawingService.previewCtx.moveTo(startingPoint.x, startingPoint.y);

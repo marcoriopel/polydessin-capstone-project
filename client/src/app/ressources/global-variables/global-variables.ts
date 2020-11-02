@@ -18,6 +18,14 @@ export const MIN_BORDER = 1;
 export const DASH_LENGTH = 5;
 export const DASH_SPACE_LENGTH = 3;
 export const ZOOM_PIPETTE = 16;
+export const MIN_TOLERANCE_VALUE = 0;
+export const MAX_TOLERANCE_VALUE = 100;
+export const MAX_PERCENTAGE = 100;
+export const RGBA_STRING_ = 100;
+export const CONFIRM_SAVED_DURATION = 5000;
+export const CONFIRM_KEY_PRESS_DURATION = 500;
+export const KEY_PRESS_INTERVAL_DURATION = 100;
+export const SELECTION_MOVE_STEP_SIZE = 3;
 
 export enum Quadrant {
     TOP_RIGHT = 0,
@@ -38,9 +46,9 @@ export enum LineAngle {
 }
 
 export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
+    LEFT = 0,
+    MIDDLE = 1,
+    RIGHT = 2,
+    BACK = 3,
+    FORWARD = 4,
 }
