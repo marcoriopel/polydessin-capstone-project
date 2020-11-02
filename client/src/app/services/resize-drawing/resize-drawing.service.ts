@@ -45,6 +45,13 @@ export class ResizeDrawingService {
         });
     }
 
+    resizeCanvasSize(width: number, height: number): void {
+        this.drawingService.canvas.width = width;
+        this.drawingService.canvas.height = height;
+        this.previewSize.x = width;
+        this.previewSize.y = height;
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {

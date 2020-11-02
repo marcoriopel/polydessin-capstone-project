@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
+import * as path from 'path';
 import { ID_NAME, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
 import { DatabaseService } from '../services/database.service';
 
@@ -33,6 +34,7 @@ export class DatabaseController {
             let drawingTags: string[];
             if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
             else drawingTags = req.body[TAGS_NAME];
+            if (!Array.isArray(drawingTags)) drawingTags = [drawingTags];
             const DBDATA: DBData = {
                 id: req.body[ID_NAME],
                 name: req.body[NAME],
@@ -47,6 +49,16 @@ export class DatabaseController {
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
                 });
+        });
+
+        this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
+            const files: string[] = fs.readdirSync(this.DIR);
+            if (files.includes(req.params.filename)) {
+                res.contentType('image/png');
+                res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
+            } else {
+                res.status(Httpstatus.StatusCodes.NOT_FOUND);
+            }
         });
 
         this.router.delete('/deleteDrawing/:fileName', (req: Request, res: Response, next: NextFunction) => {

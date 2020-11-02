@@ -1,11 +1,13 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { DBData } from '@common/communication/drawing-data';
 
 @Component({
@@ -13,7 +15,7 @@ import { DBData } from '@common/communication/drawing-data';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent {
+export class CarouselComponent implements OnInit, OnDestroy {
     databaseMetadata: DBData[] = [];
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
@@ -27,8 +29,26 @@ export class CarouselComponent {
     tags: string[] = [];
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
-    constructor(public databaseService: DatabaseService, public dialog: MatDialog, public drawingService: DrawingService) {
+    constructor(
+        public hotkeyService: HotkeyService,
+        public databaseService: DatabaseService,
+        public dialog: MatDialog,
+        public drawingService: DrawingService,
+        public resizeDrawingService: ResizeDrawingService,
+    ) {}
+
+    ngOnInit(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
         this.loadDBData();
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'ArrowLeft') {
+            this.onPreviousClick();
+        } else if (event.key === 'ArrowRight') {
+            this.onNextClick();
+        }
     }
 
     loadDBData(): void {
@@ -93,8 +113,7 @@ export class CarouselComponent {
             const drawing = new Image();
             drawing.src = img;
             drawing.onload = () => {
-                this.drawingService.canvas.width = drawing.width;
-                this.drawingService.canvas.height = drawing.height;
+                this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
                 this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
             };
         });
@@ -154,5 +173,8 @@ export class CarouselComponent {
         } else {
             this.visibleDrawingsIndexes[2]++;
         }
+    }
+    ngOnDestroy(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
     }
 }

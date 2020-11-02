@@ -45,11 +45,10 @@ export class DatabaseService {
             return false;
         }
 
-        if (dBData.tags.length > 5) {
-            return false;
-        }
-
         if (Array.isArray(dBData.tags)) {
+            if (dBData.tags.length > 5) {
+                return false;
+            }
             for (const tag of dBData.tags) {
                 if (tag.length > 15) {
                     return false;
@@ -59,6 +58,8 @@ export class DatabaseService {
         return true;
     }
     async addDrawing(DBDATA: DBData): Promise<void> {
+        console.log(this.isValidData(DBDATA));
+        console.log(DBDATA.tags);
         if (!this.isValidData(DBDATA)) {
             fs.unlinkSync('./images/' + DBDATA.fileName);
             throw new Error('Data is not valid');
@@ -83,7 +84,6 @@ export class DatabaseService {
                 const dBDataverified: DBData[] = [];
                 const files: string[] = fs.readdirSync(this.DIR);
                 for (const data of dBData) {
-                    console.log(files);
                     if (files.includes(data.fileName)) {
                         dBDataverified.push(data);
                     }

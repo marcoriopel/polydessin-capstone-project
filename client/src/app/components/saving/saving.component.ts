@@ -36,6 +36,7 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
     @ViewChild('chipList') chipList: MatChipList;
 
     ngOnInit(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
             tags: new FormControl(this.currentTag, [Validators.maxLength(MAX_NAME_LENGTH)]),
