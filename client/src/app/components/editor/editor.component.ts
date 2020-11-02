@@ -93,7 +93,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.resizeDrawingService.adjustResizeDimensions(event);
+        this.resizeDrawingService.resizeCanvas(event);
     }
 
     @HostListener('mouseup', ['$event'])

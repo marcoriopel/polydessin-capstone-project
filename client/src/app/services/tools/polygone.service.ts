@@ -109,7 +109,6 @@ export class PolygoneService extends Tool {
             ctx.lineWidth = 1;
         }
 
-        ctx.beginPath();
         this.firstPoint = polygoneData.firstPoint;
         this.lastPoint = polygoneData.lastPoint;
         this.setCircleHeight();
@@ -139,7 +138,7 @@ export class PolygoneService extends Tool {
                 break;
             default:
         }
-
+        ctx.beginPath();
         ctx.moveTo(center.x, center.y - circleRadius);
         ctx.lineWidth = polygoneData.lineWidth;
 

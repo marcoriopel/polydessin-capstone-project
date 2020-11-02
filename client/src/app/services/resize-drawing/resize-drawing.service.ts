@@ -23,8 +23,8 @@ export class ResizeDrawingService {
     serviceCaller: string;
     workSpaceSize: Vec2;
     resizeData: Resize;
-    imageData: ImageData;
     mouseEvent: MouseEvent;
+    imageData: ImageData;
 
     constructor(public drawingService: DrawingService) {}
 
@@ -49,6 +49,21 @@ export class ResizeDrawingService {
         });
     }
 
+    resizeCanvasSize(width: number, height: number): void {
+        this.drawingService.canvas.width = width;
+        this.drawingService.canvas.height = height;
+        this.previewSize.x = width;
+        this.previewSize.y = height;
+    }
+
+    resizeCanvasSizeTest(resizeData: Resize): void {
+        this.drawingService.canvas.width = resizeData.canvasSize.x;
+        this.drawingService.canvas.height = resizeData.canvasSize.y;
+        this.previewSize.x = resizeData.canvasSize.x;
+        this.previewSize.y = resizeData.canvasSize.y;
+        this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
@@ -60,52 +75,42 @@ export class ResizeDrawingService {
 
     onMouseUp(): void {
         if (this.mouseDown) {
+            this.imageData = this.drawingService.getCanvasData();
+
+            this.canvasSize.x = this.previewSize.x;
+            this.canvasSize.y = this.previewSize.y;
+
             this.updateResizeData();
-            this.resizeCanvas(this.resizeData);
             this.drawingService.updateStack(this.resizeData);
+
+            setTimeout(() => {
+                this.drawingService.initializeBaseCanvas();
+                this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
+            });
         }
         this.mouseDown = false;
-    }
-
-    resizeCanvas(resizeData: Resize): void {
-        const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-        tempCanvas.width = resizeData.canvasSize.x;
-        tempCanvas.height = resizeData.canvasSize.y;
-        const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-        tempCanvasCtx.drawImage(this.drawingService.canvas, 0, 0);
-
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
-
-        setTimeout(() => {
-            this.drawingService.initializeBaseCanvas();
-            let baseCtx: CanvasRenderingContext2D;
-            baseCtx = this.drawingService.canvas.getContext('2d') as CanvasRenderingContext2D;
-            baseCtx.drawImage(tempCanvas, 0, 0);
-        });
-        this.imageData = this.drawingService.getCanvasData();
     }
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.clientX, y: event.clientY };
     }
 
-    adjustResizeDimensions(event: MouseEvent): void {
+    resizeCanvas(event: MouseEvent): void {
         switch (this.serviceCaller) {
             case CANVAS_RESIZING_POINTS.VERTICAL:
-                this.adjustResizeHeight(event);
+                this.verticalResize(event);
                 break;
             case CANVAS_RESIZING_POINTS.HORIZONTAL:
-                this.adjustResizeWidth(event);
+                this.horizontalResize(event);
                 break;
             case CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL:
-                this.adjustResizeWidthAndHeight(event);
+                this.verticalAndHorizontalResize(event);
                 break;
             default:
         }
     }
 
-    private adjustResizeHeight(event: MouseEvent): void {
+    private verticalResize(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeY = mousePosition.y - this.mouseDownCoord.y;
@@ -117,7 +122,7 @@ export class ResizeDrawingService {
         }
     }
 
-    private adjustResizeWidthAndHeight(event: MouseEvent): void {
+    private verticalAndHorizontalResize(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeY = mousePosition.y - this.mouseDownCoord.y;
@@ -134,7 +139,7 @@ export class ResizeDrawingService {
         }
     }
 
-    private adjustResizeWidth(event: MouseEvent): void {
+    private horizontalResize(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             const mousePositionChangeX = mousePosition.x - this.mouseDownCoord.x;
@@ -149,7 +154,8 @@ export class ResizeDrawingService {
     private updateResizeData(): void {
         this.resizeData = {
             type: 'resize',
-            canvasSize: this.canvasSize,
+            canvasSize: { x: this.canvasSize.x, y: this.canvasSize.y },
+            imageData: this.imageData,
         };
     }
 }

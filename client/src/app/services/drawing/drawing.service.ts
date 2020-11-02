@@ -40,6 +40,7 @@ export class DrawingService {
         if (this.redoStack.length !== 0) {
             this.redoStack = [];
         }
+        console.log(this.undoStack);
     }
 
     drawFill(fill: Fill): void {

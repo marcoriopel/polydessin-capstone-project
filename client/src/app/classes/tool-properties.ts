@@ -81,6 +81,7 @@ export interface Polygone {
 export interface Resize {
     type: string;
     canvasSize: Vec2;
+    imageData: ImageData;
 }
 
 export interface Fill {
