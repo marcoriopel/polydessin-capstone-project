@@ -25,6 +25,9 @@ export class DatabaseService {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
+        if (!fs.existsSync(this.DIR)) {
+            fs.mkdirSync(this.DIR);
+        }
     }
 
     closeConnection(): void {

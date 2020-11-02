@@ -1,10 +1,11 @@
-import { fail } from 'assert';
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { Db, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as sinon from 'sinon';
 import { DBData } from '../../../common/communication/drawing-data';
+import { testingContainer } from '../../test/test-utils';
+import { TYPES } from '../types';
 import { DatabaseService } from './database.service';
 
 describe('Database service', () => {
@@ -17,13 +18,10 @@ describe('Database service', () => {
     // let exist: sinon.SinonStub;
     const fileNameTest = 'fileNameRandom';
     beforeEach(async () => {
-        databaseService = new DatabaseService();
-
-        // databaseService.start();
-        // sinon.stub(fs, 'readdirSync').returns(['dsffds', 'dfsdfds']);
-        // sinon.stub(fs, 'existsSync').withArgs('foo.txt').returns(true);
+        const [container] = await testingContainer();
+        databaseService = container.get<DatabaseService>(TYPES.DatabaseService);
         directoryStub = sinon.stub(fs, 'unlinkSync').returns();
-        // Start a local test server
+
         mongoServer = new MongoMemoryServer();
         const mongoUri = await mongoServer.getUri();
         client = await MongoClient.connect(mongoUri, {
@@ -31,7 +29,6 @@ describe('Database service', () => {
             useUnifiedTopology: true,
         });
 
-        // We use the local Mongo Instance and not the production database
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
 
@@ -80,8 +77,31 @@ describe('Database service', () => {
         expect(dbData.find((x) => x.name === DBDATA.name)).to.deep.equals(DBDATA);
     });
 
+    it('should return an error if there is a problem deleting on the db', async () => {
+        try {
+            await client.close();
+        } catch (err) {}
+
+        try {
+            await databaseService.deleteDrawing(fileNameTest);
+        } catch (err) {
+            expect(err);
+        }
+        // await client.close();
+        // databaseService
+        //     .deleteDrawing(fileNameTest)
+        //     .then(() => {
+        //         done();
+        //     })
+        //     .catch((error: unknown) => {
+        //         expect(error);
+        //         done(error);
+        //     });
+    });
+
     it('should return an error if there is a problem saving on the db', async () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
+        client.close();
         try {
             await databaseService.addDrawing(DBDATA);
             fail();

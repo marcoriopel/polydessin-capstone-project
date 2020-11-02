@@ -9,7 +9,7 @@ import { TYPES } from '../types';
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
 
-describe('DateController', () => {
+xdescribe('DateController', () => {
     let dateService: Stubbed<DateService>;
     let app: Express.Application;
 
