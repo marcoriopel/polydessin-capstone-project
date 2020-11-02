@@ -6,6 +6,7 @@ import { MoveService } from './move.service';
 import SpyObj = jasmine.SpyObj;
 
 // tslint:disable: no-magic-numbers
+// tslint:disable: max-file-line-count
 
 describe('MoveService', () => {
     let service: MoveService;
@@ -158,7 +159,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should call setInterval if intervalID is undefined and isArrowKeyPressed', fakeAsync(() => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        console.log(service.intervalId);
 
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
