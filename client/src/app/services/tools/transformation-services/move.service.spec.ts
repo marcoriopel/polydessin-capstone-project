@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Rectangle } from '@app/classes/rectangle';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { delay } from 'rxjs/operators';
 import { MoveService } from './move.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -33,6 +32,12 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, false);
 
         service.intervalId = undefined;
+    });
+
+    afterEach(() => {
+        if (service.intervalId) {
+            clearInterval(service.intervalId);
+        }
     });
 
     it('should be created', () => {
@@ -66,6 +71,15 @@ describe('MoveService', () => {
         service.onMouseDown({} as MouseEvent);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+    });
+
+    it('onMouseDown should not call printSelectionOnPreview if isTransformationOver is false', () => {
+        service.isTransformationOver = false;
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+
+        service.onMouseDown({} as MouseEvent);
+
+        expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should call printSelectionOnPreview', () => {
@@ -115,19 +129,19 @@ describe('MoveService', () => {
         expect(setTimeoutSpy).toHaveBeenCalled();
     });
 
-    it('onKeyDown should not call setInterval if isArrowKeyPressed is false', () => {
+    it('onKeyDown should not call setInterval if isArrowKeyPressed is false', fakeAsync(() => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const setIntervalSpy = spyOn(global, 'setInterval');
 
         service.onKeyDown({ key: 't' } as KeyboardEvent);
 
-        delay(500);
+        tick(501);
 
         expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
         expect(setIntervalSpy).not.toHaveBeenCalled();
-    });
+    }));
 
-    it('onKeyDown should not call setInterval if intervalID is not undefined', () => {
+    it('onKeyDown should not call setInterval if intervalID is not undefined', fakeAsync(() => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const setIntervalSpy = spyOn(global, 'setInterval');
         // tslint:disable-next-line: no-empty
@@ -136,24 +150,27 @@ describe('MoveService', () => {
 
         service.onKeyDown({ key: 't' } as KeyboardEvent);
 
-        delay(500);
+        tick(501);
 
         expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
         expect(setIntervalSpy).not.toHaveBeenCalled();
-    });
+    }));
 
-    // it('onKeyDown should call setInterval if intervalID is undefined and isArrowKeyPressed', () => {
-    //     const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-    //     const setIntervalSpy = spyOn(global, 'setInterval');
-    //     console.log(service.intervalId);
+    it('onKeyDown should call setInterval if intervalID is undefined and isArrowKeyPressed', fakeAsync(() => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        console.log(service.intervalId);
 
-    //     service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-    //     service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent);
 
-    //     expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
-    //     expect(setIntervalSpy).toHaveBeenCalled();
-    // });
+        tick(501);
+
+        expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
+        expect(service.intervalId).toBeDefined();
+        // tslint:disable-next-line: no-non-null-assertion
+        clearInterval(service.intervalId!);
+    }));
 
     it('onKeyDown should printSelectionOnPreview if key is ArrowKey', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
@@ -178,6 +195,19 @@ describe('MoveService', () => {
         expect(service.selection.startingPoint.x).toBe(initialXValue - 3);
     });
 
+    it('onKeyDown should not change selection.startingPoint.x if key is ArrowLeft and ArrowLeft is pressed', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        const initialXValue = service.selection.startingPoint.x;
+        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+
+        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toBe(initialXValue);
+    });
+
     it('onKeyDown should change selection.startingPoint.x if key is ArrowRight', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         // tslint:disable-next-line: no-empty
@@ -188,6 +218,19 @@ describe('MoveService', () => {
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue + 3);
+    });
+
+    it('onKeyDown should not change selection.startingPoint.x if key is ArrowRight and ArrowRight is pressed', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        const initialXValue = service.selection.startingPoint.x;
+        service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
+
+        service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toBe(initialXValue);
     });
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowUp', () => {
@@ -202,6 +245,19 @@ describe('MoveService', () => {
         expect(service.selection.startingPoint.y).toBe(initialYValue - 3);
     });
 
+    it('onKeyDown should not change selection.startingPoint.x if key is ArrowUp and ArrowUp is pressed', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        const initialXValue = service.selection.startingPoint.x;
+        service.pressedKeys.set(ARROW_KEYS.UP, true);
+
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toBe(initialXValue);
+    });
+
     it('onKeyDown should change selection.startingPoint.y if key is ArrowDown', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         // tslint:disable-next-line: no-empty
@@ -212,6 +268,19 @@ describe('MoveService', () => {
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.y).toBe(initialYValue + 3);
+    });
+
+    it('onKeyDown should not change selection.startingPoint.x if key is ArrowDown and ArrowDown is pressed', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        const initialXValue = service.selection.startingPoint.x;
+        service.pressedKeys.set(ARROW_KEYS.DOWN, true);
+
+        service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toBe(initialXValue);
     });
 
     it('onKeyUp should not clear interval if interval if isArrowKeyPressed', () => {
@@ -302,6 +371,16 @@ describe('MoveService', () => {
     it('printSelectionOnPreview should set isTransformationOver to false if isTransformationOver is true', () => {
         const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
         service.isTransformationOver = true;
+
+        service.printSelectionOnPreview();
+
+        expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
+        expect(service.isTransformationOver).toBe(false);
+    });
+
+    it('printSelectionOnPreview should leave isTransformationOver to false if isTransformationOver is false', () => {
+        const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
+        service.isTransformationOver = false;
 
         service.printSelectionOnPreview();
 
