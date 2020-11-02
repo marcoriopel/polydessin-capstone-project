@@ -1,6 +1,8 @@
 /* tslint:disable:no-unused-variable */
 import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SavingComponent } from './saving.component';
@@ -11,8 +13,9 @@ describe('SavingComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SavingComponent],
-            imports: [HttpClientModule, MatSnackBarModule, MatDialogModule],
+            imports: [HttpClientModule, MatSnackBarModule, MatDialogModule, MatChipsModule],
         }).compileComponents();
     }));
 

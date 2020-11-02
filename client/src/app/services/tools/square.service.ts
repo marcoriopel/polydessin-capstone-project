@@ -29,11 +29,6 @@ export class SquareService extends Tool {
         super(drawingService);
     }
 
-    setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     setRectangleWidth(): void {
         this.rectangleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }

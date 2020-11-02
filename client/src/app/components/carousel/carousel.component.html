@@ -1,59 +1,20 @@
 <div class="carousel">
-    <h1 mat-dialog-title>Carrousel de dessin</h1>
-    <div *ngIf="gotImages === false">
-        <mat-spinner></mat-spinner>
+    <h1 mat-dialog-title>Carroussel de dessin</h1>
+    <div mat-dialog-content class="text">
+        <p>Il n'y a pas de dessin de sauvegardé sur le serveur pour le moment.</p>
     </div>
-    <div *ngIf="visibleDrawings.length > 0 && gotImages === true" class="search">
-        <mat-card class="tags-card">
-            <h3 mat-dialog-title>Filtrage par tags</h3>
-            <mat-form-field class="tag-list">
-                <mat-chip-list #chipList aria-label="Tag selection">
-                    <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="removeTag(tag)">
-                        {{ tag }}
-                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                    </mat-chip>
-                    <input
-                        placeholder="Tags:"
-                        [matChipInputFor]="chipList"
-                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        [matChipInputAddOnBlur]="addOnBlur"
-                        (matChipInputTokenEnd)="addTag($event)"
-                    />
-                </mat-chip-list>
-                <mat-hint>Pas d'espace, Max 15 charactères</mat-hint>
-            </mat-form-field>
-        </mat-card>
-        <mat-card class="slider">
-            <p>{{ drawings.length }} dessin(s) trouvé(s)</p>
-            <div *ngIf="visibleDrawings.length > 1; else oneDrawingBlock" class="mat-parent">
-                <button class="control prev" (click)="onPreviousClick()">
-                    <span class="arrow left"></span>
-                </button>
-                <ng-container *ngFor="let drawing of visibleDrawings; let i = index">
-                    <mat-card class="mat-child" [class]="'mat-child' + i">
-                        <p class="name">{{ drawing.name }}</p>
-                        <img class="image" [src]="drawing.drawingPng" />
-                        <u>TAGS</u>
-                        <i> - {{ drawing.tags }} - </i>
-                    </mat-card>
-                </ng-container>
-                <button class="control next" (click)="onNextClick()">
-                    <span class="arrow right"></span>
-                </button>
-            </div>
-            <ng-template #oneDrawingBlock>
-                <mat-card class="mat-child mat-child1">
-                    <p class="name">{{ visibleDrawings[0].name }}</p>
-                    <img class="image" [src]="visibleDrawings[0].drawingPng" />
-                    <u>TAGS</u>
-                    <i> - {{ visibleDrawings[0].tags }} - </i>
-                </mat-card>
-            </ng-template>
-            <button class="remove" mat-button (click)="deleteDrawing()">Supprimer</button>
-        </mat-card>
-    </div>
-    <div *ngIf="visibleDrawings.length == 0 && gotImages === true" #noDrawingBlock>Aucun dessin en sauvegarde</div>
     <div mat-dialog-actions>
-        <button class="close" mat-button mat-dialog-close>Fermer</button>
+        <button
+            mat-stroked-button
+            mat-button
+            tabindex="-1"
+            [disabled]="isOpenButtonDisabled"
+            id="open"
+            (click)="openSelectedDrawing()"
+            mat-dialog-close
+        >
+            Ouvrir
+        </button>
+        <button mat-button mat-button tabindex="-1" mat-dialog-close>Fermer</button>
     </div>
 </div>

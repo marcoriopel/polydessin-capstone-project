@@ -8,8 +8,7 @@ import {
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
-import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
-import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 
@@ -25,26 +24,15 @@ export class EditorComponent implements AfterViewInit {
     previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
-    toolNames: ToolNames = TOOL_NAMES;
     previewDiv: HTMLDivElement;
 
     // TODO -> Add missing keys for new tools as we create them
-    keyToolMapping: Map<string, string> = new Map([
-        ['c', this.toolNames.PENCIL_TOOL_NAME],
-        ['w', this.toolNames.BRUSH_TOOL_NAME],
-        ['1', this.toolNames.SQUARE_TOOL_NAME],
-        ['2', this.toolNames.CIRCLE_TOOL_NAME],
-        ['l', this.toolNames.LINE_TOOL_NAME],
-        ['b', this.toolNames.FILL_TOOL_NAME],
-        ['e', this.toolNames.ERASER_TOOL_NAME],
-        ['3', this.toolNames.POLYGONE_TOOL_NAME],
-        ['s', this.toolNames.SELECTION_TOOL_NAME],
-    ]);
+    shortcutsArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's', 'r'];
 
     constructor(
+        public hotkeyService: HotkeyService,
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
-        public newDrawingService: NewDrawingService,
     ) {
         this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
         this.resizeDrawingService.previewSize = this.previewSize;
@@ -68,21 +56,16 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent): void {
-        const keyName: string | undefined = this.keyToolMapping.get(event.key.toString());
-        if (keyName) {
-            (document.querySelector('#' + keyName) as HTMLElement).click();
-        } else {
-            this.toolSelectionService.currentTool.onKeyUp(event);
-        }
+        this.toolSelectionService.currentToolKeyUp(event);
     }
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (event.key === 'o' && event.ctrlKey) {
-            event.preventDefault();
-            this.newDrawingService.openWarning();
+        event.preventDefault();
+        if (this.shortcutsArray.includes(event.key.toString())) {
+            this.hotkeyService.onKeyDown(event);
         } else {
-            this.toolSelectionService.currentTool.onKeyDown(event);
+            this.toolSelectionService.currentToolKeyDown(event);
         }
     }
 

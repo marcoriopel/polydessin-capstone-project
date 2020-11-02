@@ -77,6 +77,12 @@ export class ResizeDrawingService {
         if (this.mouseDown) {
             this.imageData = this.drawingService.getCanvasData();
 
+            const tempPreviewCanvas: HTMLCanvasElement = document.createElement('canvas');
+            tempPreviewCanvas.width = this.canvasSize.x;
+            tempPreviewCanvas.height = this.canvasSize.y;
+            const tempPreviewCanvasCtx: CanvasRenderingContext2D = tempPreviewCanvas.getContext('2d') as CanvasRenderingContext2D;
+            tempPreviewCanvasCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
+
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
 
