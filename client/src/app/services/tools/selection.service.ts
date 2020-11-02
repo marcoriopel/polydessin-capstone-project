@@ -14,6 +14,7 @@ export class SelectionService extends Tool {
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionData: ImageData;
     transormation: string = '';
+    isRectangleSelection: boolean = false;
 
     constructor(drawingService: DrawingService, private squareService: SquareService, private moveService: MoveService) {
         super(drawingService);
@@ -22,8 +23,8 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (!this.isInSelection(event)) {
             this.mouseDown = event.button === MouseButton.LEFT;
-            if (!this.moveService.transformationOver && this.mouseDown) {
-                this.moveService.transformationOver = true;
+            if (!this.moveService.isTransformationOver && this.mouseDown) {
+                this.moveService.isTransformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
                 this.drawingService.baseCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
@@ -97,7 +98,7 @@ export class SelectionService extends Tool {
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.mouseDown = false;
         this.transormation = '';
-        this.moveService.transformationOver = true;
+        this.moveService.isTransformationOver = true;
     }
 
     private setSelectionData(selection: Rectangle): void {
@@ -107,7 +108,31 @@ export class SelectionService extends Tool {
             this.selection.width,
             this.selection.height,
         );
-        this.moveService.initialize(this.selection, this.selectionData);
+        if (!this.isRectangleSelection) {
+            const tmpCanvas = document.createElement('canvas');
+            tmpCanvas.width = this.drawingService.canvas.width;
+            tmpCanvas.height = this.drawingService.canvas.height;
+            const tmpCtx = tmpCanvas.getContext('2d') as CanvasRenderingContext2D;
+            tmpCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
+
+            const centerCircleX = this.selection.startingPoint.x + this.selection.width / 2;
+            const centerCircleY = this.selection.startingPoint.y + this.selection.height / 2;
+            tmpCtx.globalCompositeOperation = 'destination-in';
+            tmpCtx.beginPath();
+            tmpCtx.ellipse(centerCircleX, centerCircleY, this.selection.width / 2, this.selection.height / 2, 0, 0, Math.PI * 2);
+            tmpCtx.closePath();
+            tmpCtx.fill();
+
+            tmpCtx.globalCompositeOperation = 'source-over';
+
+            this.selectionData = tmpCtx.getImageData(
+                this.selection.startingPoint.x,
+                this.selection.startingPoint.y,
+                this.selection.width,
+                this.selection.height,
+            );
+        }
+        this.moveService.initialize(this.selection, this.selectionData, this.isRectangleSelection);
     }
 
     private strokeSelection(): void {

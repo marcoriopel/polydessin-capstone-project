@@ -12,29 +12,33 @@ export class MoveService extends Tool {
     initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: Rectangle;
     selectionData: ImageData;
-    transformationOver: boolean = true;
-    isArrowKeyLeftPressed: boolean = false;
-    isArrowKeyUpPressed: boolean = false;
-    isArrowKeyRightPressed: boolean = false;
-    isArrowKeyDownPressed: boolean = false;
+    isTransformationOver: boolean = true;
+    pressedKeys: Map<string, boolean> = new Map([
+        [ARROW_KEYS.LEFT, false],
+        [ARROW_KEYS.UP, false],
+        [ARROW_KEYS.RIGHT, false],
+        [ARROW_KEYS.DOWN, false],
+    ]);
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+    isRectangleSelection: boolean;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
     }
 
-    initialize(selection: Rectangle, selectionData: ImageData): void {
+    initialize(selection: Rectangle, selectionData: ImageData, isRectangleSelection: boolean): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.height = selection.height;
         this.initialSelection.width = selection.width;
         this.selection = selection;
         this.selectionData = selectionData;
+        this.isRectangleSelection = isRectangleSelection;
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (this.transformationOver) {
-            this.transformationOver = false;
+        if (this.isTransformationOver) {
+            this.isTransformationOver = false;
             this.printSelectionOnPreview();
         }
     }
@@ -51,42 +55,34 @@ export class MoveService extends Tool {
 
         switch (event.key) {
             case ARROW_KEYS.LEFT:
-                if (this.isArrowKeyLeftPressed === false) {
+                if (this.pressedKeys.get(ARROW_KEYS.LEFT) === false) {
                     this.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
                 }
-                this.isArrowKeyLeftPressed = true;
-                isArrowKey = true;
                 break;
             case ARROW_KEYS.UP:
-                if (this.isArrowKeyUpPressed === false) {
+                if (this.pressedKeys.get(ARROW_KEYS.UP) === false) {
                     this.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
                 }
-                this.isArrowKeyUpPressed = true;
-                isArrowKey = true;
                 break;
             case ARROW_KEYS.RIGHT:
-                if (this.isArrowKeyRightPressed === false) {
+                if (this.pressedKeys.get(ARROW_KEYS.RIGHT) === false) {
                     this.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
                 }
-                this.isArrowKeyRightPressed = true;
-                isArrowKey = true;
                 break;
             case ARROW_KEYS.DOWN:
-                if (this.isArrowKeyDownPressed === false) {
+                if (this.pressedKeys.get(ARROW_KEYS.DOWN) === false) {
                     this.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
                 }
-                this.isArrowKeyDownPressed = true;
-                isArrowKey = true;
                 break;
         }
 
+        if (this.pressedKeys.has(event.key)) {
+            this.pressedKeys.set(event.key, true);
+            isArrowKey = true;
+        }
+
         setTimeout(() => {
-            if (
-                this.isArrowKeyDownPressed === true ||
-                this.isArrowKeyRightPressed === true ||
-                this.isArrowKeyUpPressed === true ||
-                this.isArrowKeyLeftPressed === true
-            ) {
+            if (this.isArrowKeyPressed()) {
                 if (this.intervalId === undefined) {
                     this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
                 }
@@ -99,28 +95,12 @@ export class MoveService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        switch (event.key) {
-            case ARROW_KEYS.LEFT:
-                this.isArrowKeyLeftPressed = false;
-                break;
-            case ARROW_KEYS.UP:
-                this.isArrowKeyUpPressed = false;
-                break;
-            case ARROW_KEYS.RIGHT:
-                this.isArrowKeyRightPressed = false;
-                break;
-            case ARROW_KEYS.DOWN:
-                this.isArrowKeyDownPressed = false;
-                break;
+        if (this.pressedKeys.has(event.key)) {
+            this.pressedKeys.set(event.key, false);
         }
 
         if (this.intervalId !== undefined) {
-            if (
-                this.isArrowKeyDownPressed === false &&
-                this.isArrowKeyRightPressed === false &&
-                this.isArrowKeyUpPressed === false &&
-                this.isArrowKeyLeftPressed === false
-            ) {
+            if (!this.isArrowKeyPressed()) {
                 clearInterval(this.intervalId);
                 this.intervalId = undefined;
             }
@@ -130,12 +110,21 @@ export class MoveService extends Tool {
     clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
         const currentFillStyle = ctx.fillStyle;
         ctx.fillStyle = 'white';
-        ctx.fillRect(
-            this.initialSelection.startingPoint.x,
-            this.initialSelection.startingPoint.y,
-            this.initialSelection.width,
-            this.initialSelection.height,
-        );
+
+        if (this.isRectangleSelection) {
+            ctx.fillRect(
+                this.initialSelection.startingPoint.x,
+                this.initialSelection.startingPoint.y,
+                this.initialSelection.width,
+                this.initialSelection.height,
+            );
+        } else {
+            const centerCircleX = this.initialSelection.startingPoint.x + this.selection.width / 2;
+            const centerCircleY = this.initialSelection.startingPoint.y + this.selection.height / 2;
+            ctx.ellipse(centerCircleX, centerCircleY, this.initialSelection.width / 2, this.initialSelection.height / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         ctx.fillStyle = currentFillStyle;
     }
 
@@ -143,25 +132,34 @@ export class MoveService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
-        if (this.transformationOver) {
-            this.transformationOver = false;
+        if (this.isTransformationOver) {
+            this.isTransformationOver = false;
         }
     }
 
     private move(self: MoveService): void {
-        if (self.isArrowKeyLeftPressed) {
+        if (self.pressedKeys.get(ARROW_KEYS.LEFT)) {
             self.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
         }
-        if (self.isArrowKeyUpPressed) {
+        if (self.pressedKeys.get(ARROW_KEYS.UP)) {
             self.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
         }
-        if (self.isArrowKeyRightPressed) {
+        if (self.pressedKeys.get(ARROW_KEYS.RIGHT)) {
             self.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
         }
-        if (self.isArrowKeyDownPressed) {
+        if (self.pressedKeys.get(ARROW_KEYS.DOWN)) {
             self.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
         }
 
         self.printSelectionOnPreview();
+    }
+
+    private isArrowKeyPressed(): boolean {
+        for (const [key] of this.pressedKeys) {
+            if (this.pressedKeys.get(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
