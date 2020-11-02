@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -14,8 +15,8 @@ fdescribe('CircleService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    // let setCircleWidthSpy: jasmine.Spy<any>;
-    // let setCircleHeigthSpy: jasmine.Spy<any>;
+    let setCircleWidthSpy: jasmine.Spy<any>;
+    let setCircleHeigthSpy: jasmine.Spy<any>;
     // let drawCircleSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawShapeSpy: jasmine.Spy<any>;
@@ -47,8 +48,8 @@ fdescribe('CircleService', () => {
         service = TestBed.inject(CircleService);
         drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
-        // setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
-        // setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
+        setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
+        setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         // drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
 
@@ -266,6 +267,53 @@ fdescribe('CircleService', () => {
         service.fillStyle = FILL_STYLES.BORDER;
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEventLClick);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
+
+    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const point: Vec2 = { x: 0, y: 0 };
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 29, y: 29 };
+        service.drawCircle(baseCtxStub, point);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
+    });
+
+    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const point: Vec2 = { x: 0, y: 0 };
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 31, y: 31 };
+        service.drawCircle(baseCtxStub, point);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
+    });
+
+    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const point: Vec2 = { x: 0, y: 0 };
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 31, y: 29 };
+        service.drawCircle(baseCtxStub, point);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
+    });
+
+    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const point: Vec2 = { x: 0, y: 0 };
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 29, y: 31 };
+        service.drawCircle(baseCtxStub, point);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
+    });
+
+    it('drawCircle should call fill call fill if the fill style is not set to border', () => {
+        const point: Vec2 = { x: 0, y: 0 };
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 29, y: 31 };
+        service.drawCircle(baseCtxStub, point);
+        expect(setCircleHeigthSpy).toHaveBeenCalled();
+        expect(setCircleWidthSpy).toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 });

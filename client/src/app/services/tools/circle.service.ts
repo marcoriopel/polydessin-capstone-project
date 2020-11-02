@@ -169,7 +169,6 @@ export class CircleService extends Tool {
                 ellipseCenterX = this.firstPoint.x - circleRadius;
                 ellipseCenterY = this.firstPoint.y + circleRadius;
                 break;
-            default:
         }
         ctx.beginPath();
         ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
