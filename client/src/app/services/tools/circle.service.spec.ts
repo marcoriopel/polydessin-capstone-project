@@ -8,7 +8,7 @@ import { CircleService } from './circle.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-fdescribe('CircleService', () => {
+describe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -17,7 +17,6 @@ fdescribe('CircleService', () => {
     let previewCanvasStub: HTMLCanvasElement;
     let setCircleWidthSpy: jasmine.Spy<any>;
     let setCircleHeigthSpy: jasmine.Spy<any>;
-    // let drawCircleSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawShapeSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
@@ -51,7 +50,6 @@ fdescribe('CircleService', () => {
         setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
         setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
-        // drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -306,7 +304,7 @@ fdescribe('CircleService', () => {
         expect(setCircleWidthSpy).toHaveBeenCalled();
     });
 
-    it('drawCircle should call fill call fill if the fill style is not set to border', () => {
+    it('drawCircle should not call fill if the fill style is set to border', () => {
         const point: Vec2 = { x: 0, y: 0 };
         service.fillStyle = FILL_STYLES.BORDER;
         service.firstPoint = { x: 30, y: 30 };
