@@ -100,12 +100,12 @@
 
         <input
             type="radio"
-            [id]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            [id]="this.toolNames.POLYGONE_TOOL_NAME"
             name="tool"
-            [value]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME"
+            [value]="this.toolNames.POLYGONE_TOOL_NAME"
             (change)="onToolChange($event)"
         />
-        <label [for]="toolSelectionService.toolNames.POLYGONE_TOOL_NAME">
+        <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
             <mat-icon
                 class="material-icons"
                 [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"

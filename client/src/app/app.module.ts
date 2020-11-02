@@ -51,7 +51,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MainPageComponent,
         UserGuideComponent,
         LoadSelectedDrawingAlertComponent,
-        UserguideComponent,
+        UserGuideComponent,
         DrawingDetailComponent,
         GeneralDetailComponent,
         AttributePanelComponent,

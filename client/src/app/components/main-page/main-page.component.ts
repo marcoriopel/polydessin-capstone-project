@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
-import { UserguideComponent } from '@app/components/userguide/userguide.component';
+import { UserGuideComponent } from '@app/components/userguide/user-guide.component';
 
 @Component({
     selector: 'app-main-page',

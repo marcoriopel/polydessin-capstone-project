@@ -1,5 +1,5 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { CONFIRM_SAVED_DURATION, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { MetaData } from '@common/communication/drawing-data';
 
 @Component({
@@ -14,7 +15,7 @@ import { MetaData } from '@common/communication/drawing-data';
     templateUrl: './saving.component.html',
     styleUrls: ['./saving.component.scss'],
 })
-export class SavingComponent implements AfterViewChecked, OnInit {
+export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
     isSaveButtonDisabled: boolean = false;
     currentTag: string = '';
     name: string = '';
@@ -25,6 +26,7 @@ export class SavingComponent implements AfterViewChecked, OnInit {
     tags: string[] = [];
     ownerForm: FormGroup;
     constructor(
+        public hotkeyService: HotkeyService,
         public databaseService: DatabaseService,
         public drawingService: DrawingService,
         public snackBar: MatSnackBar,
