@@ -49,7 +49,6 @@ export class PipetteService extends Tool {
         if (event.button === MouseButton.RIGHT) {
             this.secondaryColor.emit(this.color);
         }
-        // this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     showZoomPixel(event: MouseEvent): void {
@@ -110,7 +109,6 @@ export class PipetteService extends Tool {
         }
         if (this.isNearBorder) {
             this.clearCanvas();
-            this.mouseOut.next(false);
         }
     }
 
