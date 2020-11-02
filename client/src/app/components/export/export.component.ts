@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -7,7 +7,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     templateUrl: './export.component.html',
     styleUrls: ['./export.component.scss'],
 })
-export class ExportComponent implements OnInit {
+export class ExportComponent implements AfterViewInit {
     filterStyles: FilterStyles = {
         NONE: FILTER_STYLES.NONE,
         BLACK_AND_WHITE: FILTER_STYLES.BLACK_AND_WHITE,
@@ -21,11 +21,20 @@ export class ExportComponent implements OnInit {
 
     name: string = '';
     emailAdress: string = '';
-    imagesrc: string;
-    urlImage: string;
-    filterCanvas: HTMLCanvasElement;
+    imagesrc: string = '';
+    urlImage: string = '';
+    filterCanvas: HTMLCanvasElement = document.createElement('canvas');
+    link: HTMLAnchorElement = document.createElement('a');
 
     constructor(public drawingService: DrawingService) {}
+
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.imagesrc = this.drawingService.canvas.toDataURL();
+            this.urlImage = this.imagesrc;
+            this.filterCanvas = this.drawingService.canvas;
+        });
+    }
 
     changeName(name: string): void {
         this.name = name;
@@ -35,37 +44,26 @@ export class ExportComponent implements OnInit {
         const target = event.target as HTMLInputElement;
         const filterNumber: number = Number(target.value);
         const canvasFilter = document.createElement('canvas') as HTMLCanvasElement;
-        const canvasFilterCtx = canvasFilter.getContext('2d');
+        const canvasFilterCtx = canvasFilter.getContext('2d') as CanvasRenderingContext2D;
         canvasFilter.height = this.drawingService.canvas.height;
         canvasFilter.width = this.drawingService.canvas.width;
-        if (canvasFilterCtx != null) {
-            canvasFilterCtx.filter = this.differentFilter[filterNumber];
-            canvasFilterCtx.drawImage(this.drawingService.canvas, 0, 0);
-            this.filterCanvas = canvasFilter;
-            this.imagesrc = canvasFilterCtx.canvas.toDataURL();
-            this.urlImage = this.imagesrc;
-        }
+
+        canvasFilterCtx.filter = this.differentFilter[filterNumber];
+        canvasFilterCtx.drawImage(this.drawingService.canvas, 0, 0);
+        this.filterCanvas = canvasFilter;
+        this.imagesrc = canvasFilterCtx.canvas.toDataURL();
+        this.urlImage = this.imagesrc;
     }
 
     getImageUrl(event: Event): void {
         const target = event.target as HTMLInputElement;
         const typeNumber: number = Number(target.value);
-        if (this.filterCanvas != null) {
-            this.urlImage = this.filterCanvas.toDataURL(this.typeOfFile[typeNumber]);
-        }
-    }
-
-    ngOnInit(): void {
-        const image: HTMLImageElement = new Image();
-        image.src = this.drawingService.baseCtx.canvas.toDataURL();
-        this.imagesrc = image.src;
-        this.urlImage = this.imagesrc;
+        this.urlImage = this.filterCanvas.toDataURL(this.typeOfFile[typeNumber]);
     }
 
     exportLocally(): void {
-        const link = document.createElement('a');
-        link.href = this.urlImage;
-        link.setAttribute('download', this.name);
-        link.click();
+        this.link.href = this.urlImage;
+        this.link.setAttribute('download', this.name);
+        this.link.click();
     }
 }

@@ -4,8 +4,10 @@ import { UserguideComponent } from '@app/components/userguide/userguide.componen
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
-import { OpenWindowsService } from '@app/services/open-windows/open-windows.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { CarouselComponent } from '../carousel/carousel.component';
+import { ExportComponent } from '../export/export.component';
+import { SavingComponent } from '../saving/saving.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -16,12 +18,7 @@ export class SidebarComponent {
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
 
-    constructor(
-        public toolSelectionService: ToolSelectionService,
-        public dialog: MatDialog,
-        public newDrawingService: NewDrawingService,
-        public openWindowsService: OpenWindowsService,
-    ) {}
+    constructor(public toolSelectionService: ToolSelectionService, public dialog: MatDialog, public newDrawingService: NewDrawingService) {}
 
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
@@ -36,16 +33,16 @@ export class SidebarComponent {
     }
 
     openDialog(): void {
-        this.openWindowsService.openWarningWindow();
+        this.newDrawingService.openWarningWindow();
     }
 
     openSaveWindow(): void {
-        this.openWindowsService.openSaveWindow();
+        this.dialog.open(SavingComponent);
     }
     openCarouselWindow(): void {
-        this.openWindowsService.openCarouselWindow();
+        this.dialog.open(CarouselComponent);
     }
     openExportWindow(): void {
-        this.openWindowsService.openExportWindow();
+        this.dialog.open(ExportComponent);
     }
 }

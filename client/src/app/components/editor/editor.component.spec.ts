@@ -29,7 +29,7 @@ describe('EditorComponent', () => {
     beforeEach(async(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['initializeBaseCanvas']);
         resizeDrawingService = new ResizeDrawingService(drawServiceSpy as DrawingService);
-        newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningWindow']);
         matDialog = {} as MatDialog;
 
         TestBed.configureTestingModule({
@@ -146,6 +146,6 @@ describe('EditorComponent', () => {
     it('should call openDialog when ctrl+o press', () => {
         const keyEvent = new KeyEventMock() as KeyboardEvent;
         component.onKeyDown(keyEvent);
-        expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
+        expect(newdrawServiceSpy.openWarningWindow).toHaveBeenCalled();
     });
 });

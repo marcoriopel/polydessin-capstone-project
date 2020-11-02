@@ -9,7 +9,7 @@ import {
     MINIMUM_WORKSPACE_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
-import { OpenWindowsService } from '@app/services/open-windows/open-windows.service';
+import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 @Component({
@@ -41,7 +41,7 @@ export class EditorComponent implements AfterViewInit {
     constructor(
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
-        public openWindowsService: OpenWindowsService,
+        public newDrawingService: NewDrawingService,
     ) {
         this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
         this.resizeDrawingService.previewSize = this.previewSize;
@@ -77,10 +77,7 @@ export class EditorComponent implements AfterViewInit {
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'o' && event.ctrlKey) {
             event.preventDefault();
-            this.openWindowsService.openWarningWindow();
-        } else if (event.key === 'e' && event.ctrlKey) {
-            event.preventDefault();
-            this.openWindowsService.openExportWindow();
+            this.newDrawingService.openWarningWindow();
         } else {
             this.toolSelectionService.currentTool.onKeyDown(event);
         }

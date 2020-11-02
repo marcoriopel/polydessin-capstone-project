@@ -1,6 +1,6 @@
 <div class="exporting">
     <h1 mat-dialog-title>Exportation du dessin</h1>
-    <p><img id="image" [src]="imagesrc" height="200px" width="300px" /></p>
+    <p><img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" /></p>
     <div>
         <label>Fichier: </label>
         <mat-form-field class="name" appearance="fill">

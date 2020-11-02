@@ -38,7 +38,7 @@ describe('SidebarComponent', () => {
             toolStub as EraserService,
         );
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
-        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningWindow']);
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
@@ -80,11 +80,11 @@ describe('SidebarComponent', () => {
     });
 
     it('should call openWarning', () => {
-        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
+        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[id=new-drawing]'));
         fixture.detectChanges();
         button.triggerEventHandler('click', null);
         fixture.detectChanges();
-        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
+        expect(newDrawingServiceSpy.openWarningWindow).toHaveBeenCalled();
     });
 
     it('should not change tool nor set cursor on an invalid event', () => {
