@@ -271,7 +271,7 @@ describe('FillService', () => {
 
     it('isInToleranceRange should return true if pixelData is the same as ImageData with tolerance 0', () => {
         const pixelData: Uint8ClampedArray = new Uint8ClampedArray([255, 255, 255, 255]);
-        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 1 };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
         const index = 0;
 
         service.tolerance = 0;
@@ -281,7 +281,7 @@ describe('FillService', () => {
 
     it('isInToleranceRange should return false if pixelData is not the same as ImageData with tolerance 0', () => {
         const pixelData: Uint8ClampedArray = new Uint8ClampedArray([255, 255, 255, 255]);
-        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 1 };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
         const index = 4;
 
         service.tolerance = 0;
@@ -291,7 +291,7 @@ describe('FillService', () => {
 
     it('isInToleranceRange should return false if pixelData is not the same as ImageData with tolerance 10 ', () => {
         const pixelData: Uint8ClampedArray = new Uint8ClampedArray([255, 255, 255, 255]);
-        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 1 };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
         const index = 4;
 
         service.tolerance = 10;
@@ -301,7 +301,7 @@ describe('FillService', () => {
 
     it('isInToleranceRange should return true if pixelData is not the same as ImageData with tolerance 10 but data is similar', () => {
         const pixelData: Uint8ClampedArray = new Uint8ClampedArray([255, 255, 255, 255]);
-        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 250, 250, 250, 255]), height: 1, width: 1 };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 250, 250, 250, 255]), height: 1, width: 2 };
         const index = 4;
 
         service.tolerance = 10;
@@ -311,7 +311,7 @@ describe('FillService', () => {
 
     it('isInToleranceRange should return true if pixelData is not the same as ImageData with tolerance 100', () => {
         const pixelData: Uint8ClampedArray = new Uint8ClampedArray([255, 255, 255, 255]);
-        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 0]), height: 1, width: 1 };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 0]), height: 1, width: 2 };
         const index = 4;
 
         service.tolerance = 100;

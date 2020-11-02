@@ -12,7 +12,7 @@ export class MoveService extends Tool {
     initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: Rectangle;
     selectionData: ImageData;
-    transformationOver: boolean = true;
+    isTransformationOver: boolean = true;
     isArrowKeyLeftPressed: boolean = false;
     isArrowKeyUpPressed: boolean = false;
     isArrowKeyRightPressed: boolean = false;
@@ -33,8 +33,8 @@ export class MoveService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (this.transformationOver) {
-            this.transformationOver = false;
+        if (this.isTransformationOver) {
+            this.isTransformationOver = false;
             this.printSelectionOnPreview();
         }
     }
@@ -143,8 +143,8 @@ export class MoveService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground(this.drawingService.previewCtx);
         this.drawingService.previewCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
-        if (this.transformationOver) {
-            this.transformationOver = false;
+        if (this.isTransformationOver) {
+            this.isTransformationOver = false;
         }
     }
 
