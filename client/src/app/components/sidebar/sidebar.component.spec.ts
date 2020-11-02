@@ -7,19 +7,7 @@ import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-<<<<<<< HEAD
-import { BrushService } from '@app/services/tools/brush.service';
-import { CircleService } from '@app/services/tools/circle.service';
-import { EraserService } from '@app/services/tools/eraser.service';
-import { FillService } from '@app/services/tools/fill.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
-import { SelectionService } from '@app/services/tools/selection.service';
-import { SquareService } from '@app/services/tools/square.service';
-=======
 import { Subject } from 'rxjs';
->>>>>>> dev
 
 import SpyObj = jasmine.SpyObj;
 describe('SidebarComponent', () => {
@@ -31,26 +19,9 @@ describe('SidebarComponent', () => {
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
 
-<<<<<<< HEAD
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
-        toolSelectionStub = new ToolSelectionService(
-            toolStub as PencilService,
-            toolStub as BrushService,
-            toolStub as SquareService,
-            toolStub as CircleService,
-            toolStub as LineService,
-            toolStub as FillService,
-            toolStub as EraserService,
-            toolStub as PolygoneService,
-            toolStub as SelectionService,
-        );
-        matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
-=======
     beforeEach(() => {
         obs = new Subject<string>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'setCurrentToolCursor']);
->>>>>>> dev
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);

@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -8,17 +7,16 @@ import { CircleService } from './circle.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-describe('CircleService', () => {
+fdescribe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let setCircleWidthSpy: jasmine.Spy<any>;
-    let setCircleHeigthSpy: jasmine.Spy<any>;
-    let drawCircleSpy: jasmine.Spy<any>;
-    let topLeftPointSpy: jasmine.Spy<any>;
+    // let setCircleWidthSpy: jasmine.Spy<any>;
+    // let setCircleHeigthSpy: jasmine.Spy<any>;
+    // let drawCircleSpy: jasmine.Spy<any>;
     let drawEllipseSpy: jasmine.Spy<any>;
     let drawShapeSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
@@ -35,7 +33,7 @@ describe('CircleService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -49,11 +47,10 @@ describe('CircleService', () => {
         service = TestBed.inject(CircleService);
         drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
-        setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
-        setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
-        topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint').and.callThrough();
+        // setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
+        // setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
         drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
-        drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
+        // drawCircleSpy = spyOn<any>(service, 'drawCircle').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -122,9 +119,6 @@ describe('CircleService', () => {
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCircleWidthSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 
@@ -137,7 +131,6 @@ describe('CircleService', () => {
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
         expect(drawEllipseSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
     });
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
@@ -167,7 +160,7 @@ describe('CircleService', () => {
             key: 'Shift',
         });
         service.onKeyDown(event);
-        expect(drawCircleSpy).toHaveBeenCalled();
+        expect(drawEllipseSpy).toHaveBeenCalled();
     });
 
     it('should drawEllipse if mouse is down and shift is unpressed', () => {
@@ -189,49 +182,6 @@ describe('CircleService', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseMove(mouseEventLClick);
         expect(drawShapeSpy).toHaveBeenCalled();
-    });
-
-    it('should finTopLeftPoint if firstPoint is top left corner', () => {
-        // Top left is first point
-        service.firstPoint = { x: 1, y: 1 };
-        service.lastPoint = { x: 2, y: 2 };
-        service.setCircleHeight();
-        service.setCircleWidth();
-        const topLeft = service.findTopLeftPoint();
-        expect(topLeft).toEqual(service.firstPoint);
-    });
-
-    it('should finTopLeftPoint if firstPoint is top right corner', () => {
-        // top left is left by width of first point
-        service.firstPoint = { x: 2, y: 2 };
-        service.lastPoint = { x: 1, y: 3 };
-        service.setCircleHeight();
-        service.setCircleWidth();
-        const topLeft = service.findTopLeftPoint();
-        const expectedValue: Vec2 = { x: 1, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
-    });
-
-    it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
-        // top left is up by heigth of first point
-        service.firstPoint = { x: 1, y: 2 };
-        service.lastPoint = { x: 2, y: 1 };
-        service.setCircleHeight();
-        service.setCircleWidth();
-        const topLeft = service.findTopLeftPoint();
-        const expectedValue: Vec2 = { x: 1, y: 1 };
-        expect(topLeft).toEqual(expectedValue);
-    });
-
-    it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
-        // top left is last point
-        service.firstPoint = { x: 3, y: 3 };
-        service.lastPoint = { x: 2, y: 2 };
-        service.setCircleHeight();
-        service.setCircleWidth();
-        const topLeft = service.findTopLeftPoint();
-        const expectedValue: Vec2 = { x: 2, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
     });
 
     it('drawShape should change strokestyle with fillstyle set to fill', () => {
