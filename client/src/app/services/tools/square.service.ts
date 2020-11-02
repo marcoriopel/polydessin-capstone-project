@@ -88,7 +88,7 @@ export class SquareService extends Tool {
     }
 
     drawShape(ctx: CanvasRenderingContext2D): Rectangle {
-        let rectancle;
+        let rectangle;
 
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
@@ -101,9 +101,9 @@ export class SquareService extends Tool {
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {
-            rectancle = this.drawSquare(ctx);
+            rectangle = this.drawSquare(ctx);
         } else {
-            rectancle = this.drawRectangle(ctx);
+            rectangle = this.drawRectangle(ctx);
         }
 
         if (ctx === this.drawingService.baseCtx) {
@@ -111,7 +111,7 @@ export class SquareService extends Tool {
         }
 
         ctx.stroke();
-        return rectancle;
+        return rectangle;
     }
 
     private drawRectangle(ctx: CanvasRenderingContext2D): Rectangle {
