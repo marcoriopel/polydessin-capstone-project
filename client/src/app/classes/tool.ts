@@ -25,11 +25,18 @@ export abstract class Tool {
 
     onKeyDown(event: KeyboardEvent): void {}
 
+    onKeyPress(event: KeyboardEvent): void {}
+
     onKeyUp(event: KeyboardEvent): void {}
 
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
-    setCursor(): void {}
+    setCursor(): void {
+        const previewCanvas = this.drawingService.previewCanvas;
+        previewCanvas.style.cursor = 'crosshair';
+    }
+
+    reset(): void {}
 }

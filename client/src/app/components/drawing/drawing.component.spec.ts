@@ -1,45 +1,43 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Tool } from '@app/classes/tool';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { BrushService } from '@app/services/tools/brush.service';
-import { CircleService } from '@app/services/tools/circle.service';
-import { EraserService } from '@app/services/tools/eraser.service';
-import { FillService } from '@app/services/tools/fill.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { SquareService } from '@app/services/tools/square.service';
+import { Subject } from 'rxjs';
 import { DrawingComponent } from './drawing.component';
 
-class ToolStub extends Tool {}
+import SpyObj = jasmine.SpyObj;
 
 describe('DrawingComponent', () => {
     let component: DrawingComponent;
     let fixture: ComponentFixture<DrawingComponent>;
-    let toolStub: ToolStub;
-    let drawingStub: DrawingService;
-    let toolSelectionStub: ToolSelectionService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let obs: Subject<string>;
+    let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
-        drawingStub = new DrawingService();
-        toolSelectionStub = new ToolSelectionService(
-            toolStub as PencilService,
-            {} as BrushService,
-            {} as SquareService,
-            {} as CircleService,
-            {} as LineService,
-            {} as FillService,
-            {} as EraserService,
-        );
+        obs = new Subject<string>();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', [
+            'changeTool',
+            'setCurrentToolCursor',
+            'currentToolMouseMove',
+            'currentToolMouseDown',
+            'currentToolMouseUp',
+            'currentToolMouseLeave',
+        ]);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey']);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
-                { provide: PencilService, useValue: toolStub },
-                { provide: DrawingService, useValue: drawingStub },
-                { provide: ToolSelectionService, useValue: toolSelectionStub },
+                { provide: DrawingService, useValue: drawingServiceSpy },
+                { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
             ],
         }).compileComponents();
     }));
@@ -63,38 +61,26 @@ describe('DrawingComponent', () => {
         expect(width).toEqual(MINIMUM_CANVAS_WIDTH);
     });
 
-    it('should get stubTool', () => {
-        const currentTool = component.toolSelectionService.currentTool;
-        expect(currentTool).toEqual(toolStub);
-    });
-
     it(" should call the tool's mouse move when receiving a mouse move event", () => {
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseMove').and.callThrough();
         component.onMouseMove(event);
-        expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(toolSelectionServiceSpy.currentToolMouseMove).toHaveBeenCalledWith(event);
     });
 
     it(" should call the tool's mouse down when receiving a mouse down event", () => {
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseDown').and.callThrough();
         component.onMouseDown(event);
-        expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(toolSelectionServiceSpy.currentToolMouseDown).toHaveBeenCalledWith(event);
     });
 
     it(" should call the tool's mouse up when receiving a mouse up event", () => {
         const event = {} as MouseEvent;
-        const mouseEventSpy = spyOn(toolStub, 'onMouseUp').and.callThrough();
         component.onMouseUp(event);
-        expect(mouseEventSpy).toHaveBeenCalled();
-        expect(mouseEventSpy).toHaveBeenCalledWith(event);
+        expect(toolSelectionServiceSpy.currentToolMouseUp).toHaveBeenCalledWith(event);
     });
 
     it(' onMouseLeave should call toolSelectionService.onMouseLeave', () => {
-        const mouseEventSpy = spyOn(toolStub, 'onMouseLeave').and.callThrough();
         component.onMouseLeave();
-        expect(mouseEventSpy).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.currentToolMouseLeave).toHaveBeenCalled();
     });
 });
