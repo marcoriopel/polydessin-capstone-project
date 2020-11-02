@@ -7,12 +7,15 @@ import { ResizeDrawingService } from './resize-drawing.service';
 
 class DrawingServiceMock {
     canvas: HTMLCanvasElement = document.createElement('canvas');
+    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
     baseCtx: CanvasRenderingContext2D;
+    previewCtx: CanvasRenderingContext2D;
 
     constructor() {
         this.canvas.height = MINIMUM_CANVAS_HEIGHT;
         this.canvas.width = MINIMUM_CANVAS_WIDTH;
         this.baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        this.previewCtx = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
     }
     // tslint:disable-next-line: no-empty
     initializeBaseCanvas(): void {}

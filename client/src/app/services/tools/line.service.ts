@@ -286,11 +286,6 @@ export class LineService extends Tool {
         }
     }
 
-    setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     drawLine(startingPoint: Vec2, endingPoint: Vec2, isPreview: boolean, lineWidth: number): void {
         if (isPreview) {
             // Using the preview canvas
