@@ -24,6 +24,7 @@ describe('SidebarComponent', () => {
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningWindow']);
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
