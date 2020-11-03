@@ -23,8 +23,8 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (!this.isInSelection(event)) {
             this.mouseDown = event.button === MouseButton.LEFT;
-            if (!this.moveService.transformationOver && this.mouseDown) {
-                this.moveService.transformationOver = true;
+            if (!this.moveService.isTransformationOver && this.mouseDown) {
+                this.moveService.isTransformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
                 this.drawingService.baseCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
@@ -98,7 +98,7 @@ export class SelectionService extends Tool {
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.mouseDown = false;
         this.transormation = '';
-        this.moveService.transformationOver = true;
+        this.moveService.isTransformationOver = true;
     }
 
     private setSelectionData(selection: Rectangle): void {
