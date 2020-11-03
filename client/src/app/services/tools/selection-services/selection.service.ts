@@ -34,7 +34,8 @@ export class SelectionService extends Tool {
             if (this.mouseDown) {
                 if (!this.moveService.isTransformationOver) {
                     this.moveService.isTransformationOver = true;
-                    this.printSelection(this.drawingService.baseCtx);
+                    this.moveService.printSelectionOnPreview();
+                    this.applyPreview();
                 }
                 this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -105,7 +106,7 @@ export class SelectionService extends Tool {
 
     reset(): void {
         if (this.selection.height !== 0 && this.selection.height !== 0) {
-            this.printSelection(this.drawingService.baseCtx);
+            this.applyPreview();
         }
         this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -125,27 +126,8 @@ export class SelectionService extends Tool {
 
     strokeSelection(): void {}
 
-    clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
-        const currentFillStyle = ctx.fillStyle;
-        ctx.fillStyle = 'white';
-
-        ctx.fillRect(
-            this.initialSelection.startingPoint.x,
-            this.initialSelection.startingPoint.y,
-            this.initialSelection.width,
-            this.initialSelection.height,
-        );
-
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
-        ctx.globalCompositeOperation = 'source-over';
-
-        ctx.fillStyle = currentFillStyle;
-    }
-
-    printSelection(ctx: CanvasRenderingContext2D): void {
+    applyPreview(): void {
+        this.drawingService.baseCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearSelectionBackground(ctx);
-        ctx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 }

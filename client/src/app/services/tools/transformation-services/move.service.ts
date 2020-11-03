@@ -40,7 +40,7 @@ export class MoveService {
     onMouseMove(event: MouseEvent): void {
         this.selection.startingPoint.x += event.movementX;
         this.selection.startingPoint.y += event.movementY;
-        this.printSelection(this.drawingService.previewCtx);
+        this.printSelectionOnPreview();
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -83,7 +83,7 @@ export class MoveService {
         }, CONFIRM_KEY_PRESS_DURATION);
 
         if (isArrowKey){
-            this.printSelection(this.drawingService.previewCtx);
+            this.printSelectionOnPreview();
             if (this.isTransformationOver) {
                 this.isTransformationOver = false;
             }
@@ -103,28 +103,28 @@ export class MoveService {
         }
     }
 
-    clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
-        const currentFillStyle = ctx.fillStyle;
-        ctx.fillStyle = 'white';
+    clearSelectionBackground(): void {
+        const currentFillStyle = this.drawingService.previewCtx.fillStyle;
+        this.drawingService.previewCtx.fillStyle = 'white';
 
-        ctx.fillRect(
+        this.drawingService.previewCtx.fillRect(
             this.initialSelection.startingPoint.x,
             this.initialSelection.startingPoint.y,
             this.initialSelection.width,
             this.initialSelection.height,
         );
 
-        ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
-        ctx.globalCompositeOperation = 'source-over';
+        this.drawingService.previewCtx.globalCompositeOperation = 'destination-in';
+        this.drawingService.previewCtx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
+        this.drawingService.previewCtx.globalCompositeOperation = 'source-over';
 
-        ctx.fillStyle = currentFillStyle;
+        this.drawingService.previewCtx.fillStyle = currentFillStyle;
     }
 
-    printSelection(ctx: CanvasRenderingContext2D): void {
+    printSelectionOnPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearSelectionBackground(ctx);
-        ctx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        this.clearSelectionBackground();
+        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 
     private move(self: MoveService): void {
@@ -141,7 +141,7 @@ export class MoveService {
             self.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
         }
 
-        self.printSelection(self.drawingService.previewCtx);
+        self.printSelectionOnPreview();
     }
 
     private isArrowKeyPressed(): boolean {

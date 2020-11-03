@@ -14,11 +14,6 @@ export class SquareSelectionService extends SelectionService {
         super.underliyingService = squareService;
     }
 
-    initialize(): void {
-        // this.moveService.isRectangleSelection = true;
-        super.initialize();
-    }
-
     setSelectionData(selection: Rectangle): void {
         this.selectionImage.width = selection.width;
         this.selectionImage.height = selection.height;
