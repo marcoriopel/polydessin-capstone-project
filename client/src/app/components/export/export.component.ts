@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
@@ -31,7 +31,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     ownerForm: FormGroup;
 
     constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private cdRef: ChangeDetectorRef) {}
-
+    @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
@@ -78,7 +78,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             this.link.href = this.urlImage;
             this.link.setAttribute('download', this.name);
             this.link.click();
-            document.getElementById('modalClose')?.click();
         }
     }
 

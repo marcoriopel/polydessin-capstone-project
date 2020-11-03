@@ -1,4 +1,4 @@
-<div id="export" class="exporting">
+<div #exportModal class="exporting">
     <h1>Exportation du dessin</h1>
     <p><img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" /></p>
     <div>
@@ -51,5 +51,5 @@
     <div></div>
 
     <button mat-button id="export" (click)="exportLocally()">Exporter</button>
-    <button id="modalClose" mat-button mat-dialog-close>Annuler</button>
+    <button mat-button mat-dialog-close>Fermer</button>
 </div>

@@ -8,8 +8,8 @@ describe('ExportComponent', () => {
     let fixture: ComponentFixture<ExportComponent>;
     let drawingServiceStub: DrawingService;
     let canvasStub: HTMLCanvasElement;
-    let filterCanvasStud: HTMLCanvasElement;
-    let linkStud: HTMLAnchorElement;
+    let filterCanvasStub: HTMLCanvasElement;
+    let linkStub: HTMLAnchorElement;
     const WIDTH = 100;
     const HEIGHT = 100;
 
@@ -25,7 +25,7 @@ describe('ExportComponent', () => {
         fixture = TestBed.createComponent(ExportComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        linkStud = document.createElement('a');
+        linkStub = document.createElement('a');
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
@@ -34,12 +34,12 @@ describe('ExportComponent', () => {
         const filter = document.createElement('canvas') as HTMLCanvasElement;
         filter.width = WIDTH;
         filter.height = HEIGHT;
-        filterCanvasStud = filter;
+        filterCanvasStub = filter;
 
         // tslint:disable-next-line: no-string-literal
         component['drawingService'].canvas = canvasStub;
-        component.link = linkStud;
-        component.filterCanvas = filterCanvasStud;
+        component.link = linkStub;
+        component.filterCanvas = filterCanvasStub;
     });
 
     it('should create', () => {
