@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 
@@ -14,9 +15,15 @@ export class SelectionService extends Tool {
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
+    underliyingService: SquareService | CircleService;
 
-    constructor(drawingService: DrawingService, public squareService: SquareService, public moveService: MoveService) {
+    constructor(drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
+    }
+
+    initialize(): void {
+        this.drawingService.previewCtx.lineWidth = 1;
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -28,7 +35,7 @@ export class SelectionService extends Tool {
             }
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.squareService.onMouseDown(event);
+                this.underliyingService.onMouseDown(event);
             }
         } else {
             this.transormation = 'move';
@@ -38,14 +45,14 @@ export class SelectionService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.squareService.lastPoint = this.getPositionFromMouse(event);
-            const currentFillStyle = this.squareService.fillStyle;
-            this.squareService.fillStyle = FILL_STYLES.BORDER;
-            this.selection = this.squareService.drawShape(this.drawingService.previewCtx);
+            this.underliyingService.lastPoint = this.getPositionFromMouse(event);
+            const currentFillStyle = this.underliyingService.fillStyle;
+            this.underliyingService.fillStyle = FILL_STYLES.DASHED;
+            this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.setSelectionData(this.selection);
             }
-            this.squareService.fillStyle = currentFillStyle;
+            this.underliyingService.fillStyle = currentFillStyle;
             this.mouseDown = false;
         } else if (this.transormation === 'move') {
             this.transormation = '';
@@ -55,10 +62,10 @@ export class SelectionService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            const currentFillStyle = this.squareService.fillStyle;
-            this.squareService.fillStyle = FILL_STYLES.BORDER;
-            this.squareService.onMouseMove(event);
-            this.squareService.fillStyle = currentFillStyle;
+            const currentFillStyle = this.underliyingService.fillStyle;
+            this.underliyingService.fillStyle = FILL_STYLES.BORDER;
+            this.underliyingService.onMouseMove(event);
+            this.underliyingService.fillStyle = currentFillStyle;
         } else if (this.transormation === 'move') {
             this.moveService.onMouseMove(event);
         }

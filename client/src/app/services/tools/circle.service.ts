@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
@@ -77,7 +78,8 @@ export class CircleService extends Tool {
         }
     }
 
-    private drawShape(ctx: CanvasRenderingContext2D): void {
+    drawShape(ctx: CanvasRenderingContext2D): Rectangle {
+
         const topLeftPoint = this.findTopLeftPoint();
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
@@ -86,6 +88,12 @@ export class CircleService extends Tool {
 
         if (this.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
+            ctx.lineWidth = 1;
+        }
+
+        if (this.fillStyle === FILL_STYLES.DASHED) {
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            ctx.strokeStyle = 'black';
             ctx.lineWidth = 1;
         }
 
@@ -99,7 +107,9 @@ export class CircleService extends Tool {
             ctx.beginPath();
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 1;
-            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            if (this.fillStyle !== FILL_STYLES.DASHED){
+                ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            }
             ctx.rect(topLeftPoint.x, topLeftPoint.y, this.circleWidth, this.circleHeight);
             ctx.stroke();
             ctx.lineWidth = this.width;
@@ -107,6 +117,8 @@ export class CircleService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
+
+        return { startingPoint: topLeftPoint, width: this.circleWidth, height: this.circleHeight };
     }
 
     private drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
@@ -118,10 +130,11 @@ export class CircleService extends Tool {
         const ellipseCenterY = point.y + ellipseRadiusY;
         ctx.beginPath();
         ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
+        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fill();
         }
         ctx.stroke();
+
     }
 
     private drawEllipse(ctx: CanvasRenderingContext2D, point: Vec2): void {
@@ -134,7 +147,7 @@ export class CircleService extends Tool {
 
         ctx.beginPath();
         ctx.ellipse(ellipseCenterX, ellipseCenterY, ellipseRadiusX, ellipseRadiusY, 0, 0, Math.PI * 2, false);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
+        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fill();
         }
         ctx.stroke();

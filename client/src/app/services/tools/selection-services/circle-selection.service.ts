@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Rectangle } from '@app/classes/rectangle';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { SquareService } from '@app/services/tools/square.service';
+import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { SelectionService } from './selection.service';
 
@@ -9,12 +9,14 @@ import { SelectionService } from './selection.service';
     providedIn: 'root',
 })
 export class CircleSelectionService extends SelectionService {
-    constructor(drawingService: DrawingService, public squareService: SquareService, public moveService: MoveService) {
-        super(drawingService, squareService, moveService);
+    constructor(drawingService: DrawingService, public circleService: CircleService, public moveService: MoveService) {
+        super(drawingService, moveService);
+        super.underliyingService = circleService;
     }
 
     initialize(): void {
       this.moveService.isRectangleSelection = false;
+      // super.initialize();
     }
 
     setSelectionData(selection: Rectangle): void {
@@ -46,7 +48,7 @@ export class CircleSelectionService extends SelectionService {
             this.selection.width,
             this.selection.height,
         );
-        this.moveService.initialize(this.selection, this.selectionImage, this.isRectangleSelection);
+        this.moveService.initialize(this.selection, this.selectionImage);
     }
 
     strokeSelection(): void {

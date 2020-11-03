@@ -3,7 +3,7 @@ import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,6 +25,16 @@ export class SquareService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
+    }
+
+    initialize(): void {
+        this.drawingService.baseCtx.fillStyle = this.colorSelectionService.primaryColor;
+        this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.secondaryColor;
+        this.drawingService.baseCtx.lineWidth = this.width;
+
+        this.drawingService.previewCtx.fillStyle = this.colorSelectionService.primaryColor;
+        this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.secondaryColor;
+        this.drawingService.previewCtx.lineWidth = this.width;
     }
 
     setRectangleWidth(): void {
@@ -90,14 +100,15 @@ export class SquareService extends Tool {
     drawShape(ctx: CanvasRenderingContext2D): Rectangle {
         let rectangle;
 
-        ctx.fillStyle = this.colorSelectionService.primaryColor;
-        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.lineWidth = this.width;
-
         if (this.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
             ctx.lineWidth = 1;
+        } else if (this.fillStyle === FILL_STYLES.DASHED) {
+            ctx.strokeStyle = 'black';
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            ctx.lineWidth = 1;
         }
+
         ctx.beginPath();
 
         if (this.isShiftKeyDown) {
@@ -119,7 +130,7 @@ export class SquareService extends Tool {
         this.setRectangleWidth();
         const topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
         ctx.rect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
+        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fillRect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
         }
 
@@ -133,7 +144,7 @@ export class SquareService extends Tool {
         const topLeftPoint = this.findTopLeftPoint(squareWidth, squareWidth);
 
         ctx.rect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
+        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fillRect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
         }
 

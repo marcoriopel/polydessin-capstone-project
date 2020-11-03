@@ -10,11 +10,13 @@ import { SelectionService } from './selection.service';
 })
 export class SquareSelectionService extends SelectionService {
     constructor(drawingService: DrawingService, public squareService: SquareService, public moveService: MoveService) {
-        super(drawingService, squareService, moveService);
+        super(drawingService, moveService);
+        super.underliyingService = squareService;
     }
 
     initialize(): void {
         this.moveService.isRectangleSelection = true;
+        // super.initialize();
     }
 
     setSelectionData(selection: Rectangle): void {
@@ -32,7 +34,7 @@ export class SquareSelectionService extends SelectionService {
             this.selection.width,
             this.selection.height,
         );
-        this.moveService.initialize(this.selection, this.selectionImage, this.isRectangleSelection);
+        this.moveService.initialize(this.selection, this.selectionImage);
     }
 
     strokeSelection(): void {
