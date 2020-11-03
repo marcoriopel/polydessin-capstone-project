@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -153,20 +153,20 @@ export class CircleService extends Tool {
         let ellipseCenterX = point.x + circleRadius;
         let ellipseCenterY = point.y + circleRadius;
         switch (this.quadrant) {
-            case 1:
+            case Quadrant.BOTTOM_LEFT:
                 ellipseCenterX = this.firstPoint.x - circleRadius;
                 ellipseCenterY = this.firstPoint.y - circleRadius;
                 break;
-            case 2:
-                ellipseCenterX = this.firstPoint.x + circleRadius;
-                ellipseCenterY = this.firstPoint.y - circleRadius;
-                break;
-            case 3:
-                ellipseCenterX = this.firstPoint.x + circleRadius;
+            case Quadrant.TOP_LEFT:
+                ellipseCenterX = this.firstPoint.x - circleRadius;
                 ellipseCenterY = this.firstPoint.y + circleRadius;
                 break;
-            case 4:
-                ellipseCenterX = this.firstPoint.x - circleRadius;
+            case Quadrant.BOTTOM_RIGHT:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
+                break;
+            case Quadrant.TOP_RIGHT:
+                ellipseCenterX = this.firstPoint.x + circleRadius;
                 ellipseCenterY = this.firstPoint.y + circleRadius;
                 break;
         }

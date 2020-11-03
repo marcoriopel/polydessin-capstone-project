@@ -1,7 +1,11 @@
+import { Injectable } from '@angular/core';
 import { Vec2 } from '../../classes/vec2';
 import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '../../ressources/global-variables/global-variables';
 import { LIMIT_ANGLES } from '../../ressources/global-variables/limit-angles';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class Trigonometry {
     MAX_DISTANCE_BETWEEN_TWO_DOTS: number = 20;
 
@@ -129,17 +133,13 @@ export class Trigonometry {
 
     findQuadrant(firstPoint: Vec2, lastPoint: Vec2): number {
         if (firstPoint.x > lastPoint.x && firstPoint.y > lastPoint.y) {
-            // firstPoint is bottom right corner lastPoint is top left corner
-            return 1;
+            return Quadrant.BOTTOM_LEFT;
         } else if (firstPoint.x > lastPoint.x && firstPoint.y < lastPoint.y) {
-            // firstPoint is top right corner lastPoint is bottom left corner
-            return 4;
+            return Quadrant.TOP_LEFT;
         } else if (firstPoint.x < lastPoint.x && firstPoint.y > lastPoint.y) {
-            // firstPoint is bottom left corner lastPoint is top right corner
-            return 2;
+            return Quadrant.BOTTOM_RIGHT;
         }
-        // firstPoint is top left corner lastPoint is bottom right corner
-        return 3;
+        return Quadrant.TOP_RIGHT;
     }
 
     calculateCircleWidth(firstPoint: Vec2, lastPoint: Vec2): number {
@@ -152,8 +152,8 @@ export class Trigonometry {
 
     findTopLeftPointC(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
         // firstPoint is top left corner lastPoint is bottom right corner
-        let x = firstPoint.x;
-        let y = lastPoint.y;
+        let x = lastPoint.x;
+        let y = firstPoint.y;
         if (firstPoint.x > lastPoint.x && firstPoint.y > lastPoint.y) {
             // firstPoint is bottom right corner lastPoint is top left corner
             x = lastPoint.x;
@@ -187,22 +187,22 @@ export class Trigonometry {
         let x = 0;
         let y = 0;
         switch (quadrant) {
-            case 1:
+            case Quadrant.BOTTOM_LEFT:
                 // firstPoint is top left corner lastPoint is bottom right corner
                 x = lastPoint.x;
                 y = lastPoint.y;
                 break;
-            case 2:
+            case Quadrant.TOP_LEFT:
                 // firstPoint is bottom right corner lastPoint is top left corner
                 x = firstPoint.x;
                 y = lastPoint.y;
                 break;
-            case 3:
+            case Quadrant.BOTTOM_RIGHT:
                 // firstPoint is top right corner lastPoint is bottom left corner
                 x = firstPoint.x;
                 y = firstPoint.y;
                 break;
-            case 4:
+            case Quadrant.TOP_RIGHT:
                 // firstPoint is bottom left corner lastPoint is top right corner
                 x = lastPoint.x;
                 y = firstPoint.y;

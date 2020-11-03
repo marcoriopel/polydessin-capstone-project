@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Polygone } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -124,20 +124,20 @@ export class PolygoneService extends Tool {
         const center: Vec2 = { x: 0, y: 0 };
 
         switch (quadrant) {
-            case 1:
+            case Quadrant.BOTTOM_LEFT:
                 center.x = polygoneData.firstPoint.x - circleRadius;
                 center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
-            case 2:
-                center.x = polygoneData.firstPoint.x + circleRadius;
-                center.y = polygoneData.firstPoint.y - circleRadius;
-                break;
-            case 3:
-                center.x = polygoneData.firstPoint.x + circleRadius;
+            case Quadrant.TOP_LEFT:
+                center.x = polygoneData.firstPoint.x - circleRadius;
                 center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
-            case 4:
-                center.x = polygoneData.firstPoint.x - circleRadius;
+            case Quadrant.BOTTOM_RIGHT:
+                center.x = polygoneData.firstPoint.x + circleRadius;
+                center.y = polygoneData.firstPoint.y - circleRadius;
+                break;
+            case Quadrant.TOP_RIGHT:
+                center.x = polygoneData.firstPoint.x + circleRadius;
                 center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
             default:
