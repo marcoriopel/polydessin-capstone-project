@@ -12,6 +12,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
     providedIn: 'root',
 })
 export class SelectionService extends Tool {
+    initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
@@ -30,11 +31,11 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (!this.isInSelection(event)) {
             this.mouseDown = event.button === MouseButton.LEFT;
-            if (!this.moveService.isTransformationOver && this.mouseDown) {
-                this.moveService.isTransformationOver = true;
-                this.fillSelection();
-            }
             if (this.mouseDown) {
+                if (!this.moveService.isTransformationOver) {
+                    this.moveService.isTransformationOver = true;
+                    this.printSelection(this.drawingService.baseCtx);
+                }
                 this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.underliyingService.onMouseDown(event);
@@ -47,13 +48,17 @@ export class SelectionService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
+            // setUp underlying service
             this.underliyingService.lastPoint = this.getPositionFromMouse(event);
             const currentFillStyle = this.underliyingService.fillStyle;
             this.underliyingService.fillStyle = FILL_STYLES.DASHED;
+            // draw selection
             this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
+                this.setInitialSelection(this.selection);
                 this.setSelectionData(this.selection);
             }
+            // reset underlying service to original form
             this.underliyingService.fillStyle = currentFillStyle;
             this.mouseDown = false;
         } else if (this.transormation === 'move') {
@@ -100,7 +105,7 @@ export class SelectionService extends Tool {
 
     reset(): void {
         if (this.selection.height !== 0 && this.selection.height !== 0) {
-            this.fillSelection();
+            this.printSelection(this.drawingService.baseCtx);
         }
         this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -109,22 +114,38 @@ export class SelectionService extends Tool {
         this.moveService.isTransformationOver = true;
     }
 
+    setInitialSelection(selection: Rectangle): void {
+        this.initialSelection.startingPoint.x = selection.startingPoint.x;
+        this.initialSelection.startingPoint.y = selection.startingPoint.y;
+        this.initialSelection.width = selection.width;
+        this.initialSelection.height = selection.height;
+    }
+
     setSelectionData(selection: Rectangle): void {}
 
     strokeSelection(): void {}
 
-    fillSelection(): void {
-        this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
-        this.drawingService.baseCtx.drawImage(
-            this.selectionImage,
-            0,
-            0,
-            this.selection.width,
-            this.selection.height,
-            this.selection.startingPoint.x,
-            this.selection.startingPoint.y,
-            this.selection.width,
-            this.selection.height,
+    clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
+        const currentFillStyle = ctx.fillStyle;
+        ctx.fillStyle = 'white';
+
+        ctx.fillRect(
+            this.initialSelection.startingPoint.x,
+            this.initialSelection.startingPoint.y,
+            this.initialSelection.width,
+            this.initialSelection.height,
         );
+
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
+        ctx.globalCompositeOperation = 'source-over';
+
+        ctx.fillStyle = currentFillStyle;
+    }
+
+    printSelection(ctx: CanvasRenderingContext2D): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearSelectionBackground(ctx);
+        ctx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 }

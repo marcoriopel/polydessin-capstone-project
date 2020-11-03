@@ -15,40 +15,32 @@ export class CircleSelectionService extends SelectionService {
     }
 
     initialize(): void {
-      this.moveService.isRectangleSelection = false;
+    //   this.moveService.isRectangleSelection = false;
       super.initialize();
     }
 
     setSelectionData(selection: Rectangle): void {
-        this.selectionImage.width = this.selection.width;
-        this.selectionImage.height = this.selection.height;
+        this.selectionImage.width = selection.width;
+        this.selectionImage.height = selection.height;
         const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
 
         selectionImageCtx.beginPath();
-        selectionImageCtx.ellipse(
-            this.selection.width / 2,
-            this.selection.height / 2,
-            this.selection.width / 2,
-            this.selection.height / 2,
-            0,
-            0,
-            Math.PI * 2,
-        );
+        selectionImageCtx.ellipse(selection.width / 2, selection.height / 2, selection.width / 2, selection.height / 2, 0, 0, Math.PI * 2);
         selectionImageCtx.clip();
         selectionImageCtx.closePath();
 
         selectionImageCtx.drawImage(
             this.drawingService.canvas,
-            this.selection.startingPoint.x,
-            this.selection.startingPoint.y,
-            this.selection.width,
-            this.selection.height,
+            selection.startingPoint.x,
+            selection.startingPoint.y,
+            selection.width,
+            selection.height,
             0,
             0,
-            this.selection.width,
-            this.selection.height,
+            selection.width,
+            selection.height,
         );
-        this.moveService.initialize(this.selection, this.selectionImage);
+        this.moveService.initialize(selection, this.selectionImage);
     }
 
     strokeSelection(): void {

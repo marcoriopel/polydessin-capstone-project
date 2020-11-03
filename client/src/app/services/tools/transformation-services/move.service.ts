@@ -19,7 +19,6 @@ export class MoveService {
     ]);
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
-    isRectangleSelection: boolean;
 
     constructor(public drawingService: DrawingService) {}
 
@@ -35,15 +34,13 @@ export class MoveService {
     onMouseDown(event: MouseEvent): void {
         if (this.isTransformationOver) {
             this.isTransformationOver = false;
-            this.printSelectionOnPreview();
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selection.startingPoint.x += event.movementX;
         this.selection.startingPoint.y += event.movementY;
-        this.printSelectionOnPreview();
+        this.printSelection(this.drawingService.previewCtx);
     }
 
     onKeyDown(event: KeyboardEvent): void {
@@ -85,8 +82,11 @@ export class MoveService {
             }
         }, CONFIRM_KEY_PRESS_DURATION);
 
-        if (isArrowKey) {
-            this.printSelectionOnPreview();
+        if (isArrowKey){
+            this.printSelection(this.drawingService.previewCtx);
+            if (this.isTransformationOver) {
+                this.isTransformationOver = false;
+            }
         }
     }
 
@@ -106,37 +106,25 @@ export class MoveService {
     clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
         const currentFillStyle = ctx.fillStyle;
         ctx.fillStyle = 'white';
-        if (this.isRectangleSelection) {
-            ctx.fillRect(
-                this.initialSelection.startingPoint.x,
-                this.initialSelection.startingPoint.y,
-                this.initialSelection.width,
-                this.initialSelection.height,
-            );
-        } else {
-            ctx.beginPath();
-            ctx.ellipse(
-                this.initialSelection.startingPoint.x + this.initialSelection.width / 2,
-                this.initialSelection.startingPoint.y + this.initialSelection.height / 2,
-                this.initialSelection.width / 2,
-                this.initialSelection.height / 2,
-                0,
-                0,
-                Math.PI * 2,
-            );
-            ctx.fill();
-        }
+
+        ctx.fillRect(
+            this.initialSelection.startingPoint.x,
+            this.initialSelection.startingPoint.y,
+            this.initialSelection.width,
+            this.initialSelection.height,
+        );
+
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
+        ctx.globalCompositeOperation = 'source-over';
 
         ctx.fillStyle = currentFillStyle;
     }
 
-    printSelectionOnPreview(): void {
+    printSelection(ctx: CanvasRenderingContext2D): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearSelectionBackground(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
-        if (this.isTransformationOver) {
-            this.isTransformationOver = false;
-        }
+        this.clearSelectionBackground(ctx);
+        ctx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 
     private move(self: MoveService): void {
@@ -153,7 +141,7 @@ export class MoveService {
             self.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
         }
 
-        self.printSelectionOnPreview();
+        self.printSelection(self.drawingService.previewCtx);
     }
 
     private isArrowKeyPressed(): boolean {
