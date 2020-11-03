@@ -110,7 +110,6 @@ export class SelectionService extends Tool {
     strokeSelection(): void {}
 
     fillSelection(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
         this.drawingService.baseCtx.drawImage(
             this.selectionImage,

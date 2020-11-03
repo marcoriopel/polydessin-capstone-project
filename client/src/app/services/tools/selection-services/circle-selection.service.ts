@@ -16,7 +16,7 @@ export class CircleSelectionService extends SelectionService {
 
     initialize(): void {
       this.moveService.isRectangleSelection = false;
-      // super.initialize();
+      super.initialize();
     }
 
     setSelectionData(selection: Rectangle): void {

@@ -16,7 +16,7 @@ export class SquareSelectionService extends SelectionService {
 
     initialize(): void {
         this.moveService.isRectangleSelection = true;
-        // super.initialize();
+        super.initialize();
     }
 
     setSelectionData(selection: Rectangle): void {

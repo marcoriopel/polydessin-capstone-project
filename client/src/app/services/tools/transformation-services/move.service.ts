@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Rectangle } from '@app/classes/rectangle';
-import { Tool } from '@app/classes/tool';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -117,10 +116,10 @@ export class MoveService {
         } else {
             ctx.beginPath();
             ctx.ellipse(
-                this.initialSelection.startingPoint.x + this.selection.width / 2,
-                this.initialSelection.startingPoint.y + this.selection.height / 2,
-                this.selection.width / 2,
-                this.selection.height / 2,
+                this.initialSelection.startingPoint.x + this.initialSelection.width / 2,
+                this.initialSelection.startingPoint.y + this.initialSelection.height / 2,
+                this.initialSelection.width / 2,
+                this.initialSelection.height / 2,
                 0,
                 0,
                 Math.PI * 2,
