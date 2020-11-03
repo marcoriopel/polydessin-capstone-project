@@ -3,6 +3,7 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
@@ -36,6 +37,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     constructor(
+        private router: Router,
         public hotkeyService: HotkeyService,
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
@@ -113,7 +115,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     loadSelectedDrawing(positionIndex: number): void {
-        if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
+        if (this.router.url !== '/home' && !this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
             const loadDrawingAlert = this.dialog.open(LoadSelectedDrawingAlertComponent);
             loadDrawingAlert
                 .afterClosed()
@@ -131,6 +133,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     applySelectedDrawing(index: number): void {
+        if (this.router.url === '/home') {
+            this.router.navigateByUrl('/editor');
+        }
         this.databaseService
             .getDrawingPng(this.databaseMetadata[index].fileName)
             .pipe(takeUntil(this.destroy$))
