@@ -1,5 +1,6 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -30,7 +31,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
 
-    constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private cdRef: ChangeDetectorRef) {}
+    constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private dialogRef: MatDialogRef<ExportComponent>) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
@@ -39,7 +40,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         });
     }
     ngAfterViewInit(): void {
-        this.cdRef.detectChanges();
         setTimeout(() => {
             this.imagesrc = this.drawingService.canvas.toDataURL();
             this.urlImage = this.imagesrc;
@@ -74,10 +74,11 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     exportLocally(): void {
-        if (this.name !== '') {
+        if (this.name !== '' && this.name.length <= MAX_NAME_LENGTH) {
             this.link.href = this.urlImage;
             this.link.setAttribute('download', this.name);
             this.link.click();
+            this.dialogRef.close();
         }
     }
 
