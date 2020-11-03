@@ -99,7 +99,7 @@ export class PolygoneService extends Tool {
         this.circleService.changeFillStyle(FILL_STYLES.BORDER);
         this.circleService.firstPoint = this.firstPoint;
         this.circleService.lastPoint = this.lastPoint;
-        this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointC(this.firstPoint, this.lastPoint));
+        this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint));
         this.LineDash(this.drawingService.previewCtx);
     }
 

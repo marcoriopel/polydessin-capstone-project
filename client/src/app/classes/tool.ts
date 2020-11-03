@@ -12,8 +12,8 @@ export abstract class Tool {
     minToolWidth: number = MIN_TOOL_WIDTH;
     maxBorderWidth: number = MAX_BORDER;
     minBorderWidth: number = MIN_BORDER;
-    minSides: number = MIN_SIDES;
-    maxSides: number = MAX_SIDES;
+    minNumberOfSides: number = MIN_SIDES;
+    maxNumberOfSides: number = MAX_SIDES;
 
     constructor(protected drawingService: DrawingService) {}
 

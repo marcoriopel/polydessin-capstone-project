@@ -142,7 +142,7 @@ export class Trigonometry {
         return Quadrant.TOP_RIGHT;
     }
 
-    calculateCircleWidth(firstPoint: Vec2, lastPoint: Vec2): number {
+    setCircleWidth(firstPoint: Vec2, lastPoint: Vec2): number {
         return Math.abs(firstPoint.x - lastPoint.x);
     }
 
@@ -150,29 +150,25 @@ export class Trigonometry {
         return Math.abs(firstPoint.y - lastPoint.y);
     }
 
-    findTopLeftPointC(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
+    findTopLeftPointCircle(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
         const quadrant: Quadrant = this.findQuadrant(firstPoint, lastPoint);
 
         let x = 0;
         let y = 0;
         switch (quadrant) {
             case Quadrant.BOTTOM_LEFT:
-                // firstPoint is top left corner lastPoint is bottom right corner
                 x = lastPoint.x;
                 y = lastPoint.y;
                 break;
             case Quadrant.TOP_LEFT:
-                // firstPoint is bottom right corner lastPoint is top left corner
                 x = firstPoint.x;
                 y = lastPoint.y;
                 break;
             case Quadrant.BOTTOM_RIGHT:
-                // firstPoint is top right corner lastPoint is bottom left corner
                 x = firstPoint.x;
                 y = firstPoint.y;
                 break;
             case Quadrant.TOP_RIGHT:
-                // firstPoint is bottom left corner lastPoint is top right corner
                 x = lastPoint.x;
                 y = firstPoint.y;
                 break;

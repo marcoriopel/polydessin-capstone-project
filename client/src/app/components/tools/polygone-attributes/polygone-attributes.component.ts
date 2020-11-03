@@ -9,25 +9,25 @@ import { PolygoneService } from '@app/services/tools/polygone.service';
 export class PolygoneAttributesComponent {
     toolWidth: number;
     fillStyle: number;
-    sides: number;
+    numberOfSides: number;
 
     constructor(public polygoneService: PolygoneService) {
         this.toolWidth = polygoneService.width;
         this.fillStyle = polygoneService.fillStyle;
-        this.sides = polygoneService.sides;
+        this.numberOfSides = polygoneService.sides;
     }
 
-    handleBorderWidthChange(newWidth: number): void {
+    changeBorderWidth(newWidth: number): void {
         this.toolWidth = newWidth;
         this.polygoneService.changeWidth(newWidth);
     }
 
-    handleFillStyleChange(newFillStyle: number): void {
+    changeFillStyle(newFillStyle: number): void {
         this.polygoneService.changeFillStyle(newFillStyle);
     }
 
-    handlePolygoneSides(sides: number): void {
-        this.sides = sides;
+    changeNumberOfSides(sides: number): void {
+        this.numberOfSides = sides;
         this.polygoneService.changeSides(sides);
     }
 }

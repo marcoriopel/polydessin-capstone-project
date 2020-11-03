@@ -161,15 +161,6 @@ describe('SquareService', () => {
         expect(service.rectangleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    // it('should drawSquare if mouse is down and shift is pressed', () => {
-    //     service.onMouseDown(mouseEvent);
-    //     const event = new KeyboardEvent('keypress', {
-    //         key: 'Shift',
-    //     });
-    //     service.onKeyDown(event);
-    //     expect(drawSquareSpy).toHaveBeenCalled();
-    // });
-
     it('should drawRect if mouse is down and shift is unpressed', () => {
         service.onMouseDown(mouseEvent);
         service.isShiftKeyDown = true;

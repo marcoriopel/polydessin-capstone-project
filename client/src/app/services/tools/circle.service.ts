@@ -98,8 +98,8 @@ export class CircleService extends Tool {
             ctx.lineWidth = 1;
         }
 
-        this.setellipseHeight();
-        this.setellipseWidth();
+        this.setEllipseHeight();
+        this.setEllipseWidth();
         this.ellipseRadius = { x: this.ellipseWidth / 2, y: this.ellipseHeight / 2 };
         this.ellipseCenter = { x: topLeftPoint.x + this.ellipseRadius.x, y: topLeftPoint.y + this.ellipseRadius.y };
 
@@ -178,11 +178,11 @@ export class CircleService extends Tool {
         ctx.stroke();
     }
 
-    setellipseWidth(): void {
+    setEllipseWidth(): void {
         this.ellipseWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }
 
-    setellipseHeight(): void {
+    setEllipseHeight(): void {
         this.ellipseHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 

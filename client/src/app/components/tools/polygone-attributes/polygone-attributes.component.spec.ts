@@ -33,24 +33,24 @@ describe('PencilAttributesComponent', () => {
     });
 
     it('should call changeWidth of circleService', () => {
-        component.handleBorderWidthChange(finalToolWidth);
+        component.changeBorderWidth(finalToolWidth);
         expect(component.polygoneService.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleBorderWidthChange(finalToolWidth);
+        component.changeBorderWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
     it('should call changeFillStyle of polygoneService', () => {
-        component.handleFillStyleChange(finalToolWidth);
+        component.changeFillStyle(finalToolWidth);
         expect(component.polygoneService.changeFillStyle).toHaveBeenCalled();
     });
 
     it('should call changeSides and change the sides', () => {
-        component.sides = initialsides;
-        component.handlePolygoneSides(finalsides);
-        expect(component.sides).toBe(finalsides);
+        component.numberOfSides = initialsides;
+        component.changeNumberOfSides(finalsides);
+        expect(component.numberOfSides).toBe(finalsides);
     });
 });
