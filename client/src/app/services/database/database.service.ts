@@ -27,10 +27,6 @@ export class DatabaseService {
         return this.http.delete<void>(this.BASE_URL + '/deleteDrawing/' + fileName);
     }
 
-    getDrawingData(): Observable<FormData[]> {
-        return this.http.get<FormData[]>(this.BASE_URL + '/getDrawingData').pipe(catchError(this.handleError<FormData[]>('getDrawing')));
-    }
-
     getAllDBData(): Observable<DBData[]> {
         return this.http.get<DBData[]>(this.BASE_URL + '/getDBData').pipe(catchError(this.handleError<DBData[]>('getAllDBData')));
     }

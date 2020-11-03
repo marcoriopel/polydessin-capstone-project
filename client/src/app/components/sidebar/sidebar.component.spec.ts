@@ -4,10 +4,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { Subject } from 'rxjs';
+import { CarouselComponent } from '../carousel/carousel.component';
+import { SavingComponent } from '../saving/saving.component';
 
 import SpyObj = jasmine.SpyObj;
 describe('SidebarComponent', () => {
@@ -87,5 +90,33 @@ describe('SidebarComponent', () => {
         component.onToolChange(event);
         expect(toolSelectionServiceSpy.setCurrentToolCursor).not.toHaveBeenCalled();
         expect(toolSelectionServiceSpy.changeTool).not.toHaveBeenCalled();
+    });
+
+    it('should change tool on hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next('invalidtool');
+        expect(component.selectedTool).toEqual(TOOL_NAMES.PENCIL_TOOL_NAME);
+    });
+
+    it('should not change tool on invalid hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open save window', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open carousel component on call', () => {
+        component.openCarouselWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(CarouselComponent);
+    });
+
+    it('should open save component on call', () => {
+        component.openSaveWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
     });
 });
