@@ -78,10 +78,8 @@ describe('EditorComponent', () => {
 
     it('should call toolSectionService.currentToolKeyDown', () => {
         keyboardEvent = new KeyboardEvent('keydown', { key: 'u' });
-        const eventSpy = spyOn(keyboardEvent, 'preventDefault');
         component.onKeyDown(keyboardEvent);
         expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
-        expect(eventSpy).toHaveBeenCalled();
     });
 
     it('should set previewDiv display to block', () => {
@@ -124,12 +122,5 @@ describe('EditorComponent', () => {
         component.onMouseUp(mouseEvent);
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
         expect(component.previewDiv.style.display).toEqual('none');
-    });
-
-    it('should call event.preventDefault when pressing a', () => {
-        keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
-        const eventSpy = spyOn(keyboardEvent, 'preventDefault');
-        component.onKeyDown(keyboardEvent);
-        expect(eventSpy).toHaveBeenCalled();
     });
 });

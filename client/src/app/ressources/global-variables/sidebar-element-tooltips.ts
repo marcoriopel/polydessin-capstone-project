@@ -13,6 +13,7 @@ export interface SidebarElementTooltips {
     REDO_DESCRIPTION: string;
     SAVE_DRAWING_DESCRIPTION: string;
     CAROUSEL_DESCRIPTION: string;
+    EXPORT_DRAWING_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -30,4 +31,5 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
     SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
+    EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
 };
