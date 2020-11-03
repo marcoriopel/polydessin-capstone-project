@@ -106,6 +106,7 @@ export class SelectionService extends Tool {
 
     reset(): void {
         if (this.selection.height !== 0 && this.selection.height !== 0) {
+            this.moveService.printSelectionOnPreview();
             this.applyPreview();
         }
         this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -113,6 +114,7 @@ export class SelectionService extends Tool {
         this.mouseDown = false;
         this.transormation = '';
         this.moveService.isTransformationOver = true;
+        this.drawingService.previewCtx.setLineDash([0]);
     }
 
     setInitialSelection(selection: Rectangle): void {

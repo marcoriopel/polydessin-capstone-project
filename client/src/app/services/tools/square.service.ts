@@ -28,13 +28,7 @@ export class SquareService extends Tool {
     }
 
     initialize(): void {
-        this.drawingService.baseCtx.fillStyle = this.colorSelectionService.primaryColor;
-        this.drawingService.baseCtx.strokeStyle = this.colorSelectionService.secondaryColor;
-        this.drawingService.baseCtx.lineWidth = this.width;
-
-        this.drawingService.previewCtx.fillStyle = this.colorSelectionService.primaryColor;
-        this.drawingService.previewCtx.strokeStyle = this.colorSelectionService.secondaryColor;
-        this.drawingService.previewCtx.lineWidth = this.width;
+        this.mouseDown = false;
     }
 
     setRectangleWidth(): void {

@@ -26,6 +26,10 @@ export class CircleService extends Tool {
         super(drawingService);
     }
 
+    initialize(): void {
+        this.mouseDown = false;
+    }
+
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
