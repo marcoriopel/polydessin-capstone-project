@@ -21,9 +21,17 @@ export const MAX_TOLERANCE_VALUE = 100;
 export const MAX_PERCENTAGE = 100;
 export const RGBA_STRING_ = 100;
 export const CONFIRM_SAVED_DURATION = 5000;
+export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
+export const MIN_SIDES = 3;
+export const MAX_SIDES = 12;
+export const ONE = 1;
+export const TWOO = 2;
+export const THREE = 3;
+export const FOUR = 4;
 export const CONFIRM_KEY_PRESS_DURATION = 500;
 export const KEY_PRESS_INTERVAL_DURATION = 100;
 export const SELECTION_MOVE_STEP_SIZE = 3;
+export const MAX_NAME_LENGTH = 15;
 
 export enum Quadrant {
     TOP_RIGHT = 0,

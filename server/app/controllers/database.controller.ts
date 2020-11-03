@@ -28,6 +28,17 @@ export class DatabaseController {
                 });
         });
 
+        this.router.delete('/deleteDrawing/:id', (req: Request, res: Response, next: NextFunction) => {
+            this.databaseService
+                .deleteDrawing(req.params.id)
+                .then(() => {
+                    res.sendStatus(Httpstatus.StatusCodes.OK);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
         this.router.get('/getDrawingData', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDrawingData()

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
+import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -8,8 +8,8 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class MoveService {
-    initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selection: Rectangle;
+    initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    selection: SelectionBox;
     isTransformationOver: boolean = true;
     pressedKeys: Map<string, boolean> = new Map([
         [ARROW_KEYS.LEFT, false],
@@ -22,7 +22,7 @@ export class MoveService {
 
     constructor(public drawingService: DrawingService) {}
 
-    initialize(selection: Rectangle, selectionImage: HTMLCanvasElement): void {
+    initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.height = selection.height;

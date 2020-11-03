@@ -1,7 +1,8 @@
 <div class="sidebar">
     <div class="sidebarSection bottomDivider">
         <mat-icon
-            type="newDrawing"
+            type="radio"
+            id="new-drawing"
             class="material-icons sidebarSectionTop"
             [matTooltip]="elementDescriptions.NEW_DRAWING_DESCRIPTION"
             matTooltipPosition="right"
@@ -97,6 +98,24 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.POLYGONE_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.POLYGONE_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.POLYGONE_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >panorama_wide_angle</mat-icon
+            >
+        </label>
         <input
             type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
@@ -152,6 +171,16 @@
         >
         <mat-icon
             class="material-icons"
+            [matTooltip]="elementDescriptions.EXPORT_DRAWING_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="openExportWindow()"
+            >save_alt</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
+            id="new-drawing"
             [matTooltip]="elementDescriptions.HELP_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
@@ -164,6 +193,7 @@
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.undo()"
             >undo</mat-icon
         >
         <mat-icon
@@ -171,6 +201,7 @@
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.redo()"
             >redo</mat-icon
         >
     </div>

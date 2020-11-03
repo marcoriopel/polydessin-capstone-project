@@ -14,6 +14,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -38,6 +39,7 @@ export class ToolSelectionService {
         eraserService: EraserService,
         squareSelectionService: SquareSelectionService,
         circleSelectionService: CircleSelectionService,
+        polygoneService: PolygoneService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
     ) {
@@ -51,6 +53,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
             [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
+            [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService.getKey().subscribe((tool) => {
@@ -75,7 +78,7 @@ export class ToolSelectionService {
     selectItem(toolName: string): void {
         switch (toolName) {
             case this.sidebarElements.NEW_DRAWING_NAME:
-                this.newDrawingService.openWarning();
+                this.newDrawingService.openWarningModal();
                 break;
             case this.sidebarElements.CAROUSEL_NAME:
                 this.dialog.open(CarouselComponent);

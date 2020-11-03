@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
+import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -12,8 +12,8 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
     providedIn: 'root',
 })
 export class SelectionService extends Tool {
-    initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
     underliyingService: SquareService | CircleService;
@@ -83,10 +83,12 @@ export class SelectionService extends Tool {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.moveService.onKeyDown(event);
         }
+        this.underliyingService.onKeyDown(event);
     }
 
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
+        this.underliyingService.onKeyUp(event);
         this.strokeSelection();
     }
 
@@ -117,14 +119,14 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.setLineDash([0]);
     }
 
-    setInitialSelection(selection: Rectangle): void {
+    setInitialSelection(selection: SelectionBox): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.width = selection.width;
         this.initialSelection.height = selection.height;
     }
 
-    setSelectionData(selection: Rectangle): void {}
+    setSelectionData(selection: SelectionBox): void {}
 
     strokeSelection(): void {}
 

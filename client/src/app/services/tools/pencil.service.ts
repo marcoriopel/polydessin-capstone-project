@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Pencil } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -11,6 +12,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class PencilService extends Tool {
     private pathData: Vec2[];
+    private pencilData: Pencil;
     name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
     width: number = 1;
 
@@ -27,7 +29,8 @@ export class PencilService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.updatePencilData();
+            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
     }
 
@@ -35,7 +38,9 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.drawLine(this.drawingService.baseCtx, this.pathData);
+            this.updatePencilData();
+            this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
+            this.drawingService.updateStack(this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
         this.mouseDown = false;
@@ -46,25 +51,36 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawLine(this.drawingService.previewCtx, this.pathData);
+            this.updatePencilData();
+            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
+    }
+
+    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void {
+        ctx.lineWidth = pencil.lineWidth;
+        ctx.strokeStyle = pencil.primaryColor;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = pencil.lineCap as CanvasLineCap;
+        ctx.beginPath();
+        for (const point of pencil.path) {
+            ctx.lineTo(point.x, point.y);
+        }
+        ctx.stroke();
     }
 
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }
 
-    private drawLine(ctx: CanvasRenderingContext2D, path: Vec2[]): void {
-        ctx.lineWidth = this.width;
-        ctx.strokeStyle = this.colorSelectionService.primaryColor;
-        ctx.lineCap = ctx.lineJoin = 'round';
-        ctx.beginPath();
-        for (const point of path) {
-            ctx.lineTo(point.x, point.y);
-        }
-        ctx.stroke();
+    private updatePencilData(): void {
+        this.pencilData = {
+            type: 'pencil',
+            path: this.pathData,
+            lineWidth: this.width,
+            lineCap: 'round',
+            primaryColor: this.colorSelectionService.primaryColor,
+        };
     }
 
     private clearPath(): void {

@@ -1,13 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,6 +26,7 @@ import { DrawingDetailComponent } from './components/drawing-detail/drawing-deta
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
+import { ExportComponent } from './components/export/export.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { NewDrawingModalComponent } from './components/new-drawing-modal/new-drawing-modal.component';
@@ -34,6 +38,7 @@ import { EraserAttributesComponent } from './components/tools/eraser-attributes/
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
+import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
@@ -56,6 +61,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         EraserAttributesComponent,
         LineAttributesComponent,
         PencilAttributesComponent,
+        PolygoneAttributesComponent,
         CarouselComponent,
         SliderComponent,
         SquareAttributesComponent,
@@ -64,9 +70,11 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         SavingComponent,
         TypeOfFillSelectionComponent,
         FillAttributesComponent,
+        ExportComponent,
     ],
     imports: [
         BrowserModule,
+        MatCardModule,
         NoopAnimationsModule,
         HttpClientModule,
         AppRoutingModule,
@@ -76,11 +84,14 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatDialogModule,
         MatTabsModule,
         MatSliderModule,
+        MatRadioModule,
         MatTooltipModule,
         MatChipsModule,
         MatIconModule,
+        MatProgressSpinnerModule,
         MatExpansionModule,
         FormsModule,
+        ReactiveFormsModule,
         MatCheckboxModule,
         MatInputModule,
     ],

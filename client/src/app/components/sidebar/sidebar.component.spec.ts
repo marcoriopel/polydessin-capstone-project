@@ -1,7 +1,6 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -22,10 +21,10 @@ describe('SidebarComponent', () => {
     beforeEach(() => {
         obs = new Subject<string>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'setCurrentToolCursor']);
-        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningModal']);
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
@@ -69,11 +68,9 @@ describe('SidebarComponent', () => {
     });
 
     it('should call openWarning', () => {
-        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
-        fixture.detectChanges();
-        button.triggerEventHandler('click', null);
-        fixture.detectChanges();
-        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
+        const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
+        button.click();
+        expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
     it('should not change tool nor set cursor on an invalid event', () => {

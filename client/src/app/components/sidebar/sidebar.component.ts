@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/userguide/user-guide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
@@ -9,6 +10,7 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,6 +27,7 @@ export class SidebarComponent implements OnInit {
         public toolSelectionService: ToolSelectionService,
         public dialog: MatDialog,
         public newDrawingService: NewDrawingService,
+        public undoRedoService: UndoRedoService,
         public hotkeyService: HotkeyService,
     ) {}
 
@@ -48,7 +51,7 @@ export class SidebarComponent implements OnInit {
     }
 
     openDialog(): void {
-        this.newDrawingService.openWarning();
+        this.newDrawingService.openWarningModal();
     }
 
     openSaveWindow(): void {
@@ -56,5 +59,8 @@ export class SidebarComponent implements OnInit {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+    openExportWindow(): void {
+        this.dialog.open(ExportComponent);
     }
 }

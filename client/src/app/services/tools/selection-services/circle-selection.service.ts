@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
+import { SelectionBox } from '@app/classes/selection-box';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
@@ -14,7 +14,7 @@ export class CircleSelectionService extends SelectionService {
         super.underliyingService = circleService;
     }
 
-    setSelectionData(selection: Rectangle): void {
+    setSelectionData(selection: SelectionBox): void {
         this.selectionImage.width = selection.width;
         this.selectionImage.height = selection.height;
         const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;

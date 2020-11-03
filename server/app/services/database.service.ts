@@ -50,6 +50,19 @@ export class DatabaseService {
         });
     }
 
+    async deleteDrawing(idToDelete: string): Promise<void> {
+        const jsonContent = this.loadJSon();
+        let jsonObj = JSON.parse(jsonContent);
+        jsonObj = jsonObj.filter((drawing: Drawing) => {
+            return drawing.id !== idToDelete;
+        });
+        const data = JSON.stringify(jsonObj, null, 2);
+        fs.writeFileSync('drawing.json', data);
+        this.collection.findOneAndDelete({ id: idToDelete }).catch((err) => {
+            throw err;
+        });
+    }
+
     loadJSon(): string {
         return fs.readFileSync('drawing.json').toString();
     }
