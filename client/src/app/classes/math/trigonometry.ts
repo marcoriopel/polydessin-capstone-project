@@ -151,23 +151,32 @@ export class Trigonometry {
     }
 
     findTopLeftPointC(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
-        // firstPoint is top left corner lastPoint is bottom right corner
-        let x = lastPoint.x;
-        let y = firstPoint.y;
-        if (firstPoint.x > lastPoint.x && firstPoint.y > lastPoint.y) {
-            // firstPoint is bottom right corner lastPoint is top left corner
-            x = lastPoint.x;
-            y = lastPoint.y;
-        } else if (firstPoint.x > lastPoint.x && firstPoint.y < lastPoint.y) {
-            // firstPoint is top right corner lastPoint is bottom left corner
-            x = lastPoint.x;
-            y = firstPoint.y;
-        } else if (firstPoint.x < lastPoint.x && firstPoint.y > lastPoint.y) {
-            // firstPoint is bottom left corner lastPoint is top right corner
-            x = firstPoint.x;
-            y = lastPoint.y;
-        }
+        const quadrant: Quadrant = this.findQuadrant(firstPoint, lastPoint);
 
+        let x = 0;
+        let y = 0;
+        switch (quadrant) {
+            case Quadrant.BOTTOM_LEFT:
+                // firstPoint is top left corner lastPoint is bottom right corner
+                x = lastPoint.x;
+                y = lastPoint.y;
+                break;
+            case Quadrant.TOP_LEFT:
+                // firstPoint is bottom right corner lastPoint is top left corner
+                x = firstPoint.x;
+                y = lastPoint.y;
+                break;
+            case Quadrant.BOTTOM_RIGHT:
+                // firstPoint is top right corner lastPoint is bottom left corner
+                x = firstPoint.x;
+                y = firstPoint.y;
+                break;
+            case Quadrant.TOP_RIGHT:
+                // firstPoint is bottom left corner lastPoint is top right corner
+                x = lastPoint.x;
+                y = firstPoint.y;
+                break;
+        }
         return { x, y };
     }
 
@@ -207,7 +216,6 @@ export class Trigonometry {
                 x = lastPoint.x;
                 y = firstPoint.y;
                 break;
-            default:
         }
 
         return { x, y };
