@@ -3,7 +3,6 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -34,7 +33,6 @@ export class SavingComponent implements OnInit, OnDestroy {
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
         public drawingService: DrawingService,
-        public snackBar: MatSnackBar,
         public dialog: MatDialog,
     ) {}
     @ViewChild('chipList') chipList: MatChipList;
@@ -78,18 +76,18 @@ export class SavingComponent implements OnInit, OnDestroy {
                     this.isLastTagInvalid = false;
                 }
             }
-            if (this.tags.length === MAX_NUMBER_TAG) {
-                this.maxTags = true;
-                this.tagInput.nativeElement.disabled = true;
-            }
+        }
+        if (this.tags.length === MAX_NUMBER_TAG) {
+            this.maxTags = true;
+            this.tagInput.nativeElement.disabled = true;
         }
         if (input) {
             input.value = '';
         }
     }
 
-    removeTag(tags: string): void {
-        const index = this.tags.indexOf(tags);
+    removeTag(tag: string): void {
+        const index = this.tags.indexOf(tag);
         if (this.maxTags) {
             this.maxTags = false;
             this.tagInput.nativeElement.disabled = false;
