@@ -1,6 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,6 +24,7 @@ import { DrawingDetailComponent } from './components/drawing-detail/drawing-deta
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
+import { ExportComponent } from './components/export/export.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { NewDrawingModalComponent } from './components/new-drawing-modal/new-drawing-modal.component';
@@ -66,6 +68,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         SavingComponent,
         ErrorAlertComponent,
         CarouselComponent,
+        ExportComponent,
     ],
     imports: [
         BrowserModule,
@@ -79,10 +82,12 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatTabsModule,
         MatSliderModule,
         MatSnackBarModule,
+        MatRadioModule,
         MatTooltipModule,
         MatIconModule,
         MatExpansionModule,
         FormsModule,
+        ReactiveFormsModule,
         MatCheckboxModule,
         MatInputModule,
     ],

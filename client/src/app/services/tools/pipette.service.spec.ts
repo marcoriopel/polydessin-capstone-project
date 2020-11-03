@@ -152,12 +152,10 @@ describe('PipetteService', () => {
         expect(drawOnZoom).not.toHaveBeenCalled();
     });
 
-    it('Should emit an event and clear zoom when mouse near a border', () => {
-        const eventEmiterSpy = spyOn(service.mouseOut, 'next');
+    it('Should clear zoom when mouse near a border', () => {
         const clearCanvasSpy = spyOn(service, 'clearCanvas');
         const mouseDownCoord = { x: 0, y: 0 };
         service.handleNearBorder(mouseDownCoord);
-        expect(eventEmiterSpy).toHaveBeenCalledWith(false);
         expect(clearCanvasSpy).toHaveBeenCalled();
     });
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE, MAX_TOLERANCE_VALUE, MIN_TOLERANCE_VALUE, MouseButton } from '@app/ressources/global-variables/global-variables';
-import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
+import { MAXIMUM_RGBA_VALUE, Rgba, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -43,7 +43,7 @@ export class FillService extends Tool {
         const coloredPixels: Map<string, boolean> = new Map();
         const canvasData: ImageData = this.drawingService.getCanvasData();
 
-        const rgbaPrimaryColor = this.colorSelectionService.getRgbaPrimaryColor();
+        const rgbaPrimaryColor: Rgba = this.colorSelectionService.getRgbaPrimaryColor();
 
         while (stack.length) {
             const currentPixel = stack.pop() as Vec2;
@@ -56,7 +56,6 @@ export class FillService extends Tool {
                 canvasData.data[index + RGBA_INDEXER.BLUE] = rgbaPrimaryColor.BLUE;
                 canvasData.data[index + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
                 coloredPixels.set(this.Vec2ToString(currentPixel), true);
-
                 if (currentPixel.y - 1 >= 0) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
                 }
