@@ -23,6 +23,7 @@ export class SelectionService extends Tool {
 
     initialize(): void {
         this.drawingService.previewCtx.lineWidth = 1;
+        this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
     }
 
@@ -34,6 +35,7 @@ export class SelectionService extends Tool {
                 this.fillSelection();
             }
             if (this.mouseDown) {
+                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.underliyingService.onMouseDown(event);
             }
@@ -97,7 +99,9 @@ export class SelectionService extends Tool {
     }
 
     reset(): void {
-        this.fillSelection();
+        if (this.selection.height !== 0 && this.selection.height !== 0) {
+            this.fillSelection();
+        }
         this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.mouseDown = false;
