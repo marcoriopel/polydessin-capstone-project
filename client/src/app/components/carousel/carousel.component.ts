@@ -2,7 +2,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
@@ -34,6 +33,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
+    currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     constructor(
@@ -42,7 +42,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
     ) {}
@@ -50,6 +49,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
         this.loadDBData();
+        this.currentRoute = this.router.url;
     }
 
     disableEvents(): void {
@@ -115,7 +115,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     loadSelectedDrawing(positionIndex: number): void {
-        if (this.router.url !== '/home' && !this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
+        if (this.currentRoute !== '/home' && !this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
             const loadDrawingAlert = this.dialog.open(LoadSelectedDrawingAlertComponent);
             loadDrawingAlert
                 .afterClosed()
@@ -133,8 +133,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     applySelectedDrawing(index: number): void {
-        if (this.router.url === '/home') {
+        if (this.currentRoute === '/home') {
             this.router.navigateByUrl('/editor');
+            this.currentRoute = '/editor';
         }
         this.databaseService
             .getDrawingPng(this.databaseMetadata[index].fileName)
@@ -142,17 +143,21 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .subscribe(
                 (image: Blob) => {
                     const img = URL.createObjectURL(image);
-                    const drawing = new Image();
-                    drawing.src = img;
-                    drawing.onload = () => {
-                        this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-                        this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-                    };
+                    this.drawImageOnCanvas(img);
                 },
                 (error) => {
                     this.serverResponseService.loadErrorSnackBar();
                 },
             );
+    }
+
+    drawImageOnCanvas(image: string): void {
+        const drawing = new Image();
+        drawing.src = image;
+        drawing.onload = () => {
+            this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+            this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+        };
     }
 
     addTag(event: MatChipInputEvent): void {

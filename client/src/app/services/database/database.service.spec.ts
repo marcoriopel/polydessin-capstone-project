@@ -1,42 +1,38 @@
 /* tslint:disable:no-unused-variable */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { MetaData } from '@common/communication/drawing-data';
+import { DatabaseService } from './database.service';
 
 describe('Service: Database', () => {
-    // let httpMock: HttpTestingController;
-    // let service: DatabaseService;
-    // let baseUrl: string;
+    let httpMock: HttpTestingController;
+    let service: DatabaseService;
+    let baseUrl: string;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
         });
-        // service = TestBed.inject(DatabaseService);
-        // httpMock = TestBed.inject(HttpTestingController);
+        service = TestBed.inject(DatabaseService);
+        httpMock = TestBed.inject(HttpTestingController);
         // BASE_URL is private so we need to access it with its name as a key
         // Try to avoid this syntax which violates encapsulation
         // tslint:disable: no-string-literal
-        // baseUrl = service['BASE_URL'];
+        baseUrl = service['BASE_URL'];
     });
 
-    // afterEach(() => {
-    //     httpMock.verify();
-    // });
+    afterEach(() => {
+        httpMock.verify();
+    });
 
-    // it('should return expected message (HttpClient called once)', () => {
-    //     const expectedMessage: DrawingData[] = [{ id: '5', drawingPng: 'thisisthepng', name: 'drawingtest', tags: ['one'] }];
-
-    //     // check the content of the mocked call
-    //     service.getDrawingData().subscribe((response: DrawingData[]) => {
-    //         expect(response[0].id).toEqual(expectedMessage[0].id, 'id check');
-    //         expect(response[0].drawingPng).toEqual(expectedMessage[0].drawingPng, 'png check');
-    //         expect(response[0].name).toEqual(expectedMessage[0].name, 'name check');
-    //         expect(response[0].tags).toEqual(expectedMessage[0].tags, 'tags check');
-    //     }, fail);
-
-    //     const req = httpMock.expectOne(baseUrl + '/getDrawingData');
-    //     expect(req.request.method).toBe('GET');
-    //     // actually send the request
-    //     req.flush(expectedMessage);
-    // });
+    it('should not return any message when sending a POST request (HttpClient called once)', () => {
+        const meta: MetaData = { id: 'test', name: 'test', tags: [] };
+        // subscribe to the mocked call
+        // tslint:disable-next-line: no-empty
+        service.addDrawing(meta, {} as Blob).subscribe(() => {}, fail);
+        const req = httpMock.expectOne(baseUrl + '/addDrawing');
+        expect(req.request.method).toBe('POST');
+        // actually send the request
+        req.flush(meta);
+    });
 });

@@ -3,11 +3,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { of, Subject } from 'rxjs';
 import { CarouselComponent } from './carousel.component';
@@ -26,9 +28,12 @@ describe('CarouselComponent', () => {
     let keyboardEvent: KeyboardEvent;
     let imageObservable: Subject<Blob>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
-
+    // let routerSpy: SpyObj<Router>;
+    let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     beforeEach(async(() => {
+        serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
+        // routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng']);
@@ -44,6 +49,8 @@ describe('CarouselComponent', () => {
             declarations: [CarouselComponent],
             imports: [HttpClientModule, MatDialogModule],
             providers: [
+                { provide: ServerResponseService, useValue: serverResponseServiceSpy },
+                { provide: Router, useValue: { url: '/editor' } },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
@@ -190,13 +197,12 @@ describe('CarouselComponent', () => {
 
     it('should draw drawing', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        const drawSpy = spyOn(component, 'drawImageOnCanvas');
         component.drawingOfInterest = 1;
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
         const image = new Blob();
-        imageObservable.next(image);
         component.applySelectedDrawing(1);
         imageObservable.next(image);
-        expect(drawingServiceSpy.baseCtx.drawImage).toHaveBeenCalled();
-        expect(resizeDrawingServiceSpy.resizeCanvasSize).toHaveBeenCalled();
+        expect(drawSpy).toHaveBeenCalled();
     });
 });
