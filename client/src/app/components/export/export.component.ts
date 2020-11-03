@@ -1,13 +1,16 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
+import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 
 @Component({
     selector: 'app-export',
     templateUrl: './export.component.html',
     styleUrls: ['./export.component.scss'],
 })
-export class ExportComponent implements AfterViewInit {
+export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     filterStyles: FilterStyles = {
         NONE: FILTER_STYLES.NONE,
         BLACK_AND_WHITE: FILTER_STYLES.BLACK_AND_WHITE,
@@ -25,10 +28,18 @@ export class ExportComponent implements AfterViewInit {
     urlImage: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
+    ownerForm: FormGroup;
 
-    constructor(public drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private cdRef: ChangeDetectorRef) {}
 
+    ngOnInit(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
+        this.ownerForm = new FormGroup({
+            name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
+        });
+    }
     ngAfterViewInit(): void {
+        this.cdRef.detectChanges();
         setTimeout(() => {
             this.imagesrc = this.drawingService.canvas.toDataURL();
             this.urlImage = this.imagesrc;
@@ -38,6 +49,7 @@ export class ExportComponent implements AfterViewInit {
 
     changeName(name: string): void {
         this.name = name;
+        this.ownerForm.markAllAsTouched();
     }
 
     changeFilter(event: Event): void {
@@ -62,8 +74,19 @@ export class ExportComponent implements AfterViewInit {
     }
 
     exportLocally(): void {
-        this.link.href = this.urlImage;
-        this.link.setAttribute('download', this.name);
-        this.link.click();
+        if (this.name !== '') {
+            this.link.href = this.urlImage;
+            this.link.setAttribute('download', this.name);
+            this.link.click();
+            document.getElementById('modalClose')?.click();
+        }
+    }
+
+    hasNameError(controlName: string, errorName: string): boolean {
+        return this.ownerForm.controls[controlName].hasError(errorName);
+    }
+
+    ngOnDestroy(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
     }
 }

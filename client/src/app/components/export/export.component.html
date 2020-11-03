@@ -1,12 +1,27 @@
-<div class="exporting">
-    <h1 mat-dialog-title>Exportation du dessin</h1>
+<div id="export" class="exporting">
+    <h1>Exportation du dessin</h1>
     <p><img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" /></p>
     <div>
-        <label>Fichier: </label>
-        <mat-form-field class="name" appearance="fill">
-            <mat-label>Nom du dessin</mat-label>
-            <input #name (change)="this.changeName(name.value)" matInput placeholder="Ex: Forêt Boréal" />
-        </mat-form-field>
+        <form class="export" autocomplete="off" [formGroup]="ownerForm">
+            <label>Fichier: </label>
+            <mat-form-field appearance="fill">
+                <mat-label>Nom du dessin</mat-label>
+                <input
+                    matInput
+                    #name
+                    type="text"
+                    id="name"
+                    [required]="true"
+                    formControlName="name"
+                    (keyup)="this.changeName(name.value)"
+                    placeholder="Ex: Forêt Boréal"
+                />
+                <mat-hint class="mat-hint">Max 15 charactères</mat-hint>
+                <mat-error *ngIf="hasNameError('name', 'required')">Nom est requis</mat-error>
+                <mat-error *ngIf="hasNameError('name', 'maxlength')">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
+                <mat-error *ngIf="hasNameError('name', 'space')">Pas d'espace</mat-error>
+            </mat-form-field>
+        </form>
     </div>
 
     <div>
@@ -35,6 +50,6 @@
     </div>
     <div></div>
 
-    <button mat-button id="export" (click)="exportLocally()" mat-dialog-close>Exporter</button>
-    <button mat-button mat-dialog-close>Annuler</button>
+    <button mat-button id="export" (click)="exportLocally()">Exporter</button>
+    <button id="modalClose" mat-button mat-dialog-close>Annuler</button>
 </div>

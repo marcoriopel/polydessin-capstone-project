@@ -24,7 +24,7 @@ describe('SidebarComponent', () => {
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
-        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningWindow']);
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningModal']);
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
@@ -70,7 +70,7 @@ describe('SidebarComponent', () => {
     it('should call openWarning', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
         button.click();
-        expect(newDrawingServiceSpy.openWarningWindow).toHaveBeenCalled();
+        expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
     it('should not change tool nor set cursor on an invalid event', () => {

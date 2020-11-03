@@ -49,7 +49,7 @@ export class SidebarComponent implements OnInit {
     }
 
     openDialog(): void {
-        this.newDrawingService.openWarningWindow();
+        this.newDrawingService.openWarningModal();
     }
 
     openSaveWindow(): void {

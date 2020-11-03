@@ -6,18 +6,18 @@ import { ExportComponent } from './export.component';
 describe('ExportComponent', () => {
     let component: ExportComponent;
     let fixture: ComponentFixture<ExportComponent>;
-    let drawingServiceStud: DrawingService;
-    let canvasStud: HTMLCanvasElement;
+    let drawingServiceStub: DrawingService;
+    let canvasStub: HTMLCanvasElement;
     let filterCanvasStud: HTMLCanvasElement;
     let linkStud: HTMLAnchorElement;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(async(() => {
-        drawingServiceStud = new DrawingService();
+        drawingServiceStub = {} as DrawingService;
         TestBed.configureTestingModule({
             declarations: [ExportComponent],
-            providers: [{ provide: DrawingService, useValue: drawingServiceStud }],
+            providers: [{ provide: DrawingService, useValue: drawingServiceStub }],
         }).compileComponents();
     }));
 
@@ -29,7 +29,7 @@ describe('ExportComponent', () => {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
-        canvasStud = canvas;
+        canvasStub = canvas;
 
         const filter = document.createElement('canvas') as HTMLCanvasElement;
         filter.width = WIDTH;
@@ -37,7 +37,7 @@ describe('ExportComponent', () => {
         filterCanvasStud = filter;
 
         // tslint:disable-next-line: no-string-literal
-        component['drawingService'].canvas = canvasStud;
+        component['drawingService'].canvas = canvasStub;
         component.link = linkStud;
         component.filterCanvas = filterCanvasStud;
     });
@@ -85,13 +85,6 @@ describe('ExportComponent', () => {
 
         component.getImageUrl(event);
         expect(component.urlImage).toEqual(urlTest);
-    });
-
-    it('should export the image when click on the button exporter', () => {
-        const exportSpy = spyOn(component, 'exportLocally');
-        const button = fixture.debugElement.nativeElement.querySelector('#export');
-        button.click();
-        expect(exportSpy).toHaveBeenCalled();
     });
 
     it('should call the function click when to export', () => {
