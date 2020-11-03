@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '../../classes/vec2';
-import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '../../ressources/global-variables/global-variables';
-import { LIMIT_ANGLES } from '../../ressources/global-variables/limit-angles';
+import { Vec2 } from '@app/classes/vec2';
+import { DEGREES_180, LineAngle, MAXIMUM_DISTANCE_LINE_CONNECTION, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
 
 @Injectable({
     providedIn: 'root',

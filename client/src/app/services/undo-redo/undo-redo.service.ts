@@ -3,13 +3,13 @@ import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize
 // import { Brush, Eraser, Fill, Line, Pencil, Resize, Polygone } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SquareService } from '@app/services/tools/square.service';
-import { BrushService } from '../tools/brush.service';
 @Injectable({
     providedIn: 'root',
 })

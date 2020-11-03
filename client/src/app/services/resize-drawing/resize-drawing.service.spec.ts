@@ -23,7 +23,7 @@ class DrawingServiceMock {
         this.previewCtx = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
         this.imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
-    // tslint:disable-next-line: no-empty
+    // tslint:disable: no-empty
     initializeBaseCanvas(): void {}
     clearCanvas(): void {}
     drawFill(): void {}

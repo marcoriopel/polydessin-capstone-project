@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { Vec2 } from '@app/classes/vec2';
 import { LineAngle, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { LIMIT_ANGLES } from '@app/ressources/global-variables/limit-angles';
-import { Vec2 } from '../vec2';
 import { Trigonometry } from './trigonometry';
 
 // tslint:disable: no-magic-numbers
