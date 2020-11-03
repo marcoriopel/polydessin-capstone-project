@@ -14,7 +14,8 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { SelectionService } from '@app/services/tools/selection.service';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 
 @Injectable({
@@ -35,7 +36,8 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
-        selectionService: SelectionService,
+        squareSelectionService: SquareSelectionService,
+        circleSelectionService: CircleSelectionService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
     ) {
@@ -47,7 +49,8 @@ export class ToolSelectionService {
             [TOOL_NAMES.LINE_TOOL_NAME, lineService],
             [TOOL_NAMES.FILL_TOOL_NAME, fillService],
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
-            [TOOL_NAMES.SELECTION_TOOL_NAME, selectionService],
+            [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
+            [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService.getKey().subscribe((tool) => {
@@ -64,6 +67,7 @@ export class ToolSelectionService {
         if (selectedTool) {
             this.currentTool.reset();
             this.currentTool = selectedTool;
+            this.currentTool.initialize();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }

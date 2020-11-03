@@ -39,4 +39,6 @@ export abstract class Tool {
     }
 
     reset(): void {}
+
+    initialize(): void {}
 }

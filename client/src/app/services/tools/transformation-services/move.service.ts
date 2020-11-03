@@ -8,7 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class MoveService extends Tool {
+export class MoveService {
     initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: Rectangle;
     isTransformationOver: boolean = true;
@@ -22,18 +22,15 @@ export class MoveService extends Tool {
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     isRectangleSelection: boolean;
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
-    }
+    constructor(public drawingService: DrawingService) {}
 
-    initialize(selection: Rectangle, selectionImage: HTMLCanvasElement, isRectangleSelection: boolean): void {
+    initialize(selection: Rectangle, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.height = selection.height;
         this.initialSelection.width = selection.width;
         this.selection = selection;
         this.selectionImage = selectionImage;
-        this.isRectangleSelection = isRectangleSelection;
     }
 
     onMouseDown(event: MouseEvent): void {
