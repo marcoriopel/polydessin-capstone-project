@@ -306,6 +306,10 @@ describe('SquareService', () => {
     });
 
     it('should call drawShape if mouseDown is true', () => {
+        service.firstPoint = { x: 1, y: 2 };
+        service.lastPoint = { x: 2, y: 1 };
+        service.setRectangleHeight();
+        service.setRectangleWidth();
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });

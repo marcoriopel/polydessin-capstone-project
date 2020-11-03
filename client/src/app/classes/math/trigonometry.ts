@@ -22,6 +22,35 @@ export class Trigonometry {
         }
     }
 
+    adjustEndingPoint(lineAngle: LineAngle, mouseCoordinates: Vec2, adjacent: number, mouseClicks: Vec2[]): Vec2 {
+        switch (lineAngle) {
+            case LineAngle.DEGREES_0: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y };
+            }
+            case LineAngle.DEGREES_45: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y - adjacent };
+            }
+            case LineAngle.DEGREES_90: {
+                return { x: mouseClicks[mouseClicks.length - 1].x, y: mouseCoordinates.y };
+            }
+            case LineAngle.DEGREES_135: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y - adjacent };
+            }
+            case LineAngle.DEGREES_180: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y };
+            }
+            case LineAngle.DEGREES_225: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y + adjacent };
+            }
+            case LineAngle.DEGREES_270: {
+                return { x: mouseClicks[mouseClicks.length - 1].x, y: mouseCoordinates.y };
+            }
+            case LineAngle.DEGREES_315: {
+                return { x: mouseCoordinates.x, y: mouseClicks[mouseClicks.length - 1].y + adjacent };
+            }
+        }
+    }
+
     findClosestAngleTopRight(quadrant: Quadrant, angleDegree: number): LineAngle {
         if (LIMIT_ANGLES.DEGREES_0 <= angleDegree && angleDegree <= LIMIT_ANGLES.DEGREES_22POINT5) {
             return LineAngle.DEGREES_0;
