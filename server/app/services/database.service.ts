@@ -1,14 +1,18 @@
-import { DATABASE_COLLECTION, DATABASE_NAME, DATABASE_URL } from '@app/ressources/global-variables';
+import { DATABASE_COLLECTION, DATABASE_NAME, DATABASE_URL, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables';
 import { DBData, MetaData } from '@common/communication/drawing-data';
 import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import * as multer from 'multer';
 import 'reflect-metadata';
+
 @injectable()
 export class DatabaseService {
     collection: Collection<MetaData>;
     client: MongoClient;
     DIR: string = './images';
+    IMAGE_PATH: string = '../../images/';
+    multerObject: multer.Multer;
     mongoURL: string = DATABASE_URL;
     private options: MongoClientOptions = {
         useNewUrlParser: true,
@@ -34,21 +38,34 @@ export class DatabaseService {
         this.client.close();
     }
 
+    getImagePath(): string {
+        return this.IMAGE_PATH;
+    }
+
+    getDirPath(): string {
+        return this.DIR;
+    }
+
+    createMulterUpload(directory: string): multer.Multer {
+        this.multerObject = multer({ dest: directory });
+        return this.multerObject;
+    }
+
     isValidData(dBData: DBData): boolean {
         if (dBData.name.length === 0) {
             return false;
         }
 
-        if (dBData.name.length > 15) {
+        if (dBData.name.length > MAX_NAME_LENGTH) {
             return false;
         }
 
         if (Array.isArray(dBData.tags)) {
-            if (dBData.tags.length > 5) {
+            if (dBData.tags.length > MAX_NUMBER_TAG) {
                 return false;
             }
             for (const tag of dBData.tags) {
-                if (tag.length > 15) {
+                if (tag.length > MAX_TAG_LENGTH) {
                     return false;
                 }
             }
@@ -60,16 +77,12 @@ export class DatabaseService {
             fs.unlinkSync('./images/' + DBDATA.fileName);
             throw new Error('Data is not valid');
         } else {
-            await this.collection.insertOne(DBDATA).catch((err) => {
-                throw err;
-            });
+            await this.collection.insertOne(DBDATA);
         }
     }
     async deleteDrawing(fileNameToDelete: string): Promise<void> {
         fs.unlinkSync('./images/' + fileNameToDelete);
-        await this.collection.findOneAndDelete({ fileName: fileNameToDelete }).catch((err) => {
-            throw err;
-        });
+        await this.collection.findOneAndDelete({ fileName: fileNameToDelete });
     }
 
     async getDBData(): Promise<DBData[]> {
@@ -85,9 +98,6 @@ export class DatabaseService {
                     }
                 }
                 return dBDataverified;
-            })
-            .catch(() => {
-                throw new Error('Error trying to retrieve metadata');
             });
     }
 }

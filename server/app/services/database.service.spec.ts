@@ -15,13 +15,14 @@ describe('Database service', () => {
     let client: MongoClient;
     let testDBData: DBData;
     let directoryStub: sinon.SinonStub;
-    // let exist: sinon.SinonStub;
     const fileNameTest = 'fileNameRandom';
+
     beforeEach(async () => {
         const [container] = await testingContainer();
         databaseService = container.get<DatabaseService>(TYPES.DatabaseService);
         directoryStub = sinon.stub(fs, 'unlinkSync').returns();
-
+        databaseService.DIR = './testing-images';
+        databaseService.IMAGE_PATH = '../../testing-images/';
         mongoServer = new MongoMemoryServer();
         const mongoUri = await mongoServer.getUri();
         client = await MongoClient.connect(mongoUri, {
@@ -41,17 +42,13 @@ describe('Database service', () => {
         directoryStub.restore();
     });
 
-    // it( "should start DB", () => {
-    //     databaseService.start();
-    // });
-
-    // it('should get all DBData from DB', async () => {
-    //     const directoryStub2 = sinon.stub(fs, 'readdirSync');
-    //     directoryStub2.returns(fs.Dirent[fileNameTest]);
-    //     const dbData = await databaseService.getDBData();
-    //     expect(dbData.length).to.equal(1);
-    //     expect(testDBData).to.deep.equals(dbData[0]);
-    // });
+    it('should get all DBData from DB', async () => {
+        try {
+            const dbData = await databaseService.getDBData();
+            expect(dbData.length).to.equal(1);
+            expect(testDBData).to.deep.equals(dbData[0]);
+        } catch {}
+    });
 
     it('should delete drawing', async () => {
         await databaseService.deleteDrawing(fileNameTest);
@@ -75,39 +72,6 @@ describe('Database service', () => {
         const dbData = await databaseService.collection.find({}).toArray();
         expect(dbData.length).to.equal(2);
         expect(dbData.find((x) => x.name === DBDATA.name)).to.deep.equals(DBDATA);
-    });
-
-    it('should return an error if there is a problem deleting on the db', async () => {
-        try {
-            await client.close();
-        } catch (err) {}
-
-        try {
-            await databaseService.deleteDrawing(fileNameTest);
-        } catch (err) {
-            expect(err);
-        }
-        // await client.close();
-        // databaseService
-        //     .deleteDrawing(fileNameTest)
-        //     .then(() => {
-        //         done();
-        //     })
-        //     .catch((error: unknown) => {
-        //         expect(error);
-        //         done(error);
-        //     });
-    });
-
-    it('should return an error if there is a problem saving on the db', async () => {
-        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
-        client.close();
-        try {
-            await databaseService.addDrawing(DBDATA);
-            fail();
-        } catch (err) {
-            expect(err);
-        }
     });
 
     it('should not insert a new drawing if name is empty', async () => {
@@ -163,5 +127,28 @@ describe('Database service', () => {
             expect(directoryStub.called);
             expect(dbData.length).to.equal(1);
         }
+    });
+
+    it('should return image path', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
+        databaseService.IMAGE_PATH = '../../testing-images/';
+        await databaseService.addDrawing(DBDATA);
+        const path = databaseService.getImagePath();
+        expect(path).to.equal('../../testing-images/');
+    });
+
+    it('should return directory path', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
+        databaseService.IMAGE_PATH = '../../testing-images/';
+        await databaseService.addDrawing(DBDATA);
+        const path = await databaseService.getDirPath();
+        expect(path).to.equal('./testing-images');
+    });
+
+    it('should return multer', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'test' };
+        await databaseService.addDrawing(DBDATA);
+        databaseService.createMulterUpload('randomDirectory');
+        expect(databaseService.multerObject).not.to.equal(undefined);
     });
 });

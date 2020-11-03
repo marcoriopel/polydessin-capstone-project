@@ -2,7 +2,7 @@ import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { CONFIRM_SAVED_DURATION, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
@@ -35,6 +35,7 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
         public snackBar: MatSnackBar,
         public dialog: MatDialog,
         private cdRef: ChangeDetectorRef,
+        private dialogRef: MatDialogRef<SavingComponent>,
     ) {}
     @ViewChild('chipList') chipList: MatChipList;
 
@@ -99,23 +100,28 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     addDrawing(): void {
         this.isSaveButtonDisabled = true;
-        this.drawingService.baseCtx.canvas.toBlob((blob) => {
+        this.drawingService.baseCtx.canvas.toBlob(async (blob) => {
+            await blob;
             if (blob) {
                 const ID: string = new Date().getUTCMilliseconds() + '';
                 const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
-                this.databaseService.addDrawing(meta, blob).subscribe(
-                    (data) => {
-                        console.log('data');
-                        this.isSaveButtonDisabled = false;
-                        this.saveConfirmMessage();
-                    },
-                    // (error) => {
-                    //     console.log(error);
-                    //     console.log('error');
-                    //     this.isSaveButtonDisabled = false;
-                    //     this.saveErrorModal();
-                    // },
-                );
+                this.databaseService
+                    .addDrawing(meta, blob)
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe(
+                        (data) => {
+                            console.log('data');
+                            this.isSaveButtonDisabled = false;
+                            this.dialogRef.close();
+                            // this.saveConfirmMessage();
+                        },
+                        (error) => {
+                            console.log(error);
+                            console.log('error');
+                            this.isSaveButtonDisabled = false;
+                            // this.saveErrorModal();
+                        },
+                    );
             }
         });
     }

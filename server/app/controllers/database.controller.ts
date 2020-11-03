@@ -11,20 +11,22 @@ import * as path from 'path';
 @injectable()
 export class DatabaseController {
     router: Router;
-
-    upload: multer.Multer = multer();
-    DIR: string = './images';
+    DIR: string;
+    IMAGES_PATH: string;
+    upload: multer.Multer;
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
+        this.DIR = this.databaseService.getDirPath();
+        this.upload = this.databaseService.createMulterUpload(this.DIR);
+        this.IMAGES_PATH = this.databaseService.getImagePath();
         this.configureRouter();
         this.databaseService.start();
     }
 
     private configureRouter(): void {
         this.router = Router();
-        const upload = multer({ dest: this.DIR });
 
-        this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/addDrawing', this.upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
             let drawingTags: string[];
             if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
@@ -39,8 +41,7 @@ export class DatabaseController {
             this.databaseService
                 .addDrawing(DBDATA)
                 .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
-                    // res.status(Httpstatus.StatusCodes.NOT_FOUND).send('oops');
+                    res.status(Httpstatus.StatusCodes.CREATED).send({ id: DBDATA.id });
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -50,11 +51,13 @@ export class DatabaseController {
         this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
             const files: string[] = fs.readdirSync(this.DIR);
             if (files.includes(req.params.filename)) {
-                res.sendStatus(Httpstatus.StatusCodes.OK);
+                res.status(Httpstatus.StatusCodes.OK);
                 res.contentType('image/png');
-                res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
+                res.sendFile(req.params.filename, { root: path.join(__dirname, this.IMAGES_PATH) });
             } else {
                 res.status(Httpstatus.StatusCodes.NOT_FOUND);
+                const error = new Error('Drawing not found');
+                res.send(error.message);
             }
         });
 
