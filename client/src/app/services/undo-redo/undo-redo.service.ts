@@ -75,7 +75,7 @@ export class UndoRedoService {
                 this.drawingService.drawFill(element as Fill);
                 break;
             case 'resize':
-                this.resizeDrawingService.resizeCanvasSizeTest(element as Resize);
+                this.resizeDrawingService.restoreCanvas(element as Resize);
                 break;
             case 'polygone':
                 this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);

@@ -13,7 +13,7 @@ describe('PencilAttributesComponent', () => {
     const finalsides = 10;
 
     beforeEach(async(() => {
-        pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth']);
+        pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth', 'changeSides', 'changeFillStyle']);
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

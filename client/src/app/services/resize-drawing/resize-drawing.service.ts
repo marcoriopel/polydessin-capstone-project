@@ -56,7 +56,7 @@ export class ResizeDrawingService {
         this.previewSize.y = height;
     }
 
-    resizeCanvasSizeTest(resizeData: Resize): void {
+    restoreCanvas(resizeData: Resize): void {
         this.drawingService.canvas.width = resizeData.canvasSize.x;
         this.drawingService.canvas.height = resizeData.canvasSize.y;
         this.previewSize.x = resizeData.canvasSize.x;
