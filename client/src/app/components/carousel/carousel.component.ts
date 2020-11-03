@@ -2,12 +2,14 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -35,8 +37,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     constructor(
         public hotkeyService: HotkeyService,
+        public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
         public dialog: MatDialog,
+        public snackBar: MatSnackBar,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
     ) {}
@@ -130,15 +134,20 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.databaseService
             .getDrawingPng(this.databaseMetadata[index].fileName)
             .pipe(takeUntil(this.destroy$))
-            .subscribe((image: Blob) => {
-                const img = URL.createObjectURL(image);
-                const drawing = new Image();
-                drawing.src = img;
-                drawing.onload = () => {
-                    this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-                    this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-                };
-            });
+            .subscribe(
+                (image: Blob) => {
+                    const img = URL.createObjectURL(image);
+                    const drawing = new Image();
+                    drawing.src = img;
+                    drawing.onload = () => {
+                        this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+                        this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+                    };
+                },
+                (error) => {
+                    this.serverResponseService.loadErrorSnackBar();
+                },
+            );
     }
 
     addTag(event: MatChipInputEvent): void {
@@ -159,11 +168,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .deleteDrawing(fileName)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
-                () => {
+                (data) => {
                     this.loadDBData();
                 },
-                () => {
-                    // this.dialog.open(ErrorAlertComponent);
+                (error) => {
+                    this.serverResponseService.deleteErrorSnackBar(error.error);
+                    this.gotImages = true;
                 },
             );
     }

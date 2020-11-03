@@ -75,14 +75,21 @@ export class DatabaseService {
     async addDrawing(DBDATA: DBData): Promise<void> {
         if (!this.isValidData(DBDATA)) {
             fs.unlinkSync('./images/' + DBDATA.fileName);
-            throw new Error('Data is not valid');
+            throw new Error('Métadonnées du dessin non valides');
         } else {
             await this.collection.insertOne(DBDATA);
         }
     }
     async deleteDrawing(fileNameToDelete: string): Promise<void> {
-        fs.unlinkSync('./images/' + fileNameToDelete);
-        await this.collection.findOneAndDelete({ fileName: fileNameToDelete });
+        const files: string[] = fs.readdirSync(this.DIR);
+        if (files.includes(fileNameToDelete)) {
+            await this.collection.findOneAndDelete({ fileName: fileNameToDelete });
+            try {
+                fs.unlinkSync('./images/' + fileNameToDelete);
+            } catch (error) {
+                throw new Error("Problème lors de la suppression de l'image");
+            }
+        } else throw new Error('Image introuvable');
     }
 
     async getDBData(): Promise<DBData[]> {

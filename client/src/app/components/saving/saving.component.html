@@ -44,7 +44,9 @@
         </mat-form-field>
     </form>
     <div mat-dialog-actions>
-        <button mat-stroked-button [disabled]="!ownerForm.valid || isSaveButtonDisabled" id="save" (click)="addDrawing()">Sauvegarder</button>
+        <button mat-stroked-button [disabled]="!ownerForm.valid || isSaveButtonDisabled" mat-dialog-close id="save" (click)="addDrawing()">
+            Sauvegarder
+        </button>
         <button mat-button mat-dialog-close>Annuler</button>
     </div>
 </div>

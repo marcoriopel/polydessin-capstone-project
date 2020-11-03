@@ -1,13 +1,14 @@
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { AfterViewChecked, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { CONFIRM_SAVED_DURATION, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { MetaData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -17,7 +18,7 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './saving.component.html',
     styleUrls: ['./saving.component.scss'],
 })
-export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
+export class SavingComponent implements OnInit, OnDestroy {
     destroy$: Subject<boolean> = new Subject<boolean>();
     isSaveButtonDisabled: boolean = false;
     currentTag: string = '';
@@ -30,14 +31,14 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
     ownerForm: FormGroup;
     constructor(
         public hotkeyService: HotkeyService,
+        public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
         public drawingService: DrawingService,
         public snackBar: MatSnackBar,
         public dialog: MatDialog,
-        private cdRef: ChangeDetectorRef,
-        private dialogRef: MatDialogRef<SavingComponent>,
     ) {}
     @ViewChild('chipList') chipList: MatChipList;
+    @ViewChild('tag') tagInput: ElementRef;
 
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
@@ -45,10 +46,6 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
             tags: new FormControl(this.currentTag, [Validators.maxLength(MAX_NAME_LENGTH)]),
         });
-    }
-
-    ngAfterViewChecked(): void {
-        this.cdRef.detectChanges();
     }
 
     currentTagInput(tag: string): void {
@@ -83,6 +80,7 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
             }
             if (this.tags.length === MAX_NUMBER_TAG) {
                 this.maxTags = true;
+                this.tagInput.nativeElement.disabled = true;
             }
         }
         if (input) {
@@ -92,55 +90,39 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     removeTag(tags: string): void {
         const index = this.tags.indexOf(tags);
-        if (this.maxTags) this.maxTags = false;
+        if (this.maxTags) {
+            this.maxTags = false;
+            this.tagInput.nativeElement.disabled = false;
+        }
         if (index >= 0) {
             this.tags.splice(index, 1);
         }
     }
 
-    addDrawing(): void {
+    async addDrawing(): Promise<void> {
         this.isSaveButtonDisabled = true;
-        this.drawingService.baseCtx.canvas.toBlob(async (blob) => {
-            await blob;
-            if (blob) {
-                const ID: string = new Date().getUTCMilliseconds() + '';
-                const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
-                this.databaseService
-                    .addDrawing(meta, blob)
-                    .pipe(takeUntil(this.destroy$))
-                    .subscribe(
-                        (data) => {
-                            this.isSaveButtonDisabled = false;
-                            this.dialogRef.close();
-                            // this.saveConfirmMessage();
-                        },
-                        (error) => {
-                            this.isSaveButtonDisabled = false;
-                            // this.saveErrorModal();
-                        },
-                    );
-            }
-        });
+        const canvas = this.drawingService.baseCtx.canvas.toDataURL();
+        const blob = await (await fetch(canvas)).blob();
+        const ID: string = new Date().getUTCMilliseconds() + '';
+        const meta: MetaData = { id: ID, name: this.name, tags: this.tags };
+        this.databaseService
+            .addDrawing(meta, blob)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                (data) => {
+                    this.isSaveButtonDisabled = false;
+                    this.serverResponseService.saveConfirmSnackBar();
+                },
+                (error) => {
+                    this.isSaveButtonDisabled = false;
+                    this.serverResponseService.saveErrorSnackBar(error.error);
+                },
+            );
     }
 
     changeName(name: string): void {
         this.name = name;
         this.ownerForm.markAllAsTouched();
-    }
-
-    saveErrorModal(): void {
-        this.dialog.afterAllClosed.pipe(takeUntil(this.destroy$)).subscribe(() => {
-            const config = new MatSnackBarConfig();
-            this.snackBar.open('Erreur dans la sauvegarde du dessin', 'Fermer', config);
-        });
-    }
-
-    saveConfirmMessage(): void {
-        this.dialog.afterAllClosed.pipe(takeUntil(this.destroy$)).subscribe(() => {
-            const config = new MatSnackBarConfig();
-            config.duration = CONFIRM_SAVED_DURATION;
-            this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
-        });
     }
 
     ngOnDestroy(): void {

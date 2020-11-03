@@ -1,9 +1,9 @@
 <div class="carousel">
     <h1 mat-dialog-title>Carrousel de dessin</h1>
-    <div *ngIf="gotImages === false">
+    <div *ngIf="!gotImages">
         <mat-spinner></mat-spinner>
     </div>
-    <div *ngIf="databaseMetadata.length > 0 && gotImages === true" class="search">
+    <div *ngIf="databaseMetadata.length > 0 && gotImages" class="search">
         <mat-card class="tags-card">
             <h3 mat-dialog-title>Filtrage par tags</h3>
             <mat-form-field class="tag-list">

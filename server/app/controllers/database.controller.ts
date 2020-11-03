@@ -41,7 +41,7 @@ export class DatabaseController {
             this.databaseService
                 .addDrawing(DBDATA)
                 .then(() => {
-                    res.status(Httpstatus.StatusCodes.CREATED).send({ id: DBDATA.id });
+                    res.sendStatus(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -65,7 +65,7 @@ export class DatabaseController {
             this.databaseService
                 .deleteDrawing(req.params.fileName)
                 .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
+                    res.sendStatus(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
