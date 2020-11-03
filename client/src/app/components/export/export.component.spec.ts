@@ -1,8 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ExportComponent } from './export.component';
 
+import SpyObj = jasmine.SpyObj;
 describe('ExportComponent', () => {
     let component: ExportComponent;
     let fixture: ComponentFixture<ExportComponent>;
@@ -10,14 +12,19 @@ describe('ExportComponent', () => {
     let canvasStub: HTMLCanvasElement;
     let filterCanvasStub: HTMLCanvasElement;
     let linkStub: HTMLAnchorElement;
+    let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
+        dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         TestBed.configureTestingModule({
             declarations: [ExportComponent],
-            providers: [{ provide: DrawingService, useValue: drawingServiceStub }],
+            providers: [
+                { provide: DrawingService, useValue: drawingServiceStub },
+                { provide: MatDialogRef, useValue: dialogSpy },
+            ],
         }).compileComponents();
     }));
 
@@ -87,10 +94,11 @@ describe('ExportComponent', () => {
         expect(component.urlImage).toEqual(urlTest);
     });
 
-    it('should call the function click when to export', () => {
+    it('should call the function click and close the modal when the name is correct', () => {
         component.name = 'cercle';
         const clickSpy = spyOn(component.link, 'click');
         component.exportLocally();
         expect(clickSpy).toHaveBeenCalled();
+        expect(dialogSpy.close).toHaveBeenCalled();
     });
 });

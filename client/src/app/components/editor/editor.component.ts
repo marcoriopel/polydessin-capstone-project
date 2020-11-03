@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { CanvasResizingPoints, CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
@@ -18,6 +18,8 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 })
 export class EditorComponent implements AfterViewInit {
     @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
+    @ViewChild('workSpace', { static: false }) workSpaceRef: ElementRef<HTMLDivElement>;
+    @ViewChild('previewDiv', { static: false }) previewDivRef: ElementRef<HTMLDivElement>;
 
     workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
     previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
@@ -40,10 +42,10 @@ export class EditorComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            const workspaceElement: HTMLElement = this.workSpaceRef.nativeElement;
             this.workSpaceSize.x = workspaceElement.offsetWidth;
             this.workSpaceSize.y = workspaceElement.offsetHeight;
-            this.previewDiv = document.querySelector('#previewDiv') as HTMLDivElement;
+            this.previewDiv = this.previewDivRef.nativeElement;
             this.previewDiv.style.display = 'none';
             this.previewDiv.style.borderWidth = '1px';
             this.previewDiv.style.borderColor = '#09acd9';
@@ -60,7 +62,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        //event.preventDefault();
+        event.preventDefault();
         if (this.shortcutsArray.includes(event.key.toString())) {
             this.hotkeyService.onKeyDown(event);
         } else {
