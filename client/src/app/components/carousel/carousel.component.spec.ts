@@ -2,13 +2,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { DBData } from '@common/communication/drawing-data';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { CarouselComponent } from './carousel.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -21,18 +22,23 @@ describe('CarouselComponent', () => {
     let matDialogSpy: SpyObj<MatDialog>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
-    let obs: Subject<DBData[]>;
+    let dBDataObservable: Subject<DBData[]>;
     let keyboardEvent: KeyboardEvent;
+    let imageObservable: Subject<Blob>;
+    let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(async(() => {
-        resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
+        resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
-        matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll']);
-        databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData']);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
+        databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank']);
-        obs = new Subject<DBData[]>();
-
-        databaseServiceSpy.getAllDBData.and.returnValue(obs.asObservable());
+        dBDataObservable = new Subject<DBData[]>();
+        imageObservable = new Subject<Blob>();
+        baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
+        drawingServiceSpy.baseCtx = baseCtxSpy;
+        databaseServiceSpy.getAllDBData.and.returnValue(dBDataObservable.asObservable());
+        databaseServiceSpy.getDrawingPng.and.returnValue(imageObservable.asObservable());
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [CarouselComponent],
@@ -96,7 +102,7 @@ describe('CarouselComponent', () => {
     it('should manage drawings after dbdata load', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
         const manageSpy = spyOn(component, 'manageShownDrawings');
-        obs.next([DBDATA, DBDATA]);
+        dBDataObservable.next([DBDATA, DBDATA]);
         expect(manageSpy).toHaveBeenCalled();
         expect(component.databaseMetadata).toEqual([DBDATA, DBDATA]);
     });
@@ -170,5 +176,27 @@ describe('CarouselComponent', () => {
         const applySpy = spyOn(component, 'applySelectedDrawing');
         component.loadSelectedDrawing(1);
         expect(applySpy).toHaveBeenCalled();
+    });
+
+    it('should apply drawing if canvas is not empty and user overwrites', () => {
+        drawingServiceSpy.isCanvasBlank.and.returnValue(false);
+        const applySpy = spyOn(component, 'applySelectedDrawing');
+        const loadAlertSpy = matDialogSpy.open.and.returnValue({ afterClosed: () => of('Oui') } as MatDialogRef<LoadSelectedDrawingAlertComponent>);
+        component.loadSelectedDrawing(1);
+
+        expect(loadAlertSpy).toHaveBeenCalled();
+        expect(applySpy).toHaveBeenCalled();
+    });
+
+    it('should draw drawing', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        const image = new Blob();
+        imageObservable.next(image);
+        component.applySelectedDrawing(1);
+        imageObservable.next(image);
+        expect(drawingServiceSpy.baseCtx.drawImage).toHaveBeenCalled();
+        expect(resizeDrawingServiceSpy.resizeCanvasSize).toHaveBeenCalled();
     });
 });
