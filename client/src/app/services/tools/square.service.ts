@@ -19,7 +19,7 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
-    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
+    fillStyle: number = FILL_STYLES.FILL;
     rectangleHeight: number;
     rectangleWidth: number;
 
@@ -29,6 +29,8 @@ export class SquareService extends Tool {
 
     initialize(): void {
         this.mouseDown = false;
+        this.drawingService.previewCtx.lineCap = 'square';
+        this.drawingService.baseCtx.lineCap = 'square';
     }
 
     setRectangleWidth(): void {
@@ -93,6 +95,12 @@ export class SquareService extends Tool {
 
     drawShape(ctx: CanvasRenderingContext2D): Rectangle {
         let rectangle;
+
+        ctx.fillStyle = this.colorSelectionService.primaryColor;
+        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
+        ctx.lineWidth = this.width;
+        ctx.setLineDash([0]);
+        ctx.lineJoin = 'miter';
 
         if (this.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
