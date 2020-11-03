@@ -110,14 +110,11 @@ export class SavingComponent implements AfterViewChecked, OnInit, OnDestroy {
                     .pipe(takeUntil(this.destroy$))
                     .subscribe(
                         (data) => {
-                            console.log('data');
                             this.isSaveButtonDisabled = false;
                             this.dialogRef.close();
                             // this.saveConfirmMessage();
                         },
                         (error) => {
-                            console.log(error);
-                            console.log('error');
                             this.isSaveButtonDisabled = false;
                             // this.saveErrorModal();
                         },

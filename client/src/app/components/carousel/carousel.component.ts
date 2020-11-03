@@ -56,7 +56,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        console.log(this.isArrowEventsChecked);
         if (!this.isArrowEventsChecked) return;
         if (event.key === 'ArrowLeft') {
             this.onPreviousClick();
@@ -111,8 +110,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     loadSelectedDrawing(positionIndex: number): void {
         if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
-            const test = this.dialog.open(LoadSelectedDrawingAlertComponent);
-            test.afterClosed()
+            const loadDrawingAlert = this.dialog.open(LoadSelectedDrawingAlertComponent);
+            loadDrawingAlert
+                .afterClosed()
                 .pipe(takeUntil(this.destroy$))
                 .subscribe((optionChosen: string) => {
                     if (optionChosen === 'Oui') {
