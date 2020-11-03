@@ -12,9 +12,9 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 })
 export class SelectionService extends Tool {
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selectionData: ImageData;
+    selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
-    isRectangleSelection: boolean = false;
+    isRectangleSelection: boolean = true;
 
     constructor(drawingService: DrawingService, private squareService: SquareService, private moveService: MoveService) {
         super(drawingService);
@@ -27,7 +27,17 @@ export class SelectionService extends Tool {
                 this.moveService.isTransformationOver = true;
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.moveService.clearSelectionBackground(this.drawingService.baseCtx);
-                this.drawingService.baseCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
+                this.drawingService.baseCtx.drawImage(
+                    this.selectionImage,
+                    0,
+                    0,
+                    this.selection.width,
+                    this.selection.height,
+                    this.selection.startingPoint.x,
+                    this.selection.startingPoint.y,
+                    this.selection.width,
+                    this.selection.height,
+                );
             }
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -102,37 +112,35 @@ export class SelectionService extends Tool {
     }
 
     private setSelectionData(selection: Rectangle): void {
-        this.selectionData = this.drawingService.baseCtx.getImageData(
+        this.selectionImage.width = this.selection.width;
+        this.selectionImage.height = this.selection.height;
+        const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+        if (!this.isRectangleSelection) {
+            selectionImageCtx.beginPath();
+            selectionImageCtx.ellipse(
+                this.selection.width / 2,
+                this.selection.height / 2,
+                this.selection.width / 2,
+                this.selection.height / 2,
+                0,
+                0,
+                Math.PI * 2,
+            );
+            selectionImageCtx.clip(); 
+            selectionImageCtx.closePath();
+        }
+        selectionImageCtx.drawImage(
+            this.drawingService.canvas,
             this.selection.startingPoint.x,
             this.selection.startingPoint.y,
             this.selection.width,
             this.selection.height,
+            0,
+            0,
+            this.selection.width,
+            this.selection.height,
         );
-        if (!this.isRectangleSelection) {
-            const tmpCanvas = document.createElement('canvas');
-            tmpCanvas.width = this.drawingService.canvas.width;
-            tmpCanvas.height = this.drawingService.canvas.height;
-            const tmpCtx = tmpCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tmpCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
-
-            const centerCircleX = this.selection.startingPoint.x + this.selection.width / 2;
-            const centerCircleY = this.selection.startingPoint.y + this.selection.height / 2;
-            tmpCtx.globalCompositeOperation = 'destination-in';
-            tmpCtx.beginPath();
-            tmpCtx.ellipse(centerCircleX, centerCircleY, this.selection.width / 2, this.selection.height / 2, 0, 0, Math.PI * 2);
-            tmpCtx.closePath();
-            tmpCtx.fill();
-
-            tmpCtx.globalCompositeOperation = 'source-over';
-
-            this.selectionData = tmpCtx.getImageData(
-                this.selection.startingPoint.x,
-                this.selection.startingPoint.y,
-                this.selection.width,
-                this.selection.height,
-            );
-        }
-        this.moveService.initialize(this.selection, this.selectionData, this.isRectangleSelection);
+        this.moveService.initialize(this.selection, this.selectionImage, this.isRectangleSelection);
     }
 
     private strokeSelection(): void {
