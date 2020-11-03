@@ -88,6 +88,7 @@ describe('ExportComponent', () => {
     });
 
     it('should call the function click when to export', () => {
+        component.name = 'cercle';
         const clickSpy = spyOn(component.link, 'click');
         component.exportLocally();
         expect(clickSpy).toHaveBeenCalled();
