@@ -17,7 +17,7 @@ describe('ColorPickerComponent', () => {
     let fixture: ComponentFixture<ColorPickerComponent>;
     let mouseEventClickLeft: MouseEvent;
     let mouseEventClickRight: MouseEvent;
-    let baseCtxStud: CanvasRenderingContext2D;
+    let baseCtxStub: CanvasRenderingContext2D;
     const MAX_CANVAS_HEIGTH = 100;
     const MAX_CANVAS_WIDTH = 100;
 
@@ -37,9 +37,9 @@ describe('ColorPickerComponent', () => {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = MAX_CANVAS_WIDTH;
         canvas.height = MAX_CANVAS_HEIGTH;
-        baseCtxStud = canvas.getContext('2d') as CanvasRenderingContext2D;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         // tslint:disable-next-line: no-string-literal
-        component.pipetteService['drawingService'].baseCtx = baseCtxStud;
+        component.pipetteService['drawingService'].baseCtx = baseCtxStub;
         keyboardEvent = new KeyboardEvent('keypress', {
             key: 'Shift',
         });

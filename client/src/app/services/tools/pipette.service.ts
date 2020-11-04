@@ -1,13 +1,11 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton, ZOOM_PIPETTE, ZOOM_RADIUS } from '@app/ressources/global-variables/global-variables';
+import { GROWTH_ZOOM_PIPETTE, MAX_OPACITY_RGBA, MouseButton, ZOOM_RADIUS } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Subject } from 'rxjs';
-
-const MAX_OPACITY = 255;
 
 @Injectable({
     providedIn: 'root',
@@ -69,8 +67,8 @@ export class PipetteService extends Tool {
         const x = this.getPositionFromMouse(event).x;
         const y = this.getPositionFromMouse(event).y;
 
-        const hSource = this.zoom.height / ZOOM_PIPETTE;
-        const wSource = this.zoom.width / ZOOM_PIPETTE;
+        const hSource = this.zoom.height / GROWTH_ZOOM_PIPETTE;
+        const wSource = this.zoom.width / GROWTH_ZOOM_PIPETTE;
 
         this.zoomCtx.beginPath();
         this.zoomCtx.arc(this.zoom.width / 2, this.zoom.height / 2, ZOOM_RADIUS, 0, 2 * Math.PI);
@@ -87,27 +85,27 @@ export class PipetteService extends Tool {
             this.zoom.height,
         );
         this.zoomCtx.closePath();
-        this.handleCursorOnPixel(event, this.zoom.width, this.zoom.height);
+        this.cursorOnPixel(event, this.zoom.width, this.zoom.height);
     }
 
-    handleCursorOnPixel(e: MouseEvent, width: number, height: number): void {
+    cursorOnPixel(e: MouseEvent, width: number, height: number): void {
         const mousePosition = this.getPositionFromMouse(e);
         const pixelData = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
         const opacityIndex = 3;
-        const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[opacityIndex] / MAX_OPACITY + ')';
+        const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[opacityIndex] / MAX_OPACITY_RGBA + ')';
         this.zoomCtx.beginPath();
         this.zoomCtx.fillStyle = color;
         this.zoomCtx.strokeStyle = 'white';
         this.zoomCtx.setLineDash([2, 1]);
-        this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.strokeRect(width / 2 - GROWTH_ZOOM_PIPETTE / 2, height / 2 - GROWTH_ZOOM_PIPETTE / 2, GROWTH_ZOOM_PIPETTE, GROWTH_ZOOM_PIPETTE);
         this.zoomCtx.strokeStyle = 'black';
         this.zoomCtx.setLineDash([1, 2]);
-        this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
-        this.zoomCtx.fillRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
+        this.zoomCtx.strokeRect(width / 2 - GROWTH_ZOOM_PIPETTE / 2, height / 2 - GROWTH_ZOOM_PIPETTE / 2, GROWTH_ZOOM_PIPETTE, GROWTH_ZOOM_PIPETTE);
+        this.zoomCtx.fillRect(width / 2 - GROWTH_ZOOM_PIPETTE / 2, height / 2 - GROWTH_ZOOM_PIPETTE / 2, GROWTH_ZOOM_PIPETTE, GROWTH_ZOOM_PIPETTE);
         this.zoomCtx.stroke();
     }
 
-    handleNearBorder(mousePosition: Vec2): void {
+    nearBorder(mousePosition: Vec2): void {
         this.isNearBorder = false;
         if (mousePosition.x >= this.drawingService.canvas.width || mousePosition.x <= 0) {
             this.isNearBorder = true;
@@ -125,7 +123,7 @@ export class PipetteService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.handleNearBorder(this.getPositionFromMouse(event));
+        this.nearBorder(this.getPositionFromMouse(event));
         this.showZoomPixel(event);
     }
     onMouseEnter(): void {

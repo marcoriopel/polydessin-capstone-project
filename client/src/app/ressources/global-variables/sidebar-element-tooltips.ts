@@ -18,7 +18,7 @@ export interface SidebarElementTooltips {
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     CAROUSEL_DESCRIPTION: 'Carroussel de dessin (Ctrl + G)',
-    NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl-O)',
+    NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl + O)',
     PENCIL_TOOL_DESCRIPTION: 'Crayon (C)',
     BRUSH_TOOL_DESCRIPTION: 'Pinceau (W)',
     SQUARE_TOOL_DESCRIPTION: 'Rectangle (1)',

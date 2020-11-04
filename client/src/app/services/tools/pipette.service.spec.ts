@@ -12,7 +12,7 @@ describe('PipetteService', () => {
     let zoomCanvasStud: HTMLCanvasElement;
     let mouseEventLeft: MouseEvent;
     let mouseEventRight: MouseEvent;
-    let colorStud: string[];
+    let colorArray: string[];
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
@@ -27,7 +27,7 @@ describe('PipetteService', () => {
         canvas = document.createElement('canvas');
         canvas.width = WIDTH_DRAWING_CANVAS;
         canvas.height = HEIGHT_DRAWING_CANVAS;
-        colorStud = ['#000000', '255'];
+        colorArray = ['#000000', '255'];
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub.fillStyle = '#000000';
@@ -86,18 +86,18 @@ describe('PipetteService', () => {
     it(' mouseDown should emit an event on left click', () => {
         const eventEmiterSpy = spyOn(service.primaryColor, 'emit');
         service.onMouseDown(mouseEventLeft);
-        expect(eventEmiterSpy).toHaveBeenCalledWith(colorStud);
+        expect(eventEmiterSpy).toHaveBeenCalledWith(colorArray);
     });
 
     it(' mouseDown should emit an event on right click', () => {
         const eventEmiterSpy = spyOn(service.secondaryColor, 'emit');
         service.onMouseDown(mouseEventRight);
-        expect(eventEmiterSpy).toHaveBeenCalledWith(colorStud);
+        expect(eventEmiterSpy).toHaveBeenCalledWith(colorArray);
     });
 
     it(' mouseMove should call handleNearBorder', () => {
         const drawOnZoomSpy = spyOn(service, 'drawOnZoom');
-        const nearBorderSpy = spyOn(service, 'handleNearBorder');
+        const nearBorderSpy = spyOn(service, 'nearBorder');
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseMove(mouseEventLeft);
@@ -124,19 +124,19 @@ describe('PipetteService', () => {
 
     it('Should return true when mouse near a border', () => {
         const mouseDownCoord = { x: 0, y: 0 };
-        service.handleNearBorder(mouseDownCoord);
+        service.nearBorder(mouseDownCoord);
         expect(service.isNearBorder).toEqual(true);
     });
 
     it('Should return true when mouse outside border', () => {
         const mouseDownCoord = { x: 101, y: 101 };
-        service.handleNearBorder(mouseDownCoord);
+        service.nearBorder(mouseDownCoord);
         expect(service.isNearBorder).toEqual(true);
     });
 
     it('Should return false when mouse inside the canvas', () => {
         const mouseDownCoord = { x: 25, y: 25 };
-        service.handleNearBorder(mouseDownCoord);
+        service.nearBorder(mouseDownCoord);
         expect(service.isNearBorder).toEqual(false);
     });
 
@@ -157,7 +157,7 @@ describe('PipetteService', () => {
     it('Should clear zoom when mouse near a border', () => {
         const clearCanvasSpy = spyOn(service, 'clearCanvas');
         const mouseDownCoord = { x: 0, y: 0 };
-        service.handleNearBorder(mouseDownCoord);
+        service.nearBorder(mouseDownCoord);
         expect(clearCanvasSpy).toHaveBeenCalled();
     });
 
