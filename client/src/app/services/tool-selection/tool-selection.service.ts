@@ -94,7 +94,7 @@ export class ToolSelectionService {
     }
 
     selectAll(): void {
-        this.currentTool = this.squareSelectionService;
+        this.changeTool(TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME);
         this.squareSelectionService.selectAll();
     }
 

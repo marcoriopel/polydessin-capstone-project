@@ -122,6 +122,7 @@ export class SelectionService extends Tool {
         this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
         this.setInitialSelection(this.selection);
         this.setSelectionData(this.selection);
+        this.setSelectionPoint();
     }
 
     onKeyUp(event: KeyboardEvent): void {
