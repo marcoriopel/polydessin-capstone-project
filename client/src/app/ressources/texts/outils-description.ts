@@ -30,7 +30,12 @@ export const BASIC_TOOLS: Feature[] = [
         picture: './../../../assets/video/ligne.mp4',
     },
     // { name: 'Étampe', description: 'etampe ...', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Pipette', description: 'pipette ...', picture: './../../../assets/img/picture_test.jpg' },
+    {
+        name: 'Pipette',
+        description:
+            "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente la surdimension des pixels sous la souris et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
+        picture: './../../../assets/img/picture_test.jpg',
+    },
     // { name: 'Baguette magique', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];
 
@@ -64,13 +69,21 @@ export const SHAPES: Feature[] = [
             "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
         picture: './../../../assets/video/ellipse.mp4',
     },
-    // { name: 'Polygone', description: 'polygone ...', picture: './../../../assets/img/picture_test.jpg' },
+    {
+        name: 'Polygone',
+        description:
+            'Cet outil permet de dessiner des polygone de différente taille. Le polygone tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de choisir le nombre de côté du polygone (3 à 12)',
+        picture: './../../../assets/img/picture_test.jpg',
+    },
 ];
 
-/*export const FILL: Feature[] = [
-    { name: 'Pixels contigus', description: 'pixels contigus', picture: './../../../assets/img/picture_test.jpg' },
-    { name: 'Pixels non contigus', description: 'pixels non contigus', picture: './../../../assets/img/picture_test.jpg' },
-];*/
+export const FILL: Feature[] = [
+    {
+        name: 'Sceau de peinture ',
+        description: 'Cet outil permet de remplir une région de la couleur principal. La tolérance définit l étendue de la région à remplir.',
+        picture: './../../../assets/video/remplissage.mp4',
+    },
+];
 
 export const TRANSFORMATIONS: Feature[] = [
     // { name: 'Déplacement', description: '', picture: './../../../assets/img/picture_test.jpg' },

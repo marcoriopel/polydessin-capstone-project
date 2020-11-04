@@ -42,6 +42,16 @@
             <video autoplay loop muted><source class="animated-gif" src="{{ shape.picture }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
+
+    <mat-expansion-panel *ngFor="let fill of fills">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ fill.name }}
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>{{ fill.description }}</p>
+        <video autoplay loop muted><source class="animated-gif" src="{{ fill.picture }}" type="video/mp4" /></video>
+    </mat-expansion-panel>
 </mat-expansion-panel>
 
 <mat-expansion-panel *ngFor="let feature of otherFeatures">

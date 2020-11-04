@@ -31,8 +31,8 @@ export class HotkeyService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
         if (this.isHotkeyEnabled) {
+            event.preventDefault();
             const keyName: string | undefined = this.keyMapping.get(event.key.toString());
             if (keyName && this.keysNeedCtrl.includes(keyName)) {
                 if (event.ctrlKey) {
