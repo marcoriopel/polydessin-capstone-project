@@ -135,6 +135,8 @@ export class CircleService extends Tool {
             this.drawingService.previewCtx.setLineDash([0]);
         }
 
+        topLeftPoint.x = this.ellipseData.center.x - this.ellipseRadius.x;
+        topLeftPoint.y = this.ellipseData.center.y - this.ellipseRadius.y;
         return { startingPoint: topLeftPoint, width: this.ellipseRadius.x * 2, height: this.ellipseRadius.y * 2 };
     }
 

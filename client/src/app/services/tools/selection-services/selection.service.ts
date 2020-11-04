@@ -62,18 +62,16 @@ export class SelectionService extends Tool {
                 this.setInitialSelection(this.selection);
                 this.setSelectionData(this.selection);
             }
-
             // reset underlying service to original form
             this.underliyingService.fillStyle = currentFillStyle;
             this.mouseDown = false;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else if (this.transormation === 'move') {
             this.transormation = '';
-            this.strokeSelection();
         }
+        this.strokeSelection();
         this.setSelectionPoint();
     }
-
-    setSelectionPoint(): void {}
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
@@ -140,6 +138,7 @@ export class SelectionService extends Tool {
             this.underliyingService.isShiftKeyDown = false;
             this.isShiftKeyDown = false;
         }
+        this.setSelectionPoint();
     }
 
     private isInSelection(event: MouseEvent): boolean {
@@ -184,5 +183,26 @@ export class SelectionService extends Tool {
     applyPreview(): void {
         this.drawingService.baseCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+    }
+
+    setSelectionPoint(): void {
+        if (this.selection.height !== 0 && this.selection.width !== 0) {
+            const topY: number = this.selection.startingPoint.y - 3;
+            const middleY: number = this.selection.startingPoint.y + this.selection.height / 2 - 3;
+            const bottomY: number = this.selection.startingPoint.y + this.selection.height - 3;
+            const leftX: number = this.selection.startingPoint.x - 3;
+            const middleX: number = this.selection.startingPoint.x + this.selection.width / 2 - 3;
+            const rightX: number = this.selection.startingPoint.x + this.selection.width - 3;
+
+            this.drawingService.previewCtx.fillStyle = '#09acd9';
+            this.drawingService.previewCtx.fillRect(leftX, topY, 6, 6);
+            this.drawingService.previewCtx.fillRect(middleX, topY, 6, 6);
+            this.drawingService.previewCtx.fillRect(rightX, topY, 6, 6);
+            this.drawingService.previewCtx.fillRect(leftX, middleY, 6, 6);
+            this.drawingService.previewCtx.fillRect(rightX, middleY, 6, 6);
+            this.drawingService.previewCtx.fillRect(leftX, bottomY, 6, 6);
+            this.drawingService.previewCtx.fillRect(middleX, bottomY, 6, 6);
+            this.drawingService.previewCtx.fillRect(rightX, bottomY, 6, 6);
+        }
     }
 }
