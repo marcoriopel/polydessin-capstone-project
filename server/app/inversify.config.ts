@@ -21,6 +21,5 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.DateService).to(DateService);
     container.bind(TYPES.DatabaseController).to(DatabaseController);
     container.bind(TYPES.DatabaseService).to(DatabaseService);
-
     return container;
 };
