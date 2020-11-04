@@ -11,7 +11,12 @@ export const GENERALS_FEATURE: Feature[] = [
             "Le bouton «Nouveau Dessin» permet d'effacer le dessin sur la surface de dessin et d'en créer un nouveau. S'il y a un dessin sur la surface de dessin, une fenêtre va apparaître pour s'assurer que vous voulez vraiment effacer le dessin present sur la surface. ",
         picture: './../../../assets/img/nouveau-dessin.PNG',
     },
-    // { name: 'Carrousel de dessin', description: '...', picture: './../../../assets/img/carrousel.PNG' },
+    {
+        name: 'Carrousel de dessin',
+        description:
+            "Le carrousel de dessin permet d'ouvrir un dessin déjà créé et sauvegardé sur le serveur. Les dessins sauvegardés sont sous la forme d'un carrousel. Il est possible de voir trois dessins en même temps. Il est possible d'entrer des étiquettes pour pouvoir filtrer les dessins. Il est possible de charger le dessin en cliquant dessus.",
+        picture: './../../../assets/img/sauvegarde.PNG',
+    },
     {
         name: 'Sauvegarde manuelle',
         description:
