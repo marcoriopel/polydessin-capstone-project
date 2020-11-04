@@ -28,7 +28,6 @@ export class UndoRedoService {
     ) {}
 
     undo(): void {
-        console.log(this.drawingService.undoStack);
         this.selectionSerice.reset();
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
