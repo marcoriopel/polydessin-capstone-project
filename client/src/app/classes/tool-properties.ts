@@ -6,7 +6,6 @@ export interface Pencil {
     path: Vec2[];
     lineWidth: number;
     primaryColor: string;
-    lineCap: string;
 }
 
 export interface Brush {

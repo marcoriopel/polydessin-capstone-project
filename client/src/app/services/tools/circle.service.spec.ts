@@ -268,42 +268,6 @@ describe('CircleService', () => {
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const point: Vec2 = { x: 0, y: 0 };
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 29, y: 29 };
-        service.drawCircle(baseCtxStub, point);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCircleWidthSpy).toHaveBeenCalled();
-    });
-
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const point: Vec2 = { x: 0, y: 0 };
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 31, y: 31 };
-        service.drawCircle(baseCtxStub, point);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCircleWidthSpy).toHaveBeenCalled();
-    });
-
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const point: Vec2 = { x: 0, y: 0 };
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 31, y: 29 };
-        service.drawCircle(baseCtxStub, point);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCircleWidthSpy).toHaveBeenCalled();
-    });
-
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const point: Vec2 = { x: 0, y: 0 };
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 29, y: 31 };
-        service.drawCircle(baseCtxStub, point);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCircleWidthSpy).toHaveBeenCalled();
-    });
-
     it('drawCircle should not call fill if the fill style is set to border', () => {
         const point: Vec2 = { x: 0, y: 0 };
         service.fillStyle = FILL_STYLES.BORDER;
