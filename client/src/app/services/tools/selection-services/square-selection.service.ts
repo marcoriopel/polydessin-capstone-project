@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
-import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';

@@ -3,7 +3,7 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, SELECTION_POINT_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -178,8 +178,12 @@ export class SelectionService extends Tool {
         this.initialSelection.height = selection.height;
     }
 
+    // disabling tslint because methods have to be empty since they are implemented in the inheriting services (polymorphism)
+
+    // tslint:disable-next-line: no-empty
     setSelectionData(selection: SelectionBox): void {}
 
+    // tslint:disable-next-line: no-empty
     strokeSelection(): void {}
 
     applyPreview(): void {
@@ -199,22 +203,22 @@ export class SelectionService extends Tool {
 
     setSelectionPoint(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
-            const topY: number = this.selection.startingPoint.y - 3;
-            const middleY: number = this.selection.startingPoint.y + this.selection.height / 2 - 3;
-            const bottomY: number = this.selection.startingPoint.y + this.selection.height - 3;
-            const leftX: number = this.selection.startingPoint.x - 3;
-            const middleX: number = this.selection.startingPoint.x + this.selection.width / 2 - 3;
-            const rightX: number = this.selection.startingPoint.x + this.selection.width - 3;
+            const topY: number = this.selection.startingPoint.y - SELECTION_POINT_WIDTH / 2;
+            const middleY: number = this.selection.startingPoint.y + this.selection.height / 2 - SELECTION_POINT_WIDTH / 2;
+            const bottomY: number = this.selection.startingPoint.y + this.selection.height - SELECTION_POINT_WIDTH / 2;
+            const leftX: number = this.selection.startingPoint.x - SELECTION_POINT_WIDTH / 2;
+            const middleX: number = this.selection.startingPoint.x + this.selection.width / 2 - SELECTION_POINT_WIDTH / 2;
+            const rightX: number = this.selection.startingPoint.x + this.selection.width - SELECTION_POINT_WIDTH / 2;
 
             this.drawingService.previewCtx.fillStyle = '#09acd9';
-            this.drawingService.previewCtx.fillRect(leftX, topY, 6, 6);
-            this.drawingService.previewCtx.fillRect(middleX, topY, 6, 6);
-            this.drawingService.previewCtx.fillRect(rightX, topY, 6, 6);
-            this.drawingService.previewCtx.fillRect(leftX, middleY, 6, 6);
-            this.drawingService.previewCtx.fillRect(rightX, middleY, 6, 6);
-            this.drawingService.previewCtx.fillRect(leftX, bottomY, 6, 6);
-            this.drawingService.previewCtx.fillRect(middleX, bottomY, 6, 6);
-            this.drawingService.previewCtx.fillRect(rightX, bottomY, 6, 6);
+            this.drawingService.previewCtx.fillRect(leftX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(middleX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(rightX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(leftX, middleY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(rightX, middleY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(leftX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(middleX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.fillRect(rightX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
         }
     }
 }

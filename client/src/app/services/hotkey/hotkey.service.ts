@@ -43,7 +43,7 @@ export class HotkeyService {
                 }
             } else {
                 const keyName: string | undefined = this.keyMapping.get(event.key.toString());
-                if (keyName){
+                if (keyName) {
                     this.toolName.next(keyName);
                 }
             }

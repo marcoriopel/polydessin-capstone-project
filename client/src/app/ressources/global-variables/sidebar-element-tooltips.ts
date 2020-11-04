@@ -14,7 +14,7 @@ export interface SidebarElementTooltips {
     SAVE_DRAWING_DESCRIPTION: string;
     CAROUSEL_DESCRIPTION: string;
     EXPORT_DRAWING_DESCRIPTION: string;
-    SELECT_ALL_DESCRIPTION: string,
+    SELECT_ALL_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
