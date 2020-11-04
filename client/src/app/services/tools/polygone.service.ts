@@ -100,7 +100,7 @@ export class PolygoneService extends Tool {
         this.circleService.firstPoint = this.firstPoint;
         this.circleService.lastPoint = this.lastPoint;
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint));
-        this.LineDash(this.drawingService.previewCtx);
+        // this.LineDash(this.drawingService.previewCtx);
     }
 
     drawPolygone(ctx: CanvasRenderingContext2D, polygoneData: Polygone): void {

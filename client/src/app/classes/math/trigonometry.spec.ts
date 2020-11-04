@@ -409,7 +409,7 @@ describe('Trigonometry', () => {
         const firstPoint: Vec2 = { x: 0, y: 0 };
         const lastPoint: Vec2 = { x: 10, y: 10 };
         const expectedValue: Vec2 = { x: lastPoint.x, y: firstPoint.y };
-        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
+        const returnValue = trigonometry.findTopLeftPoint(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 
@@ -417,7 +417,7 @@ describe('Trigonometry', () => {
         const firstPoint: Vec2 = { x: 10, y: 0 };
         const lastPoint: Vec2 = { x: 0, y: 10 };
         const expectedValue: Vec2 = { x: firstPoint.x, y: lastPoint.y };
-        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
+        const returnValue = trigonometry.findTopLeftPoint(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 
@@ -425,7 +425,7 @@ describe('Trigonometry', () => {
         const firstPoint: Vec2 = { x: 10, y: 10 };
         const lastPoint: Vec2 = { x: 0, y: 0 };
         const expectedValue: Vec2 = { x: lastPoint.x, y: lastPoint.y };
-        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
+        const returnValue = trigonometry.findTopLeftPoint(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 
@@ -433,7 +433,7 @@ describe('Trigonometry', () => {
         const firstPoint: Vec2 = { x: 0, y: 10 };
         const lastPoint: Vec2 = { x: 10, y: 0 };
         const expectedValue: Vec2 = { x: firstPoint.x, y: firstPoint.y };
-        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
+        const returnValue = trigonometry.findTopLeftPoint(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 

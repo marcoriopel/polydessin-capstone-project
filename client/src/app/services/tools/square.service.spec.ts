@@ -188,7 +188,7 @@ describe('SquareService', () => {
         service.lastPoint = { x: 2, y: 2 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+        const topLeft = service.trigonometry.findTopLeftPoint(service.firstPoint, service.lastPoint);
         expect(topLeft).toEqual(service.firstPoint);
     });
 
@@ -198,7 +198,7 @@ describe('SquareService', () => {
         service.lastPoint = { x: 1, y: 3 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+        const topLeft = service.trigonometry.findTopLeftPoint(service.firstPoint, service.lastPoint);
         const expectedValue: Vec2 = { x: 1, y: 2 };
         expect(topLeft).toEqual(expectedValue);
     });
@@ -209,7 +209,7 @@ describe('SquareService', () => {
         service.lastPoint = { x: 2, y: 1 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+        const topLeft = service.trigonometry.findTopLeftPoint(service.firstPoint, service.lastPoint);
         const expectedValue: Vec2 = { x: 1, y: 1 };
         expect(topLeft).toEqual(expectedValue);
     });
@@ -220,7 +220,7 @@ describe('SquareService', () => {
         service.lastPoint = { x: 2, y: 2 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+        const topLeft = service.trigonometry.findTopLeftPoint(service.firstPoint, service.lastPoint);
         const expectedValue: Vec2 = { x: 2, y: 2 };
         expect(topLeft).toEqual(expectedValue);
     });
