@@ -11,7 +11,7 @@ export const OTHER_FEATURES: Feature[] = [
         name: 'Palette de couleur',
         description:
             'Cet outil permet de définir la couleur de tous les outils. Vous pouvez définir deux couleurs : principale et secondaire. Ces deux couleurs peuvent intéragir entre eux. Vous pouvez choisir la couleur avec le panneau de couleur contenant toutes les couleurs. En changeant de couleur, l ancienne couleur est enregistré pour vous permettre de la récupérer au besoin. ',
-        picture: './../../../assets/video/couleur.mp4',
+        picture: './../../../assets/img/couleur.PNG',
     },
 ];
 
