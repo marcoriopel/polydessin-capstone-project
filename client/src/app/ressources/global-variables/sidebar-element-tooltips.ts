@@ -28,8 +28,8 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
     PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
     HELP_DESCRIPTION: "Guide d'utilisation",
-    UNDO_DESCRIPTION: 'Annuler (Ctrl-Z)',
-    REDO_DESCRIPTION: 'Refaire (Ctrl-Shift-Z)',
+    UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
+    REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
     SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
     EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
 };
