@@ -37,7 +37,7 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
-        squareSelectionService: SquareSelectionService,
+        public squareSelectionService: SquareSelectionService,
         circleSelectionService: CircleSelectionService,
         polygoneService: PolygoneService,
         public drawingService: DrawingService,
@@ -87,7 +87,15 @@ export class ToolSelectionService {
             case this.sidebarElements.SAVE_SERVER_NAME:
                 this.dialog.open(SavingComponent);
                 break;
+            case this.sidebarElements.SELECT_ALL:
+                this.selectAll();
+                break;
         }
+    }
+
+    selectAll(): void {
+        this.currentTool = this.squareSelectionService;
+        this.squareSelectionService.selectAll();
     }
 
     getCurrentToolName(): string {

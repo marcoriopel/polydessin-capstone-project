@@ -28,7 +28,7 @@ export class EditorComponent implements AfterViewInit {
     previewDiv: HTMLDivElement;
 
     // TODO -> Add missing keys for new tools as we create them
-    shortcutsArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's', 'r'];
+    shortcutsArray: string[] = ['c', 'w', '1', '2', 'l', 'b', 'e', 'o', 'g', 's', 'r', 'a'];
 
     constructor(
         public hotkeyService: HotkeyService,

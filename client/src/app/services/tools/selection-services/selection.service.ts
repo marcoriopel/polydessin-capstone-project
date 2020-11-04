@@ -102,10 +102,6 @@ export class SelectionService extends Tool {
                 this.reset();
                 break;
             }
-            case 'Control': {
-                this.selectAll();
-                break;
-            }
             case 'Shift': {
                 this.isShiftKeyDown = true;
                 break;

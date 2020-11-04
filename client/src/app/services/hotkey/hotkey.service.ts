@@ -26,6 +26,7 @@ export class HotkeyService {
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
         ['g', this.sidebarElements.CAROUSEL_NAME],
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
+        ['a', this.sidebarElements.SELECT_ALL],
     ]);
 
     constructor() {
