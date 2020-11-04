@@ -76,12 +76,7 @@ export class ResizeDrawingService {
     onMouseUp(): void {
         if (this.mouseDown) {
             this.imageData = this.drawingService.getCanvasData();
-
-            const tempPreviewCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempPreviewCanvas.width = this.canvasSize.x;
-            tempPreviewCanvas.height = this.canvasSize.y;
-            const tempPreviewCanvasCtx: CanvasRenderingContext2D = tempPreviewCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempPreviewCanvasCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
+            const previewData: ImageData = this.drawingService.getPreviewData();
 
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
@@ -92,6 +87,7 @@ export class ResizeDrawingService {
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
                 this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
+                this.drawingService.previewCtx.putImageData(previewData, 0, 0);
             });
         }
         this.mouseDown = false;

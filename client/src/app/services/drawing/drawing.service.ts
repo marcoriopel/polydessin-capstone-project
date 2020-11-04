@@ -53,4 +53,9 @@ export class DrawingService {
         const canvasData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         return canvasData;
     }
+
+    getPreviewData(): ImageData {
+        const canvasData = this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        return canvasData;
+    }
 }
