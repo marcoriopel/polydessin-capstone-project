@@ -42,6 +42,15 @@ describe('Database service', () => {
         directoryStub.restore();
     });
 
+    it('should not get all DBData from DB if db id closed', async () => {
+        await client.close();
+        try {
+            await databaseService.getDBData();
+        } catch (error) {
+            expect(error).to.equal('sfdf');
+        }
+    });
+
     it('should get all DBData from DB', async () => {
         try {
             const dbData = await databaseService.getDBData();
