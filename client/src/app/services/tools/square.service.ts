@@ -5,7 +5,7 @@ import { Tool } from '@app/classes/tool';
 import { Rectangle } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -101,11 +101,14 @@ export class SquareService extends Tool {
     drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
         this.setRectangleHeight();
         this.setRectangleWidth();
+
         if (this.isShiftKeyDown) {
             this.rectangleWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
             this.rectangleHeight = this.rectangleWidth;
+            this.setSquareAttributes();
+        }else {
+            this.topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
         }
-        this.topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
 
         this.updateRectangleData();
         this.drawRectangle(ctx, this.rectangleData);
@@ -132,6 +135,28 @@ export class SquareService extends Tool {
             ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
         }
         ctx.stroke();
+    }
+
+    setSquareAttributes(): void {
+        const quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
+        switch (quadrant) {
+            case Quadrant.BOTTOM_LEFT:
+                this.topLeftPoint.x = this.firstPoint.x - this.rectangleWidth;
+                this.topLeftPoint.y = this.firstPoint.y;
+                break;
+            case Quadrant.TOP_LEFT:
+                this.topLeftPoint.x = this.firstPoint.x - this.rectangleWidth;
+                this.topLeftPoint.y = this.firstPoint.y - this.rectangleHeight;
+                break;
+            case Quadrant.BOTTOM_RIGHT:
+                this.topLeftPoint.x = this.firstPoint.x;
+                this.topLeftPoint.y = this.firstPoint.y;
+                break;
+            case Quadrant.TOP_RIGHT:
+                this.topLeftPoint.x = this.firstPoint.x;
+                this.topLeftPoint.y = this.firstPoint.y - this.rectangleHeight;
+                break;
+        }
     }
 
     private updateRectangleData(): void {

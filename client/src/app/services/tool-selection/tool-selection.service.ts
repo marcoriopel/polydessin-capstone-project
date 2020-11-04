@@ -71,6 +71,7 @@ export class ToolSelectionService {
             this.currentTool.reset();
             this.currentTool = selectedTool;
             this.currentTool.initialize();
+            this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
