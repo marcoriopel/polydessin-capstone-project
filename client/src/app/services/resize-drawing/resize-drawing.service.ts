@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import {
@@ -21,6 +22,9 @@ export class ResizeDrawingService {
     mouseDown: boolean = false;
     serviceCaller: string;
     workSpaceSize: Vec2;
+    resizeData: Resize;
+    mouseEvent: MouseEvent;
+    imageData: ImageData;
 
     constructor(public drawingService: DrawingService) {}
 
@@ -52,6 +56,14 @@ export class ResizeDrawingService {
         this.previewSize.y = height;
     }
 
+    restoreCanvas(resizeData: Resize): void {
+        this.drawingService.canvas.width = resizeData.canvasSize.x;
+        this.drawingService.canvas.height = resizeData.canvasSize.y;
+        this.previewSize.x = resizeData.canvasSize.x;
+        this.previewSize.y = resizeData.canvasSize.y;
+        this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
@@ -63,11 +75,7 @@ export class ResizeDrawingService {
 
     onMouseUp(): void {
         if (this.mouseDown) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempCanvas.width = this.canvasSize.x;
-            tempCanvas.height = this.canvasSize.y;
-            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempCanvasCtx.drawImage(this.drawingService.canvas, 0, 0);
+            this.imageData = this.drawingService.getCanvasData();
 
             const tempPreviewCanvas: HTMLCanvasElement = document.createElement('canvas');
             tempPreviewCanvas.width = this.canvasSize.x;
@@ -78,10 +86,12 @@ export class ResizeDrawingService {
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
 
+            this.updateResizeData();
+            this.drawingService.updateStack(this.resizeData);
+
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
-                this.drawingService.baseCtx.drawImage(tempCanvas, 0, 0);
-                this.drawingService.previewCtx.drawImage(tempPreviewCanvas, 0, 0);
+                this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
             });
         }
         this.mouseDown = false;
@@ -145,5 +155,13 @@ export class ResizeDrawingService {
             }
             this.mouseDownCoord = mousePosition;
         }
+    }
+
+    private updateResizeData(): void {
+        this.resizeData = {
+            type: 'resize',
+            canvasSize: { x: this.canvasSize.x, y: this.canvasSize.y },
+            imageData: this.imageData,
+        };
     }
 }

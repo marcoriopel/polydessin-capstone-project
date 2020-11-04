@@ -10,6 +10,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 @Injectable({
     providedIn: 'root',
 })
+// tslint:disable-next-line: prettier
 export class SelectionService extends Tool {
     selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionData: ImageData;
@@ -43,7 +44,7 @@ export class SelectionService extends Tool {
             this.squareService.lastPoint = this.getPositionFromMouse(event);
             const currentFillStyle = this.squareService.fillStyle;
             this.squareService.fillStyle = FILL_STYLES.BORDER;
-            this.selection = this.squareService.drawShape(this.drawingService.previewCtx);
+            // this.selection = this.squareService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.setSelectionData(this.selection);
             }

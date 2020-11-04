@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -103,17 +102,17 @@ xdescribe('PolygoneService', () => {
         expect(service.sides).not.toBe(10);
     });
 
-    it('should change line width', () => {
-        service.lineWidth = 0;
-        service.changeLineWidth(1);
-        expect(service.lineWidth).toBe(1);
-    });
+    // it('should change line width', () => {
+    //     service.lineWidth = 0;
+    //     service.changeLineWidth(1);
+    //     expect(service.lineWidth).toBe(1);
+    // });
 
-    it('should not change line width', () => {
-        service.lineWidth = 0;
-        service.changeLineWidth(1);
-        expect(service.lineWidth).not.toBe(1);
-    });
+    // it('should not change line width', () => {
+    //     service.lineWidth = 0;
+    //     service.changeLineWidth(1);
+    //     expect(service.lineWidth).not.toBe(1);
+    // });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
         const mouseEventRClick = {
@@ -173,29 +172,29 @@ xdescribe('PolygoneService', () => {
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('should find the radius ', () => {
-        // top left is last point
-        service.firstPoint = { x: 3, y: 3 };
-        service.lastPoint = { x: 2, y: 2 };
-        const R = service.radius;
-        expect(R).toEqual(R);
-    });
+    // it('should find the radius ', () => {
+    //     // top left is last point
+    //     service.firstPoint = { x: 3, y: 3 };
+    //     service.lastPoint = { x: 2, y: 2 };
+    //     const R = service.radius;
+    //     expect(R).toEqual(R);
+    // });
 
-    it('should not equal the radius ', () => {
-        // top left is last point
-        service.firstPoint = { x: 3, y: 3 };
-        service.lastPoint = { x: 2, y: 2 };
-        const R = service.radius;
-        expect(R).not.toEqual(R);
-    });
+    // it('should not equal the radius ', () => {
+    //     // top left is last point
+    //     service.firstPoint = { x: 3, y: 3 };
+    //     service.lastPoint = { x: 2, y: 2 };
+    //     const R = service.radius;
+    //     expect(R).not.toEqual(R);
+    // });
 
-    it('should finTopLeftPoint if firstPoint is top right corner', () => {
-        service.firstPoint = { x: 5, y: 5 };
-        service.lastPoint = { x: 15, y: 15 };
-        service.setCenterX();
-        service.setCenterY();
-        const centerValue = service.getCenter();
-        const expectedValue: Vec2 = { x: 10, y: 10 };
-        expect(centerValue).toEqual(expectedValue);
-    });
+    // it('should finTopLeftPoint if firstPoint is top right corner', () => {
+    //     service.firstPoint = { x: 5, y: 5 };
+    //     service.lastPoint = { x: 15, y: 15 };
+    //     service.setCenterX();
+    //     service.setCenterY();
+    //     const centerValue = service.getCenter();
+    //     const expectedValue: Vec2 = { x: 10, y: 10 };
+    //     expect(centerValue).toEqual(expectedValue);
+    // });
 });

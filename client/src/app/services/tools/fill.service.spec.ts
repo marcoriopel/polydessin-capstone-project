@@ -16,7 +16,7 @@ describe('FillService', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData', 'updateStack']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
         drawingServiceSpy.baseCtx = baseCtxSpy;
         colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', ['getRgbaPrimaryColor']);

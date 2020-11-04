@@ -105,6 +105,7 @@
             name="tool"
             [value]="this.toolNames.POLYGONE_TOOL_NAME"
             (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.POLYGONE_TOOL_NAME)"
         />
         <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
             <mat-icon
@@ -200,6 +201,7 @@
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.undo()"
             >undo</mat-icon
         >
         <mat-icon
@@ -207,6 +209,7 @@
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.redo()"
             >redo</mat-icon
         >
     </div>

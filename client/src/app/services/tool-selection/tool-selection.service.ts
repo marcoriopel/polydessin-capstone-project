@@ -14,6 +14,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
@@ -37,6 +38,7 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        polygoneService: PolygoneService,
         selectionService: SelectionService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
@@ -50,6 +52,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.FILL_TOOL_NAME, fillService],
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
             [TOOL_NAMES.SELECTION_TOOL_NAME, selectionService],
+            [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService

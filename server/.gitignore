@@ -26,3 +26,6 @@ images/
 !tslint.json
 !tsconfig.json
 !package-lock.json
+
+debug.log
+drawing.json
