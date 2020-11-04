@@ -73,7 +73,7 @@ describe('PipetteService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
@@ -95,10 +95,20 @@ describe('PipetteService', () => {
         expect(eventEmiterSpy).toHaveBeenCalledWith(colorArray);
     });
 
+    it(' mouseDown should emit an event on right click', () => {
+        baseCtxStub.clearRect(0, 0, WIDTH_DRAWING_CANVAS, HEIGHT_DRAWING_CANVAS);
+        baseCtxStub.fillStyle = '#111111';
+        baseCtxStub.fillRect(0, 0, WIDTH_DRAWING_CANVAS, HEIGHT_DRAWING_CANVAS);
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'].baseCtx = baseCtxStub;
+        service.onMouseDown(mouseEventRight);
+        expect(service.color[0]).toEqual('#111111');
+    });
+
     it(' mouseMove should call handleNearBorder', () => {
         const drawOnZoomSpy = spyOn(service, 'drawOnZoom');
         const nearBorderSpy = spyOn(service, 'nearBorder');
-        service.mouseDownCoord = { x: 0, y: 0 };
+        service.mouseDownCoord = { x: -1, y: -1 };
 
         service.onMouseMove(mouseEventLeft);
         expect(nearBorderSpy).toHaveBeenCalled();

@@ -133,24 +133,6 @@
 
         <input
             type="radio"
-            [id]="this.toolNames.SQUARE_TOOL_NAME"
-            name="tool"
-            [value]="this.toolNames.SQUARE_TOOL_NAME"
-            (change)="onToolChange($event)"
-            [checked]="selectedTool.includes(this.toolNames.SQUARE_TOOL_NAME)"
-        />
-        <label [for]="this.toolNames.SQUARE_TOOL_NAME">
-            <mat-icon
-                class="material-icons"
-                [matTooltip]="elementDescriptions.SQUARE_TOOL_DESCRIPTION"
-                matTooltipPosition="right"
-                [matTooltipShowDelay]="tooltipShowDelay"
-                >crop_square</mat-icon
-            >
-        </label>
-
-        <input
-            type="radio"
             [id]="this.toolNames.PIPETTE_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.PIPETTE_TOOL_NAME"

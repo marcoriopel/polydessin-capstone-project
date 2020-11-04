@@ -24,11 +24,6 @@ export class PipetteService extends Tool {
         super(drawingService);
     }
 
-    handleCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     onMouseDown(event: MouseEvent): void {
         this.mouseDown = true;
         this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -110,7 +105,7 @@ export class PipetteService extends Tool {
         if (mousePosition.x >= this.drawingService.canvas.width || mousePosition.x <= 0) {
             this.isNearBorder = true;
         }
-        if (mousePosition.y > this.drawingService.canvas.height || mousePosition.y <= 0) {
+        if (mousePosition.y >= this.drawingService.canvas.height || mousePosition.y <= 0) {
             this.isNearBorder = true;
         }
         if (this.isNearBorder) {
