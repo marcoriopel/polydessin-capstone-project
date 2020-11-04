@@ -1,56 +1,93 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
-import { CarouselService } from '@app/services/carousel/carousel.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-carousel',
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent {
+export class CarouselComponent implements OnInit, OnDestroy {
+    destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
-    visible: boolean = true;
     currentTag: string = '';
     maxTags: boolean = false;
+    isArrowEventsChecked: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
+    selectable: boolean = true;
+    removable: boolean = true;
     addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
+    currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     constructor(
+        public router: Router,
+        public hotkeyService: HotkeyService,
+        public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
         public dialog: MatDialog,
-        public carouselService: CarouselService,
         public drawingService: DrawingService,
-    ) {
-        this.loadDBData();
-    }
+        public resizeDrawingService: ResizeDrawingService,
+    ) {}
+
     @ViewChild('chipList') chipList: MatChipList;
+
+    ngOnInit(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
+        this.loadDBData();
+        this.currentRoute = this.router.url;
+    }
+
+    disableEvents(): void {
+        this.isArrowEventsChecked = false;
+    }
+
+    enableEvents(): void {
+        this.isArrowEventsChecked = true;
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    onKeyDown(event: KeyboardEvent): void {
+        if (!this.isArrowEventsChecked) return;
+        if (event.key === 'ArrowLeft') {
+            this.onPreviousClick();
+        } else if (event.key === 'ArrowRight') {
+            this.onNextClick();
+        }
+    }
 
     loadDBData(): void {
         this.gotImages = false;
         this.databaseMetadata = [];
         this.visibleDrawingsIndexes = [];
-        this.filteredMetadata = [];
-        this.databaseService.getAllDBData().subscribe((dBData: DBData[]) => {
-            this.databaseMetadata = dBData;
-            this.filteredMetadata = dBData;
-            this.manageShownDrawings();
-            this.gotImages = true;
-        });
+        this.databaseService
+            .getAllDBData()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((dBData: DBData[]) => {
+                this.databaseMetadata = dBData;
+                this.manageShownDrawings();
+                this.gotImages = true;
+            });
+        this.showDrawingsWithFilter();
     }
 
     isArray(object: DBData): boolean {
@@ -85,31 +122,49 @@ export class CarouselComponent {
     }
 
     loadSelectedDrawing(positionIndex: number): void {
-        if (!this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
-            const test = this.dialog.open(LoadSelectedDrawingAlertComponent);
-            test.afterClosed().subscribe((optionChosen: string) => {
-                if (optionChosen === 'Oui') {
-                    this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
-                    this.dialog.closeAll();
-                }
-            });
+        if (this.currentRoute !== '/home' && !this.drawingService.isCanvasBlank(this.drawingService.baseCtx)) {
+            const loadDrawingAlert = this.dialog.open(LoadSelectedDrawingAlertComponent);
+            loadDrawingAlert
+                .afterClosed()
+                .pipe(takeUntil(this.destroy$))
+                .subscribe((optionChosen: string) => {
+                    if (optionChosen === 'Oui') {
+                        this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
+                        this.dialog.closeAll();
+                    }
+                });
         } else {
             this.applySelectedDrawing(this.visibleDrawingsIndexes[positionIndex]);
             this.dialog.closeAll();
         }
     }
 
-    applySelectedDrawing(index: number): void {
-        this.databaseService.getDrawingPng(this.filteredMetadata[index].fileName).subscribe((image: Blob) => {
-            const img = URL.createObjectURL(image);
-            const drawing = new Image();
-            drawing.src = img;
-            drawing.onload = () => {
-                this.drawingService.canvas.width = drawing.width;
-                this.drawingService.canvas.height = drawing.height;
-                this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-            };
-        });
+    async applySelectedDrawing(index: number): Promise<void> {
+        if (this.currentRoute === '/home') {
+            this.router.navigateByUrl('/editor');
+            this.currentRoute = '/editor';
+        }
+        this.databaseService
+            .getDrawingPng(this.filteredMetadata[index].fileName)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                (image: Blob) => {
+                    const img = URL.createObjectURL(image);
+                    this.drawImageOnCanvas(img);
+                },
+                (error) => {
+                    this.serverResponseService.loadErrorSnackBar();
+                },
+            );
+    }
+
+    drawImageOnCanvas(image: string): void {
+        const drawing = new Image();
+        drawing.src = image;
+        drawing.onload = () => {
+            this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+            this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+        };
     }
 
     addTag(event: MatChipInputEvent): void {
@@ -147,6 +202,7 @@ export class CarouselComponent {
         if (this.tags.length === 0) {
             this.filteredMetadata = this.databaseMetadata;
         }
+        console.log(this.filteredMetadata);
         for (const data of this.databaseMetadata) {
             if (data.tags.length > 0) {
                 if (Array.isArray(data.tags)) {
@@ -168,18 +224,22 @@ export class CarouselComponent {
 
     deleteDrawing(): void {
         this.gotImages = false;
-        let fileName: string = this.filteredMetadata[this.visibleDrawingsIndexes[0]].fileName;
-        if (this.filteredMetadata.length > 1) {
-            fileName = this.filteredMetadata[this.visibleDrawingsIndexes[this.drawingOfInterest]].fileName;
+        let fileName: string = this.databaseMetadata[this.visibleDrawingsIndexes[0]].fileName;
+        if (this.databaseMetadata.length > 1) {
+            fileName = this.databaseMetadata[this.visibleDrawingsIndexes[this.drawingOfInterest]].fileName;
         }
-        this.databaseService.deleteDrawing(fileName).subscribe(
-            () => {
-                this.loadDBData();
-            },
-            () => {
-                // this.dialog.open(ErrorAlertComponent);
-            },
-        );
+        this.databaseService
+            .deleteDrawing(fileName)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                (data) => {
+                    this.loadDBData();
+                },
+                (error) => {
+                    this.serverResponseService.deleteErrorSnackBar(error.error);
+                    this.gotImages = true;
+                },
+            );
     }
 
     onClickTwoDrawings(): void {
@@ -234,5 +294,11 @@ export class CarouselComponent {
         } else {
             this.chipList.errorState = false;
         }
+    }
+
+    ngOnDestroy(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

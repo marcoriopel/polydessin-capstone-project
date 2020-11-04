@@ -1,50 +1,47 @@
+import { DatabaseService } from '@app/services/database.service';
 import { TYPES } from '@app/types';
-import { DBData } from '@common/communication/drawing-data';
+import { DBData, ID_NAME, NAME, TAGS_NAME } from '@common/communication/drawing-data';
 import { NextFunction, Request, Response, Router } from 'express';
 import * as fs from 'fs';
 import * as Httpstatus from 'http-status-codes';
 import { inject, injectable } from 'inversify';
 import * as multer from 'multer';
 import * as path from 'path';
-import { DatabaseService } from '../services/database.service';
 
 @injectable()
 export class DatabaseController {
     router: Router;
-
-    upload: multer.Multer = multer();
-    DIR: string = './images';
+    DIR: string;
+    IMAGES_PATH: string;
+    upload: multer.Multer;
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
+        this.DIR = this.databaseService.getDirPath();
+        this.upload = this.databaseService.createMulterUpload(this.DIR);
+        this.IMAGES_PATH = this.databaseService.getImagePath();
         this.configureRouter();
         this.databaseService.start();
-
-        if (!fs.existsSync(this.DIR)) {
-            fs.mkdirSync(this.DIR);
-        }
     }
 
     private configureRouter(): void {
         this.router = Router();
-        const upload = multer({ dest: this.DIR });
 
-        this.router.post('/addDrawing', upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/addDrawing', this.upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
+            let drawingTags: string[];
+            if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
+            else drawingTags = req.body[TAGS_NAME];
+            if (!Array.isArray(drawingTags)) drawingTags = [drawingTags];
+            const DBDATA: DBData = {
+                id: req.body[ID_NAME],
+                name: req.body[NAME],
+                tags: drawingTags,
+                fileName: savedFileName,
+            };
             this.databaseService
-                .addDrawing(req.body, savedFileName)
+                .addDrawing(DBDATA)
                 .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
-                })
-                .catch((error: Error) => {
-                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
-                });
-        });
-
-        this.router.delete('/deleteDrawing/:fileName', (req: Request, res: Response, next: NextFunction) => {
-            this.databaseService
-                .deleteDrawing(req.params.fileName)
-                .then(() => {
-                    res.sendStatus(Httpstatus.StatusCodes.OK);
+                    res.sendStatus(Httpstatus.StatusCodes.NO_CONTENT);
                 })
                 .catch((error: Error) => {
                     res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
@@ -54,14 +51,28 @@ export class DatabaseController {
         this.router.get('/getDrawingPng/:filename', (req: Request, res: Response, next: NextFunction) => {
             const files: string[] = fs.readdirSync(this.DIR);
             if (files.includes(req.params.filename)) {
+                res.status(Httpstatus.StatusCodes.OK);
                 res.contentType('image/png');
-                res.sendFile(req.params.filename, { root: path.join(__dirname, '../../images/') });
+                res.sendFile(req.params.filename, { root: path.join(__dirname, this.IMAGES_PATH) });
             } else {
                 res.status(Httpstatus.StatusCodes.NOT_FOUND);
+                const error = new Error('Drawing not found');
+                res.send(error.message);
             }
         });
 
-        this.router.get('/getDBData/', (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/deleteDrawing/:fileName', (req: Request, res: Response, next: NextFunction) => {
+            this.databaseService
+                .deleteDrawing(req.params.fileName)
+                .then(() => {
+                    res.sendStatus(Httpstatus.StatusCodes.NO_CONTENT);
+                })
+                .catch((error: Error) => {
+                    res.status(Httpstatus.StatusCodes.NOT_FOUND).send(error.message);
+                });
+        });
+
+        this.router.get('/getDBData', (req: Request, res: Response, next: NextFunction) => {
             this.databaseService
                 .getDBData()
                 .then((dbData: DBData[]) => {

@@ -3,22 +3,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { PolygoneAttributesComponent } from './polygone-attributes.component';
 
-describe('PencilAttributesComponent', () => {
+describe('PolygoneAttributesComponent', () => {
     let component: PolygoneAttributesComponent;
     let fixture: ComponentFixture<PolygoneAttributesComponent>;
-    let pencilServiceSpy: jasmine.SpyObj<PolygoneService>;
+    let polygoneServiceSpy: jasmine.SpyObj<PolygoneService>;
     const initialToolWidth = 1;
     const finalToolWidth = 5;
     const initialsides = 5;
     const finalsides = 10;
 
     beforeEach(async(() => {
-        pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth']);
+        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'changeSides']);
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [PolygoneAttributesComponent],
-            providers: [{ provide: PolygoneService, useValue: pencilServiceSpy }],
+            providers: [{ provide: PolygoneService, useValue: polygoneServiceSpy }],
         }).compileComponents();
     }));
 
@@ -33,24 +33,24 @@ describe('PencilAttributesComponent', () => {
     });
 
     it('should call changeWidth of circleService', () => {
-        component.handleBorderWidthChange(finalToolWidth);
-        expect(component.polygoneService.changeWidth).toHaveBeenCalled();
+        component.changeBorderWidth(finalToolWidth);
+        expect(polygoneServiceSpy.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
         component.toolWidth = initialToolWidth;
-        component.handleBorderWidthChange(finalToolWidth);
+        component.changeBorderWidth(finalToolWidth);
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
     it('should call changeFillStyle of polygoneService', () => {
-        component.handleFillStyleChange(finalToolWidth);
-        expect(component.polygoneService.changeFillStyle).toHaveBeenCalled();
+        component.changeFillStyle(finalToolWidth);
+        expect(polygoneServiceSpy.changeFillStyle).toHaveBeenCalled();
     });
 
     it('should call changeSides and change the sides', () => {
-        component.sides = initialsides;
-        component.handlePolygoneSides(finalsides);
-        expect(component.sides).toBe(finalsides);
+        component.numberOfSides = initialsides;
+        component.changeNumberOfSides(finalsides);
+        expect(component.numberOfSides).toBe(finalsides);
     });
 });

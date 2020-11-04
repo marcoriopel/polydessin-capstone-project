@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { DrawingData } from '@common/communication/drawing-data';
+import { DBData, MetaData } from '@common/communication/drawing-data';
 import { DatabaseService } from './database.service';
 
 describe('Service: Database', () => {
@@ -25,20 +25,44 @@ describe('Service: Database', () => {
         httpMock.verify();
     });
 
-    it('should return expected message (HttpClient called once)', () => {
-        const expectedMessage: DrawingData[] = [{ id: '5', drawingPng: 'thisisthepng', name: 'drawingtest', tags: ['one'] }];
+    it('should not return any message when sending a POST request (HttpClient called once)', () => {
+        const meta: MetaData = { id: 'test', name: 'test', tags: ['tag1', 'tag2'] };
+        // tslint:disable-next-line: no-empty
+        service.addDrawing(meta, {} as Blob).subscribe(() => {}, fail);
+        const req = httpMock.expectOne(baseUrl + '/addDrawing');
+        expect(req.request.method).toBe('POST');
+        req.flush(meta);
+    });
 
-        // check the content of the mocked call
-        service.getDrawingData().subscribe((response: DrawingData[]) => {
-            expect(response[0].id).toEqual(expectedMessage[0].id, 'id check');
-            expect(response[0].drawingPng).toEqual(expectedMessage[0].drawingPng, 'png check');
-            expect(response[0].name).toEqual(expectedMessage[0].name, 'name check');
-            expect(response[0].tags).toEqual(expectedMessage[0].tags, 'tags check');
+    it('should not return any message when sending a DELETE request (HttpClient called once)', () => {
+        const filename = 'filename';
+        // tslint:disable-next-line: no-empty
+        service.deleteDrawing(filename).subscribe(() => {}, fail);
+        const req = httpMock.expectOne(baseUrl + '/deleteDrawing/' + filename);
+        expect(req.request.method).toBe('DELETE');
+        req.flush(filename);
+    });
+
+    it('should handle http error safely', () => {
+        service.getAllDBData().subscribe((response: DBData[]) => {
+            expect(response).toBeUndefined();
         }, fail);
 
-        const req = httpMock.expectOne(baseUrl + '/getDrawingData');
+        const req = httpMock.expectOne(baseUrl + '/getDBData');
         expect(req.request.method).toBe('GET');
-        // actually send the request
-        req.flush(expectedMessage);
+        req.error(new ErrorEvent('Random error occured'));
+    });
+
+    it('should return expected image (HttpClient called once)', () => {
+        const expectedBlob: Blob = new Blob();
+        const filename = 'filename';
+
+        service.getDrawingPng(filename).subscribe((response: Blob) => {
+            expect(response.size).toEqual(expectedBlob.size, 'Title check');
+        }, fail);
+
+        const req = httpMock.expectOne(baseUrl + '/getDrawingPng/' + filename);
+        expect(req.request.method).toBe('GET');
+        req.flush(expectedBlob);
     });
 });

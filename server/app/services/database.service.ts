@@ -1,27 +1,26 @@
+import { DATABASE_COLLECTION, DATABASE_NAME, DATABASE_URL, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables';
+import { DBData, MetaData } from '@common/communication/drawing-data';
 import * as fs from 'fs';
 import { injectable } from 'inversify';
 import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import * as multer from 'multer';
 import 'reflect-metadata';
-import { DBData, ID_NAME, MetaData, NAME, TAGS_NAME } from '../../../common/communication/drawing-data';
-
-// CHANGE the URL for your database information
-const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
-const DATABASE_NAME = 'database';
-const DATABASE_COLLECTION = 'Drawings';
 
 @injectable()
 export class DatabaseService {
     collection: Collection<MetaData>;
     client: MongoClient;
     DIR: string = './images';
-
+    IMAGE_PATH: string = '../../images/';
+    multerObject: multer.Multer;
+    mongoURL: string = DATABASE_URL;
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     start(): void {
-        MongoClient.connect(DATABASE_URL, this.options)
+        MongoClient.connect(this.mongoURL, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
@@ -30,62 +29,67 @@ export class DatabaseService {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
+        if (!fs.existsSync(this.DIR)) {
+            fs.mkdirSync(this.DIR);
+        }
     }
 
     closeConnection(): void {
         this.client.close();
     }
 
+    getImagePath(): string {
+        return this.IMAGE_PATH;
+    }
+
+    getDirPath(): string {
+        return this.DIR;
+    }
+
+    createMulterUpload(directory: string): multer.Multer {
+        this.multerObject = multer({ dest: directory });
+        return this.multerObject;
+    }
+
     isValidData(dBData: DBData): boolean {
         if (dBData.name.length === 0) {
             return false;
         }
-        if (dBData.tags.length > 5) {
+
+        if (dBData.name.length > MAX_NAME_LENGTH) {
             return false;
         }
+
         if (Array.isArray(dBData.tags)) {
-            for (const tag in dBData.tags) {
-                if (tag.length > 15) {
+            if (dBData.tags.length > MAX_NUMBER_TAG) {
+                return false;
+            }
+            for (const tag of dBData.tags) {
+                if (tag.length > MAX_TAG_LENGTH) {
                     return false;
                 }
-            }
-        } else {
-            const oneTag = dBData.tags as string;
-            if (oneTag.length > 15) {
-                return false;
             }
         }
         return true;
     }
-    async addDrawing(formData: FormData, imageName: string): Promise<void> {
-        let metaTags: string[] = [];
-        let metaId = '';
-        let metaName = '';
-        const formId = formData[ID_NAME];
-        const formName = formData[NAME];
-        const formTags = formData[TAGS_NAME];
-        if (formId && formName) {
-            metaId = formId.toString();
-            metaName = formName.toString();
-        }
-        if (formTags) {
-            metaTags = formTags;
-        }
-        const DBDATA: DBData = { id: metaId, name: metaName, tags: metaTags, fileName: imageName };
+    async addDrawing(DBDATA: DBData): Promise<void> {
         if (!this.isValidData(DBDATA)) {
             fs.unlinkSync('./images/' + DBDATA.fileName);
-            throw new Error('Data is not valid');
+            throw new Error('Métadonnées du dessin non valides');
         } else {
-            this.collection.insertOne(DBDATA).catch((err) => {
-                throw err;
-            });
+            await this.collection.insertOne(DBDATA);
         }
     }
     async deleteDrawing(fileNameToDelete: string): Promise<void> {
-        fs.unlinkSync('./images/' + fileNameToDelete);
-        this.collection.findOneAndDelete({ fileName: fileNameToDelete }).catch((err) => {
-            throw err;
-        });
+        const files: string[] = fs.readdirSync(this.DIR);
+        if (files.includes(fileNameToDelete)) {
+            await this.collection.findOneAndDelete({ fileName: fileNameToDelete });
+            try {
+                fs.unlinkSync('./images/' + fileNameToDelete);
+            } catch (error) {
+                throw new Error("Problème lors de la suppression de l'image");
+            }
+        } else throw new Error('Image introuvable');
     }
 
     async getDBData(): Promise<DBData[]> {
@@ -101,9 +105,6 @@ export class DatabaseService {
                     }
                 }
                 return dBDataverified;
-            })
-            .catch(() => {
-                throw new Error('Error trying to retrieve metadata');
             });
     }
 }

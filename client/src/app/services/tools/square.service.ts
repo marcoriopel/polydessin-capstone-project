@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
 import { Tool } from '@app/classes/tool';
+import { Rectangle } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -14,8 +14,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class SquareService extends Tool {
     name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
     mouseDown: boolean = false;
+    rectangleData: Rectangle;
     isShiftKeyDown: boolean = false;
     width: number = 1;
+    topLeftPoint: Vec2;
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
@@ -25,11 +27,6 @@ export class SquareService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-    }
-
-    setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
     }
 
     setRectangleWidth(): void {
@@ -92,57 +89,38 @@ export class SquareService extends Tool {
         }
     }
 
-    drawShape(ctx: CanvasRenderingContext2D): Rectangle {
-        let rectancle;
+    private drawShape(ctx: CanvasRenderingContext2D): void {
+        this.setRectangleHeight();
+        this.setRectangleWidth();
+        if (this.isShiftKeyDown) {
+            this.rectangleWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
+            this.rectangleHeight = this.rectangleWidth;
+        }
+        this.topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
 
-        ctx.fillStyle = this.colorSelectionService.primaryColor;
-        ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.lineWidth = this.width;
+        this.updateRectangleData();
+        this.drawRectangle(ctx, this.rectangleData);
 
-        if (this.fillStyle === FILL_STYLES.FILL) {
-            ctx.strokeStyle = this.colorSelectionService.primaryColor;
+        if (ctx === this.drawingService.baseCtx) {
+            this.drawingService.updateStack(this.rectangleData);
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        }
+    }
+
+    drawRectangle(ctx: CanvasRenderingContext2D, rectangle: Rectangle): void {
+        ctx.fillStyle = rectangle.primaryColor;
+        ctx.strokeStyle = rectangle.secondaryColor;
+        ctx.lineWidth = rectangle.lineWidth;
+        if (rectangle.fillStyle === FILL_STYLES.FILL) {
+            ctx.strokeStyle = rectangle.primaryColor;
             ctx.lineWidth = 1;
         }
         ctx.beginPath();
-
-        if (this.isShiftKeyDown) {
-            rectancle = this.drawSquare(ctx);
-        } else {
-            rectancle = this.drawRectangle(ctx);
+        ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        if (rectangle.fillStyle !== FILL_STYLES.BORDER) {
+            ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
         }
-
-        if (ctx === this.drawingService.baseCtx) {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        }
-
         ctx.stroke();
-        return rectancle;
-    }
-
-    private drawRectangle(ctx: CanvasRenderingContext2D): Rectangle {
-        this.setRectangleHeight();
-        this.setRectangleWidth();
-        const topLeftPoint = this.findTopLeftPoint(this.rectangleWidth, this.rectangleHeight);
-        ctx.rect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fillRect(topLeftPoint.x, topLeftPoint.y, this.rectangleWidth, this.rectangleHeight);
-        }
-
-        return { startingPoint: topLeftPoint, width: this.rectangleWidth, height: this.rectangleHeight };
-    }
-
-    private drawSquare(ctx: CanvasRenderingContext2D): Rectangle {
-        this.setRectangleHeight();
-        this.setRectangleWidth();
-        const squareWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
-        const topLeftPoint = this.findTopLeftPoint(squareWidth, squareWidth);
-
-        ctx.rect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
-            ctx.fillRect(topLeftPoint.x, topLeftPoint.y, squareWidth, squareWidth);
-        }
-
-        return { startingPoint: topLeftPoint, width: squareWidth, height: squareWidth };
     }
 
     /*
@@ -170,5 +148,19 @@ export class SquareService extends Tool {
         }
 
         return { x, y };
+    }
+
+    private updateRectangleData(): void {
+        this.rectangleData = {
+            type: 'rectangle',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            height: this.rectangleHeight,
+            width: this.rectangleWidth,
+            topLeftPoint: this.topLeftPoint,
+            fillStyle: this.fillStyle,
+            isShiftDown: this.isShiftKeyDown,
+            lineWidth: this.width,
+        };
     }
 }

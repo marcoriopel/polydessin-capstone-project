@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -7,15 +8,35 @@ import { ResizeDrawingService } from './resize-drawing.service';
 
 class DrawingServiceMock {
     canvas: HTMLCanvasElement = document.createElement('canvas');
+    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
     baseCtx: CanvasRenderingContext2D;
+    previewCtx: CanvasRenderingContext2D;
+    imageData: ImageData;
+    pixelData: Uint8ClampedArray;
+    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
 
     constructor() {
         this.canvas.height = MINIMUM_CANVAS_HEIGHT;
         this.canvas.width = MINIMUM_CANVAS_WIDTH;
         this.baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
+        this.previewCtx = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
+        this.imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
-    // tslint:disable-next-line: no-empty
+    // tslint:disable: no-empty
     initializeBaseCanvas(): void {}
+    clearCanvas(): void {}
+    drawFill(): void {}
+    isCanvasBlank(): boolean {
+        return false;
+    }
+    updateStack(): void {}
+    getPixelData(): Uint8ClampedArray {
+        return this.pixelData;
+    }
+    getCanvasData(): ImageData {
+        return this.imageData;
+    }
 }
 
 // tslint:disable: no-magic-numbers

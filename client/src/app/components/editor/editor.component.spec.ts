@@ -1,44 +1,51 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { DrawingService } from '@app/services/drawing/drawing.service';
-import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { Subject } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
-// tslint:disable: no-magic-numbers
-class KeyEventMock {
-    key: string = 'o';
-    ctrlKey: boolean = true;
-    // tslint:disable-next-line: no-empty
-    preventDefault(): void {}
-}
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
-    let resizeDrawingService: ResizeDrawingService;
+    let resizeDrawingServiceSpy: SpyObj<ResizeDrawingService>;
     let style: CSSStyleDeclaration;
-    let matDialog: MatDialog;
-    let newdrawServiceSpy: SpyObj<NewDrawingService>;
-    let drawServiceSpy: SpyObj<DrawingService>;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let obs: Subject<string>;
+    let keyboardEvent: KeyboardEvent;
 
     beforeEach(async(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['initializeBaseCanvas']);
-        resizeDrawingService = new ResizeDrawingService(drawServiceSpy as DrawingService);
-        newdrawServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
-        matDialog = {} as MatDialog;
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', [
+            'currentToolKeyUp',
+            'currentToolKeyDown',
+            'changeTool',
+            'setCurrentToolCursor',
+            'currentToolMouseMove',
+            'currentToolMouseDown',
+            'currentToolMouseUp',
+            'currentToolMouseLeave',
+        ]);
+        resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
+
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
+        obs = new Subject<string>();
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
 
         TestBed.configureTestingModule({
+            imports: [MatDialogModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [EditorComponent, DrawingComponent, SidebarComponent],
             providers: [
-                { provide: ResizeDrawingService, useValue: resizeDrawingService },
-                { provide: NewDrawingService, useValue: newdrawServiceSpy },
-                { provide: MatDialog, useValue: matDialog },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
+                { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
             ],
         }).compileComponents();
     }));
@@ -61,32 +68,18 @@ describe('EditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should click brush button', () => {
-        const keyEvent = {
-            key: 'w',
-        } as KeyboardEvent;
-        const brushButton = document.querySelector('#Pinceau') as HTMLElement;
-        const spy = spyOn(brushButton, 'click');
-        component.onKeyUp(keyEvent);
-        expect(spy).toHaveBeenCalled();
-    });
-
-    it('should call toolSectionService.currentTool.onKeyUp', () => {
+    it('should call toolSectionService.currentToolKeyUp', () => {
         const keyEvent = {
             key: 'shift',
         } as KeyboardEvent;
-        const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyUp');
         component.onKeyUp(keyEvent);
-        expect(spy).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.currentToolKeyUp).toHaveBeenCalled();
     });
 
-    it('should call toolSectionService.currentTool.onKeyDown', () => {
-        const keyEvent = {
-            key: 'shift',
-        } as KeyboardEvent;
-        const spy = spyOn(component.toolSelectionService.currentTool, 'onKeyDown');
-        component.onKeyDown(keyEvent);
-        expect(spy).toHaveBeenCalled();
+    it('should call toolSectionService.currentToolKeyDown', () => {
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'u' });
+        component.onKeyDown(keyboardEvent);
+        expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
     });
 
     it('should set previewDiv display to block', () => {
@@ -97,15 +90,13 @@ describe('EditorComponent', () => {
 
     it('should call resizeDrawingService.onMouseDown', () => {
         const mouseEvent = {} as MouseEvent;
-        const spy = spyOn(component.resizeDrawingService, 'onMouseDown');
         component.onMouseDown(mouseEvent);
-        expect(spy).toHaveBeenCalledWith(mouseEvent);
+        expect(resizeDrawingServiceSpy.onMouseDown).toHaveBeenCalledWith(mouseEvent);
     });
 
     it('should call resizeDrawingService.resizeCanvas on mousemove', () => {
-        const spy = spyOn(component.resizeDrawingService, 'resizeCanvas');
         fixture.debugElement.nativeElement.dispatchEvent(new Event('mousemove'));
-        expect(spy).toHaveBeenCalled();
+        expect(resizeDrawingServiceSpy.resizeCanvas).toHaveBeenCalled();
     });
 
     it('should not resize canvas if resizeDrawingService.mouseDown is false', () => {
@@ -118,34 +109,24 @@ describe('EditorComponent', () => {
     });
 
     it('should call resizeDrawingService.onMouseUp on mouseUp', () => {
-        const eventSpy = spyOn(resizeDrawingService, 'onMouseUp');
         component.resizeDrawingService.mouseDown = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
-        expect(eventSpy).toHaveBeenCalled();
+        expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
     });
 
     it('should set previewDiv display to none', () => {
-        const eventSpy = spyOn(resizeDrawingService, 'onMouseUp');
         component.previewDiv.style.display = 'block';
         component.resizeDrawingService.mouseDown = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
-
-        expect(eventSpy).toHaveBeenCalled();
+        expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
         expect(component.previewDiv.style.display).toEqual('none');
     });
 
-    it('should call event.preventDefault when ctrl+o press', () => {
-        const keyEvent = new KeyEventMock() as KeyboardEvent;
-        const eventSpy = spyOn(keyEvent, 'preventDefault');
-        component.onKeyDown(keyEvent);
-        expect(eventSpy).toHaveBeenCalled();
-    });
-
-    it('should call openDialog when ctrl+o press', () => {
-        const keyEvent = new KeyEventMock() as KeyboardEvent;
-        component.onKeyDown(keyEvent);
-        expect(newdrawServiceSpy.openWarning).toHaveBeenCalled();
+    it('should call onkeydown de hotkey when pressing a shortcut key', () => {
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
+        component.onKeyDown(keyboardEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
     });
 });

@@ -13,6 +13,7 @@ export interface SidebarElementTooltips {
     REDO_DESCRIPTION: string;
     SAVE_DRAWING_DESCRIPTION: string;
     CAROUSEL_DESCRIPTION: string;
+    EXPORT_DRAWING_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -25,9 +26,10 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
-    POLYGONE_TOOL_DESCRIPTION: 'Polygone(3)',
+    POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
     SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
+    EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
 };

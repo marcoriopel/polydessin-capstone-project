@@ -1,32 +1,35 @@
 <div class="carousel">
     <h1 mat-dialog-title>Carrousel de dessin</h1>
-    <div *ngIf="gotImages === false">
+    <div *ngIf="!gotImages">
         <mat-spinner></mat-spinner>
     </div>
-    <div *ngIf="databaseMetadata.length > 0 && gotImages === true" class="search">
+    <div *ngIf="databaseMetadata.length > 0 && gotImages" class="search">
         <mat-card class="tags-card">
             <h3 mat-dialog-title>Filtrage par tags</h3>
             <mat-form-field class="tag-list">
                 <mat-chip-list #chipList aria-label="Tag selection">
-                    <mat-chip *ngFor="let tag of tags" (removed)="removeTag(tag)">
+                    <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="removeTag(tag)">
                         {{ tag }}
-                        <mat-icon matChipRemove>cancel</mat-icon>
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                     </mat-chip>
                     <input
-                        #tag
+                        #writetag
                         type="text"
-                        id="tag"
+                        id="writetag"
                         [disabled]="this.maxTags"
-                        (keyup)="this.currentTagInput(tag.value)"
-                        (keydown)="this.currentTagInput(tag.value)"
+                        (keyup)="this.currentTagInput(writetag.value)"
+                        (keydown)="this.currentTagInput(writetag.value)"
+                        on-focus="disableEvents()"
+                        on-focusout="enableEvents()"
+                        placeholder="Tags:"
                         [matChipInputFor]="chipList"
                         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                         [matChipInputAddOnBlur]="addOnBlur"
                         (matChipInputTokenEnd)="addTag($event)"
                     />
                 </mat-chip-list>
-                <mat-error *ngIf="hasTagError(tag.value)">Pas d'espace</mat-error>
-                <mat-error *ngIf="hasLengthTagError(tag.value)">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
+                <mat-error *ngIf="hasTagError(writetag.value)">Pas d'espace</mat-error>
+                <mat-error *ngIf="hasLengthTagError(writetag.value)">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
                 <mat-hint>- Pas d'espace, <br />- Max 15 charactères <br />- Max 5 étiquettes</mat-hint>
                 <div class="maxTags-notification" *ngIf="maxTags">Nombre maximum d'étiquettes</div>
             </mat-form-field>
