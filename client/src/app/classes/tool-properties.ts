@@ -88,3 +88,8 @@ export interface Fill {
     type: string;
     imageData: ImageData;
 }
+
+export interface Selection {
+    type: string;
+    imageData: ImageData;
+}
