@@ -134,6 +134,9 @@ export class SelectionService extends Tool {
             this.strokeSelection();
         }
         if (event.key === 'Shift') {
+            if (this.mouseDown) {
+                this.underliyingService.onKeyUp(event);
+            }
             this.underliyingService.isShiftKeyDown = false;
             this.isShiftKeyDown = false;
         }

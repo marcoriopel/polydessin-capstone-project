@@ -34,11 +34,13 @@ export class SquareSelectionService extends SelectionService {
     }
 
     strokeSelection(): void {
-        this.drawingService.previewCtx.strokeRect(
-            this.selection.startingPoint.x,
-            this.selection.startingPoint.y,
-            this.selection.width,
-            this.selection.height,
-        );
+        if (this.selection.height !== 0 && this.selection.width !== 0) {
+            this.drawingService.previewCtx.strokeRect(
+                this.selection.startingPoint.x,
+                this.selection.startingPoint.y,
+                this.selection.width,
+                this.selection.height,
+            );
+        }
     }
 }
