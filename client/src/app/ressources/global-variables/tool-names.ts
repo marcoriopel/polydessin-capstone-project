@@ -8,6 +8,7 @@ export interface ToolNames {
     ERASER_TOOL_NAME: string;
     SQUARE_SELECTION_TOOL_NAME: string;
     CIRCLE_SELECTION_TOOL_NAME: string;
+    PIPETTE_TOOL_NAME: string;
     POLYGONE_TOOL_NAME: string;
 }
 
@@ -21,6 +22,7 @@ export const TOOL_NAMES: ToolNames = {
     ERASER_TOOL_NAME: 'Efface',
     SQUARE_SELECTION_TOOL_NAME: 'SquareSelection',
     CIRCLE_SELECTION_TOOL_NAME: 'CircleSelection',
+    PIPETTE_TOOL_NAME: 'Pipette',
     POLYGONE_TOOL_NAME: 'Polygone',
 };
 
@@ -32,4 +34,5 @@ export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.LINE_TOOL_NAME,
     TOOL_NAMES.FILL_TOOL_NAME,
     TOOL_NAMES.ERASER_TOOL_NAME,
+    TOOL_NAMES.PIPETTE_TOOL_NAME,
 ];

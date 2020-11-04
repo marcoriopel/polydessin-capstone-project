@@ -107,7 +107,7 @@ export class SquareService extends Tool {
             this.rectangleHeight = this.rectangleWidth;
             this.setSquareAttributes();
         } else {
-            this.topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
+            this.topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
         }
 
         this.updateRectangleData();

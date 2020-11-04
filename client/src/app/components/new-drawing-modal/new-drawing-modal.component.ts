@@ -19,6 +19,7 @@ export class NewDrawingModalComponent implements OnInit, OnDestroy {
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
+
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
     }
