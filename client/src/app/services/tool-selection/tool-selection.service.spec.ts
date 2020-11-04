@@ -17,6 +17,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
+import { SelectionService } from '../tools/selection.service';
 
 import SpyObj = jasmine.SpyObj;
 
@@ -32,12 +33,14 @@ describe('ToolSelectionService', () => {
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
     let obs: Subject<string>;
     let keyboardEvent: KeyboardEvent;
     beforeEach(() => {
         obs = new Subject<string>();
         matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-        newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarning']);
+        newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarningModal']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
 
@@ -48,6 +51,7 @@ describe('ToolSelectionService', () => {
                 { provide: MatDialog, useValue: matdialogSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
                 { provide: PencilService, useValue: new MockTool(TOOL_NAMES.PENCIL_TOOL_NAME) },
+                { provide: SelectionService, useValue: new MockTool(TOOL_NAMES.SELECTION_TOOL_NAME) },
                 { provide: EraserService, useValue: new MockTool(TOOL_NAMES.ERASER_TOOL_NAME) },
                 { provide: BrushService, useValue: new MockTool(TOOL_NAMES.BRUSH_TOOL_NAME) },
                 { provide: SquareService, useValue: new MockTool(TOOL_NAMES.SQUARE_TOOL_NAME) },
@@ -91,7 +95,7 @@ describe('ToolSelectionService', () => {
     it('should call openWarning of newdrawing on newDrawing call', () => {
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         obs.next(SIDEBAR_ELEMENTS.NEW_DRAWING_NAME);
-        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
+        expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
     it('should open carousel component on call', () => {
