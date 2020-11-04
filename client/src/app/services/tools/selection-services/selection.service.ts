@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
+import { Selection } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -19,6 +19,8 @@ export class SelectionService extends Tool {
     underliyingService: SquareService | CircleService;
     isEscapeKeyPressed: boolean;
     isShiftKeyDown: boolean;
+    selectionData: Selection;
+    canvasData: ImageData;
 
     constructor(drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
@@ -180,6 +182,16 @@ export class SelectionService extends Tool {
     applyPreview(): void {
         this.drawingService.baseCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.canvasData = this.drawingService.getCanvasData();
+        this.updateSelectionData();
+        this.drawingService.updateStack(this.selectionData);
+    }
+
+    updateSelectionData(): void {
+        this.selectionData = {
+            type: 'selection',
+            imageData: this.canvasData,
+        };
     }
 
     setSelectionPoint(): void {
