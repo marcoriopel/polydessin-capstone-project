@@ -25,7 +25,6 @@ import { ColorPickerComponent } from './components/color-picker/color-picker.com
 import { DrawingDetailComponent } from './components/drawing-detail/drawing-detail.component';
 import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
-import { ErrorAlertComponent } from './components/error-alert/error-alert.component';
 import { ExportComponent } from './components/export/export.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
 import { LoadSelectedDrawingAlertComponent } from './components/load-selected-drawing-alert/load-selected-drawing-alert.component';
