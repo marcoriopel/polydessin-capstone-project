@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
-// import { Brush, Eraser, Fill, Line, Pencil, Resize, Polygone } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -9,6 +8,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 @Injectable({
     providedIn: 'root',
@@ -24,9 +24,11 @@ export class UndoRedoService {
         public lineService: LineService,
         public brushService: BrushService,
         public polygoneService: PolygoneService,
+        public selectionSerice: SelectionService,
     ) {}
 
     undo(): void {
+        this.selectionSerice.reset();
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
@@ -78,6 +80,9 @@ export class UndoRedoService {
                 break;
             case 'polygone':
                 this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);
+                break;
+            case 'selection':
+                this.drawingService.restoreSelection(element as Selection);
                 break;
         }
     }
