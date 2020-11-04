@@ -4,7 +4,7 @@ import { Tool } from '@app/classes/tool';
 import { Polygone } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MAX_SIDES, MIN_SIDES, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -27,6 +27,8 @@ export class PolygoneService extends Tool {
     center: Vec2;
     trigonometry: Trigonometry = new Trigonometry();
     polygoneData: Polygone;
+    minNumberOfSides: number = MIN_SIDES;
+    maxNumberOfSides: number = MAX_SIDES;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
         super(drawingService);
