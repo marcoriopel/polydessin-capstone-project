@@ -36,7 +36,19 @@ export class PipetteService extends Tool {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         const pixel = this.drawingService.baseCtx.getImageData(this.mouseDownCoord.x, this.mouseDownCoord.y, 1, 1);
         const pixelData = pixel.data;
-        this.color[0] = '#' + pixelData[0].toString(16) + pixelData[1].toString(16) + pixelData[2].toString(16);
+        let r = pixelData[0].toString(16);
+        let g = pixelData[1].toString(16);
+        let b = pixelData[2].toString(16);
+        if (r.length === 1) {
+            r = '0' + r;
+        }
+        if (g.length === 1) {
+            g = '0' + g;
+        }
+        if (b.length === 1) {
+            b = '0' + b;
+        }
+        this.color[0] = '#' + r + g + b;
         this.color[1] = pixelData[3].toString();
         if (event.button === MouseButton.LEFT) {
             this.primaryColor.emit(this.color);
