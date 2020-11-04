@@ -18,6 +18,8 @@ describe('ColorPickerComponent', () => {
     let mouseEventClickLeft: MouseEvent;
     let mouseEventClickRight: MouseEvent;
     let baseCtxStud: CanvasRenderingContext2D;
+    const MAX_CANVAS_HEIGTH = 100;
+    const MAX_CANVAS_WIDTH = 100;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -33,8 +35,8 @@ describe('ColorPickerComponent', () => {
         fixture.detectChanges();
 
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        canvas.width = 100;
-        canvas.height = 100;
+        canvas.width = MAX_CANVAS_WIDTH;
+        canvas.height = MAX_CANVAS_HEIGTH;
         baseCtxStud = canvas.getContext('2d') as CanvasRenderingContext2D;
         // tslint:disable-next-line: no-string-literal
         component.pipetteService['drawingService'].baseCtx = baseCtxStud;

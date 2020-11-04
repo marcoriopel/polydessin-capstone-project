@@ -37,6 +37,7 @@ export class ColorPickerComponent implements AfterViewInit {
             this.colors.pop();
         }
         this.colorSelectionService.setPrimaryColor(this.hexToRGBA(color, this.primaryOpacity));
+        console.log(this.colorSelectionService.primaryColor);
     }
 
     changeSecondaryColor(color: string): void {

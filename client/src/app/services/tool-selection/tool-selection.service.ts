@@ -14,9 +14,9 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
-import { PipetteService } from '../tools/pipette.service';
 
 @Injectable({
     providedIn: 'root',

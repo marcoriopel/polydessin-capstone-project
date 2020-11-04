@@ -36,13 +36,10 @@ export class PipetteService extends Tool {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         const pixel = this.drawingService.baseCtx.getImageData(this.mouseDownCoord.x, this.mouseDownCoord.y, 1, 1);
         const pixelData = pixel.data;
-        this.color[0] =
-            '#' +
-            (pixelData[0] | (1 << 8)).toString(16).slice(1) +
-            (pixelData[1] | (1 << 8)).toString(16).slice(1) +
-            (pixelData[2] | (1 << 8)).toString(16).slice(1);
+        console.log(pixelData);
+        this.color[0] = '#' + pixelData[0].toString(16) + pixelData[1].toString(16) + pixelData[2].toString(16);
         this.color[1] = pixelData[3].toString();
-
+        console.log(this.color[0]);
         if (event.button === MouseButton.LEFT) {
             this.primaryColor.emit(this.color);
         }
@@ -86,7 +83,8 @@ export class PipetteService extends Tool {
     handleCursorOnPixel(e: MouseEvent, width: number, height: number): void {
         const mousePosition = this.getPositionFromMouse(e);
         const pixelData = this.drawingService.baseCtx.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
-        const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[3] / MAX_OPACITY + ')';
+        const opacityIndex = 3;
+        const color = 'rgba(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ', ' + pixelData[opacityIndex] / MAX_OPACITY + ')';
         this.zoomCtx.beginPath();
         this.zoomCtx.fillStyle = color;
         this.zoomCtx.strokeStyle = 'white';
@@ -96,7 +94,7 @@ export class PipetteService extends Tool {
         this.zoomCtx.setLineDash([1, 2]);
         this.zoomCtx.strokeRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
         this.zoomCtx.fillRect(width / 2, height / 2, ZOOM_PIPETTE, ZOOM_PIPETTE);
-        this.zoomCtx.closePath();
+        this.zoomCtx.stroke();
     }
 
     handleNearBorder(mousePosition: Vec2): void {

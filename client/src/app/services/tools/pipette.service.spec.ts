@@ -111,7 +111,9 @@ describe('PipetteService', () => {
         copyctx.beginPath();
         copyctx.fill();
         copyctx.stroke();
-        const imageData = copyctx.getImageData(25, 25, 1, 1);
+        const X = 25;
+        const Y = 25;
+        const imageData = copyctx.getImageData(X, Y, 1, 1);
         console.log(imageData);
         service.drawOnZoom(mouseEventLeft);
 
