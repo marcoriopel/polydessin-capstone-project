@@ -101,4 +101,12 @@ describe('ExportComponent', () => {
         expect(clickSpy).toHaveBeenCalled();
         expect(dialogSpy.close).toHaveBeenCalled();
     });
+
+    it('should not call the function click and close the modal when the name is to long', () => {
+        component.name = 'cercle_rouge_2014';
+        const clickSpy = spyOn(component.link, 'click');
+        component.exportLocally();
+        expect(clickSpy).not.toHaveBeenCalled();
+        expect(dialogSpy.close).not.toHaveBeenCalled();
+    });
 });

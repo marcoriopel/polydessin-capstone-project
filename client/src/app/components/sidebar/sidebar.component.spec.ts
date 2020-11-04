@@ -7,6 +7,7 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { Subject } from 'rxjs';
+import { ExportComponent } from '../export/export.component';
 
 import SpyObj = jasmine.SpyObj;
 describe('SidebarComponent', () => {
@@ -67,10 +68,15 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalled();
     });
 
-    it('should call openWarning', () => {
+    it('should call openWarningModal', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
         button.click();
         expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
+    });
+
+    it('should call open whit the export component', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
     it('should not change tool nor set cursor on an invalid event', () => {
