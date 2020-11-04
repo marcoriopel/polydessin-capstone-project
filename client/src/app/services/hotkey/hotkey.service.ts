@@ -19,6 +19,7 @@ export class HotkeyService {
         ['l', this.toolNames.LINE_TOOL_NAME],
         ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
+        ['r', this.toolNames.SELECTION_TOOL_NAME],
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
         ['g', this.sidebarElements.CAROUSEL_NAME],
         ['s', this.sidebarElements.SAVE_SERVER_NAME],

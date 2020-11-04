@@ -5,6 +5,7 @@ import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -13,6 +14,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -35,6 +37,8 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        selectionService: SelectionService,
+        public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
     ) {
         this.tools = new Map<string, Tool>([
@@ -45,6 +49,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.LINE_TOOL_NAME, lineService],
             [TOOL_NAMES.FILL_TOOL_NAME, fillService],
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
+            [TOOL_NAMES.SELECTION_TOOL_NAME, selectionService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService
@@ -62,14 +67,16 @@ export class ToolSelectionService {
     changeTool(toolName: string): void {
         const selectedTool = this.tools.get(toolName);
         if (selectedTool) {
+            this.currentTool.reset();
             this.currentTool = selectedTool;
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
 
     selectItem(toolName: string): void {
         switch (toolName) {
             case this.sidebarElements.NEW_DRAWING_NAME:
-                this.newDrawingService.openWarning();
+                this.newDrawingService.openWarningModal();
                 break;
             case this.sidebarElements.CAROUSEL_NAME:
                 this.dialog.open(CarouselComponent);

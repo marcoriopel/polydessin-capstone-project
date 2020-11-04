@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { UserGuideComponent } from '@app/components/userguide/user-guide.component';
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
@@ -54,7 +55,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
 
     openDialog(): void {
-        this.newDrawingService.openWarning();
+        this.newDrawingService.openWarningModal();
     }
 
     openSaveWindow(): void {
@@ -62,6 +63,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+    openExportWindow(): void {
+        this.dialog.open(ExportComponent);
     }
 
     ngOnDestroy(): void {

@@ -25,11 +25,6 @@ export class CircleService extends Tool {
         super(drawingService);
     }
 
-    setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
-    }
-
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }

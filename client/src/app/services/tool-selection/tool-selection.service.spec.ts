@@ -43,6 +43,7 @@ describe('ToolSelectionService', () => {
 
         TestBed.configureTestingModule({
             providers: [
+                { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: MatDialog, useValue: matdialogSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
@@ -65,6 +66,11 @@ describe('ToolSelectionService', () => {
     it('should change tool', () => {
         service.changeTool(TOOL_NAMES.ERASER_TOOL_NAME);
         expect(service.currentTool.name).toBe(TOOL_NAMES.ERASER_TOOL_NAME);
+    });
+
+    it('should clear canvas when tool change', () => {
+        service.changeTool(TOOL_NAMES.ERASER_TOOL_NAME);
+        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it('should get current tool', () => {
