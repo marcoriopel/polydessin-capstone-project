@@ -82,7 +82,7 @@ export class MoveService {
             }
         }, CONFIRM_KEY_PRESS_DURATION);
 
-        if (isArrowKey){
+        if (isArrowKey) {
             this.printSelectionOnPreview();
             if (this.isTransformationOver) {
                 this.isTransformationOver = false;

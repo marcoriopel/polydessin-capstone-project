@@ -17,6 +17,8 @@ export class SelectionService extends Tool {
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
     underliyingService: SquareService | CircleService;
+    isEscapeKeyPressed: boolean;
+    isShiftKeyDown: boolean;
 
     constructor(drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
@@ -29,6 +31,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.initialize();
         if (!this.isInSelection(event)) {
             this.mouseDown = event.button === MouseButton.LEFT;
             if (this.mouseDown) {
@@ -59,6 +62,7 @@ export class SelectionService extends Tool {
                 this.setInitialSelection(this.selection);
                 this.setSelectionData(this.selection);
             }
+
             // reset underlying service to original form
             this.underliyingService.fillStyle = currentFillStyle;
             this.mouseDown = false;
@@ -66,7 +70,10 @@ export class SelectionService extends Tool {
             this.transormation = '';
             this.strokeSelection();
         }
+        this.setSelectionPoint();
     }
+
+    setSelectionPoint(): void {}
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
@@ -83,13 +90,56 @@ export class SelectionService extends Tool {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.moveService.onKeyDown(event);
         }
-        this.underliyingService.onKeyDown(event);
+        if (this.mouseDown) {
+            this.underliyingService.fillStyle = FILL_STYLES.DASHED;
+            this.underliyingService.onKeyDown(event);
+        }
+        if (event.key === 'Escape') {
+            this.isEscapeKeyPressed = true;
+            this.reset();
+        }
+        switch (event.key) {
+            case 'Escape': {
+                this.isEscapeKeyPressed = true;
+                this.reset();
+                break;
+            }
+            case 'Control': {
+                this.selectAll();
+                break;
+            }
+            case 'Shift': {
+                this.isShiftKeyDown = true;
+                break;
+            }
+        }
+    }
+
+    selectAll(): void {
+        this.selection = {
+            startingPoint: { x: 0, y: 0 },
+            width: this.drawingService.canvas.width,
+            height: this.drawingService.canvas.height,
+        };
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.underliyingService.firstPoint = { x: 0, y: 0 };
+        this.underliyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
+        this.underliyingService.fillStyle = FILL_STYLES.DASHED;
+        this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
+        this.setInitialSelection(this.selection);
+        this.setSelectionData(this.selection);
     }
 
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
-        this.underliyingService.onKeyUp(event);
-        this.strokeSelection();
+        if (!this.isShiftKeyDown) {
+            this.underliyingService.onKeyUp(event);
+            this.strokeSelection();
+        }
+        if (event.key === 'Shift') {
+            this.underliyingService.isShiftKeyDown = false;
+            this.isShiftKeyDown = false;
+        }
     }
 
     private isInSelection(event: MouseEvent): boolean {
@@ -107,7 +157,7 @@ export class SelectionService extends Tool {
     }
 
     reset(): void {
-        if (this.selection.height !== 0 && this.selection.height !== 0) {
+        if (this.selection.height !== 0 && this.selection.height !== 0 && !this.isEscapeKeyPressed) {
             this.moveService.printSelectionOnPreview();
             this.applyPreview();
         }
@@ -117,6 +167,7 @@ export class SelectionService extends Tool {
         this.transormation = '';
         this.moveService.isTransformationOver = true;
         this.drawingService.previewCtx.setLineDash([0]);
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
     setInitialSelection(selection: SelectionBox): void {

@@ -49,6 +49,12 @@ export class CircleSelectionService extends SelectionService {
             0,
             Math.PI * 2,
         );
+        this.drawingService.previewCtx.strokeRect(
+            this.moveService.selection.startingPoint.x,
+            this.moveService.selection.startingPoint.y,
+            this.selection.width,
+            this.selection.height,
+        );
         this.drawingService.previewCtx.stroke();
     }
 }

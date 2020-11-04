@@ -27,7 +27,7 @@ export class SquareService extends Tool {
     rectangleHeight: number;
     rectangleWidth: number;
     trigonometry: Trigonometry = new Trigonometry();
-    
+
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
     }
