@@ -132,6 +132,7 @@ describe('CarouselComponent', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA, DBDATA];
         component.manageShownDrawings();
+        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes.length).toEqual(3);
     });
 
@@ -291,7 +292,8 @@ describe('CarouselComponent', () => {
     it('should switch drawings left on previous click with 4 drawings', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
-        (component.databaseMetadata = [DBDATA, DBDATA, DBDATA]), DBDATA;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        // tslint:disable-next-line: no-magic-numbers
         component.visibleDrawingsIndexes = [1, 2, 3];
         component.onPreviousClick();
         expect(component.visibleDrawingsIndexes).toEqual([0, 1, 2]);
@@ -321,6 +323,7 @@ describe('CarouselComponent', () => {
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
         component.visibleDrawingsIndexes = [0, 1, 2];
         component.onNextClick();
+        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
     });
 });

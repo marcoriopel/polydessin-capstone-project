@@ -14,7 +14,7 @@ import { Subject } from 'rxjs';
 import { SavingComponent } from './saving.component';
 
 import SpyObj = jasmine.SpyObj;
-
+// tslint:disable: no-magic-numbers
 describe('SavingComponent', () => {
     let component: SavingComponent;
     let fixture: ComponentFixture<SavingComponent>;
