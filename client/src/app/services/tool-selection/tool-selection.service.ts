@@ -15,6 +15,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SelectionService } from '@app/services/tools/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 
@@ -36,6 +37,7 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        polygoneService: PolygoneService,
         selectionService: SelectionService,
         pipetteService: PipetteService,
         public drawingService: DrawingService,
@@ -51,6 +53,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
             [TOOL_NAMES.SELECTION_TOOL_NAME, selectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
+            [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService.getKey().subscribe((tool) => {

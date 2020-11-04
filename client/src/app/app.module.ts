@@ -2,12 +2,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -37,6 +39,7 @@ import { FillAttributesComponent } from './components/tools/fill-attributes/fill
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
+import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
@@ -69,9 +72,11 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         ErrorAlertComponent,
         CarouselComponent,
         ExportComponent,
+        PolygoneAttributesComponent,
     ],
     imports: [
         BrowserModule,
+        MatCardModule,
         NoopAnimationsModule,
         HttpClientModule,
         AppRoutingModule,
@@ -85,6 +90,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatRadioModule,
         MatTooltipModule,
         MatIconModule,
+        MatProgressSpinnerModule,
         MatExpansionModule,
         FormsModule,
         ReactiveFormsModule,

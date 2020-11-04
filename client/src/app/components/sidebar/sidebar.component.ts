@@ -10,6 +10,7 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -26,6 +27,7 @@ export class SidebarComponent implements OnInit {
         public toolSelectionService: ToolSelectionService,
         public dialog: MatDialog,
         public newDrawingService: NewDrawingService,
+        public undoRedoService: UndoRedoService,
         public hotkeyService: HotkeyService,
     ) {}
 

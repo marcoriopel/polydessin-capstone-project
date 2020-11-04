@@ -98,6 +98,24 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.POLYGONE_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.POLYGONE_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.POLYGONE_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >panorama_wide_angle</mat-icon
+            >
+        </label>
         <input
             type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
@@ -202,6 +220,7 @@
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.undo()"
             >undo</mat-icon
         >
         <mat-icon
@@ -209,6 +228,7 @@
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="this.undoRedoService.redo()"
             >redo</mat-icon
         >
     </div>
