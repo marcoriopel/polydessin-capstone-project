@@ -11,7 +11,7 @@ import { TYPES } from '../types';
 
 // tslint:disable:no-any
 const HTTP_STATUS_OK = 200;
-const HTTP_STATUS_CREATED = 201;
+const HTTP_STATUS_NO_CONTENT = 204;
 const NOT_FOUND = 404;
 
 describe('DatabaseController', () => {
@@ -51,7 +51,7 @@ describe('DatabaseController', () => {
             .post('/api/database/addDrawing')
             .attach('image', './testing-images/fileNameRandom')
             .field({ id: 'test', name: 'meta', tags: 'tag' })
-            .expect(HTTP_STATUS_CREATED);
+            .expect(HTTP_STATUS_NO_CONTENT);
     });
 
     it('should add drawing on valid post request to root with tag array', async () => {
@@ -59,7 +59,7 @@ describe('DatabaseController', () => {
             .post('/api/database/addDrawing')
             .attach('image', './testing-images/fileNameRandom')
             .field({ id: 'test', name: 'meta', tags: ['tag', 'tag2'] })
-            .expect(HTTP_STATUS_CREATED);
+            .expect(HTTP_STATUS_NO_CONTENT);
     });
 
     it('should add drawing on valid post request to root with no tag', async () => {
@@ -67,7 +67,7 @@ describe('DatabaseController', () => {
             .post('/api/database/addDrawing')
             .attach('image', './testing-images/fileNameRandom')
             .field({ id: 'test', name: 'meta', tags: [] })
-            .expect(HTTP_STATUS_CREATED);
+            .expect(HTTP_STATUS_NO_CONTENT);
     });
 
     it('should return error on invalid post request to root', async () => {
@@ -111,7 +111,7 @@ describe('DatabaseController', () => {
     });
 
     it('should delete image file on valid delete request', async () => {
-        return supertest(app).delete('/api/database/deleteDrawing/:filename').send({ filename: 'filenamerandom' }).expect(HTTP_STATUS_OK);
+        return supertest(app).delete('/api/database/deleteDrawing/:filename').send({ filename: 'filenamerandom' }).expect(HTTP_STATUS_NO_CONTENT);
     });
 
     it('should return an error as a message on deleteDrawing service fail', async () => {

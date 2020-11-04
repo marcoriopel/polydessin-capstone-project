@@ -37,7 +37,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     constructor(
-        private router: Router,
+        public router: Router,
         public hotkeyService: HotkeyService,
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
@@ -132,7 +132,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         }
     }
 
-    applySelectedDrawing(index: number): void {
+    async applySelectedDrawing(index: number): Promise<void> {
         if (this.currentRoute === '/home') {
             this.router.navigateByUrl('/editor');
             this.currentRoute = '/editor';
@@ -219,6 +219,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
             this.visibleDrawingsIndexes[2]++;
         }
     }
+
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
         this.destroy$.next(true);

@@ -3,7 +3,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { CarouselComponent } from '@app/components//carousel/carousel.component';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -12,7 +13,6 @@ import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawin
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { of, Subject } from 'rxjs';
-import { CarouselComponent } from './carousel.component';
 
 import SpyObj = jasmine.SpyObj;
 
@@ -27,30 +27,31 @@ describe('CarouselComponent', () => {
     let dBDataObservable: Subject<DBData[]>;
     let keyboardEvent: KeyboardEvent;
     let imageObservable: Subject<Blob>;
+    let deleteDrawingObservable: Subject<void>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
-    // let routerSpy: SpyObj<Router>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
+    let routerSpy: SpyObj<RouterTestingModule>;
     beforeEach(async(() => {
-        serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar']);
+        serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
-        // routerSpy = jasmine.createSpyObj('Router', ['navigateByUrl']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
-        databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng']);
+        databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng', 'deleteDrawing']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank']);
         dBDataObservable = new Subject<DBData[]>();
         imageObservable = new Subject<Blob>();
+        deleteDrawingObservable = new Subject<void>();
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
         drawingServiceSpy.baseCtx = baseCtxSpy;
         databaseServiceSpy.getAllDBData.and.returnValue(dBDataObservable.asObservable());
         databaseServiceSpy.getDrawingPng.and.returnValue(imageObservable.asObservable());
+        databaseServiceSpy.deleteDrawing.and.returnValue(deleteDrawingObservable.asObservable());
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [CarouselComponent],
-            imports: [HttpClientModule, MatDialogModule],
+            imports: [HttpClientModule, MatDialogModule, RouterTestingModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
-                { provide: Router, useValue: { url: '/editor' } },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
@@ -64,6 +65,7 @@ describe('CarouselComponent', () => {
         fixture = TestBed.createComponent(CarouselComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        routerSpy = spyOn(component.router, 'navigateByUrl');
     });
 
     it('should create', () => {
@@ -203,6 +205,122 @@ describe('CarouselComponent', () => {
         const image = new Blob();
         component.applySelectedDrawing(1);
         imageObservable.next(image);
+
         expect(drawSpy).toHaveBeenCalled();
+    });
+
+    it('should load error snackbar on error', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.applySelectedDrawing(1);
+        imageObservable.error('Error');
+        expect(serverResponseServiceSpy.loadErrorSnackBar).toHaveBeenCalled();
+    });
+
+    it('should set route to editor if called from home', () => {
+        component.currentRoute = '/home';
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.applySelectedDrawing(1);
+        imageObservable.error('Error');
+        expect(serverResponseServiceSpy.loadErrorSnackBar).toHaveBeenCalled();
+        expect(routerSpy).toHaveBeenCalled();
+    });
+
+    // it('should drawImageOnCanvas', async (done) => {
+    //     // const spy = spyOn(component, 'drawImageOnCanvas').and.callThrough();
+    //     // const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+    //     // component.drawingOfInterest = 1;
+    //     // component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+    //     // const image = new Blob();
+    //     // component.applySelectedDrawing(1);
+    //     // imageObservable.next(image);
+    //     // expect(spy).toHaveBeenCalled();
+    //     // expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+    //     const image = new Image();
+    //     const img = URL.createObjectURL(image);
+    //     const spy = spyOn(component, 'drawImageOnCanvas').and.callThrough();
+    //     await component.drawImageOnCanvas(img).then(() => {
+    //         done();
+    //     });
+    //     expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+    //     expect(spy).toHaveBeenCalled();
+    // });
+
+    it('should delete drawing on delete call', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        const loadDBSpy = spyOn(component, 'loadDBData');
+        component.drawingOfInterest = 1;
+        component.visibleDrawingsIndexes.push(1);
+        component.visibleDrawingsIndexes.push(1);
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.deleteDrawing();
+        deleteDrawingObservable.next();
+        expect(loadDBSpy).toHaveBeenCalled();
+    });
+
+    it('should send delete snackBar on bad delete call', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.visibleDrawingsIndexes.push(1);
+        component.visibleDrawingsIndexes.push(1);
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.deleteDrawing();
+        deleteDrawingObservable.error('err');
+        expect(serverResponseServiceSpy.deleteErrorSnackBar).toHaveBeenCalled();
+    });
+
+    it('should switch target drawing to second on second click', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 0;
+        component.databaseMetadata = [DBDATA, DBDATA];
+        component.onClickTwoDrawings();
+        expect(component.drawingOfInterest).toEqual(1);
+    });
+
+    it('should switch target drawing to first on first click', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA];
+        component.onClickTwoDrawings();
+        expect(component.drawingOfInterest).toEqual(0);
+    });
+
+    it('should switch drawings left on previous click with 4 drawings', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        (component.databaseMetadata = [DBDATA, DBDATA, DBDATA]), DBDATA;
+        component.visibleDrawingsIndexes = [1, 2, 3];
+        component.onPreviousClick();
+        expect(component.visibleDrawingsIndexes).toEqual([0, 1, 2]);
+    });
+
+    it('should switch drawings left on previous click with 3 drawings', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [0, 1, 2];
+        component.onPreviousClick();
+        expect(component.visibleDrawingsIndexes).toEqual([2, 0, 1]);
+    });
+
+    it('should switch drawings right on next click', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [0, 1, 2];
+        component.onNextClick();
+        expect(component.visibleDrawingsIndexes).toEqual([1, 2, 0]);
+    });
+
+    it('should switch drawings right on next click with 4 drawings', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.drawingOfInterest = 1;
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [0, 1, 2];
+        component.onNextClick();
+        expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
     });
 });

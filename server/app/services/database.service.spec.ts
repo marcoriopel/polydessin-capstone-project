@@ -66,6 +66,15 @@ describe('Database service', () => {
         }
     });
 
+    it('should send error message on attempt to delete with fs ', async () => {
+        directoryStub.throws(new Error('err'));
+        try {
+            await databaseService.deleteDrawing(fileNameTest);
+        } catch (error) {
+            expect(error.message).to.equal("Problème lors de la suppression de l'image");
+        }
+    });
+
     it('should insert a new drawing', async () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: fileNameTest };
         await databaseService.addDrawing(DBDATA);
@@ -148,7 +157,7 @@ describe('Database service', () => {
     it('should return multer', async () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'test' };
         await databaseService.addDrawing(DBDATA);
-        databaseService.createMulterUpload('randomDirectory');
+        databaseService.createMulterUpload('./testing-images');
         expect(databaseService.multerObject).not.to.equal(undefined);
     });
 });

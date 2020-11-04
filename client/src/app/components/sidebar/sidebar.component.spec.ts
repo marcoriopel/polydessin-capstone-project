@@ -3,14 +3,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { Subject } from 'rxjs';
-import { CarouselComponent } from '../carousel/carousel.component';
-import { SavingComponent } from '../saving/saving.component';
 
 import SpyObj = jasmine.SpyObj;
 describe('SidebarComponent', () => {
