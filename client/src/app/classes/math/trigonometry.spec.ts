@@ -6,7 +6,7 @@ import { Trigonometry } from './trigonometry';
 
 // tslint:disable: no-magic-numbers
 
-xdescribe('Trigonometry', () => {
+describe('Trigonometry', () => {
     let trigonometry: Trigonometry;
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -359,7 +359,7 @@ xdescribe('Trigonometry', () => {
 
     it('should return first quadrant if last point is in top right quadrant', () => {
         const click1: Vec2 = { x: 0, y: 0 };
-        const click2: Vec2 = { x: 10, y: 10 };
+        const click2: Vec2 = { x: 10, y: -10 };
         const expectedValue = Quadrant.TOP_RIGHT;
         const returnValue = trigonometry.findQuadrant(click1, click2);
         expect(returnValue).toEqual(expectedValue);
@@ -367,56 +367,56 @@ xdescribe('Trigonometry', () => {
 
     it('should return second quadrant if last point is in top left quadrant', () => {
         const click1: Vec2 = { x: 5, y: 0 };
-        const click2: Vec2 = { x: 0, y: 10 };
+        const click2: Vec2 = { x: 0, y: -10 };
         const expectedValue = Quadrant.TOP_LEFT;
         const returnValue = trigonometry.findQuadrant(click1, click2);
         expect(returnValue).toEqual(expectedValue);
     });
 
     it('should return third quadrant if last point is in bottom left quadrant', () => {
-        const click1: Vec2 = { x: 10, y: 10 };
-        const click2: Vec2 = { x: 0, y: 0 };
+        const click1: Vec2 = { x: 10, y: 0 };
+        const click2: Vec2 = { x: 0, y: 10 };
         const expectedValue = Quadrant.BOTTOM_LEFT;
         const returnValue = trigonometry.findQuadrant(click1, click2);
         expect(returnValue).toEqual(expectedValue);
     });
 
     it('should return fourth quadrant if last point is in bottom right quadrant', () => {
-        const click1: Vec2 = { x: 0, y: 15 };
+        const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 10, y: 10 };
         const expectedValue = Quadrant.BOTTOM_RIGHT;
         const returnValue = trigonometry.findQuadrant(click1, click2);
         expect(returnValue).toEqual(expectedValue);
     });
 
-    it('should return lastPoint.x and firstPoint.y if in first quadrant', () => {
+    it('should return firstPoint.x and lastPoint.y if in TOP_RIGHT quadrant', () => {
         const firstPoint: Vec2 = { x: 0, y: 0 };
-        const lastPoint: Vec2 = { x: 10, y: 10 };
-        const expectedValue: Vec2 = { x: lastPoint.x, y: firstPoint.y };
-        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
-        expect(returnValue).toEqual(expectedValue);
-    });
-
-    it('should return firstPoint.x and lastPoint.y if in second quadrant', () => {
-        const firstPoint: Vec2 = { x: 10, y: 0 };
-        const lastPoint: Vec2 = { x: 0, y: 10 };
+        const lastPoint: Vec2 = { x: 10, y: -10 };
         const expectedValue: Vec2 = { x: firstPoint.x, y: lastPoint.y };
         const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 
-    it('should return lastPoint.x and lastPoint.y if in third quadrant', () => {
-        const firstPoint: Vec2 = { x: 10, y: 10 };
-        const lastPoint: Vec2 = { x: 0, y: 0 };
-        const expectedValue: Vec2 = { x: lastPoint.x, y: lastPoint.y };
+    it('should return firstPoint.x and firstPoint.y if in BOTTOM_RIGHT quadrant', () => {
+        const firstPoint: Vec2 = { x: 0, y: 0 };
+        const lastPoint: Vec2 = { x: 10, y: 10 };
+        const expectedValue: Vec2 = { x: firstPoint.x, y: firstPoint.y };
         const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
 
-    it('should return firstPoint.x and firstPoint.y if in fourth quadrant', () => {
-        const firstPoint: Vec2 = { x: 0, y: 10 };
-        const lastPoint: Vec2 = { x: 10, y: 0 };
-        const expectedValue: Vec2 = { x: firstPoint.x, y: firstPoint.y };
+    it('should return lastPoint.x and firstPoint.y if in BOTTOM_LEFT quadrant', () => {
+        const firstPoint: Vec2 = { x: 10, y: 0 };
+        const lastPoint: Vec2 = { x: 0, y: 10 };
+        const expectedValue: Vec2 = { x: lastPoint.x, y: firstPoint.y };
+        const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
+        expect(returnValue).toEqual(expectedValue);
+    });
+
+    it('should return lastPoint.x and lastPoint.y if in TOP_LEFT quadrant', () => {
+        const firstPoint: Vec2 = { x: 10, y: 10 };
+        const lastPoint: Vec2 = { x: 0, y: 0 };
+        const expectedValue: Vec2 = { x: lastPoint.x, y: lastPoint.y };
         const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });

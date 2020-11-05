@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Rectangle } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -15,7 +16,6 @@ describe('SquareService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let drawRectSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
     const WIDTH = 100;
@@ -43,9 +43,8 @@ describe('SquareService', () => {
             ],
         });
         service = TestBed.inject(SquareService);
-        drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
-        drawRectSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
-        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect');
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -106,40 +105,7 @@ describe('SquareService', () => {
         expect(service.isShiftKeyDown).toBe(false);
     });
 
-    it(' onMouseUp should call drawShape if mouse was already down', () => {
-        const findTopLeftSpy = spyOn(service.trigonometry, 'findTopLeftPointCircle').and.returnValue({ x: 0, y: 0 });
-        const setRectangleWidthSpy = spyOn<any>(service, 'setRectangleWidth').and.callThrough();
-        const setRectangleHeigthSpy = spyOn<any>(service, 'setRectangleHeight').and.callThrough();
-
-        const mouseEventLClick = {
-            offsetX: 0,
-            offsetY: 0,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.onMouseDown(mouseEventLClick);
-        service.onMouseUp(mouseEvent);
-        expect(setRectangleHeigthSpy).toHaveBeenCalled();
-        expect(setRectangleWidthSpy).toHaveBeenCalled();
-        expect(findTopLeftSpy).toHaveBeenCalled();
-        expect(drawShapeSpy).toHaveBeenCalled();
-    });
-
-    it('should draw rectangle ', () => {
-        service.rectangleData = {
-            type: 'rectangle',
-            primaryColor: 'black',
-            secondaryColor: 'black',
-            height: 1,
-            width: 1,
-            topLeftPoint: { x: 0, y: 0 },
-            fillStyle: 1,
-            isShiftDown: true,
-            lineWidth: 1,
-        };
-        service.topLeftPoint = { x: 0, y: 0 };
-        service.firstPoint = { x: 0, y: 0 };
-        service.lastPoint = { x: 0, y: 0 };
-        const findTopLeftSpy = spyOn(service.trigonometry, 'findTopLeftPointCircle').and.returnValue({ x: 0, y: 0 });
+    it('onMouseUp should call drawShape if mouse was already down', () => {
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,
@@ -147,8 +113,7 @@ describe('SquareService', () => {
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
-        expect(drawRectSpy).toHaveBeenCalled();
-        expect(findTopLeftSpy).toHaveBeenCalled();
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
@@ -173,14 +138,14 @@ describe('SquareService', () => {
         expect(service.rectangleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    it('should drawRect if mouse is down and shift is unpressed', () => {
+    it('should call drawshape if mouse is down and shift is unpressed', () => {
         service.onMouseDown(mouseEvent);
         service.isShiftKeyDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
         service.onKeyUp(event);
-        expect(drawRectSpy).toHaveBeenCalled();
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
 
     it('should drawShape when mouse is down on mousemove', () => {
@@ -237,19 +202,19 @@ describe('SquareService', () => {
     //     expect(topLeft).toEqual(expectedValue);
     // });
 
-    it('should call fillRect if option is not to draw only the border', () => {
-        service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(ctxFillSpy).toHaveBeenCalled();
-    });
+    // it('should call fillRect if option is not to draw only the border', () => {
+    //     service.fillStyle = FILL_STYLES.FILL;
+    //     service.onMouseDown(mouseEvent);
+    //     service.onMouseUp(mouseEvent);
+    //     expect(ctxFillSpy).toHaveBeenCalled();
+    // });
 
-    it('should not call fillRect if option is not to draw only the border', () => {
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
-    });
+    // it('should not call fillRect if option is not to draw only the border', () => {
+    //     service.fillStyle = FILL_STYLES.BORDER;
+    //     service.onMouseDown(mouseEvent);
+    //     service.onMouseUp(mouseEvent);
+    //     expect(ctxFillSpy).not.toHaveBeenCalled();
+    // });
 
     it('should not set isShiftKeyDown to true if key down of anything else than shift', () => {
         service.isShiftKeyDown = false;
@@ -283,41 +248,44 @@ describe('SquareService', () => {
     });
 
     it('should fill square if style is not set to border', () => {
-        service.isShiftKeyDown = true;
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
+        const rectangleData: Rectangle = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 10,
+            width: 10,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.drawRectangle(baseCtxStub, rectangleData);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it('should not fill square if style is set to border', () => {
-        service.isShiftKeyDown = true;
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
+        const rectangleData: Rectangle = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 10,
+            width: 10,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.drawRectangle(baseCtxStub, rectangleData);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should call drawShape if mouseDown is true', () => {
-        service.firstPoint = { x: 1, y: 2 };
-        service.lastPoint = { x: 2, y: 1 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
         service.mouseDown = true;
         service.onKeyDown(event);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 });
