@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -18,7 +18,9 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, AfterViewInit {
+    @ViewChild('undo', { read: ElementRef }) undoButton: ElementRef;
+    @ViewChild('redo', { read: ElementRef }) redoButton: ElementRef;
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
     toolNames: ToolNames = TOOL_NAMES;
@@ -39,39 +41,30 @@ export class SidebarComponent implements OnInit {
                 this.selectedTool = tool;
             }
         });
+    }
 
+    ngAfterViewInit(): void {
         this.undoRedoService.getUndoAvailability().subscribe((value) => {
             if (value) {
-                const element: HTMLElement | null = document.getElementById('undo');
-                if (element) {
-                    element.style.cursor = 'pointer';
-                    element.style.opacity = '1';
-                }
+                this.undoButton.nativeElement.style.cursor = 'pointer';
+                this.undoButton.nativeElement.style.opacity = '1';
             } else {
-                const element: HTMLElement | null = document.getElementById('undo');
-                if (element) {
-                    element.style.cursor = 'not-allowed';
-                    element.style.opacity = '0.5';
-                }
+                this.undoButton.nativeElement.style.cursor = 'not-allowed';
+                this.undoButton.nativeElement.style.opacity = '0.5';
             }
         });
 
         this.undoRedoService.getRedoAvailability().subscribe((value) => {
             if (value) {
-                const element: HTMLElement | null = document.getElementById('redo');
-                if (element) {
-                    element.style.cursor = 'pointer';
-                    element.style.opacity = '1';
-                }
+                this.redoButton.nativeElement.style.cursor = 'pointer';
+                this.redoButton.nativeElement.style.opacity = '1';
             } else {
-                const element: HTMLElement | null = document.getElementById('redo');
-                if (element) {
-                    element.style.cursor = 'not-allowed';
-                    element.style.opacity = '0.5';
-                }
+                this.redoButton.nativeElement.style.cursor = 'not-allowed';
+                this.redoButton.nativeElement.style.opacity = '0.5';
             }
         });
     }
+
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {

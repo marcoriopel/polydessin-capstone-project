@@ -110,7 +110,6 @@ export class UndoRedoService extends Tool {
     }
 
     changeUndoAvailability(): void {
-        console.log(this.drawingService.undoStack.length);
         if (this.drawingService.undoStack.length) {
             this.setUndoAvailability(true);
         } else {
