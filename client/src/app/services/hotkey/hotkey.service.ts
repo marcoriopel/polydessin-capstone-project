@@ -21,9 +21,9 @@ export class HotkeyService {
         ['e', this.toolNames.ERASER_TOOL_NAME],
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
+        ['i', this.toolNames.PIPETTE_TOOL_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
-        ['i', this.toolNames.PIPETTE_TOOL_NAME],
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
         ['g', this.sidebarElements.CAROUSEL_NAME],
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
