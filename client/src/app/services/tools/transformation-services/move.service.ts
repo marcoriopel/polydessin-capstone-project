@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Rectangle } from '@app/classes/rectangle';
-import { Tool } from '@app/classes/tool';
+import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -8,10 +7,9 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class MoveService extends Tool {
-    initialSelection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selection: Rectangle;
-    selectionData: ImageData;
+export class MoveService {
+    initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    selection: SelectionBox;
     isTransformationOver: boolean = true;
     pressedKeys: Map<string, boolean> = new Map([
         [ARROW_KEYS.LEFT, false],
@@ -20,29 +18,26 @@ export class MoveService extends Tool {
         [ARROW_KEYS.DOWN, false],
     ]);
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+    selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
-    constructor(drawingService: DrawingService) {
-        super(drawingService);
-    }
+    constructor(public drawingService: DrawingService) {}
 
-    initialize(selection: Rectangle, selectionData: ImageData): void {
+    initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.height = selection.height;
         this.initialSelection.width = selection.width;
         this.selection = selection;
-        this.selectionData = selectionData;
+        this.selectionImage = selectionImage;
     }
 
     onMouseDown(event: MouseEvent): void {
         if (this.isTransformationOver) {
             this.isTransformationOver = false;
-            this.printSelectionOnPreview();
         }
     }
 
     onMouseMove(event: MouseEvent): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.selection.startingPoint.x += event.movementX;
         this.selection.startingPoint.y += event.movementY;
         this.printSelectionOnPreview();
@@ -89,6 +84,9 @@ export class MoveService extends Tool {
 
         if (isArrowKey) {
             this.printSelectionOnPreview();
+            if (this.isTransformationOver) {
+                this.isTransformationOver = false;
+            }
         }
     }
 
@@ -105,25 +103,28 @@ export class MoveService extends Tool {
         }
     }
 
-    clearSelectionBackground(ctx: CanvasRenderingContext2D): void {
-        const currentFillStyle = ctx.fillStyle;
-        ctx.fillStyle = 'white';
-        ctx.fillRect(
+    clearSelectionBackground(): void {
+        const currentFillStyle = this.drawingService.previewCtx.fillStyle;
+        this.drawingService.previewCtx.fillStyle = 'white';
+
+        this.drawingService.previewCtx.fillRect(
             this.initialSelection.startingPoint.x,
             this.initialSelection.startingPoint.y,
             this.initialSelection.width,
             this.initialSelection.height,
         );
-        ctx.fillStyle = currentFillStyle;
+
+        this.drawingService.previewCtx.globalCompositeOperation = 'destination-in';
+        this.drawingService.previewCtx.drawImage(this.selectionImage, this.initialSelection.startingPoint.x, this.initialSelection.startingPoint.y);
+        this.drawingService.previewCtx.globalCompositeOperation = 'source-over';
+
+        this.drawingService.previewCtx.fillStyle = currentFillStyle;
     }
 
     printSelectionOnPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearSelectionBackground(this.drawingService.previewCtx);
-        this.drawingService.previewCtx.putImageData(this.selectionData, this.selection.startingPoint.x, this.selection.startingPoint.y);
-        if (this.isTransformationOver) {
-            this.isTransformationOver = false;
-        }
+        this.clearSelectionBackground();
+        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 
     private move(self: MoveService): void {

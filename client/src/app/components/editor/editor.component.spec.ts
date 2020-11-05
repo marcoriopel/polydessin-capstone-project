@@ -123,4 +123,10 @@ describe('EditorComponent', () => {
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
         expect(component.previewDiv.style.display).toEqual('none');
     });
+
+    it('should call onkeydown de hotkey when pressing a shortcut key', () => {
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
+        component.onKeyDown(keyboardEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
+    });
 });

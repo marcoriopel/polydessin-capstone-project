@@ -2,7 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -10,7 +13,7 @@ import { Subject } from 'rxjs';
 import { ExportComponent } from '../export/export.component';
 
 import SpyObj = jasmine.SpyObj;
-describe('SidebarComponent', () => {
+xdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;
@@ -79,7 +82,7 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
-    it('should not change tool nor set cursor on an invalid event', () => {
+    it('should not change tool nor handle cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,
@@ -90,5 +93,33 @@ describe('SidebarComponent', () => {
         component.onToolChange(event);
         expect(toolSelectionServiceSpy.setCurrentToolCursor).not.toHaveBeenCalled();
         expect(toolSelectionServiceSpy.changeTool).not.toHaveBeenCalled();
+    });
+
+    it('should change tool on hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next('invalidtool');
+        expect(component.selectedTool).toEqual(TOOL_NAMES.PENCIL_TOOL_NAME);
+    });
+
+    it('should not change tool on invalid hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open save window', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open carousel component on call', () => {
+        component.openCarouselWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(CarouselComponent);
+    });
+
+    it('should open save component on call', () => {
+        component.openSaveWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
     });
 });

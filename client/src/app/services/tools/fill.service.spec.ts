@@ -16,8 +16,9 @@ describe('FillService', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData', 'updateStack']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
+        baseCtxSpy.filter = 'none';
         drawingServiceSpy.baseCtx = baseCtxSpy;
         colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', ['getRgbaPrimaryColor']);
         colorSelectionServiceSpy.primaryColor = 'red';
@@ -28,6 +29,7 @@ describe('FillService', () => {
                 { provide: ColorSelectionService, useValue: colorSelectionServiceSpy },
             ],
         });
+
         service = TestBed.inject(FillService);
     });
 
@@ -43,6 +45,26 @@ describe('FillService', () => {
     });
 
     it('onMouseDown should call drawing service.getPixelData with mouseEvent position', () => {
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
+        canvas.height = 10;
+        canvas.width = 10;
+        const baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        baseCtx.fillStyle = 'white';
+        baseCtx.fillRect(0, 0, canvas.width, canvas.height);
+        baseCtx.strokeStyle = 'black';
+        baseCtx.strokeRect(0, 0, 5, 5);
+
+        previewCtx.fillStyle = 'white';
+        previewCtx.fillRect(0, 0, canvas.width, canvas.height);
+        previewCtx.strokeStyle = 'black';
+        previewCtx.strokeRect(0, 0, 5, 5);
+
+        drawingServiceSpy.baseCtx = baseCtx;
+        drawingServiceSpy.previewCtx = previewCtx;
+        drawingServiceSpy.canvas = canvas;
+
         const mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -53,6 +75,26 @@ describe('FillService', () => {
     });
 
     it('onMouseDown should set drawingservice.baseCtx.fillStyle and call contiguousFill on left click', () => {
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
+        canvas.height = 10;
+        canvas.width = 10;
+        const baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        baseCtx.fillStyle = 'white';
+        baseCtx.fillRect(0, 0, canvas.width, canvas.height);
+        baseCtx.strokeStyle = 'black';
+        baseCtx.strokeRect(0, 0, 5, 5);
+
+        previewCtx.fillStyle = 'white';
+        previewCtx.fillRect(0, 0, canvas.width, canvas.height);
+        previewCtx.strokeStyle = 'black';
+        previewCtx.strokeRect(0, 0, 5, 5);
+
+        drawingServiceSpy.baseCtx = baseCtx;
+        drawingServiceSpy.previewCtx = previewCtx;
+        drawingServiceSpy.canvas = canvas;
+
         const mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -61,11 +103,31 @@ describe('FillService', () => {
         const contiguousFillSpy = spyOn(service, 'contiguousFill');
 
         service.onMouseDown(mouseEvent);
-        expect(baseCtxSpy.fillStyle).toBe('red');
+        expect(drawingServiceSpy.baseCtx.fillStyle).toBe('#ff0000'); // red in hexa
         expect(contiguousFillSpy).toHaveBeenCalled();
     });
 
     it('onMouseDown should call fill on right click', () => {
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
+        canvas.height = 10;
+        canvas.width = 10;
+        const baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        const previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        baseCtx.fillStyle = 'white';
+        baseCtx.fillRect(0, 0, canvas.width, canvas.height);
+        baseCtx.strokeStyle = 'black';
+        baseCtx.strokeRect(0, 0, 5, 5);
+
+        previewCtx.fillStyle = 'white';
+        previewCtx.fillRect(0, 0, canvas.width, canvas.height);
+        previewCtx.strokeStyle = 'black';
+        previewCtx.strokeRect(0, 0, 5, 5);
+
+        drawingServiceSpy.baseCtx = baseCtx;
+        drawingServiceSpy.previewCtx = previewCtx;
+        drawingServiceSpy.canvas = canvas;
+
         const mouseEvent = {
             offsetX: 25,
             offsetY: 25,
@@ -277,4 +339,5 @@ describe('FillService', () => {
 
         expect(service.isInToleranceRange(pixelData, canvasData, index)).toBe(true);
     });
+    // tslint:disable-next-line: max-file-line-count
 });

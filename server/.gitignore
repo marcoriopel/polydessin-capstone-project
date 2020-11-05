@@ -4,6 +4,7 @@
 node_modules/
 false/
 
+images/
 # Exclusion des fichiers Javascripts
 out/
 
@@ -25,3 +26,6 @@ images/
 !tslint.json
 !tsconfig.json
 !package-lock.json
+
+debug.log
+drawing.json

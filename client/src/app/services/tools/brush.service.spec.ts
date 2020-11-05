@@ -30,7 +30,7 @@ describe('BrushService', () => {
         previewCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -158,5 +158,10 @@ describe('BrushService', () => {
         service.applyPattern('invalid string');
         expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
         expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+    });
+
+    it(' should draw line on mouseleave', () => {
+        service.onMouseLeave();
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });
