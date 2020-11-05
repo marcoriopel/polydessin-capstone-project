@@ -1,26 +1,26 @@
+import { DATABASE_COLLECTION, DATABASE_NAME, DATABASE_URL, MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_TAG_LENGTH } from '@app/ressources/global-variables';
+import { DBData, MetaData } from '@common/communication/drawing-data';
 import * as fs from 'fs';
 import { injectable } from 'inversify';
-import { Collection, FilterQuery, MongoClient, MongoClientOptions } from 'mongodb';
+import { Collection, MongoClient, MongoClientOptions } from 'mongodb';
+import * as multer from 'multer';
 import 'reflect-metadata';
-import { Drawing, DrawingData, MetaData } from '../../../common/communication/drawing-data';
-
-// CHANGE the URL for your database information
-const DATABASE_URL = 'mongodb+srv://Admin:admin@cluster0.lwqkv.mongodb.net/<dbname>?retryWrites=true&w=majority';
-const DATABASE_NAME = 'database';
-const DATABASE_COLLECTION = 'Drawings';
 
 @injectable()
 export class DatabaseService {
     collection: Collection<MetaData>;
     client: MongoClient;
-
+    DIR: string = './images';
+    IMAGE_PATH: string = '../../images/';
+    multerObject: multer.Multer;
+    mongoURL: string = DATABASE_URL;
     private options: MongoClientOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     };
 
     start(): void {
-        MongoClient.connect(DATABASE_URL, this.options)
+        MongoClient.connect(this.mongoURL, this.options)
             .then((client: MongoClient) => {
                 this.client = client;
                 this.collection = client.db(DATABASE_NAME).collection(DATABASE_COLLECTION);
@@ -29,70 +29,82 @@ export class DatabaseService {
                 console.error('CONNECTION ERROR. EXITING PROCESS');
                 process.exit(1);
             });
+        if (!fs.existsSync(this.DIR)) {
+            fs.mkdirSync(this.DIR);
+        }
     }
 
     closeConnection(): void {
         this.client.close();
     }
 
-    async addDrawing(drawing: DrawingData): Promise<void> {
-        const metadata: MetaData = { id: drawing.id, name: drawing.name, tags: drawing.tags };
-        const drawingInfo: Drawing = { id: drawing.id, drawingPng: drawing.drawingPng };
-        const jsonContent = this.loadJSon();
-        const jsonObj = JSON.parse(jsonContent);
-
-        jsonObj.push(drawingInfo);
-        const data = JSON.stringify(jsonObj, null, 2);
-        fs.writeFileSync('drawing.json', data);
-
-        this.collection.insertOne(metadata).catch((err) => {
-            throw err;
-        });
+    getImagePath(): string {
+        return this.IMAGE_PATH;
     }
 
-    loadJSon(): string {
-        return fs.readFileSync('drawing.json').toString();
+    getDirPath(): string {
+        return this.DIR;
     }
 
-    getDrawingsJson(): Drawing[] {
-        const drawings: Drawing[] = [];
-        const jsonContent = this.loadJSon();
-        const jsonObj = JSON.parse(jsonContent);
-        jsonObj.forEach((element: Drawing) => {
-            const drawing: Drawing = { id: element.id, drawingPng: element.drawingPng };
-            drawings.push(drawing);
-        });
-        return drawings;
+    createMulterUpload(directory: string): multer.Multer {
+        this.multerObject = multer({ dest: directory });
+        return this.multerObject;
     }
 
-    async getDrawingData(): Promise<DrawingData[]> {
-        const drawingData: DrawingData[] = [];
-        const drawings: Drawing[] = this.getDrawingsJson();
-        const drawingIds = this.getDrawingsIds(drawings);
-        const filterQuery: FilterQuery<MetaData> = { id: { $in: drawingIds } };
+    isValidData(dBData: DBData): boolean {
+        if (dBData.name.length === 0) {
+            return false;
+        }
+
+        if (dBData.name.length > MAX_NAME_LENGTH) {
+            return false;
+        }
+
+        if (Array.isArray(dBData.tags)) {
+            if (dBData.tags.length > MAX_NUMBER_TAG) {
+                return false;
+            }
+            for (const tag of dBData.tags) {
+                if (tag.length > MAX_TAG_LENGTH) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    async addDrawing(DBDATA: DBData): Promise<void> {
+        if (!this.isValidData(DBDATA)) {
+            fs.unlinkSync('./images/' + DBDATA.fileName);
+            throw new Error('Métadonnées du dessin non valides');
+        } else {
+            await this.collection.insertOne(DBDATA);
+        }
+    }
+    async deleteDrawing(fileNameToDelete: string): Promise<void> {
+        const files: string[] = fs.readdirSync(this.DIR);
+        if (files.includes(fileNameToDelete)) {
+            await this.collection.findOneAndDelete({ fileName: fileNameToDelete });
+            try {
+                fs.unlinkSync('./images/' + fileNameToDelete);
+            } catch (error) {
+                throw new Error("Problème lors de la suppression de l'image");
+            }
+        } else throw new Error('Image introuvable');
+    }
+
+    async getDBData(): Promise<DBData[]> {
         return this.collection
-            .find(filterQuery)
+            .find()
             .toArray()
-            .then((meta: MetaData[]) => {
-                drawings.forEach((drawing: Drawing) => {
-                    meta.forEach((metadata: MetaData) => {
-                        if (drawing.id === metadata.id) {
-                            const data: DrawingData = { id: drawing.id, drawingPng: drawing.drawingPng, name: metadata.name, tags: metadata.tags };
-                            drawingData.push(data);
-                        }
-                    });
-                });
-                return drawingData;
-            })
-            .catch(() => {
-                throw new Error('Error trying to retrieve metadata');
+            .then((dBData: DBData[]) => {
+                const dBDataverified: DBData[] = [];
+                const files: string[] = fs.readdirSync(this.DIR);
+                for (const data of dBData) {
+                    if (files.includes(data.fileName)) {
+                        dBDataverified.push(data);
+                    }
+                }
+                return dBDataverified;
             });
-    }
-    getDrawingsIds(drawings: Drawing[]): string[] {
-        const ids: string[] = [];
-        drawings.forEach((element: Drawing) => {
-            ids.push(element.id);
-        });
-        return ids;
     }
 }

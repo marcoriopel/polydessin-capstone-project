@@ -95,16 +95,22 @@ export const FILL: Feature[] = [
 
 export const TRANSFORMATIONS: Feature[] = [
     {
-        name: 'Déplacement',
+        name: 'Déplacement par rectangle',
         description:
-            "Cette fonctionnalité permet de sélection une section de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
+            "Cette fonctionnalité permet de sélection une section en forme de rectangle de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
         picture: './../../../assets/img/picture_test.jpg',
+    },
+    {
+        name: 'Déplacement par ellipse',
+        description:
+            "Cette fonctionnalité permet de sélection une section en forme d'ellipse de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
+        picture: './../../../assets/video/selection_par_ellipse.mp4',
     },
     {
         name: 'Redimensionnement',
         description:
             'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il sufit de glisser et déposer avec le bouton gauche de la souris.',
-        picture: './../../../assets/video/resizing.gif',
+        picture: './../../../assets/video/redimensionnement.mp4',
     },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
     // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },

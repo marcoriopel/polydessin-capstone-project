@@ -1,4 +1,6 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -11,7 +13,6 @@ describe('ExportComponent', () => {
     let drawingServiceStub: DrawingService;
     let canvasStub: HTMLCanvasElement;
     let filterCanvasStub: HTMLCanvasElement;
-    let linkStub: HTMLAnchorElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -20,6 +21,8 @@ describe('ExportComponent', () => {
         drawingServiceStub = {} as DrawingService;
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         TestBed.configureTestingModule({
+            imports: [FormsModule, ReactiveFormsModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [ExportComponent],
             providers: [
                 { provide: DrawingService, useValue: drawingServiceStub },
@@ -32,7 +35,6 @@ describe('ExportComponent', () => {
         fixture = TestBed.createComponent(ExportComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        linkStub = document.createElement('a');
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
@@ -45,7 +47,6 @@ describe('ExportComponent', () => {
 
         // tslint:disable-next-line: no-string-literal
         component['drawingService'].canvas = canvasStub;
-        component.link = linkStub;
         component.filterCanvas = filterCanvasStub;
     });
 
@@ -100,5 +101,13 @@ describe('ExportComponent', () => {
         component.exportLocally();
         expect(clickSpy).toHaveBeenCalled();
         expect(dialogSpy.close).toHaveBeenCalled();
+    });
+
+    it('should not call the function click and close the modal when the name is to long', () => {
+        component.name = 'cercle_rouge_2014';
+        const clickSpy = spyOn(component.link, 'click');
+        component.exportLocally();
+        expect(clickSpy).not.toHaveBeenCalled();
+        expect(dialogSpy.close).not.toHaveBeenCalled();
     });
 });
