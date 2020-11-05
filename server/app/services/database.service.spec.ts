@@ -42,7 +42,7 @@ describe('Database service', () => {
     });
 
     it('should not get all DBData from DB if db id closed', async () => {
-        await client.close();
+        await mongoServer.stop();
         try {
             await databaseService.getDBData();
         } catch (error) {
