@@ -1,4 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from './move.service';
@@ -7,14 +8,14 @@ import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-magic-numbers
 // tslint:disable: max-file-line-count
 
-xdescribe('MoveService', () => {
+describe('MoveService', () => {
     let service: MoveService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
 
         TestBed.configureTestingModule({
@@ -22,7 +23,7 @@ xdescribe('MoveService', () => {
         });
         service = TestBed.inject(MoveService);
 
-        // const selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
+        service.selection = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
         // const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255]), height: 1, width: 1 };
         // service.initialize(selection, selectionData);
 
@@ -44,42 +45,22 @@ xdescribe('MoveService', () => {
         expect(service).toBeTruthy();
     });
 
-    // it('should initialize service', () => {
-    //     const selection: SelectionBox = { startingPoint: { x: 3, y: 3 }, width: 2, height: 1 };
-    //     const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
-    //     service.initialize(selection, selectionData);
+    it('should initialize service', () => {
+        const selection: SelectionBox = { startingPoint: { x: 3, y: 3 }, width: 2, height: 1 };
+        const selectionImage: HTMLCanvasElement = document.createElement('canvas');
+        service.initialize(selection, selectionImage);
 
-    //     expect(service.initialSelection).toEqual(selection);
-    //     expect(service.selection).toEqual(selection);
-    //     expect(service.selectionData).toEqual(selectionData);
-    // });
+        expect(service.initialSelection).toEqual(selection);
+        expect(service.selection).toEqual(selection);
+        expect(service.selectionImage).toEqual(selectionImage);
+    });
 
     it('onMouseDown should set isTransformationOver to false if isTransformationOver is true', () => {
         service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
         service.onMouseDown({} as MouseEvent);
 
         expect(service.isTransformationOver).toBe(false);
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseDown should call printSelectionOnPreview if isTransformationOver is true', () => {
-        service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseDown({} as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseDown should not call printSelectionOnPreview if isTransformationOver is false', () => {
-        service.isTransformationOver = false;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseDown({} as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should call printSelectionOnPreview', () => {
@@ -89,16 +70,6 @@ xdescribe('MoveService', () => {
         service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseMove should call drawingService.clearCanvas', () => {
-        service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it('onMouseMove should set selection.startingPoint', () => {
@@ -331,7 +302,7 @@ xdescribe('MoveService', () => {
     //     ctx.fillStyle = 'black';
     //     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    //     service.clearSelectionBackground(ctx);
+    //     service.clearSelectionBackground();
 
     //     expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
     // });
@@ -358,33 +329,13 @@ xdescribe('MoveService', () => {
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it('printSelectionOnPreview should call drawingService.previewCtx.putImageData', () => {
+    it('printSelectionOnPreview should call drawingService.previewCtx.drawImage', () => {
         const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
 
         service.printSelectionOnPreview();
 
         expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(previewCtxSpy.putImageData).toHaveBeenCalled();
-    });
-
-    it('printSelectionOnPreview should set isTransformationOver to false if isTransformationOver is true', () => {
-        const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
-        service.isTransformationOver = true;
-
-        service.printSelectionOnPreview();
-
-        expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(service.isTransformationOver).toBe(false);
-    });
-
-    it('printSelectionOnPreview should leave isTransformationOver to false if isTransformationOver is false', () => {
-        const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
-        service.isTransformationOver = false;
-
-        service.printSelectionOnPreview();
-
-        expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(service.isTransformationOver).toBe(false);
+        expect(previewCtxSpy.drawImage).toHaveBeenCalled();
     });
 
     it('move should call printSelectionOnPreview', () => {
