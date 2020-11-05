@@ -84,9 +84,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((dBData: DBData[]) => {
                 this.databaseMetadata = dBData;
+                this.filteredMetadata = this.databaseMetadata;
                 this.manageShownDrawings();
                 this.gotImages = true;
             });
+
         this.showDrawingsWithFilter();
     }
 
@@ -207,13 +209,19 @@ export class CarouselComponent implements OnInit, OnDestroy {
             this.filteredMetadata = this.databaseMetadata;
         }
         for (const data of this.databaseMetadata) {
-            if (data.tags.length > 0) {
-                // if (Array.isArray(data.tags)) {
-                for (const tag of data.tags) {
-                    if (this.tags.includes(tag)) {
-                        this.filteredMetadata.push(data);
-                        break;
-                    }
+            if (!data.tags.length) return;
+
+            if (!Array.isArray(data.tags)) {
+                if (this.tags.includes(data.tags)) {
+                    this.filteredMetadata.push(data);
+                    return;
+                }
+            }
+
+            for (const tag of data.tags) {
+                if (this.tags.includes(tag)) {
+                    this.filteredMetadata.push(data);
+                    break;
                 }
             }
         }

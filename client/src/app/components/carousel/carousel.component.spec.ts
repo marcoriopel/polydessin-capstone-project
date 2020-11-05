@@ -435,6 +435,16 @@ describe('CarouselComponent', () => {
         expect(component.filteredMetadata).toEqual([]);
     });
 
+    it('should filteredMetadata be empty if does not match any tags and isNotArray', () => {
+        const notArrayTag = ('smalltag' as unknown) as string[];
+        const tag = 'smalltag';
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: notArrayTag, fileName: 'filename' };
+        component.databaseMetadata = [DBDATA];
+        component.tags = [tag];
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata[0].tags).toEqual(tag);
+    });
+
     it('should return true if the name is to long', () => {
         const name = 'tagthatiswaytoolongtobeadded';
         expect(component.hasLengthTagError(name)).toBeTrue();
