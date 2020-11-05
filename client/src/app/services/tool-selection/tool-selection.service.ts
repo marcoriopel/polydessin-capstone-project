@@ -14,8 +14,10 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 
@@ -37,9 +39,11 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
-        squareSelectionService: SquareSelectionService,
+        public squareSelectionService: SquareSelectionService,
         circleSelectionService: CircleSelectionService,
         polygoneService: PolygoneService,
+        selectionService: SelectionService,
+        pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
     ) {
@@ -53,6 +57,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
             [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
+            [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
@@ -71,6 +76,7 @@ export class ToolSelectionService {
             this.currentTool.reset();
             this.currentTool = selectedTool;
             this.currentTool.initialize();
+            this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
@@ -86,7 +92,15 @@ export class ToolSelectionService {
             case this.sidebarElements.SAVE_SERVER_NAME:
                 this.dialog.open(SavingComponent);
                 break;
+            case this.sidebarElements.SELECT_ALL:
+                this.selectAll();
+                break;
         }
+    }
+
+    selectAll(): void {
+        this.changeTool(TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME);
+        this.squareSelectionService.selectAll();
     }
 
     getCurrentToolName(): string {
@@ -119,5 +133,9 @@ export class ToolSelectionService {
 
     currentToolMouseLeave(): void {
         this.currentTool.onMouseLeave();
+    }
+
+    currentToolMouseEnter(): void {
+        this.currentTool.onMouseEnter();
     }
 }

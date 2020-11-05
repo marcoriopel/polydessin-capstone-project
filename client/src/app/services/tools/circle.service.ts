@@ -92,7 +92,7 @@ export class CircleService extends Tool {
     }
 
     drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
-        const topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
+        const topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -102,12 +102,6 @@ export class CircleService extends Tool {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
             ctx.lineWidth = 1;
         }
-
-        // if (this.fillStyle === FILL_STYLES.DASHED) {
-        //     ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-        //     ctx.strokeStyle = 'black';
-        //     ctx.lineWidth = 1;
-        // }
 
         this.setEllipseHeight();
         this.setEllipseWidth();
@@ -135,6 +129,8 @@ export class CircleService extends Tool {
             this.drawingService.previewCtx.setLineDash([0]);
         }
 
+        topLeftPoint.x = this.ellipseData.center.x - this.ellipseRadius.x;
+        topLeftPoint.y = this.ellipseData.center.y - this.ellipseRadius.y;
         return { startingPoint: topLeftPoint, width: this.ellipseRadius.x * 2, height: this.ellipseRadius.y * 2 };
     }
 

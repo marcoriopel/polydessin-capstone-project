@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
+import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorPickerComponent } from './color-picker.component';
 
 class KeyEventMock {
@@ -15,6 +15,11 @@ describe('ColorPickerComponent', () => {
     let keyboardEvent: KeyboardEvent;
     let component: ColorPickerComponent;
     let fixture: ComponentFixture<ColorPickerComponent>;
+    let mouseEventClickLeft: MouseEvent;
+    let mouseEventClickRight: MouseEvent;
+    let baseCtxStub: CanvasRenderingContext2D;
+    const MAX_CANVAS_HEIGTH = 100;
+    const MAX_CANVAS_WIDTH = 100;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -29,9 +34,26 @@ describe('ColorPickerComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
 
+        const canvas = document.createElement('canvas') as HTMLCanvasElement;
+        canvas.width = MAX_CANVAS_WIDTH;
+        canvas.height = MAX_CANVAS_HEIGTH;
+        baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        // tslint:disable-next-line: no-string-literal
+        component.pipetteService['drawingService'].baseCtx = baseCtxStub;
         keyboardEvent = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
+        mouseEventClickLeft = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+
+        mouseEventClickRight = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.RIGHT,
+        } as MouseEvent;
     });
 
     it('should create', () => {
@@ -250,5 +272,17 @@ describe('ColorPickerComponent', () => {
         const color = '#ffffff';
         component.restorePreviousColor(color, false);
         expect(component.secondaryColor).toEqual(color);
+    });
+
+    it('Should change the primary color and the primary opacity when left clic of pipette', () => {
+        const changePrimaryColorSpy = spyOn(component, 'changePrimaryColor');
+        component.pipetteService.onMouseDown(mouseEventClickLeft);
+        expect(changePrimaryColorSpy).toHaveBeenCalled();
+    });
+
+    it('Should change the secondary color and the secpndary opacity when right click of pipette', () => {
+        const changeSecondaryColorSpy = spyOn(component, 'changeSecondaryColor');
+        component.pipetteService.onMouseDown(mouseEventClickRight);
+        expect(changeSecondaryColorSpy).toHaveBeenCalled();
     });
 });

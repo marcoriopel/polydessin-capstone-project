@@ -7,11 +7,11 @@ import { Component } from '@angular/core';
     styleUrls: ['./circleselection-attributes.component.scss'],
 })
 export class CircleselectionAttributesComponent {
-    toolWidth: number;
-    fillStyle: number;
+    // toolWidth: number;
+    // fillStyle: number;
 
     constructor(public circleSelectionService: CircleSelectionService) {
-        this.toolWidth = circleSelectionService.circleService.width;
-        this.fillStyle = circleSelectionService.circleService.fillStyle;
+        // this.toolWidth = circleSelectionService.circleService.width;
+        // this.fillStyle = circleSelectionService.circleService.fillStyle;
     }
 }

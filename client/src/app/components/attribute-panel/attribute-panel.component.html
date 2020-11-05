@@ -10,6 +10,7 @@
         <app-polygone-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.POLYGONE_TOOL_NAME"></app-polygone-attributes> 
         <app-circleselection-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.CIRCLE_SELECTION_TOOL_NAME"></app-circleselection-attributes>
         <app-squareselection-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.SQUARE_SELECTION_TOOL_NAME"></app-squareselection-attributes>
+        <app-pipette-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.PIPETTE_TOOL_NAME"> </app-pipette-attributes>
     </div>
     <div id="color-picker">
         <app-color-picker></app-color-picker>

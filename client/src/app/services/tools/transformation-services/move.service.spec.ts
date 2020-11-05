@@ -8,7 +8,7 @@
 // // tslint:disable: no-magic-numbers
 // // tslint:disable: max-file-line-count
 
-// describe('MoveService', () => {
+// xdescribe('MoveService', () => {
 //     let service: MoveService;
 //     let drawingServiceSpy: SpyObj<DrawingService>;
 //     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
@@ -24,6 +24,7 @@
 //         service = TestBed.inject(MoveService);
 
 //         const selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
+//         // tslint:disable-next-line: no-magic-numbers
 //         const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255]), height: 1, width: 1 };
 //         service.initialize(selection, selectionData);
 
@@ -47,6 +48,7 @@
 
 //     it('should initialize service', () => {
 //         const selection: SelectionBox = { startingPoint: { x: 3, y: 3 }, width: 2, height: 1 };
+//         // tslint:disable-next-line: no-magic-numbers
 //         const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
 //         service.initialize(selection, selectionData);
 
@@ -332,7 +334,7 @@
 //         ctx.fillStyle = 'black';
 //         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-//         service.clearSelectionBackground(ctx);
+//         service.clearSelectionBackground();
 
 //         expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
 //     });
@@ -345,7 +347,7 @@
 //         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 //         ctx.fillStyle = 'black';
 
-//         service.clearSelectionBackground(ctx);
+//         service.clearSelectionBackground();
 
 //         expect(ctx.fillStyle).toEqual('#000000');
 //     });
@@ -429,6 +431,7 @@
 //         service['move'](service);
 
 //         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+//         // tslint:disable-next-line: no-magic-numbers
 //         expect(service.selection.startingPoint.x).toEqual(initialXValue + 3);
 //     });
 

@@ -6,7 +6,6 @@ export interface Pencil {
     path: Vec2[];
     lineWidth: number;
     primaryColor: string;
-    lineCap: string;
 }
 
 export interface Brush {
@@ -85,6 +84,11 @@ export interface Resize {
 }
 
 export interface Fill {
+    type: string;
+    imageData: ImageData;
+}
+
+export interface Selection {
     type: string;
     imageData: ImageData;
 }

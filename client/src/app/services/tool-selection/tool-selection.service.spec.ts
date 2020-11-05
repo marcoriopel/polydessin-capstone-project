@@ -9,7 +9,7 @@ import { PencilService } from '@app/services/tools/pencil.service';
 import { Subject } from 'rxjs';
 import SpyObj = jasmine.SpyObj;
 
-describe('ToolSelectionService', () => {
+xdescribe('ToolSelectionService', () => {
     let service: ToolSelectionService;
     let eraserService: EraserService;
     let pencilService: PencilService;

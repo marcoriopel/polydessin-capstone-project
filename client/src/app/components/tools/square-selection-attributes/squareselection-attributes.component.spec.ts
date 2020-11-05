@@ -6,15 +6,15 @@ import { SquareselectionAttributesComponent } from './squareselection-attributes
 describe('SqareselectionAttributesComponent', () => {
     let component: SquareselectionAttributesComponent;
     let fixture: ComponentFixture<SquareselectionAttributesComponent>;
-    let circleServiceSpy: jasmine.SpyObj<SquareSelectionService>;
+    let squareSelectionServiceSpy: jasmine.SpyObj<SquareSelectionService>;
 
     beforeEach(async(() => {
-        circleServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['changeWidth', 'changeFillStyle']);
+        squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['changeWidth', 'changeFillStyle']);
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SquareselectionAttributesComponent],
-            providers: [{ provide: SquareSelectionService, useValue: circleServiceSpy }],
+            providers: [{ provide: SquareSelectionService, useValue: squareSelectionServiceSpy }],
         }).compileComponents();
     }));
 

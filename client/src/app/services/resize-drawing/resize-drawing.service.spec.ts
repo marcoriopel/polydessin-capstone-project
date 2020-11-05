@@ -37,6 +37,10 @@ class DrawingServiceMock {
     getCanvasData(): ImageData {
         return this.imageData;
     }
+    restoreSelection(): void {}
+    getPreviewData(): ImageData {
+        return this.imageData;
+    }
 }
 
 // tslint:disable: no-magic-numbers

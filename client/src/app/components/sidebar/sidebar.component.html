@@ -10,6 +10,16 @@
             (click)="openDialog()"
             >add</mat-icon
         >
+        <mat-icon
+            type="radio"
+            id="new-drawing"
+            class="material-icons sidebarSectionTop"
+            [matTooltip]="elementDescriptions.SELECT_ALL_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            (click)="selectAll()"
+            >select_all</mat-icon
+        >
     </div>
 
     <div class="toggleButtonGroup sidebarSection">
@@ -83,24 +93,6 @@
         </label>
         <input
             type="radio"
-            [id]="this.toolNames.LINE_TOOL_NAME"
-            name="tool"
-            [value]="this.toolNames.LINE_TOOL_NAME"
-            (change)="onToolChange($event)"
-            [checked]="selectedTool.includes(this.toolNames.LINE_TOOL_NAME)"
-        />
-        <label [for]="this.toolNames.LINE_TOOL_NAME">
-            <mat-icon
-                class="material-icons"
-                [matTooltip]="elementDescriptions.LINE_TOOL_DESCRIPTION"
-                matTooltipPosition="right"
-                [matTooltipShowDelay]="tooltipShowDelay"
-                >timeline</mat-icon
-            >
-        </label>
-
-        <input
-            type="radio"
             [id]="this.toolNames.POLYGONE_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.POLYGONE_TOOL_NAME"
@@ -114,6 +106,23 @@
                 matTooltipPosition="right"
                 [matTooltipShowDelay]="tooltipShowDelay"
                 >change_history</mat-icon
+            >
+        </label>
+        <input
+            type="radio"
+            [id]="this.toolNames.LINE_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.LINE_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.LINE_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.LINE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.LINE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >timeline</mat-icon
             >
         </label>
 
@@ -183,6 +192,24 @@
                 matTooltipPosition="right"
                 [matTooltipShowDelay]="tooltipShowDelay"
             ></mat-icon>
+        </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.PIPETTE_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.PIPETTE_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.PIPETTE_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.PIPETTE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.PIPETTE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >colorize</mat-icon
+            >
         </label>
     </div>
 

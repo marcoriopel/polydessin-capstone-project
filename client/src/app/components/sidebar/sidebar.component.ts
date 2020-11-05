@@ -10,6 +10,7 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 
 @Component({
@@ -29,6 +30,7 @@ export class SidebarComponent implements OnInit {
         public newDrawingService: NewDrawingService,
         public undoRedoService: UndoRedoService,
         public hotkeyService: HotkeyService,
+        public squareSelectionService: SquareSelectionService,
     ) {}
 
     ngOnInit(): void {
@@ -42,8 +44,11 @@ export class SidebarComponent implements OnInit {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {
             this.toolSelectionService.changeTool(target.value);
-            this.toolSelectionService.setCurrentToolCursor();
         }
+    }
+
+    selectAll(): void {
+        this.toolSelectionService.selectAll();
     }
 
     openUserguide(): void {
