@@ -50,18 +50,20 @@ export class ResizeDrawingService {
     }
 
     resizeCanvasSize(width: number, height: number): void {
-        this.drawingService.canvas.width = width;
-        this.drawingService.canvas.height = height;
         this.previewSize.x = width;
         this.previewSize.y = height;
+        this.canvasSize.x = width;
+        this.canvasSize.y = height;
     }
 
     restoreCanvas(resizeData: Resize): void {
-        this.drawingService.canvas.width = resizeData.canvasSize.x;
-        this.drawingService.canvas.height = resizeData.canvasSize.y;
         this.previewSize.x = resizeData.canvasSize.x;
         this.previewSize.y = resizeData.canvasSize.y;
-        this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
+        this.canvasSize.x = resizeData.canvasSize.x;
+        this.canvasSize.y = resizeData.canvasSize.y;
+        setTimeout(()=>{
+            this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
+        })
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -76,7 +78,12 @@ export class ResizeDrawingService {
     onMouseUp(): void {
         if (this.mouseDown) {
             this.imageData = this.drawingService.getCanvasData();
-            const previewData: ImageData = this.drawingService.getPreviewData();
+
+            const tempPreviewCanvas: HTMLCanvasElement = document.createElement('canvas');
+            tempPreviewCanvas.width = this.canvasSize.x;
+            tempPreviewCanvas.height = this.canvasSize.y;
+            const tempPreviewCanvasCtx: CanvasRenderingContext2D = tempPreviewCanvas.getContext('2d') as CanvasRenderingContext2D;
+            tempPreviewCanvasCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
 
             this.canvasSize.x = this.previewSize.x;
             this.canvasSize.y = this.previewSize.y;
@@ -87,7 +94,6 @@ export class ResizeDrawingService {
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
                 this.drawingService.baseCtx.putImageData(this.imageData, 0, 0);
-                this.drawingService.previewCtx.putImageData(previewData, 0, 0);
             });
         }
         this.mouseDown = false;
