@@ -21,8 +21,7 @@ export class EraserService extends Tool {
     }
 
     setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'none';
+        this.drawingService.previewCanvas.style.cursor = 'none';
     }
 
     onMouseDown(event: MouseEvent): void {

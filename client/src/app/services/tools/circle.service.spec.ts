@@ -6,12 +6,14 @@ import { ColorSelectionService } from '@app/services/color-selection/color-selec
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from './circle.service';
 
+import SpyObj = jasmine.SpyObj;
+
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-xdescribe('CircleService', () => {
+describe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let drawServiceSpy: SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
@@ -154,12 +156,26 @@ xdescribe('CircleService', () => {
     });
 
     it('should drawCircle if mouse is down and shift is pressed', () => {
-        service.onMouseDown(mouseEvent);
+        const drawCircleSpy = spyOn<any>(service, 'drawCircle');
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 1,
+            isShiftDown: true,
+            lineWidth: 1,
+        };
+        service.firstPoint = { x: 0, y: 0 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 1 };
+        service.mouseDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
         service.onKeyDown(event);
-        expect(drawEllipseSpy).toHaveBeenCalled();
+        expect(drawCircleSpy).toHaveBeenCalled();
     });
 
     it('should drawEllipse if mouse is down and shift is unpressed', () => {
