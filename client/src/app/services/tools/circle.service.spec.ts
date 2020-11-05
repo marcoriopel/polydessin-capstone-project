@@ -8,7 +8,7 @@ import { CircleService } from './circle.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-xdescribe('CircleService', () => {
+fdescribe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -277,5 +277,12 @@ xdescribe('CircleService', () => {
         expect(setCircleHeigthSpy).toHaveBeenCalled();
         expect(setCircleWidthSpy).toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
+
+    it('should drawEllipse if mouse is down and shift is unpressed', () => {
+        service.onMouseDown(mouseEvent);
+        service.isShiftKeyDown = true;
+        service.initialize();
+        expect(service.initialize).toHaveBeenCalled();
     });
 });

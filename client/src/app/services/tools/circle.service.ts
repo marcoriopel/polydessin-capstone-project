@@ -103,6 +103,12 @@ export class CircleService extends Tool {
             ctx.lineWidth = 1;
         }
 
+        // if (this.fillStyle === FILL_STYLES.DASHED) {
+        //     ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+        //     ctx.strokeStyle = 'black';
+        //     ctx.lineWidth = 1;
+        // }
+
         this.setEllipseHeight();
         this.setEllipseWidth();
         this.ellipseRadius = { x: this.ellipseWidth / 2, y: this.ellipseHeight / 2 };
@@ -209,6 +215,8 @@ export class CircleService extends Tool {
             fillStyle: this.fillStyle,
             isShiftDown: this.isShiftKeyDown,
             lineWidth: this.width,
+            firstPoint: this.firstPoint,
+            lastPoint: this.lastPoint,
         };
     }
 
