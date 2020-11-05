@@ -87,6 +87,8 @@ describe('CarouselComponent', () => {
     });
 
     it('should call previous click with arrow event activated and left arrow press', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
         component.isArrowEventsChecked = true;
         keyboardEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
         const previousSpy = spyOn(component, 'onPreviousClick');
@@ -94,12 +96,71 @@ describe('CarouselComponent', () => {
         expect(previousSpy).toHaveBeenCalled();
     });
 
+    it('should call onclicktwodrawings with 2 drawings on left', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.isArrowEventsChecked = true;
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+        const twodrawingsSpy = spyOn(component, 'onClickTwoDrawings');
+        component.onKeyDown(keyboardEvent);
+        expect(twodrawingsSpy).toHaveBeenCalled();
+    });
+
+    it('should call not do anything with 1 drawing on arrow press', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata.push(DBDATA);
+        component.isArrowEventsChecked = true;
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft' });
+        const twodrawingsSpy = spyOn(component, 'onClickTwoDrawings');
+        component.onKeyDown(keyboardEvent);
+        expect(twodrawingsSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call onclicktwodrawings with 2 drawings on right', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.isArrowEventsChecked = true;
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'ArrowRight' });
+        const twodrawingsSpy = spyOn(component, 'onClickTwoDrawings');
+        component.onKeyDown(keyboardEvent);
+        expect(twodrawingsSpy).toHaveBeenCalled();
+    });
+
     it('should call next click with arrow event activated and right arrow press', () => {
         component.isArrowEventsChecked = true;
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
         keyboardEvent = new KeyboardEvent('keydown', { key: 'ArrowRight' });
         const nextSpy = spyOn(component, 'onNextClick');
         component.onKeyDown(keyboardEvent);
         expect(nextSpy).toHaveBeenCalled();
+    });
+
+    it('should not call event on other key down press with 3 drawings or more', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.databaseMetadata.push(DBDATA);
+        component.isArrowEventsChecked = true;
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
+        const nextSpy = spyOn(component, 'onNextClick');
+        const previousSpy = spyOn(component, 'onPreviousClick');
+        component.onKeyDown(keyboardEvent);
+        expect(nextSpy).not.toHaveBeenCalled();
+        expect(previousSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call event on other key down press', () => {
+        component.isArrowEventsChecked = true;
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
+        const nextSpy = spyOn(component, 'onNextClick');
+        component.onKeyDown(keyboardEvent);
+        expect(nextSpy).not.toHaveBeenCalled();
     });
 
     it('should not call arrow event if arrow event is false', () => {
@@ -199,6 +260,18 @@ describe('CarouselComponent', () => {
         expect(applySpy).toHaveBeenCalled();
     });
 
+    it('should not apply drawing if canvas is not empty and user does not overwrites', () => {
+        drawingServiceSpy.isCanvasBlank.and.returnValue(false);
+        const applySpy = spyOn(component, 'applySelectedDrawing');
+        const loadAlertSpy = matDialogSpy.open.and.returnValue({ afterClosed: () => of('Fermer') } as MatDialogRef<
+            LoadSelectedDrawingAlertComponent
+        >);
+        component.loadSelectedDrawing(1);
+
+        expect(loadAlertSpy).toHaveBeenCalled();
+        expect(applySpy).not.toHaveBeenCalled();
+    });
+
     it('should draw drawing', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         const drawSpy = spyOn(component, 'drawImageOnCanvas');
@@ -251,6 +324,17 @@ describe('CarouselComponent', () => {
         expect(loadDBSpy).toHaveBeenCalled();
     });
 
+    it('should delete drawing on delete call with one drawing', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        const loadDBSpy = spyOn(component, 'loadDBData');
+        component.drawingOfInterest = 0;
+        component.visibleDrawingsIndexes.push(0);
+        component.databaseMetadata = [DBDATA];
+        component.deleteDrawing();
+        deleteDrawingObservable.next();
+        expect(loadDBSpy).toHaveBeenCalled();
+    });
+
     it('should send delete snackBar on bad delete call', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
@@ -296,6 +380,15 @@ describe('CarouselComponent', () => {
         expect(component.visibleDrawingsIndexes).toEqual([2, 0, 1]);
     });
 
+    // it('should switch drawings left on previous click with 2 drawing', () => {
+    //     const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+    //     component.drawingOfInterest = 0;
+    //     component.databaseMetadata = [DBDATA, DBDATA];
+    //     component.visibleDrawingsIndexes = [0, 1];
+    //     component.onPreviousClick();
+    //     expect(component.visibleDrawingsIndexes).toEqual([1, 0]);
+    // });
+
     it('should switch drawings right on next click', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
@@ -304,6 +397,15 @@ describe('CarouselComponent', () => {
         component.onNextClick();
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 0]);
     });
+
+    // it('should switch drawings right on next click with 2 drawings', () => {
+    //     const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+    //     component.drawingOfInterest = 0;
+    //     component.databaseMetadata = [DBDATA, DBDATA];
+    //     component.visibleDrawingsIndexes = [0, 1];
+    //     component.onNextClick();
+    //     expect(component.visibleDrawingsIndexes).toEqual([1, 0]);
+    // });
 
     it('should switch drawings right on next click with 4 drawings', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
