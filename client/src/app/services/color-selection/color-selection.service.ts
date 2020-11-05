@@ -27,6 +27,7 @@ export class ColorSelectionService {
     }
 
     getRgbaPrimaryColor(): Rgba {
+        console.log(this.primaryColor);
         const slicingIndex = this.primaryColor.indexOf('(') + 1;
         const primaryColor: string = this.primaryColor.slice(slicingIndex);
 
