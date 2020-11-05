@@ -163,13 +163,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
         });
     }
 
-    addTag(event: MatChipInputEvent): void {
-        console.log('hi');
-    }
+    addTag(event: MatChipInputEvent): void {}
 
-    removeTag(tags: string): void {
-        console.log('bye');
-    }
+    removeTag(tags: string): void {}
 
     deleteDrawing(): void {
         this.gotImages = false;
