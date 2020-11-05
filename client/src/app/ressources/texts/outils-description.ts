@@ -6,12 +6,20 @@ export interface GroupFeature extends Feature {
 
 export const OTHER_FEATURES: Feature[] = [
     // { name: 'Grille et magnétisme', description: '..', picture: './../../../assets/img/picture_test.jpg' },
-    { name: 'Annuler-refaire', description: '..', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Palette de couleur',
         description:
             'Cet outil permet de définir la couleur de tous les outils. Vous pouvez définir deux couleurs : principale et secondaire. Ces deux couleurs peuvent intéragir entre eux. Vous pouvez choisir la couleur avec le panneau de couleur contenant toutes les couleurs. En changeant de couleur, l ancienne couleur est enregistré pour vous permettre de la récupérer au besoin. ',
         picture: './../../../assets/img/couleur.PNG',
+    },
+];
+
+export const UNDO_REDO: Feature[] = [
+    {
+        name: 'Annuler-refaire',
+        description:
+            "Cet outil permet d'annuler et de refaire vos dernières modifications sur la surface du dessin. IL est possible d'utiliser le raccourci CTRL + Z pour annuler une action et le raccourci CTRL + SHIFT + Z pour refaire une action.",
+        picture: './../../../assets/img/Annuler.PNG',
     },
 ];
 
@@ -86,8 +94,18 @@ export const FILL: Feature[] = [
 ];
 
 export const TRANSFORMATIONS: Feature[] = [
-    { name: 'Déplacement', description: '', picture: './../../../assets/img/picture_test.jpg' },
-    { name: 'Redimensionnement', description: '', picture: './../../../assets/video/resizing.gif' },
+    {
+        name: 'Déplacement',
+        description:
+            "Cette fonctionnalité permet de sélection une section de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
+        picture: './../../../assets/img/picture_test.jpg',
+    },
+    {
+        name: 'Redimensionnement',
+        description:
+            'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il sufit de glisser et déposer avec le bouton gauche de la souris.',
+        picture: './../../../assets/video/resizing.gif',
+    },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
     // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Feature } from '@app/ressources/texts/feature';
-import { BASIC_TOOLS, DRAWING_TOOLS, FILL, OTHER_FEATURES, SHAPES } from '@app/ressources/texts/outils-description';
+import { BASIC_TOOLS, DRAWING_TOOLS, FILL, OTHER_FEATURES, SHAPES, TRANSFORMATIONS, UNDO_REDO } from '@app/ressources/texts/outils-description';
 
 @Component({
     selector: 'app-drawing-detail',
@@ -17,4 +17,8 @@ export class DrawingDetailComponent {
     shapes: Feature[] = SHAPES;
 
     fills: Feature[] = FILL;
+
+    undoredo: Feature[] = UNDO_REDO;
+
+    transformations: Feature[] = TRANSFORMATIONS;
 }
