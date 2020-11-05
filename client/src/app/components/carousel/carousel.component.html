@@ -13,12 +13,12 @@
                         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                     </mat-chip>
                     <input
-                        #writetag
+                        #tag
                         type="text"
-                        id="writetag"
+                        id="tag"
                         [disabled]="this.maxTags"
-                        (keyup)="this.currentTagInput(writetag.value)"
-                        (keydown)="this.currentTagInput(writetag.value)"
+                        (keyup)="this.currentTagInput(tag.value)"
+                        (keydown)="this.currentTagInput(tag.value)"
                         on-focus="disableEvents()"
                         on-focusout="enableEvents()"
                         placeholder="Tags:"
@@ -28,8 +28,8 @@
                         (matChipInputTokenEnd)="addTag($event)"
                     />
                 </mat-chip-list>
-                <mat-error *ngIf="hasTagError(writetag.value)">Pas d'espace</mat-error>
-                <mat-error *ngIf="hasLengthTagError(writetag.value)">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
+                <mat-error *ngIf="hasSpaceTagError(tag.value)">Pas d'espace</mat-error>
+                <mat-error *ngIf="hasLengthTagError(tag.value)">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
                 <mat-hint>- Pas d'espace, <br />- Max 15 charactères <br />- Max 5 étiquettes</mat-hint>
                 <div class="maxTags-notification" *ngIf="maxTags">Nombre maximum d'étiquettes</div>
             </mat-form-field>

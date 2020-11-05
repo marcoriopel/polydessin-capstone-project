@@ -2,6 +2,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatChipInputEvent, MatChipList, MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CarouselComponent } from '@app/components//carousel/carousel.component';
@@ -31,6 +32,7 @@ describe('CarouselComponent', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     let routerSpy: SpyObj<RouterTestingModule>;
+    let chipListStub: MatChipList;
     beforeEach(async(() => {
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
@@ -41,6 +43,7 @@ describe('CarouselComponent', () => {
         dBDataObservable = new Subject<DBData[]>();
         imageObservable = new Subject<Blob>();
         deleteDrawingObservable = new Subject<void>();
+        chipListStub = {} as MatChipList;
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
         drawingServiceSpy.baseCtx = baseCtxSpy;
         databaseServiceSpy.getAllDBData.and.returnValue(dBDataObservable.asObservable());
@@ -49,7 +52,7 @@ describe('CarouselComponent', () => {
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [CarouselComponent],
-            imports: [HttpClientModule, MatDialogModule, RouterTestingModule],
+            imports: [HttpClientModule, MatDialogModule, RouterTestingModule, MatChipsModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
@@ -59,6 +62,7 @@ describe('CarouselComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceSpy },
             ],
         }).compileComponents();
+        component.chipList = chipListStub;
     }));
 
     beforeEach(() => {
@@ -325,5 +329,154 @@ describe('CarouselComponent', () => {
         component.onNextClick();
         // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
+    });
+
+    it('should add tag if tag is valid', () => {
+        component.tags = [];
+        const value = undefined;
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+        const tag = 'smalltag';
+        const event: MatChipInputEvent = { value: tag, input: target };
+        component.addTag(event);
+        expect(component.tags.length).toEqual(1);
+    });
+
+    it('should not set value to none if value is undefined', () => {
+        component.tags = [];
+        const target = (undefined as unknown) as HTMLInputElement;
+        const tag = 'smalltag';
+        const event: MatChipInputEvent = { value: tag, input: target };
+        component.addTag(event);
+        expect(event.input).toBeUndefined();
+    });
+
+    it('should not add tag if tag is empty', () => {
+        component.tags = [];
+        const value = undefined;
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+        const tag = '';
+        const event: MatChipInputEvent = { value: tag as string, input: target };
+        component.addTag(event);
+        expect(component.tags.length).toEqual(0);
+    });
+
+    it('should not add tag if tag is invalid', () => {
+        component.tags = [];
+        const value = undefined;
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+        const tag = 'tagthatiswaytoolongtobeadded';
+        const event: MatChipInputEvent = { value: tag, input: target };
+        component.addTag(event);
+        expect(component.tags.length).toEqual(0);
+    });
+
+    it('should not add tag if number of tag is max', () => {
+        const tag = 'tagthatiswaytoolongtobeadded';
+        component.tags = [tag, tag, tag, tag, tag];
+        const value = undefined;
+        const target = ({
+            value,
+        } as unknown) as HTMLInputElement;
+        const event: MatChipInputEvent = { value: tag, input: target };
+        component.addTag(event);
+        expect(component.maxTags).toBeTruthy();
+        expect(component.tags.length).toEqual(5);
+    });
+
+    it('should remove tag if tag is valid', () => {
+        const tag = 'smalltag';
+        component.tags = [tag];
+        component.removeTag(tag);
+        expect(component.tags.length).toEqual(0);
+    });
+
+    it('should not remove tag if there is not tag to delete', () => {
+        component.tags = [];
+        component.removeTag('tag1');
+        expect(component.tags.length).toEqual(0);
+    });
+
+    it('should remove tag if tag is valid and put replace array', () => {
+        const tag1 = 'smalltag';
+        const tag2 = 'tag2';
+        component.tags = [tag1, tag2];
+        component.removeTag(tag1);
+        expect(component.tags.length).toEqual(1);
+        expect(component.tags[0]).toEqual(tag2);
+    });
+
+    it('should remove tag and set maxtags to false if it was true', () => {
+        component.maxTags = true;
+        const tag = 'smalltag';
+        component.tags = [tag, tag, tag, tag, tag];
+        component.removeTag(tag);
+        expect(component.tags.length).toEqual(4);
+        expect(component.maxTags).toBeFalsy();
+    });
+
+    it('should show the filteredMetadata with the tags', () => {
+        const tag = 'smalltag';
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', tag], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.tags = [tag];
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata[1].tags).toEqual(DBDATA.tags);
+    });
+
+    it('should filteredMetadata be empty if does not match any tags', () => {
+        const tag = 'smalltag';
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.tags = [tag];
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata).toEqual([]);
+    });
+
+    it('should show the filteredMetadata with a tags that is not an Array ', () => {
+        component.tags = [];
+        const tag = 'smalltag';
+        const target = ({
+            tag,
+        } as unknown) as HTMLInputElement;
+        const event: MatChipInputEvent = { value: tag, input: target };
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', tag], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.addTag(event);
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata[1].tags).toEqual(DBDATA.tags);
+    });
+
+    it('should return true if the name is to long', () => {
+        const name = 'tagthatiswaytoolongtobeadded';
+        expect(component.hasLengthTagError(name)).toBeTrue();
+    });
+
+    it('should return false if the name is less then 15 caractere', () => {
+        const name = 'name';
+        expect(component.hasLengthTagError(name)).toBeFalse();
+    });
+    it('should return true if the name containt space', () => {
+        const name = 'gea dg';
+        const haveSpace = component.hasSpaceTagError(name);
+        expect(haveSpace).toEqual(true);
+    });
+
+    it('should return false if the name is less then 15 caractere', () => {
+        const name = 'geadg';
+        const haveSpace = component.hasSpaceTagError(name);
+        expect(haveSpace).toEqual(false);
+    });
+
+    it('should chiplist error state be false if name is correct ', () => {
+        component.chipList.errorState = true;
+        const name = 'smallTag';
+        component.currentTagInput(name);
+        expect(component.chipList.errorState).toEqual(false);
     });
 });

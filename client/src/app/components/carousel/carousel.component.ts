@@ -189,6 +189,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
 
     removeTag(tags: string): void {
         const index = this.tags.indexOf(tags);
+        if (this.maxTags) {
+            this.maxTags = false;
+        }
+
         if (index >= 0) {
             this.tags.splice(index, 1);
         }
@@ -278,7 +282,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         return tag.length > MAX_NAME_LENGTH;
     }
 
-    hasTagError(tag: string): boolean {
+    hasSpaceTagError(tag: string): boolean {
         if (tag.indexOf(' ') < 0) {
             return false;
         } else {
