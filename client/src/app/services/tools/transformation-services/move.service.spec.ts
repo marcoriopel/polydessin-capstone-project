@@ -17,7 +17,7 @@ describe('MoveService', () => {
 
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage', 'fillRect']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
 
         TestBed.configureTestingModule({
@@ -26,8 +26,6 @@ describe('MoveService', () => {
         service = TestBed.inject(MoveService);
 
         service.selection = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
-        // const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255]), height: 1, width: 1 };
-        // service.initialize(selection, selectionData);
 
         service.pressedKeys.set(ARROW_KEYS.LEFT, false);
         service.pressedKeys.set(ARROW_KEYS.UP, false);
@@ -57,7 +55,7 @@ describe('MoveService', () => {
         expect(service.selectionImage).toEqual(selectionImage);
     });
 
-    it('onMouseDown should set isTransformationOver to false if isTransformationOver is true', () => {
+    it('onMouseDown should set isTransformationOver to false', () => {
         service.isTransformationOver = true;
 
         service.onMouseDown({} as MouseEvent);
@@ -153,6 +151,18 @@ describe('MoveService', () => {
         service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyDown should set isTransformationOver to false', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.isTransformationOver).toBeFalse();
     });
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowLeft', () => {
@@ -284,32 +294,46 @@ describe('MoveService', () => {
         expect(service.pressedKeys.get(ARROW_KEYS.LEFT)).toBe(false);
     });
 
-    // it('clearSelectionBackground should set selection background to white', () => {
-    //     // create a black dummy canvas
-    //     const canvas: HTMLCanvasElement = document.createElement('canvas');
-    //     canvas.height = 10;
-    //     canvas.width = 10;
-    //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    //     ctx.fillStyle = 'black';
-    //     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    it('clearSelectionBackground should reset set drawingService.previewCtx.fillStyle to original value', () => {
+        service.drawingService.previewCtx.fillStyle = 'black';
+        service.clearSelectionBackground();
 
-    //     service.clearSelectionBackground();
+        expect(previewCtxSpy.fillStyle).toEqual('black');
+    });
 
-    //     expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
-    // });
+    it('clearSelectionBackground should call drawingService.previewCtx.fillRect', () => {
+        service.clearSelectionBackground();
 
-    // it('clearSelectionBackground should not change fillStyle', () => {
-    //     // create a black dummy canvas
-    //     const canvas: HTMLCanvasElement = document.createElement('canvas');
-    //     canvas.height = 10;
-    //     canvas.width = 10;
-    //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-    //     ctx.fillStyle = 'black';
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(
+            service.initialSelection.startingPoint.x,
+            service.initialSelection.startingPoint.y,
+            service.initialSelection.width,
+            service.initialSelection.height,
+        );
+    });
 
-    //     service.clearSelectionBackground(ctx);
+    it('clearSelectionBackground should call drawingService.previewCtx.drawImage', () => {
+        service.clearSelectionBackground();
 
-    //     expect(ctx.fillStyle).toEqual('#000000');
-    // });
+        expect(previewCtxSpy.drawImage).toHaveBeenCalled();
+    });
+
+    it('clearSelectionBackground should set selection background to white', () => {
+        // create a black dummy canvas
+        const canvas: HTMLCanvasElement = document.createElement('canvas');
+        canvas.height = 10;
+        canvas.width = 10;
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        service.drawingService.previewCtx = ctx;
+
+        service.selectionImage = canvas;
+
+        service.clearSelectionBackground();
+
+        expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
+    });
 
     it('printSelectionOnPreview should call drawingService.clearCanvas and clearSelectionBackground', () => {
         const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
