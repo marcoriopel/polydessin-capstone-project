@@ -20,8 +20,8 @@ export const TOOL_NAMES: ToolNames = {
     LINE_TOOL_NAME: 'Ligne',
     FILL_TOOL_NAME: 'Sceau',
     ERASER_TOOL_NAME: 'Efface',
-    SQUARE_SELECTION_TOOL_NAME: 'SquareSelection',
-    CIRCLE_SELECTION_TOOL_NAME: 'CircleSelection',
+    SQUARE_SELECTION_TOOL_NAME: 'Sélection - Rectangle',
+    CIRCLE_SELECTION_TOOL_NAME: 'Sélection - Ellipse',
     PIPETTE_TOOL_NAME: 'Pipette',
     POLYGONE_TOOL_NAME: 'Polygone',
 };
