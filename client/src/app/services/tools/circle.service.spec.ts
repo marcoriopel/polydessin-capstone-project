@@ -17,12 +17,7 @@ describe('CircleService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let setCircleWidthSpy: jasmine.Spy<any>;
-    let setCircleHeigthSpy: jasmine.Spy<any>;
-    let drawEllipseSpy: jasmine.Spy<any>;
-    let drawShapeSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
-    let ctxFillSpy: jasmine.Spy<any>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
@@ -47,12 +42,6 @@ describe('CircleService', () => {
             ],
         });
         service = TestBed.inject(CircleService);
-        drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
-        ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
-        setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
-        setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
-        drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
-
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
@@ -73,6 +62,12 @@ describe('CircleService', () => {
         service.width = 0;
         service.changeWidth(1);
         expect(service.width).toBe(1);
+    });
+
+    it('should set mousedown to false on init', () => {
+        service.mouseDown = true;
+        service.initialize();
+        expect(service.mouseDown).toEqual(false);
     });
 
     it('should change the fillStyle', () => {
@@ -113,6 +108,8 @@ describe('CircleService', () => {
     });
 
     it(' onMouseUp should call drawShape if mouse was already down', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape');
+
         const mouseEventLClick = {
             offsetX: 0,
             offsetY: 0,
@@ -123,15 +120,17 @@ describe('CircleService', () => {
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 
-    it('should draw ellipse ', () => {
+    it('should call draw ellipse if move with mousedown', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape');
+
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,
             button: MouseButton.LEFT,
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
-        service.onMouseUp(mouseEvent);
-        expect(drawEllipseSpy).toHaveBeenCalled();
+        service.onMouseMove(mouseEvent);
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
@@ -179,6 +178,7 @@ describe('CircleService', () => {
     });
 
     it('should drawEllipse if mouse is down and shift is unpressed', () => {
+        const drawEllipseSpy = spyOn<any>(service, 'drawEllipse').and.callThrough();
         service.onMouseDown(mouseEvent);
         service.isShiftKeyDown = true;
         const event = new KeyboardEvent('keypress', {
@@ -189,6 +189,7 @@ describe('CircleService', () => {
     });
 
     it('should drawShape when mouse is down on mousemove', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
@@ -214,6 +215,7 @@ describe('CircleService', () => {
     });
 
     it('should call fill if option is not to draw only the border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
         service.fillStyle = FILL_STYLES.FILL;
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
@@ -221,6 +223,7 @@ describe('CircleService', () => {
     });
 
     it('should not call fill if option is not to draw only the border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
         service.fillStyle = FILL_STYLES.BORDER;
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEvent);
@@ -237,6 +240,7 @@ describe('CircleService', () => {
     });
 
     it('should not draw anything if key up of shift but not mousedown', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         service.isShiftKeyDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
@@ -247,18 +251,21 @@ describe('CircleService', () => {
     });
 
     it('should not draw anything on detection of mouse up if it was not down', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
     it('should not draw anything on detection of mouse move if it was not down', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
     it('should fill circle if style is not set to border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
         service.isShiftKeyDown = true;
         const mouseEventLClick = {
             offsetX: 25,
@@ -272,6 +279,7 @@ describe('CircleService', () => {
     });
 
     it('should not fill circle if style is set to border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
         service.isShiftKeyDown = true;
         const mouseEventLClick = {
             offsetX: 25,
@@ -285,6 +293,9 @@ describe('CircleService', () => {
     });
 
     it('drawCircle should not call fill if the fill style is set to border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
+        const setCircleWidthSpy = spyOn<any>(service, 'setCircleWidth').and.callThrough();
+        const setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight').and.callThrough();
         const point: Vec2 = { x: 0, y: 0 };
         service.fillStyle = FILL_STYLES.BORDER;
         service.firstPoint = { x: 30, y: 30 };

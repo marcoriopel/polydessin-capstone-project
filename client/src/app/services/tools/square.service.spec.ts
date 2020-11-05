@@ -275,7 +275,7 @@ describe('SquareService', () => {
     });
 
     it('should fill square if style is not set to border', () => {
-        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect');
         const rectangleData: Rectangle = {
             type: 'rectangle',
             primaryColor: 'red',
@@ -292,7 +292,7 @@ describe('SquareService', () => {
     });
 
     it('should not fill square if style is set to border', () => {
-        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect');
         const rectangleData: Rectangle = {
             type: 'rectangle',
             primaryColor: 'red',
