@@ -1,19 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
 import { PATTERN_NAMES } from '@app/ressources/global-variables/brush-pattern-names';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
+import { BrushService } from '@app/services/tools/brush.service';
+import { CircleService } from '@app/services/tools/circle.service';
+import { EraserService } from '@app/services/tools/eraser.service';
+import { LineService } from '@app/services/tools/line.service';
+import { PencilService } from '@app/services/tools/pencil.service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection-services/selection.service';
+import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
-import { DrawingService } from '../drawing/drawing.service';
-import { ResizeDrawingService } from '../resize-drawing/resize-drawing.service';
-import { BrushService } from '../tools/brush.service';
-import { CircleService } from '../tools/circle.service';
-import { EraserService } from '../tools/eraser.service';
-import { LineService } from '../tools/line.service';
-import { PencilService } from '../tools/pencil.service';
-import { PolygoneService } from '../tools/polygone.service';
-import { SelectionService } from '../tools/selection-services/selection.service';
-import { SquareService } from '../tools/square.service';
 import { UndoRedoService } from './undo-redo.service';
-
+// tslint:disable: no-any
 describe('UndoRedoService', () => {
     let service: UndoRedoService;
     let changeUndoAvailabilitySpy: jasmine.SpyObj<any>;
@@ -389,4 +389,5 @@ describe('UndoRedoService', () => {
         service.setRedoAvailability(false);
         expect(returnValue).toBe(false);
     });
+    // tslint:disable-next-line: max-file-line-count
 });

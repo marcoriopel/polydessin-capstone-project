@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('undo', { read: ElementRef }) undoButton: ElementRef;
     @ViewChild('redo', { read: ElementRef }) redoButton: ElementRef;
     destroy$: Subject<boolean> = new Subject<boolean>();
