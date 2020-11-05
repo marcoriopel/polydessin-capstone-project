@@ -87,7 +87,7 @@ export class ToolSelectionService {
     selectItem(toolName: string): void {
         switch (toolName) {
             case this.sidebarElements.NEW_DRAWING_NAME:
-                this.dialog.open(NewDrawingService);
+                this.newDrawingService.openWarningModal();
                 break;
             case this.sidebarElements.CAROUSEL_NAME:
                 this.dialog.open(CarouselComponent);
