@@ -148,6 +148,24 @@
                 [matTooltipShowDelay]="tooltipShowDelay"
             ></mat-icon>
         </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.PIPETTE_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.PIPETTE_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.PIPETTE_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.PIPETTE_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.PIPETTE_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >colorize</mat-icon
+            >
+        </label>
         <!-- this is a temporary implementation for selection tool button -->
         <input
             type="radio"

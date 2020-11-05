@@ -73,7 +73,7 @@ describe('SidebarComponent', () => {
         expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
-    it('should not change tool nor set cursor on an invalid event', () => {
+    it('should not change tool nor handle cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,
