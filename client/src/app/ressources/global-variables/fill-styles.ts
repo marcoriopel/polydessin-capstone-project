@@ -5,7 +5,7 @@ export interface FillStyles {
     DASHED: number;
 }
 
-export const FILL_STYLES: FillStyles = {
+export const FILL_STYLES = {
     FILL_AND_BORDER: 0,
     FILL: 1,
     BORDER: 2,

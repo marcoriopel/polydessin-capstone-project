@@ -61,7 +61,7 @@ export class PencilService extends Tool {
         ctx.lineWidth = pencil.lineWidth;
         ctx.strokeStyle = pencil.primaryColor;
         ctx.lineJoin = 'round';
-        ctx.lineCap = pencil.lineCap as CanvasLineCap;
+        ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of pencil.path) {
             ctx.lineTo(point.x, point.y);
@@ -78,7 +78,6 @@ export class PencilService extends Tool {
             type: 'pencil',
             path: this.pathData,
             lineWidth: this.width,
-            lineCap: 'round',
             primaryColor: this.colorSelectionService.primaryColor,
         };
     }

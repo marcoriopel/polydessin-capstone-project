@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -16,10 +15,7 @@ describe('SquareService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let setRectangleWidthSpy: jasmine.Spy<any>;
-    let setRectangleHeigthSpy: jasmine.Spy<any>;
     let drawRectSpy: jasmine.Spy<any>;
-    let topLeftPointSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
     const WIDTH = 100;
@@ -48,9 +44,6 @@ describe('SquareService', () => {
         });
         service = TestBed.inject(SquareService);
         drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
-        setRectangleWidthSpy = spyOn<any>(service, 'setRectangleWidth').and.callThrough();
-        setRectangleHeigthSpy = spyOn<any>(service, 'setRectangleHeight').and.callThrough();
-        topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint').and.callThrough();
         drawRectSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
         ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
 
@@ -114,6 +107,10 @@ describe('SquareService', () => {
     });
 
     it(' onMouseUp should call drawShape if mouse was already down', () => {
+        const findTopLeftSpy = spyOn(service.trigonometry, 'findTopLeftPointCircle').and.returnValue({ x: 0, y: 0 });
+        const setRectangleWidthSpy = spyOn<any>(service, 'setRectangleWidth').and.callThrough();
+        const setRectangleHeigthSpy = spyOn<any>(service, 'setRectangleHeight').and.callThrough();
+
         const mouseEventLClick = {
             offsetX: 0,
             offsetY: 0,
@@ -123,11 +120,26 @@ describe('SquareService', () => {
         service.onMouseUp(mouseEvent);
         expect(setRectangleHeigthSpy).toHaveBeenCalled();
         expect(setRectangleWidthSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
+        expect(findTopLeftSpy).toHaveBeenCalled();
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 
     it('should draw rectangle ', () => {
+        service.rectangleData = {
+            type: 'rectangle',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            height: 1,
+            width: 1,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: 1,
+            isShiftDown: true,
+            lineWidth: 1,
+        };
+        service.topLeftPoint = { x: 0, y: 0 };
+        service.firstPoint = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 0 };
+        const findTopLeftSpy = spyOn(service.trigonometry, 'findTopLeftPointCircle').and.returnValue({ x: 0, y: 0 });
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,
@@ -136,7 +148,7 @@ describe('SquareService', () => {
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
         expect(drawRectSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
+        expect(findTopLeftSpy).toHaveBeenCalled();
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
@@ -182,48 +194,48 @@ describe('SquareService', () => {
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 
-    it('should finTopLeftPoint if firstPoint is top left corner', () => {
-        // Top left is first point
-        service.firstPoint = { x: 1, y: 1 };
-        service.lastPoint = { x: 2, y: 2 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        expect(topLeft).toEqual(service.firstPoint);
-    });
+    // it('should finTopLeftPoint if firstPoint is top left corner', () => {
+    //     // Top left is first point
+    //     service.firstPoint = { x: 1, y: 1 };
+    //     service.lastPoint = { x: 2, y: 2 };
+    //     service.setRectangleHeight();
+    //     service.setRectangleWidth();
+    //     const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+    //     expect(topLeft).toEqual(service.firstPoint);
+    // });
 
-    it('should finTopLeftPoint if firstPoint is top right corner', () => {
-        // top left is left by width of first point
-        service.firstPoint = { x: 2, y: 2 };
-        service.lastPoint = { x: 1, y: 3 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 1, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
-    });
+    // it('should finTopLeftPoint if firstPoint is top right corner', () => {
+    //     // top left is left by width of first point
+    //     service.firstPoint = { x: 2, y: 2 };
+    //     service.lastPoint = { x: 1, y: 3 };
+    //     service.setRectangleHeight();
+    //     service.setRectangleWidth();
+    //     const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+    //     const expectedValue: Vec2 = { x: 1, y: 2 };
+    //     expect(topLeft).toEqual(expectedValue);
+    // });
 
-    it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
-        // top left is up by heigth of first point
-        service.firstPoint = { x: 1, y: 2 };
-        service.lastPoint = { x: 2, y: 1 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 1, y: 1 };
-        expect(topLeft).toEqual(expectedValue);
-    });
+    // it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
+    //     // top left is up by heigth of first point
+    //     service.firstPoint = { x: 1, y: 2 };
+    //     service.lastPoint = { x: 2, y: 1 };
+    //     service.setRectangleHeight();
+    //     service.setRectangleWidth();
+    //     const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+    //     const expectedValue: Vec2 = { x: 1, y: 1 };
+    //     expect(topLeft).toEqual(expectedValue);
+    // });
 
-    it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
-        // top left is last point
-        service.firstPoint = { x: 3, y: 3 };
-        service.lastPoint = { x: 2, y: 2 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 2, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
-    });
+    // it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
+    //     // top left is last point
+    //     service.firstPoint = { x: 3, y: 3 };
+    //     service.lastPoint = { x: 2, y: 2 };
+    //     service.setRectangleHeight();
+    //     service.setRectangleWidth();
+    //     const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
+    //     const expectedValue: Vec2 = { x: 2, y: 2 };
+    //     expect(topLeft).toEqual(expectedValue);
+    // });
 
     it('should call fillRect if option is not to draw only the border', () => {
         service.fillStyle = FILL_STYLES.FILL;

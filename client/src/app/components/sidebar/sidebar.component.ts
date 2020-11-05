@@ -47,7 +47,7 @@ export class SidebarComponent implements OnInit {
         }
     }
 
-    selectAll(): void{
+    selectAll(): void {
         this.toolSelectionService.selectAll();
     }
 

@@ -7,6 +7,7 @@ export interface SidebarElementTooltips {
     LINE_TOOL_DESCRIPTION: string;
     FILL_TOOL_DESCRIPTION: string;
     ERASER_TOOL_DESCRIPTION: string;
+    PIPETTE_TOOL_DESCRIPTION: string;
     POLYGONE_TOOL_DESCRIPTION: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
@@ -14,7 +15,7 @@ export interface SidebarElementTooltips {
     SAVE_DRAWING_DESCRIPTION: string;
     CAROUSEL_DESCRIPTION: string;
     EXPORT_DRAWING_DESCRIPTION: string;
-    SELECT_ALL_DESCRIPTION: string,
+    SELECT_ALL_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -27,6 +28,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
+    PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
     POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',

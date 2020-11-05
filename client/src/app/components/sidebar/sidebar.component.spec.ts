@@ -9,7 +9,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-describe('SidebarComponent', () => {
+xdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;
@@ -73,7 +73,7 @@ describe('SidebarComponent', () => {
         expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
-    it('should not change tool nor set cursor on an invalid event', () => {
+    it('should not change tool nor handle cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,

@@ -19,7 +19,6 @@ export class BrushService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-
         this.clearPath();
     }
 

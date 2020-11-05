@@ -142,15 +142,7 @@ export class Trigonometry {
         return Quadrant.BOTTOM_RIGHT;
     }
 
-    setCircleWidth(firstPoint: Vec2, lastPoint: Vec2): number {
-        return Math.abs(firstPoint.x - lastPoint.x);
-    }
-
-    setCircleHeight(firstPoint: Vec2, lastPoint: Vec2): number {
-        return Math.abs(firstPoint.y - lastPoint.y);
-    }
-
-    findTopLeftPoint(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
+    findTopLeftPointCircle(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
         const quadrant: Quadrant = this.findQuadrant(firstPoint, lastPoint);
 
         let x = 0;

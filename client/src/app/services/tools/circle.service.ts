@@ -92,7 +92,7 @@ export class CircleService extends Tool {
     }
 
     drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
-        const topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
+        const topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;

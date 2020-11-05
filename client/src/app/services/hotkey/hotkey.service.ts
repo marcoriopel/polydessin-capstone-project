@@ -23,6 +23,7 @@ export class HotkeyService {
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
+        ['i', this.toolNames.PIPETTE_TOOL_NAME],
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
         ['g', this.sidebarElements.CAROUSEL_NAME],
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
@@ -43,7 +44,7 @@ export class HotkeyService {
                 }
             } else {
                 const keyName: string | undefined = this.keyMapping.get(event.key.toString());
-                if (keyName){
+                if (keyName) {
                     this.toolName.next(keyName);
                 }
             }
