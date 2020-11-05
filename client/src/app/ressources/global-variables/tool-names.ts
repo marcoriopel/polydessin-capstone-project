@@ -6,9 +6,10 @@ export interface ToolNames {
     LINE_TOOL_NAME: string;
     FILL_TOOL_NAME: string;
     ERASER_TOOL_NAME: string;
+    SQUARE_SELECTION_TOOL_NAME: string;
+    CIRCLE_SELECTION_TOOL_NAME: string;
     PIPETTE_TOOL_NAME: string;
     POLYGONE_TOOL_NAME: string;
-    SELECTION_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -19,9 +20,10 @@ export const TOOL_NAMES: ToolNames = {
     LINE_TOOL_NAME: 'Ligne',
     FILL_TOOL_NAME: 'Sceau',
     ERASER_TOOL_NAME: 'Efface',
+    SQUARE_SELECTION_TOOL_NAME: 'SquareSelection',
+    CIRCLE_SELECTION_TOOL_NAME: 'CircleSelection',
     PIPETTE_TOOL_NAME: 'Pipette',
     POLYGONE_TOOL_NAME: 'Polygone',
-    SELECTION_TOOL_NAME: 'Selection',
 };
 
 export const TOOL_NAMES_ARRAY: string[] = [

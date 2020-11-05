@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Trigonometry } from '@app/classes/math/trigonometry';
+import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -32,6 +33,10 @@ export class CircleService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
+    }
+
+    initialize(): void {
+        this.mouseDown = false;
     }
 
     changeWidth(newWidth: number): void {
@@ -88,8 +93,8 @@ export class CircleService extends Tool {
         }
     }
 
-    private drawShape(ctx: CanvasRenderingContext2D): void {
-        const topLeftPoint = this.trigonometry.findTopLeftPoint(this.firstPoint, this.lastPoint);
+    drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
+        const topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
         ctx.lineWidth = this.width;
@@ -100,13 +105,23 @@ export class CircleService extends Tool {
             ctx.lineWidth = 1;
         }
 
+        // if (this.fillStyle === FILL_STYLES.DASHED) {
+        //     ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+        //     ctx.strokeStyle = 'black';
+        //     ctx.lineWidth = 1;
+        // }
+
         this.setEllipseHeight();
         this.setEllipseWidth();
         this.ellipseRadius = { x: this.ellipseWidth / 2, y: this.ellipseHeight / 2 };
         this.ellipseCenter = { x: topLeftPoint.x + this.ellipseRadius.x, y: topLeftPoint.y + this.ellipseRadius.y };
 
-        this.updateEllipseData();
-        this.drawEllipse(ctx, this.ellipseData);
+        if (this.isShiftKeyDown) {
+            this.drawCircle(ctx, topLeftPoint);
+        } else {
+            this.updateEllipseData();
+            this.drawEllipse(ctx, this.ellipseData);
+        }
 
         if (ctx === this.drawingService.previewCtx) {
             ctx.beginPath();
@@ -121,6 +136,10 @@ export class CircleService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
+
+        topLeftPoint.x = this.ellipseData.center.x - this.ellipseRadius.x;
+        topLeftPoint.y = this.ellipseData.center.y - this.ellipseRadius.y;
+        return { startingPoint: topLeftPoint, width: this.ellipseRadius.x * 2, height: this.ellipseRadius.y * 2 };
     }
 
     drawEllipse(ctx: CanvasRenderingContext2D, ellipse: Ellipse): void {
@@ -134,12 +153,8 @@ export class CircleService extends Tool {
         }
 
         ctx.beginPath();
-        if (ellipse.isShiftDown) {
-            ctx.arc(ellipse.center.x, ellipse.center.y, Math.min(ellipse.radius.x, ellipse.radius.y), 0, Math.PI * 2, false);
-        } else {
-            ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
-        }
-        if (ellipse.fillStyle !== FILL_STYLES.BORDER) {
+        ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
+        if (ellipse.fillStyle !== FILL_STYLES.BORDER && ellipse.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fill();
         }
         ctx.stroke();
@@ -157,27 +172,31 @@ export class CircleService extends Tool {
         switch (this.quadrant) {
             case Quadrant.BOTTOM_LEFT:
                 ellipseCenterX = this.firstPoint.x - circleRadius;
-                ellipseCenterY = this.firstPoint.y - circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_LEFT:
                 ellipseCenterX = this.firstPoint.x - circleRadius;
-                ellipseCenterY = this.firstPoint.y + circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
                 break;
             case Quadrant.BOTTOM_RIGHT:
                 ellipseCenterX = this.firstPoint.x + circleRadius;
-                ellipseCenterY = this.firstPoint.y - circleRadius;
+                ellipseCenterY = this.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_RIGHT:
                 ellipseCenterX = this.firstPoint.x + circleRadius;
-                ellipseCenterY = this.firstPoint.y + circleRadius;
+                ellipseCenterY = this.firstPoint.y - circleRadius;
                 break;
         }
         ctx.beginPath();
-        ctx.arc(ellipseCenterX, ellipseCenterY, Math.min(ellipseRadiusX, ellipseRadiusY), 0, Math.PI * 2, false);
-        if (this.fillStyle !== FILL_STYLES.BORDER) {
+        ctx.arc(ellipseCenterX, ellipseCenterY, circleRadius, 0, Math.PI * 2, false);
+        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
             ctx.fill();
         }
         ctx.stroke();
+
+        this.ellipseRadius = { x: circleRadius, y: circleRadius };
+        this.ellipseCenter = { x: ellipseCenterX, y: ellipseCenterY };
+        this.updateEllipseData();
     }
 
     setEllipseWidth(): void {

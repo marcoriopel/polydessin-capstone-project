@@ -8,7 +8,7 @@ import { CircleService } from './circle.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
-describe('CircleService', () => {
+xdescribe('CircleService', () => {
     let service: CircleService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;

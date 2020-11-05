@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -8,6 +8,7 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
+import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Observable, Subject } from 'rxjs';
 
@@ -30,6 +31,7 @@ export class UndoRedoService {
         public lineService: LineService,
         public brushService: BrushService,
         public polygoneService: PolygoneService,
+        public selectionService: SelectionService,
     ) {
         this.drawingService.getIsToolInUse().subscribe((value) => {
             if (value) {
@@ -63,6 +65,7 @@ export class UndoRedoService {
     }
 
     undo(): void {
+        this.selectionService.reset();
         this.changeUndoAvailability();
         this.changeRedoAvailability();
         if (!this.isUndoAvailable) {
@@ -82,6 +85,7 @@ export class UndoRedoService {
     }
 
     redo(): void {
+        this.selectionService.reset();
         this.changeUndoAvailability();
         this.changeRedoAvailability();
         if (!this.isRedoAvailable) {
@@ -145,6 +149,9 @@ export class UndoRedoService {
                 break;
             case 'polygone':
                 this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);
+                break;
+            case 'selection':
+                this.drawingService.restoreSelection(element as Selection);
                 break;
         }
     }

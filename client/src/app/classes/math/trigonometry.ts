@@ -133,13 +133,13 @@ export class Trigonometry {
 
     findQuadrant(firstPoint: Vec2, lastPoint: Vec2): number {
         if (firstPoint.x > lastPoint.x && firstPoint.y > lastPoint.y) {
-            return Quadrant.BOTTOM_LEFT;
-        } else if (firstPoint.x > lastPoint.x && firstPoint.y < lastPoint.y) {
             return Quadrant.TOP_LEFT;
+        } else if (firstPoint.x > lastPoint.x && firstPoint.y < lastPoint.y) {
+            return Quadrant.BOTTOM_LEFT;
         } else if (firstPoint.x < lastPoint.x && firstPoint.y > lastPoint.y) {
-            return Quadrant.BOTTOM_RIGHT;
+            return Quadrant.TOP_RIGHT;
         }
-        return Quadrant.TOP_RIGHT;
+        return Quadrant.BOTTOM_RIGHT;
     }
 
     findTopLeftPointCircle(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
@@ -150,10 +150,10 @@ export class Trigonometry {
         switch (quadrant) {
             case Quadrant.BOTTOM_LEFT:
                 x = lastPoint.x;
-                y = lastPoint.y;
+                y = firstPoint.y;
                 break;
             case Quadrant.TOP_LEFT:
-                x = firstPoint.x;
+                x = lastPoint.x;
                 y = lastPoint.y;
                 break;
             case Quadrant.BOTTOM_RIGHT:
@@ -161,8 +161,8 @@ export class Trigonometry {
                 y = firstPoint.y;
                 break;
             case Quadrant.TOP_RIGHT:
-                x = lastPoint.x;
-                y = firstPoint.y;
+                x = firstPoint.x;
+                y = lastPoint.y;
                 break;
         }
         return { x, y };
@@ -176,36 +176,5 @@ export class Trigonometry {
         centerY = firstPoint.y > lastPoint.y ? lastPoint.y + centerY : lastPoint.y - centerY;
         const center: Vec2 = { x: centerX, y: centerY };
         return center;
-    }
-
-    findTopLeftPoint(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
-        const quadrant: Quadrant = this.findQuadrant(firstPoint, lastPoint);
-
-        let x = 0;
-        let y = 0;
-        switch (quadrant) {
-            case Quadrant.BOTTOM_LEFT:
-                // firstPoint is top left corner lastPoint is bottom right corner
-                x = lastPoint.x;
-                y = lastPoint.y;
-                break;
-            case Quadrant.TOP_LEFT:
-                // firstPoint is bottom right corner lastPoint is top left corner
-                x = firstPoint.x;
-                y = lastPoint.y;
-                break;
-            case Quadrant.BOTTOM_RIGHT:
-                // firstPoint is top right corner lastPoint is bottom left corner
-                x = firstPoint.x;
-                y = firstPoint.y;
-                break;
-            case Quadrant.TOP_RIGHT:
-                // firstPoint is bottom left corner lastPoint is top right corner
-                x = lastPoint.x;
-                y = firstPoint.y;
-                break;
-        }
-
-        return { x, y };
     }
 }

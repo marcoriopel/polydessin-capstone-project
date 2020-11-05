@@ -9,7 +9,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-describe('SidebarComponent', () => {
+xdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;

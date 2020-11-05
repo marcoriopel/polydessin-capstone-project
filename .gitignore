@@ -3,7 +3,8 @@
 /.vs/
 
 node_modules/
-package-lock.json
+
+debug.log
 .DS_Store
 
 # Code Coverage Folder

@@ -130,19 +130,19 @@ export class PolygoneService extends Tool {
         switch (quadrant) {
             case Quadrant.BOTTOM_LEFT:
                 center.x = polygoneData.firstPoint.x - circleRadius;
-                center.y = polygoneData.firstPoint.y - circleRadius;
+                center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_LEFT:
                 center.x = polygoneData.firstPoint.x - circleRadius;
-                center.y = polygoneData.firstPoint.y + circleRadius;
+                center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
             case Quadrant.BOTTOM_RIGHT:
                 center.x = polygoneData.firstPoint.x + circleRadius;
-                center.y = polygoneData.firstPoint.y - circleRadius;
+                center.y = polygoneData.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_RIGHT:
                 center.x = polygoneData.firstPoint.x + circleRadius;
-                center.y = polygoneData.firstPoint.y + circleRadius;
+                center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
             default:
         }

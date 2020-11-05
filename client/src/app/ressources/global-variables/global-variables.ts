@@ -30,6 +30,7 @@ export const CONFIRM_KEY_PRESS_DURATION = 500;
 export const KEY_PRESS_INTERVAL_DURATION = 100;
 export const SELECTION_MOVE_STEP_SIZE = 3;
 export const MAX_NAME_LENGTH = 15;
+export const SELECTION_POINT_WIDTH = 6;
 export const MAX_OPACITY_RGBA = 255;
 
 export enum Quadrant {
