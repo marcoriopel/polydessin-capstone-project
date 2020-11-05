@@ -154,7 +154,7 @@ describe('CircleService', () => {
         expect(service.circleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    it('should drawCircle if mouse is down and shift is pressed', () => {
+    it('should call drawCircle if mouse is down and shift is pressed', () => {
         const drawCircleSpy = spyOn<any>(service, 'drawCircle');
         service.ellipseData = {
             type: 'ellipse',
@@ -166,25 +166,31 @@ describe('CircleService', () => {
             isShiftDown: true,
             lineWidth: 1,
         };
+        service.isShiftKeyDown = true;
         service.firstPoint = { x: 0, y: 0 };
         service.ellipseCenter = { x: 0, y: 0 };
         service.lastPoint = { x: 0, y: 1 };
-        service.mouseDown = true;
-        const event = new KeyboardEvent('keypress', {
-            key: 'Shift',
-        });
-        service.onKeyDown(event);
+        service.drawShape(previewCtxStub);
         expect(drawCircleSpy).toHaveBeenCalled();
     });
 
     it('should call drawEllipse if mouse is down and shift is unpressed', () => {
         const drawEllipseSpy = spyOn<any>(service, 'drawEllipse');
-        service.onMouseDown(mouseEvent);
-        service.isShiftKeyDown = true;
-        const event = new KeyboardEvent('keypress', {
-            key: 'Shift',
-        });
-        service.onKeyUp(event);
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 1,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.firstPoint = { x: 0, y: 0 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 1 };
+        service.isShiftKeyDown = false;
+        service.drawShape(previewCtxStub);
         expect(drawEllipseSpy).toHaveBeenCalled();
     });
 
@@ -201,32 +207,59 @@ describe('CircleService', () => {
     });
 
     it('drawShape should change strokestyle with fillstyle set to fill', () => {
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 1,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.firstPoint = { x: 0, y: 0 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 1 };
+        service.isShiftKeyDown = false;
         colorPickerStub.primaryColor = '#ffa500';
         service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
-
+        service.drawShape(baseCtxStub);
         expect(baseCtxStub.strokeStyle).toEqual(colorPickerStub.primaryColor);
     });
 
-    it('should call fill if option is not to draw only the border', () => {
+    it('should call fill of drawEllipse if option is not to draw only the border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 0,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawEllipse(baseCtxStub, service.ellipseData);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('should not call fill if option is not to draw only the border', () => {
+    it('should not call fill of ellipse if option is to draw only the border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.BORDER;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 2,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawEllipse(baseCtxStub, service.ellipseData);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
@@ -264,21 +297,28 @@ describe('CircleService', () => {
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
-    it('should call fill circle if style is not set to border', () => {
+    it('should call fill of circle if style is not set to border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
-        service.isShiftKeyDown = true;
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
         service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
+        service.firstPoint = { x: 0, y: 0 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 1 };
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 0,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawCircle(baseCtxStub, { x: 0, y: 0 });
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
-    it('should not call fill circle if style is set to border', () => {
+    it('should not call fill of circle if style is set to border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.isShiftKeyDown = true;
         const mouseEventLClick = {
