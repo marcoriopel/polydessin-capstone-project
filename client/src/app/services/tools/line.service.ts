@@ -47,6 +47,7 @@ export class LineService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.drawingService.setIsToolInUse(true);
         if (event.button !== MouseButton.LEFT) {
             return;
         }
@@ -66,9 +67,9 @@ export class LineService extends Tool {
         this.shiftClick = this.getPositionFromMouse(event);
 
         // Check if it is a double click
-        if (this.checkIfDoubleClick() || this.isShiftDoubleClick) {
+        const isDoubleClick: boolean = this.checkIfDoubleClick();
+        if (isDoubleClick || this.isShiftDoubleClick) {
             this.isDrawing = false;
-
             // Handle case when user double click when there is no line
             if (this.mouseClicks[0].x === this.mouseClicks[1].x && this.mouseClicks[0].y === this.mouseClicks[1].y) {
                 this.mouseClicks = [];
@@ -95,6 +96,7 @@ export class LineService extends Tool {
             this.storedLines = [];
             this.mouseClicks = [];
             this.isShiftDoubleClick = false;
+            this.drawingService.setIsToolInUse(false);
             return;
         }
         this.drawSegment();

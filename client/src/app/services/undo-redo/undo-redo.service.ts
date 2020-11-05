@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Tool } from '@app/classes/tool';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -15,11 +16,14 @@ import { Observable, Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
-export class UndoRedoService {
+export class UndoRedoService extends Tool {
     isUndoAvailable: boolean = false;
     isUndoAvailableSubject: Subject<boolean> = new Subject<boolean>();
     isRedoAvailable: boolean = false;
     isRedoAvailableSubject: Subject<boolean> = new Subject<boolean>();
+    isShiftDown: boolean = false;
+    isControlDown: boolean = false;
+    isZDown: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -33,6 +37,7 @@ export class UndoRedoService {
         public polygoneService: PolygoneService,
         public selectionService: SelectionService,
     ) {
+        super(drawingService);
         this.drawingService.getIsToolInUse().subscribe((value) => {
             if (value) {
                 this.setUndoAvailability(false);
