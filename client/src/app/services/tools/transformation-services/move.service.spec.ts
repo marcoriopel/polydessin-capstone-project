@@ -5,8 +5,10 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from './move.service';
 import SpyObj = jasmine.SpyObj;
 
-// // tslint:disable: no-magic-numbers
-// // tslint:disable: max-file-line-count
+// tslint:disable: no-magic-numbers
+// tslint:disable: max-file-line-count
+// tslint:disable: no-string-literal
+// tslint:disable: no-empty
 
 describe('MoveService', () => {
     let service: MoveService;
@@ -155,7 +157,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowLeft', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
@@ -167,7 +168,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowLeft and ArrowLeft is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
@@ -180,7 +180,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowRight', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
@@ -192,7 +191,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowRight and ArrowRight is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
@@ -205,7 +203,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowUp', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
@@ -217,7 +214,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowUp and ArrowUp is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.UP, true);
@@ -230,7 +226,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowDown', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
@@ -242,7 +237,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowDown and ArrowDown is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
@@ -254,7 +248,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should not clear interval if interval if isArrowKeyPressed', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
@@ -273,7 +266,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should clear interval if interval is not undefined and if none of the keys are pressed', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
 
@@ -284,7 +276,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should set pressedKeys ARROW_KEYS.LEFT to false if previously true', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
@@ -341,7 +332,6 @@ describe('MoveService', () => {
     it('move should call printSelectionOnPreview', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -351,7 +341,6 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const initialStartingPoint = service.selection.startingPoint;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -363,7 +352,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -375,7 +363,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -387,7 +374,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.UP, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -399,7 +385,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -414,7 +399,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialStartingPoint = service.selection.startingPoint;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -424,7 +408,6 @@ describe('MoveService', () => {
     it('isArrowKeyPressed should return true if at least one arrowKey is pressed', () => {
         service.pressedKeys.set(ARROW_KEYS.UP, true);
 
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
 
@@ -434,12 +417,10 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
 
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
 
     it('isArrowKeyPressed should return false if no arrowKeys are pressed', () => {
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(false);
     });
 });

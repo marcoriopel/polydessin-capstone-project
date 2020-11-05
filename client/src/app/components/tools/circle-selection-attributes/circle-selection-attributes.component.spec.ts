@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
-import { CircleselectionAttributesComponent } from './circleselection-attributes.component';
+import { CircleselectionAttributesComponent } from './circle-selection-attributes.component';
 
-describe('CircleselectionAttributesComponent', () => {
+describe('CircleSelectionAttributesComponent', () => {
     let component: CircleselectionAttributesComponent;
     let fixture: ComponentFixture<CircleselectionAttributesComponent>;
     let circleSelectionServiceSpy: jasmine.SpyObj<CircleSelectionService>;

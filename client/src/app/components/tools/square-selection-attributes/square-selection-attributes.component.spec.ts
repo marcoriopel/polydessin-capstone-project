@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
-import { SquareselectionAttributesComponent } from './squareselection-attributes.component';
+import { SquareselectionAttributesComponent } from './square-selection-attributes.component';
 
 describe('SqareselectionAttributesComponent', () => {
     let component: SquareselectionAttributesComponent;

@@ -3,8 +3,8 @@ import { SquareSelectionService } from '@app/services/tools/selection-services/s
 
 @Component({
     selector: 'app-squareselection-attributes',
-    templateUrl: './squareselection-attributes.component.html',
-    styleUrls: ['./squareselection-attributes.component.scss'],
+    templateUrl: './square-selection-attributes.component.html',
+    styleUrls: ['./square-selection-attributes.component.scss'],
 })
 export class SquareselectionAttributesComponent {
     // toolWidth: number;

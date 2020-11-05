@@ -1,10 +1,10 @@
-import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { Component } from '@angular/core';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 
 @Component({
     selector: 'app-circleselection-attributes',
-    templateUrl: './circleselection-attributes.component.html',
-    styleUrls: ['./circleselection-attributes.component.scss'],
+    templateUrl: './circle-selection-attributes.component.html',
+    styleUrls: ['./circle-selection-attributes.component.scss'],
 })
 export class CircleselectionAttributesComponent {
     // toolWidth: number;

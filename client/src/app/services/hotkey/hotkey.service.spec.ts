@@ -48,7 +48,7 @@ describe('Service: Hotkey', () => {
     });
 
     it('should not change toolName on a keyboard event of one of the shortcut keys with ctrl if ctrl is not pressed', () => {
-        keyboardEvent = new KeyboardEvent('keydown', { key: 's', ctrlKey: false });
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'i', ctrlKey: false });
         const eventSpy = spyOn(service.toolName, 'next');
         service.onKeyDown(keyboardEvent);
         expect(eventSpy).not.toHaveBeenCalled();
