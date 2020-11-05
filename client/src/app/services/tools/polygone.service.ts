@@ -101,7 +101,6 @@ export class PolygoneService extends Tool {
         this.circleService.firstPoint = this.firstPoint;
         this.circleService.lastPoint = this.lastPoint;
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint));
-        // this.LineDash(this.drawingService.previewCtx);
     }
 
     drawPolygone(ctx: CanvasRenderingContext2D, polygoneData: Polygone): void {
@@ -172,19 +171,6 @@ export class PolygoneService extends Tool {
         ctx.stroke();
         ctx.closePath();
     }
-
-    // LineDash(ctx: CanvasRenderingContext2D): void {
-    //     if (ctx === this.drawingService.previewCtx) {
-    //         ctx.beginPath();
-    //         ctx.strokeStyle = 'black';
-    //         ctx.lineWidth = 1;
-    //         ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-    //         ctx.stroke();
-    //     } else {
-    //         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-    //         this.drawingService.previewCtx.setLineDash([0]);
-    //     }
-    // }
 
     private updatePolygoneData(): void {
         this.polygoneData = {
