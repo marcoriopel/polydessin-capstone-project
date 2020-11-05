@@ -71,7 +71,6 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PipetteAttributesComponent,
         FillAttributesComponent,
         SavingComponent,
-        ErrorAlertComponent,
         CarouselComponent,
         ExportComponent,
         PolygoneAttributesComponent,
