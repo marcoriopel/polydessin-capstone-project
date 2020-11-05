@@ -18,8 +18,7 @@
                 />
                 <mat-hint class="mat-hint">Max 15 charactères</mat-hint>
                 <mat-error *ngIf="hasNameError('name', 'required')">Nom est requis</mat-error>
-                <mat-error *ngIf="hasNameError('name', 'maxlength')">L'étiquette est trop longue. (max. 15 charactères)</mat-error>
-                <mat-error *ngIf="hasNameError('name', 'space')">Pas d'espace</mat-error>
+                <mat-error *ngIf="hasNameError('name', 'maxlength')">Nom est trop longue. (max. 15 charactères)</mat-error>
             </mat-form-field>
         </form>
     </div>
