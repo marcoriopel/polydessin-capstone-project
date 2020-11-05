@@ -215,6 +215,8 @@ export class CircleService extends Tool {
             fillStyle: this.fillStyle,
             isShiftDown: this.isShiftKeyDown,
             lineWidth: this.width,
+            firstPoint: this.firstPoint,
+            lastPoint: this.lastPoint,
         };
     }
 

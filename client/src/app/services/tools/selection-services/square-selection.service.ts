@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
@@ -9,6 +10,7 @@ import { SelectionService } from './selection.service';
     providedIn: 'root',
 })
 export class SquareSelectionService extends SelectionService {
+    name: string = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
     constructor(drawingService: DrawingService, public squareService: SquareService, public moveService: MoveService) {
         super(drawingService, moveService);
         super.underliyingService = squareService;

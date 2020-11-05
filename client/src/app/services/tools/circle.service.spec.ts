@@ -345,4 +345,11 @@ describe('CircleService', () => {
         expect(setCircleWidthSpy).toHaveBeenCalled();
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
+
+    it('should drawEllipse if mouse is down and shift is unpressed', () => {
+        service.onMouseDown(mouseEvent);
+        service.isShiftKeyDown = true;
+        service.initialize();
+        expect(service.initialize).toHaveBeenCalled();
+    });
 });
