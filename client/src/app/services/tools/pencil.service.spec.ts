@@ -27,7 +27,7 @@ describe('PencilService', () => {
         drawCanvas.height = HEIGHT;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
         previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({

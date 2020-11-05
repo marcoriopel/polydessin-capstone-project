@@ -14,7 +14,7 @@ import { SelectionService } from '../tools/selection-services/selection.service'
 import { SquareService } from '../tools/square.service';
 import { UndoRedoService } from './undo-redo.service';
 
-fdescribe('UndoRedoService', () => {
+describe('UndoRedoService', () => {
     let service: UndoRedoService;
     let changeUndoAvailabilitySpy: jasmine.SpyObj<any>;
     let changeRedoAvailabilitySpy: jasmine.SpyObj<any>;
@@ -50,7 +50,13 @@ fdescribe('UndoRedoService', () => {
 
     beforeEach(() => {
         obs = new Subject<boolean>();
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getIsToolInUse', 'drawFill', 'restoreSelection']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'getIsToolInUse',
+            'drawFill',
+            'restoreSelection',
+            'setIsToolInUse',
+        ]);
         drawingServiceSpy.getIsToolInUse.and.returnValue(obs.asObservable());
         resizeDrawingSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize', 'restoreCanvas']);
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['drawPencilStroke']);
@@ -131,6 +137,8 @@ fdescribe('UndoRedoService', () => {
             secondaryColor: '#000000',
             center: { x: 1, y: 1 },
             radius: { x: 1, y: 1 },
+            firstPoint: { x: 1, y: 1 },
+            lastPoint: { x: 1, y: 1 },
             fillStyle: 0,
             isShiftDown: false,
             lineWidth: 1,

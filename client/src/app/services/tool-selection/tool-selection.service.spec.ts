@@ -21,6 +21,7 @@ import { CircleSelectionService } from '@app/services/tools/selection-services/c
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-empty
@@ -38,6 +39,7 @@ class MockTool extends Tool {
 describe('ToolSelectionService', () => {
     let service: ToolSelectionService;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let undoRedoServiceSpy: SpyObj<UndoRedoService>;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
@@ -48,8 +50,14 @@ describe('ToolSelectionService', () => {
         obs = new Subject<string>();
         matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarningModal']);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', [
+            'setUndoAvailability',
+            'setRedoAvailability',
+            'changeUndoAvailability',
+            'changeRedoAvailability',
+        ]);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         eraserServiceMock = new MockTool(TOOL_NAMES.ERASER_TOOL_NAME);
         TestBed.configureTestingModule({
@@ -69,6 +77,7 @@ describe('ToolSelectionService', () => {
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
                 { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
+                { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],
         });
         service = TestBed.inject(ToolSelectionService);

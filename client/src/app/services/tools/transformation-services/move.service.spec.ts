@@ -16,7 +16,7 @@ describe('MoveService', () => {
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'setIsToolInUse']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
 
