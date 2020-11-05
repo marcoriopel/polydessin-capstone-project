@@ -1,4 +1,6 @@
 /* tslint:disable:no-unused-variable */
+// tslint:disable: no-magic-numbers
+
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -132,7 +134,6 @@ describe('CarouselComponent', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA, DBDATA];
         component.manageShownDrawings();
-        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes.length).toEqual(3);
     });
 
@@ -281,7 +282,6 @@ describe('CarouselComponent', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
-        // tslint:disable-next-line: no-magic-numbers
         component.visibleDrawingsIndexes = [1, 2, 3];
         component.onPreviousClick();
         expect(component.visibleDrawingsIndexes).toEqual([0, 1, 2]);
@@ -311,7 +311,6 @@ describe('CarouselComponent', () => {
         component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
         component.visibleDrawingsIndexes = [0, 1, 2];
         component.onNextClick();
-        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
     });
 });
