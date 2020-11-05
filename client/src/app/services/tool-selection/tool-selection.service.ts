@@ -21,6 +21,7 @@ import { SquareSelectionService } from '@app/services/tools/selection-services/s
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -33,19 +34,20 @@ export class ToolSelectionService {
     constructor(
         public dialog: MatDialog,
         public hotkeyService: HotkeyService,
-        pencilService: PencilService,
-        brushService: BrushService,
-        squareService: SquareService,
-        circleService: CircleService,
-        lineService: LineService,
-        fillService: FillService,
-        eraserService: EraserService,
+        public pencilService: PencilService,
+        public brushService: BrushService,
+        public squareService: SquareService,
+        public circleService: CircleService,
+        public lineService: LineService,
+        public fillService: FillService,
+        public eraserService: EraserService,
         public squareSelectionService: SquareSelectionService,
-        circleSelectionService: CircleSelectionService,
-        polygoneService: PolygoneService,
-        pipetteService: PipetteService,
+        public circleSelectionService: CircleSelectionService,
+        public polygoneService: PolygoneService,
+        public pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
+        public undoRedoService: UndoRedoService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
@@ -98,7 +100,21 @@ export class ToolSelectionService {
             case this.sidebarElements.SELECT_ALL:
                 this.selectAll();
                 break;
+            case this.sidebarElements.UNDO:
+                this.undo();
+                break;
+            case this.sidebarElements.REDO:
+                this.redo();
+                break;
         }
+    }
+
+    undo(): void {
+        this.undoRedoService.undo();
+    }
+
+    redo(): void {
+        this.undoRedoService.redo();
     }
 
     selectAll(): void {

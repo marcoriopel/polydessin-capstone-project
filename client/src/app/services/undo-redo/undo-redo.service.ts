@@ -77,11 +77,9 @@ export class UndoRedoService extends Tool {
             return;
         }
         this.selectionService.reset();
-        console.log(this.drawingService.undoStack);
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
-            console.log(modification);
             this.drawingService.redoStack.push(modification);
         }
         this.drawingService.clearCanvas(this.drawingService.baseCtx);

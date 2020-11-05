@@ -3,6 +3,8 @@ export interface SidebarElements {
     CAROUSEL_NAME: string;
     SAVE_SERVER_NAME: string;
     SELECT_ALL: string;
+    UNDO: string;
+    REDO: string;
 }
 
 export const SIDEBAR_ELEMENTS: SidebarElements = {
@@ -10,4 +12,6 @@ export const SIDEBAR_ELEMENTS: SidebarElements = {
     CAROUSEL_NAME: 'Carousel',
     SAVE_SERVER_NAME: 'SauvegardeServeur',
     SELECT_ALL: 'Tout sélectionner',
+    UNDO: 'Annuler',
+    REDO: 'Refaire',
 };
