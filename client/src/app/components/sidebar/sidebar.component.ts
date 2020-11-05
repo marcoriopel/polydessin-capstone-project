@@ -44,12 +44,14 @@ export class SidebarComponent implements OnInit {
             if (value) {
                 const element: HTMLElement | null = document.getElementById('undo');
                 if (element) {
-                    element.style.color = 'white';
+                    element.style.cursor = 'pointer';
+                    element.style.opacity = '1';
                 }
             } else {
                 const element: HTMLElement | null = document.getElementById('undo');
                 if (element) {
-                    element.style.color = 'red';
+                    element.style.cursor = 'not-allowed';
+                    element.style.opacity = '0.5';
                 }
             }
         });
@@ -58,12 +60,14 @@ export class SidebarComponent implements OnInit {
             if (value) {
                 const element: HTMLElement | null = document.getElementById('redo');
                 if (element) {
-                    element.style.color = 'white';
+                    element.style.cursor = 'pointer';
+                    element.style.opacity = '1';
                 }
             } else {
                 const element: HTMLElement | null = document.getElementById('redo');
                 if (element) {
-                    element.style.color = 'red';
+                    element.style.cursor = 'not-allowed';
+                    element.style.opacity = '0.5';
                 }
             }
         });
