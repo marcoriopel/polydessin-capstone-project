@@ -163,7 +163,9 @@ describe('CircleService', () => {
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
             fillStyle: 1,
-            isShiftDown: true,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
+            isShiftDown: false,
             lineWidth: 1,
         };
         service.isShiftKeyDown = true;
@@ -183,6 +185,8 @@ describe('CircleService', () => {
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
             fillStyle: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
             isShiftDown: false,
             lineWidth: 1,
         };
@@ -214,6 +218,8 @@ describe('CircleService', () => {
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
             fillStyle: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
             isShiftDown: false,
             lineWidth: 1,
         };
@@ -236,11 +242,12 @@ describe('CircleService', () => {
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
-            fillStyle: 0,
+            fillStyle: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
             isShiftDown: false,
             lineWidth: 1,
         };
-
         service.drawEllipse(baseCtxStub, service.ellipseData);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
@@ -255,6 +262,8 @@ describe('CircleService', () => {
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
             fillStyle: 2,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
             isShiftDown: false,
             lineWidth: 1,
         };
@@ -309,7 +318,55 @@ describe('CircleService', () => {
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
             radius: { x: 0, y: 0 },
-            fillStyle: 0,
+            fillStyle: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawCircle(baseCtxStub, { x: 0, y: 0 });
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('should call fill of circle if if last point is top left', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
+        service.fillStyle = FILL_STYLES.FILL;
+        service.firstPoint = { x: 1, y: 1 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 0, y: 0 };
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 1,
+            firstPoint: { x: 1, y: 1 },
+            lastPoint: { x: 0, y: 0 },
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawCircle(baseCtxStub, { x: 0, y: 0 });
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
+    it('should call fill of circle if if last point is top right', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
+        service.fillStyle = FILL_STYLES.FILL;
+        service.firstPoint = { x: 0, y: 1 };
+        service.ellipseCenter = { x: 0, y: 0 };
+        service.lastPoint = { x: 1, y: 0 };
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 1,
+            firstPoint: { x: 0, y: 1 },
+            lastPoint: { x: 1, y: 0 },
             isShiftDown: false,
             lineWidth: 1,
         };
@@ -346,10 +403,26 @@ describe('CircleService', () => {
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
-    it('should drawEllipse if mouse is down and shift is unpressed', () => {
-        service.onMouseDown(mouseEvent);
+    it('should drawShape if mouse is down and shift ispressed on keydown', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.isShiftKeyDown = true;
-        service.initialize();
-        expect(service.initialize).toHaveBeenCalled();
+        const event = new KeyboardEvent('keypress', {
+            key: 'Shift',
+        });
+        service.mouseDown = true;
+        service.onKeyDown(event);
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
+
+    it('should drawShape if mouse is down and shift ispressed on keyUp', () => {
+        const drawShapeSpy = spyOn<any>(service, 'drawShape');
+        service.isShiftKeyDown = true;
+        const event = new KeyboardEvent('keypress', {
+            key: 'Shift',
+        });
+        service.mouseDown = true;
+        service.onKeyUp(event);
+        expect(drawShapeSpy).toHaveBeenCalled();
+    });
+    // tslint:disable-next-line: max-file-line-count
 });

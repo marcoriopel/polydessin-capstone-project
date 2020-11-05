@@ -7,41 +7,33 @@ import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { CircleService } from './circle.service';
 import { PolygoneService } from './polygone.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 // tslint:disable:no-string-literal
-xdescribe('PolygoneService', () => {
+describe('PolygoneService', () => {
     let service: PolygoneService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-    // tslint:disable-next-line: prefer-const
-    let drawPolygoneSpy: jasmine.Spy<any>;
+    let circleServiceSpy: jasmine.SpyObj<CircleService>;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let setCricleWidthSpy: jasmine.Spy<any>;
-    let setCircleHeigthSpy: jasmine.Spy<any>;
-    // tslint:disable-next-line: prefer-const
-    let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas']);
+        circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle']);
+
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
-
-        const drawCanvas = document.createElement('canvas');
-        drawCanvas.width = WIDTH;
-        drawCanvas.height = HEIGHT;
-
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
         colorPickerStub = new ColorSelectionService();
 
@@ -49,14 +41,10 @@ xdescribe('PolygoneService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorSelectionService, useValue: colorPickerStub },
-                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: CircleService, useValue: circleServiceSpy },
             ],
         });
         service = TestBed.inject(PolygoneService);
-        drawPolygoneSpy = spyOn<any>(service, 'drawPolygone').and.callThrough();
-        // ctxFillSpy = spyOn<any>(baseCtxStub, 'fill').and.callThrough();
-        setCricleWidthSpy = spyOn<any>(service.circleService, 'setCircleWidth').and.callThrough();
-        setCircleHeigthSpy = spyOn<any>(service.circleService, 'setCircleHeight').and.callThrough();
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
@@ -118,13 +106,11 @@ xdescribe('PolygoneService', () => {
         expect(service.circleService.mouseDown).toEqual(false);
     });
     it('should drawShape when mouse is down on mousemove', () => {
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.onMouseDown(mouseEvent);
-        service.onMouseMove(mouseEventLClick);
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 31, y: 31 };
+        service.mouseDown = true;
+        service.onMouseMove(mouseEvent);
         expect(drawPolygoneSpy).toHaveBeenCalled();
     });
 
@@ -141,32 +127,56 @@ xdescribe('PolygoneService', () => {
     });
 
     it('should not draw anything on detection of mouse up if it was not down', () => {
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone').and.callThrough();
+
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
     });
 
     it('should not draw anything on detection of mouse move if it was not down', () => {
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone').and.callThrough();
+
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
     });
 
-    it('should not call fill if option is not to draw only the border', () => {
-        service.fillStyle = FILL_STYLES.FILL;
-        service['drawingService'] = drawServiceSpy;
-        // drawServiceSpy.updateStack.and.callThrough();
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
+    it('should not call fill if option is to draw only the border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 2,
+            lineWidth: 1,
+            circleHeight: 1,
+            circleWidth: 1,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(baseCtxStub, service.polygoneData);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should call fill also if option is not to draw only the border', () => {
+        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service['drawingService'] = drawServiceSpy;
-        // drawServiceSpy.updateStack.and.callThrough();
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 0,
+            lineWidth: 1,
+            circleHeight: 1,
+            circleWidth: 1,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(baseCtxStub, service.polygoneData);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
@@ -179,16 +189,17 @@ xdescribe('PolygoneService', () => {
         expect(service.circleWidth).toBe(1);
     });
 
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        // const point: Vec2 = { x: 0, y: 0 };
+    it('drawCircle should call drawCircle of circleService', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 29, y: 29 };
         service.drawCircle(baseCtxStub);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCricleWidthSpy).toHaveBeenCalled();
+        expect(circleServiceSpy.drawCircle).toHaveBeenCalled();
     });
 
     it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const setCricleWidthSpy = spyOn<any>(service.circleService, 'setCircleWidth').and.callThrough();
+        const setCircleHeigthSpy = spyOn<any>(service.circleService, 'setCircleHeight').and.callThrough();
+
         // const point: Vec2 = { x: 0, y: 0 };
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 31, y: 31 };
@@ -198,6 +209,9 @@ xdescribe('PolygoneService', () => {
     });
 
     it('drawCircle should call setCircleHeight and setCircleWidth', () => {
+        const setCricleWidthSpy = spyOn<any>(service.circleService, 'setCircleWidth').and.callThrough();
+        const setCircleHeigthSpy = spyOn<any>(service.circleService, 'setCircleHeight').and.callThrough();
+
         const point: Vec2 = { x: 0, y: 0 };
         service.circleService.firstPoint = { x: 30, y: 30 };
         service.circleService.lastPoint = { x: 29, y: 31 };

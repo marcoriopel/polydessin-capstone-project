@@ -33,7 +33,7 @@ export class PolygoneService extends Tool {
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
         super(drawingService);
     }
-
+    // POURQUOI CEST ENCORE LA CA A ENLEVER CONSOLE.LOG
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';

@@ -34,7 +34,7 @@ import { SavingComponent } from './components/saving/saving.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
-import { CircleselectionAttributesComponent } from './Components/tools/circle-selection-attributes/circleselection-attributes.component';
+import { CircleselectionAttributesComponent } from './components/tools/circle-selection-attributes/circleselection-attributes.component';
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
