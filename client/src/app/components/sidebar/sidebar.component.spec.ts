@@ -65,10 +65,15 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalled();
     });
 
-    it('should call openWarning', () => {
+    it('should call openWarningModal', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
         button.click();
         expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
+    });
+
+    it('should call open whit the export component', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
     it('should not change tool nor handle cursor on an invalid event', () => {
