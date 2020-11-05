@@ -350,4 +350,5 @@ describe('PolygoneService', () => {
         service.drawPolygone(previewCtxStub, service.polygoneData);
         expect(strokeSpy).toHaveBeenCalled();
     });
+    // tslint:disable-next-line: max-file-line-count
 });

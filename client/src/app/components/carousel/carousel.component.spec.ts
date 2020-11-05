@@ -6,7 +6,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CarouselComponent } from '@app/components//carousel/carousel.component';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -380,15 +380,6 @@ describe('CarouselComponent', () => {
         expect(component.visibleDrawingsIndexes).toEqual([2, 0, 1]);
     });
 
-    // it('should switch drawings left on previous click with 2 drawing', () => {
-    //     const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
-    //     component.drawingOfInterest = 0;
-    //     component.databaseMetadata = [DBDATA, DBDATA];
-    //     component.visibleDrawingsIndexes = [0, 1];
-    //     component.onPreviousClick();
-    //     expect(component.visibleDrawingsIndexes).toEqual([1, 0]);
-    // });
-
     it('should switch drawings right on next click', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
@@ -398,15 +389,6 @@ describe('CarouselComponent', () => {
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 0]);
     });
 
-    // it('should switch drawings right on next click with 2 drawings', () => {
-    //     const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
-    //     component.drawingOfInterest = 0;
-    //     component.databaseMetadata = [DBDATA, DBDATA];
-    //     component.visibleDrawingsIndexes = [0, 1];
-    //     component.onNextClick();
-    //     expect(component.visibleDrawingsIndexes).toEqual([1, 0]);
-    // });
-
     it('should switch drawings right on next click with 4 drawings', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.drawingOfInterest = 1;
@@ -415,4 +397,5 @@ describe('CarouselComponent', () => {
         component.onNextClick();
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
     });
+    // tslint:disable-next-line: max-file-line-count
 });
