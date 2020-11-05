@@ -30,17 +30,15 @@ export class UndoRedoService {
     undo(): void {
         this.selectionSerice.reset();
         console.log(this.drawingService.undoStack);
-        this.resizeDrawingService.setDefaultCanvasSize();
-        setTimeout(()=>{
-            const modification = this.drawingService.undoStack.pop();
-            if (modification !== undefined) {
-                this.drawingService.redoStack.push(modification);
-            }
-            this.drawingService.clearCanvas(this.drawingService.baseCtx);
-            this.drawingService.undoStack.forEach((element) => {
-                this.drawElement(element);
-            });
-        })
+        this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
+        const modification = this.drawingService.undoStack.pop();
+        if (modification !== undefined) {
+            this.drawingService.redoStack.push(modification);
+        }
+        this.drawingService.clearCanvas(this.drawingService.baseCtx);
+        this.drawingService.undoStack.forEach((element) => {
+            this.drawElement(element);
+        });
     }
 
     redo(): void {
