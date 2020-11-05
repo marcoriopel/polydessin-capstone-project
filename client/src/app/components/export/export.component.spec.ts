@@ -1,4 +1,6 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -20,6 +22,8 @@ describe('ExportComponent', () => {
         drawingServiceStub = {} as DrawingService;
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         TestBed.configureTestingModule({
+            imports: [FormsModule, ReactiveFormsModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [ExportComponent],
             providers: [
                 { provide: DrawingService, useValue: drawingServiceStub },

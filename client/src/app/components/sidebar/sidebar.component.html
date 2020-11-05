@@ -125,6 +125,42 @@
                 >timeline</mat-icon
             >
         </label>
+
+        <input
+        type="radio"
+        [id]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+        name="tool"
+        [value]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+        (change)="onToolChange($event)"
+        [checked]="selectedTool.includes(this.toolNames.CIRCLE_SELECTION_TOOL_NAME)"
+    />
+    <label [for]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME">
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.CIRCLE_SELECTION_TOOL_NAME"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            >vignette</mat-icon
+        >
+    </label>
+
+    <input
+    type="radio"
+    [id]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+    name="tool"
+    [value]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+    (change)="onToolChange($event)"
+    [checked]="selectedTool.includes(this.toolNames.SQUARE_SELECTION_TOOL_NAME)"
+/>
+<label [for]="this.toolNames.SQUARE_SELECTION_TOOL_NAME">
+    <mat-icon
+        class="material-icons"
+        [matTooltip]="elementDescriptions.SQUARE_SELECTION_TOOL_NAME"
+        matTooltipPosition="right"
+        [matTooltipShowDelay]="tooltipShowDelay"
+        >highlight_alt</mat-icon
+    >
+</label>
         <input
             type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
@@ -176,7 +212,6 @@
             >
         </label>
     </div>
-
     <div class="sidebarSection">
         <mat-icon
             class="material-icons"

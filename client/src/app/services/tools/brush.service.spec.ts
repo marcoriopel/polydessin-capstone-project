@@ -159,4 +159,9 @@ describe('BrushService', () => {
         expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
         expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
     });
+
+    it(' should draw line on mouseleave', () => {
+        service.onMouseLeave();
+        expect(drawLineSpy).toHaveBeenCalled();
+    });
 });

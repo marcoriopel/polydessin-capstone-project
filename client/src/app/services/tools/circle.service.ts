@@ -68,6 +68,8 @@ export class CircleService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
@@ -104,12 +106,6 @@ export class CircleService extends Tool {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
             ctx.lineWidth = 1;
         }
-
-        // if (this.fillStyle === FILL_STYLES.DASHED) {
-        //     ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-        //     ctx.strokeStyle = 'black';
-        //     ctx.lineWidth = 1;
-        // }
 
         this.setEllipseHeight();
         this.setEllipseWidth();
@@ -217,6 +213,8 @@ export class CircleService extends Tool {
             fillStyle: this.fillStyle,
             isShiftDown: this.isShiftKeyDown,
             lineWidth: this.width,
+            firstPoint: this.firstPoint,
+            lastPoint: this.lastPoint,
         };
     }
 

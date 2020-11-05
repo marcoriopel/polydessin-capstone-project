@@ -17,14 +17,15 @@ import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
-import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
 })
 export class ToolSelectionService {
+    destroy$: Subject<boolean> = new Subject<boolean>();
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     private tools: Map<string, Tool>;
     currentTool: Tool;
@@ -42,7 +43,6 @@ export class ToolSelectionService {
         public squareSelectionService: SquareSelectionService,
         circleSelectionService: CircleSelectionService,
         polygoneService: PolygoneService,
-        selectionService: SelectionService,
         pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
@@ -61,13 +61,16 @@ export class ToolSelectionService {
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
-        this.hotkeyService.getKey().subscribe((tool) => {
-            if (this.tools.has(tool)) {
-                this.changeTool(tool);
-            } else {
-                this.selectItem(tool);
-            }
-        });
+        this.hotkeyService
+            .getKey()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((tool) => {
+                if (this.tools.has(tool)) {
+                    this.changeTool(tool);
+                } else {
+                    this.selectItem(tool);
+                }
+            });
     }
 
     changeTool(toolName: string): void {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -12,15 +12,18 @@ import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-sidebar',
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, AfterViewInit {
+export class SidebarComponent implements OnInit, OnDestroy {
     @ViewChild('undo', { read: ElementRef }) undoButton: ElementRef;
     @ViewChild('redo', { read: ElementRef }) redoButton: ElementRef;
+    destroy$: Subject<boolean> = new Subject<boolean>();
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
     toolNames: ToolNames = TOOL_NAMES;
@@ -36,11 +39,14 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     ) {}
 
     ngOnInit(): void {
-        this.hotkeyService.getKey().subscribe((tool) => {
-            if (TOOL_NAMES_ARRAY.includes(tool)) {
-                this.selectedTool = tool;
-            }
-        });
+        this.hotkeyService
+            .getKey()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((tool) => {
+                if (TOOL_NAMES_ARRAY.includes(tool)) {
+                    this.selectedTool = tool;
+                }
+            });
     }
 
     ngAfterViewInit(): void {
@@ -92,5 +98,10 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     }
     openExportWindow(): void {
         this.dialog.open(ExportComponent);
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

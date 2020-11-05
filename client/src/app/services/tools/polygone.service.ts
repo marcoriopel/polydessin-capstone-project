@@ -33,7 +33,7 @@ export class PolygoneService extends Tool {
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
         super(drawingService);
     }
-
+    // POURQUOI CEST ENCORE LA CA A ENLEVER CONSOLE.LOG
     handleCursor(): void {
         const previewCanvas = this.drawingService.previewCanvas;
         previewCanvas.style.cursor = 'crosshair';
@@ -64,6 +64,8 @@ export class PolygoneService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
@@ -82,7 +84,6 @@ export class PolygoneService extends Tool {
             this.mouseDown = false;
             this.drawingService.setIsToolInUse(false);
 
-            // Temp fix
             this.circleWidth = 0;
             this.circleHeight = 0;
         }
@@ -104,13 +105,13 @@ export class PolygoneService extends Tool {
         this.circleService.firstPoint = this.firstPoint;
         this.circleService.lastPoint = this.lastPoint;
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint));
-        this.LineDash(this.drawingService.previewCtx);
     }
 
     drawPolygone(ctx: CanvasRenderingContext2D, polygoneData: Polygone): void {
         ctx.fillStyle = polygoneData.primaryColor;
         ctx.strokeStyle = polygoneData.secondaryColor;
         ctx.lineWidth = polygoneData.lineWidth;
+        ctx.setLineDash([0]);
 
         if (this.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
@@ -126,6 +127,18 @@ export class PolygoneService extends Tool {
         const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
         const quadrant = this.trigonometry.findQuadrant(polygoneData.firstPoint, polygoneData.lastPoint);
         const center: Vec2 = { x: 0, y: 0 };
+
+        if (ctx === this.drawingService.previewCtx) {
+            ctx.beginPath();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+            ctx.stroke();
+            ctx.lineWidth = this.width;
+        } else {
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.previewCtx.setLineDash([0]);
+        }
 
         switch (quadrant) {
             case Quadrant.BOTTOM_LEFT:
@@ -161,20 +174,6 @@ export class PolygoneService extends Tool {
         }
         ctx.stroke();
         ctx.closePath();
-    }
-
-    LineDash(ctx: CanvasRenderingContext2D): void {
-        if (ctx === this.drawingService.previewCtx) {
-            ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-            ctx.stroke();
-            ctx.lineWidth = this.width;
-        } else {
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.previewCtx.setLineDash([0]);
-        }
     }
 
     private updatePolygoneData(): void {

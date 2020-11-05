@@ -36,18 +36,15 @@ export class HotkeyService {
 
     onKeyDown(event: KeyboardEvent): void {
         event.preventDefault();
-        if (this.isHotkeyEnabled) {
-            if (event.ctrlKey) {
-                const keyName: string | undefined = this.keysNeedCtrl.get(event.key.toString());
-                if (keyName) {
-                    this.toolName.next(keyName);
-                }
-            } else {
-                const keyName: string | undefined = this.keyMapping.get(event.key.toString());
-                if (keyName) {
-                    this.toolName.next(keyName);
-                }
-            }
+        if (!this.isHotkeyEnabled) return;
+        let keyName: string | undefined;
+        if (event.ctrlKey) {
+            keyName = this.keysNeedCtrl.get(event.key.toString());
+        } else {
+            keyName = this.keyMapping.get(event.key.toString());
+        }
+        if (keyName) {
+            this.toolName.next(keyName);
         }
     }
     getKey(): Observable<string> {
