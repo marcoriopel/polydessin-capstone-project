@@ -43,7 +43,7 @@ export class UndoRedoService extends Tool {
                 this.setUndoAvailability(false);
                 this.setRedoAvailability(false);
             } else {
-                this.setRedoAvailability(true);
+                this.setUndoAvailability(true);
                 this.setRedoAvailability(true);
                 this.changeUndoAvailability();
                 this.changeRedoAvailability();
@@ -79,6 +79,7 @@ export class UndoRedoService extends Tool {
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
+            console.log(modification);
             this.drawingService.redoStack.push(modification);
         }
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
@@ -97,8 +98,8 @@ export class UndoRedoService extends Tool {
             return;
         }
         const redoStackLength = this.drawingService.redoStack.length;
-        const element = this.drawingService.redoStack[redoStackLength - 1];
         if (redoStackLength) {
+            const element = this.drawingService.redoStack[redoStackLength - 1];
             this.drawElement(element);
             const modification = this.drawingService.redoStack.pop();
             if (modification !== undefined) {
