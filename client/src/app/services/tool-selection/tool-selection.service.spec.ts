@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -128,6 +129,12 @@ describe('ToolSelectionService', () => {
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         obs.next(SIDEBAR_ELEMENTS.SAVE_SERVER_NAME);
         expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
+    });
+
+    it('should open save component on call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.EXPORT_DRAWING_NAME);
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
     it('should call select all of selection service on square call', () => {
