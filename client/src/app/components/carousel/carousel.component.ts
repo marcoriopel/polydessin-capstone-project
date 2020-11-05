@@ -163,8 +163,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
         });
     }
 
+    // tslint:disable-next-line: no-empty
     addTag(event: MatChipInputEvent): void {}
 
+    // tslint:disable-next-line: no-empty
     removeTag(tags: string): void {}
 
     deleteDrawing(): void {
