@@ -98,7 +98,7 @@ export const TRANSFORMATIONS: Feature[] = [
         name: 'Déplacement par rectangle',
         description:
             "Cette fonctionnalité permet de sélection une section en forme de rectangle de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
-        picture: './../../../assets/img/picture_test.jpg',
+        picture: './../../../assets/video/selection_par_rectangle.mp4',
     },
     {
         name: 'Déplacement par ellipse',
