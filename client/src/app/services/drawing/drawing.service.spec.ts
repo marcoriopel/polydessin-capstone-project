@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from './drawing.service';
 
@@ -81,5 +82,41 @@ describe('DrawingService', () => {
         expect(canvasData.data).toEqual(expectedCanvasData.data);
         expect(canvasData.width).toEqual(expectedCanvasData.width);
         expect(canvasData.height).toEqual(expectedCanvasData.height);
+    });
+
+    it('should update stack on updateStack', () => {
+        service.undoStack = [];
+        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
+        service.updateStack(pencil);
+        expect(service.undoStack.length).toEqual(1);
+    });
+
+    it('should update stack on updateStack and clear redo stack', () => {
+        service.undoStack = [];
+        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
+        service.redoStack.push(pencil);
+        service.updateStack(pencil);
+        expect(service.undoStack.length).toEqual(1);
+        expect(service.redoStack.length).toEqual(0);
+    });
+
+    it('should drawfill on basectx', () => {
+        const imageDataSpy = spyOn(service.baseCtx, 'putImageData');
+        const fill: Fill = { type: {} as string, imageData: {} as ImageData };
+        service.drawFill(fill);
+        expect(imageDataSpy).toHaveBeenCalled();
+    });
+
+    it('should restore selection on basectx', () => {
+        const imageDataSpy = spyOn(service.baseCtx, 'putImageData');
+        const selection: Selection = { type: {} as string, imageData: {} as ImageData };
+        service.restoreSelection(selection);
+        expect(imageDataSpy).toHaveBeenCalled();
+    });
+
+    it('should get data on basectx', () => {
+        const imageDataSpy = spyOn(service.previewCtx, 'getImageData');
+        service.getPreviewData();
+        expect(imageDataSpy).toHaveBeenCalled();
     });
 });
