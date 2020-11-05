@@ -16,11 +16,12 @@ export class SelectionService extends Tool {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
-    underliyingService: SquareService | CircleService;
+    underlyingService: SquareService | CircleService;
     isEscapeKeyPressed: boolean;
     isShiftKeyDown: boolean;
     selectionData: Selection;
     canvasData: ImageData;
+    isNewSelection: boolean = false;
 
     constructor(drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
@@ -33,19 +34,17 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.initialize();
+        if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
-            this.mouseDown = event.button === MouseButton.LEFT;
-            if (this.mouseDown) {
-                if (!this.moveService.isTransformationOver) {
-                    this.moveService.isTransformationOver = true;
-                    this.moveService.printSelectionOnPreview();
-                    this.applyPreview();
-                }
-                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                this.drawingService.clearCanvas(this.drawingService.previewCtx);
-                this.underliyingService.onMouseDown(event);
+            this.isNewSelection = true;
+            if (!this.moveService.isTransformationOver) {
+                this.moveService.isTransformationOver = true;
+                this.moveService.printSelectionOnPreview();
+                this.applyPreview();
             }
+            this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.underlyingService.onMouseDown(event);
         } else {
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
@@ -53,20 +52,20 @@ export class SelectionService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        if (this.mouseDown) {
+        if (this.isNewSelection) {
             // setUp underlying service
-            this.underliyingService.lastPoint = this.getPositionFromMouse(event);
-            const currentFillStyle = this.underliyingService.fillStyle;
-            this.underliyingService.fillStyle = FILL_STYLES.DASHED;
+            this.underlyingService.lastPoint = this.getPositionFromMouse(event);
+            const currentFillStyle = this.underlyingService.fillStyle;
+            this.underlyingService.fillStyle = FILL_STYLES.DASHED;
             // draw selection
-            this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
+            this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.setInitialSelection(this.selection);
                 this.setSelectionData(this.selection);
             }
             // reset underlying service to original form
-            this.underliyingService.fillStyle = currentFillStyle;
-            this.mouseDown = false;
+            this.underlyingService.fillStyle = currentFillStyle;
+            this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else if (this.transormation === 'move') {
             this.transormation = '';
@@ -76,11 +75,11 @@ export class SelectionService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
-        if (this.mouseDown) {
-            const currentFillStyle = this.underliyingService.fillStyle;
-            this.underliyingService.fillStyle = FILL_STYLES.BORDER;
-            this.underliyingService.onMouseMove(event);
-            this.underliyingService.fillStyle = currentFillStyle;
+        if (this.isNewSelection) {
+            const currentFillStyle = this.underlyingService.fillStyle;
+            this.underlyingService.fillStyle = FILL_STYLES.BORDER;
+            this.underlyingService.onMouseMove(event);
+            this.underlyingService.fillStyle = currentFillStyle;
         } else if (this.transormation === 'move') {
             this.moveService.onMouseMove(event);
         }
@@ -90,13 +89,9 @@ export class SelectionService extends Tool {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.moveService.onKeyDown(event);
         }
-        if (this.mouseDown) {
-            this.underliyingService.fillStyle = FILL_STYLES.DASHED;
-            this.underliyingService.onKeyDown(event);
-        }
-        if (event.key === 'Escape') {
-            this.isEscapeKeyPressed = true;
-            this.reset();
+        if (this.isNewSelection) {
+            this.underlyingService.fillStyle = FILL_STYLES.DASHED;
+            this.underlyingService.onKeyDown(event);
         }
         switch (event.key) {
             case 'Escape': {
@@ -118,10 +113,10 @@ export class SelectionService extends Tool {
             height: this.drawingService.canvas.height,
         };
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.underliyingService.firstPoint = { x: 0, y: 0 };
-        this.underliyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
-        this.underliyingService.fillStyle = FILL_STYLES.DASHED;
-        this.selection = this.underliyingService.drawShape(this.drawingService.previewCtx);
+        this.underlyingService.firstPoint = { x: 0, y: 0 };
+        this.underlyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
+        this.underlyingService.fillStyle = FILL_STYLES.DASHED;
+        this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
         this.setInitialSelection(this.selection);
         this.setSelectionData(this.selection);
         this.setSelectionPoint();
@@ -130,20 +125,20 @@ export class SelectionService extends Tool {
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
-            this.underliyingService.onKeyUp(event);
+            this.underlyingService.onKeyUp(event);
             this.strokeSelection();
         }
         if (event.key === 'Shift') {
-            if (this.mouseDown) {
-                this.underliyingService.onKeyUp(event);
+            if (this.isNewSelection) {
+                this.underlyingService.onKeyUp(event);
             }
-            this.underliyingService.isShiftKeyDown = false;
+            this.underlyingService.isShiftKeyDown = false;
             this.isShiftKeyDown = false;
         }
         this.setSelectionPoint();
     }
 
-    private isInSelection(event: MouseEvent): boolean {
+    isInSelection(event: MouseEvent): boolean {
         const currentPosition = this.getPositionFromMouse(event);
         if (
             currentPosition.x > this.selection.startingPoint.x &&
