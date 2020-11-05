@@ -41,11 +41,13 @@ describe('ToolSelectionService', () => {
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
+    let squareSelectionServiceSpy: SpyObj<SquareSelectionService>;
     let obs: Subject<string>;
     let keyboardEvent: KeyboardEvent;
     let eraserServiceMock: MockTool;
     beforeEach(() => {
         obs = new Subject<string>();
+        squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['reset', 'initialize', 'setCursor', 'selectAll']);
         matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarningModal']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas']);
@@ -65,7 +67,7 @@ describe('ToolSelectionService', () => {
                 { provide: CircleService, useValue: new MockTool(TOOL_NAMES.CIRCLE_TOOL_NAME) },
                 { provide: LineService, useValue: new MockTool(TOOL_NAMES.LINE_TOOL_NAME) },
                 { provide: FillService, useValue: new MockTool(TOOL_NAMES.FILL_TOOL_NAME) },
-                { provide: SquareSelectionService, useValue: new MockTool(TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME) },
+                { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
                 { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
@@ -128,6 +130,18 @@ describe('ToolSelectionService', () => {
         expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
     });
 
+    it('should call select all of selection service on square call', () => {
+        const selectAllSPy = spyOn(service, 'selectAll');
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.SELECT_ALL);
+        expect(selectAllSPy).toHaveBeenCalled();
+    });
+
+    it('selectAll should call the selectAll of square selection', () => {
+        service.selectAll();
+        expect(squareSelectionServiceSpy.selectAll).toHaveBeenCalled();
+    });
+
     it('should call current tool keyup on keyup event', () => {
         keyboardEvent = new KeyboardEvent('keyup', { key: 'w' });
         const keyUpSpy = spyOn(service.currentTool, 'onKeyUp');
@@ -167,6 +181,12 @@ describe('ToolSelectionService', () => {
         const mouseLeaveSpy = spyOn(service.currentTool, 'onMouseLeave');
         service.currentToolMouseLeave();
         expect(mouseLeaveSpy).toHaveBeenCalled();
+    });
+
+    it('should call current tool onMouseEnter on onMouseEnter event', () => {
+        const mouseEnterSpy = spyOn(service.currentTool, 'onMouseEnter');
+        service.currentToolMouseEnter();
+        expect(mouseEnterSpy).toHaveBeenCalled();
     });
 
     it('should call setCursor on call', () => {
