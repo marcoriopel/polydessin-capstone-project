@@ -21,7 +21,15 @@ export class PencilService extends Tool {
         this.clearPath();
     }
 
+    onMouseLeave(): void {
+        this.updatePencilData();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
+        this.clearPath();
+    }
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         if (event.button !== MouseButton.LEFT) {
             return;
         } else {

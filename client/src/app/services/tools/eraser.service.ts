@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Eraser } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MIN_ERASER_TOOL_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -14,6 +14,7 @@ export class EraserService extends Tool {
     private eraserData: Eraser;
     private pathData: Vec2[];
     width: number = 5;
+    minToolWidth: number = MIN_ERASER_TOOL_WIDTH;
 
     constructor(drawingService: DrawingService) {
         super(drawingService);
@@ -25,6 +26,8 @@ export class EraserService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         if (event.button !== MouseButton.LEFT) {
             return;
         } else {
@@ -32,6 +35,7 @@ export class EraserService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
+            this.updateEraserData();
             this.drawRect(this.drawingService.previewCtx, this.pathData);
         }
         this.squareCursor(event);
@@ -50,9 +54,10 @@ export class EraserService extends Tool {
     }
 
     onMouseLeave(): void {
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.updateEraserData();
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
+        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {

@@ -30,6 +30,8 @@ export class FillService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         this.mouseDownCoord = this.getPositionFromMouse(event);
         this.initialPixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         if (event.button === MouseButton.LEFT) {

@@ -3,22 +3,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { PolygoneAttributesComponent } from './polygone-attributes.component';
 
-describe('PencilAttributesComponent', () => {
+describe('PolygoneAttributesComponent', () => {
     let component: PolygoneAttributesComponent;
     let fixture: ComponentFixture<PolygoneAttributesComponent>;
-    let pencilServiceSpy: jasmine.SpyObj<PolygoneService>;
+    let polygoneServiceSpy: jasmine.SpyObj<PolygoneService>;
     const initialToolWidth = 1;
     const finalToolWidth = 5;
     const initialsides = 5;
     const finalsides = 10;
 
     beforeEach(async(() => {
-        pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth', 'changeSides', 'changeFillStyle']);
+        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'changeSides']);
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [PolygoneAttributesComponent],
-            providers: [{ provide: PolygoneService, useValue: pencilServiceSpy }],
+            providers: [{ provide: PolygoneService, useValue: polygoneServiceSpy }],
         }).compileComponents();
     }));
 
@@ -34,7 +34,7 @@ describe('PencilAttributesComponent', () => {
 
     it('should call changeWidth of circleService', () => {
         component.changeBorderWidth(finalToolWidth);
-        expect(component.polygoneService.changeWidth).toHaveBeenCalled();
+        expect(polygoneServiceSpy.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
@@ -45,7 +45,7 @@ describe('PencilAttributesComponent', () => {
 
     it('should call changeFillStyle of polygoneService', () => {
         component.changeFillStyle(finalToolWidth);
-        expect(component.polygoneService.changeFillStyle).toHaveBeenCalled();
+        expect(polygoneServiceSpy.changeFillStyle).toHaveBeenCalled();
     });
 
     it('should call changeSides and change the sides', () => {

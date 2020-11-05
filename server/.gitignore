@@ -4,6 +4,7 @@
 node_modules/
 false/
 
+images/
 # Exclusion des fichiers Javascripts
 out/
 
