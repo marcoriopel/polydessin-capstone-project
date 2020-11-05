@@ -151,13 +151,16 @@ export class CarouselComponent implements OnInit, OnDestroy {
             );
     }
 
-    drawImageOnCanvas(image: string): void {
-        const drawing = new Image();
-        drawing.src = image;
-        drawing.onload = () => {
-            this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-            this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-        };
+    async drawImageOnCanvas(image: string): Promise<void> {
+        return new Promise<void>((resolve) => {
+            const drawing = new Image();
+            drawing.src = image;
+            drawing.onload = () => {
+                this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+                this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+                resolve();
+            };
+        });
     }
 
     addTag(event: MatChipInputEvent): void {

@@ -32,9 +32,10 @@ describe('Database service', () => {
 
         db = client.db(await mongoServer.getDbName());
         databaseService.collection = db.collection('test');
+        databaseService.client = client;
 
         testDBData = { id: '5', name: 'randomName', tags: ['tag1', 'tag2'], fileName: fileNameTest };
-        databaseService.collection.insertOne(testDBData);
+        await databaseService.collection.insertOne(testDBData);
     });
 
     afterEach(async () => {
@@ -47,7 +48,16 @@ describe('Database service', () => {
         try {
             await databaseService.getDBData();
         } catch (error) {
-            expect(error).to.equal('sfdf');
+            expect(error.message).to.equal('Topology is closed, please connect');
+        }
+    });
+
+    it('should close connection to client on close', async () => {
+        try {
+            await databaseService.closeConnection();
+            await databaseService.getDBData();
+        } catch (error) {
+            expect(error.message).to.equal('Topology is closed, please connect');
         }
     });
 
