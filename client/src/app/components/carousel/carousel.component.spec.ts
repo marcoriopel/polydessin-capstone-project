@@ -435,20 +435,6 @@ describe('CarouselComponent', () => {
         expect(component.filteredMetadata).toEqual([]);
     });
 
-    it('should show the filteredMetadata with a tags that is not an Array ', () => {
-        component.tags = [];
-        const tag = 'smalltag';
-        const target = ({
-            tag,
-        } as unknown) as HTMLInputElement;
-        const event: MatChipInputEvent = { value: tag, input: target };
-        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', tag], fileName: 'filename' };
-        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
-        component.addTag(event);
-        component.showDrawingsWithFilter();
-        expect(component.filteredMetadata[1].tags).toEqual(DBDATA.tags);
-    });
-
     it('should return true if the name is to long', () => {
         const name = 'tagthatiswaytoolongtobeadded';
         expect(component.hasLengthTagError(name)).toBeTrue();

@@ -208,16 +208,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
         }
         for (const data of this.databaseMetadata) {
             if (data.tags.length > 0) {
-                if (Array.isArray(data.tags)) {
-                    for (const tag of data.tags) {
-                        if (this.tags.includes(tag)) {
-                            this.filteredMetadata.push(data);
-                            break;
-                        }
-                    }
-                } else {
-                    if (this.tags.includes(data.tags)) {
+                // if (Array.isArray(data.tags)) {
+                for (const tag of data.tags) {
+                    if (this.tags.includes(tag)) {
                         this.filteredMetadata.push(data);
+                        break;
                     }
                 }
             }
