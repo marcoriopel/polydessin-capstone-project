@@ -110,10 +110,12 @@ export class SavingComponent implements OnInit, OnDestroy {
                 (data) => {
                     this.isSaveButtonDisabled = false;
                     this.serverResponseService.saveConfirmSnackBar();
+                    this.dialog.closeAll();
                 },
                 (error) => {
                     this.isSaveButtonDisabled = false;
                     this.serverResponseService.saveErrorSnackBar(error.error);
+                    this.dialog.closeAll();
                 },
             );
     }
