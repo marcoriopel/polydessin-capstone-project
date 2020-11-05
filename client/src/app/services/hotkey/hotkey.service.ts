@@ -27,6 +27,7 @@ export class HotkeyService {
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
         ['g', this.sidebarElements.CAROUSEL_NAME],
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
+        ['e', this.sidebarElements.EXPORT_DRAWING_NAME],
         ['a', this.sidebarElements.SELECT_ALL],
     ]);
 
@@ -35,8 +36,8 @@ export class HotkeyService {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        event.preventDefault();
         if (!this.isHotkeyEnabled) return;
+        event.preventDefault();
         let keyName: string | undefined;
         if (event.ctrlKey) {
             keyName = this.keysNeedCtrl.get(event.key.toString());
