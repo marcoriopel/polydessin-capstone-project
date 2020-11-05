@@ -155,12 +155,12 @@ fdescribe('PolygoneService', () => {
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
-    // it('should not call fill if option is not to draw only the border', () => {
-    //     service.fillStyle = FILL_STYLES.BORDER;
-    //     service.onMouseDown(mouseEvent);
-    //     service.onMouseUp(mouseEvent);
-    //     expect(ctxFillSpy).not.toHaveBeenCalled();
-    // });
+    it('should not call fill if option is not to draw only the border', () => {
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.onMouseDown(mouseEvent);
+        service.onMouseUp(mouseEvent);
+        expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
 
     it('should call fillRect if option is not to draw only the border', () => {
         service.fillStyle = FILL_STYLES.FILL;
@@ -221,8 +221,7 @@ fdescribe('PolygoneService', () => {
         expect(service.sides).toBe(10);
     });
     it('should set centerX', () => {
-        const C: number = 0;
-        service.centerX = C;
+        service.centerX = 0;
         let firstPoint: Vec2 = { x: 20, y: 20 };
         let lastPoint: Vec2 = { x: 10, y: 10 };
         service.lastPoint = lastPoint;
@@ -236,8 +235,7 @@ fdescribe('PolygoneService', () => {
     });
 
     it('should set centerY', () => {
-        const C: number = 0;
-        service.centerY = C;
+        service.centerY = 0;
         let firstPoint: Vec2 = { x: 20, y: 20 };
         let lastPoint: Vec2 = { x: 10, y: 10 };
         service.lastPoint = lastPoint;
