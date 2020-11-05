@@ -96,15 +96,6 @@ describe('PolygoneService', () => {
         expect(service.sides).not.toBe(8);
     });
 
-    it(' mouseDown should set mouseDown property to false on right click', () => {
-        const mouseEventRClick = {
-            offsetX: 25,
-            offsetY: 25,
-            button: MouseButton.RIGHT,
-        } as MouseEvent;
-        service.circleService.onMouseDown(mouseEventRClick);
-        expect(service.circleService.mouseDown).toEqual(false);
-    });
     it('should drawShape when mouse is down on mousemove', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
         service.firstPoint = { x: 30, y: 30 };
@@ -127,7 +118,7 @@ describe('PolygoneService', () => {
     });
 
     it('should not draw anything on detection of mouse up if it was not down', () => {
-        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone').and.callThrough();
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
 
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
@@ -135,7 +126,7 @@ describe('PolygoneService', () => {
     });
 
     it('should not draw anything on detection of mouse move if it was not down', () => {
-        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone').and.callThrough();
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
 
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
@@ -196,26 +187,22 @@ describe('PolygoneService', () => {
         expect(circleServiceSpy.drawCircle).toHaveBeenCalled();
     });
 
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const setCricleWidthSpy = spyOn<any>(service.circleService, 'setCircleWidth').and.callThrough();
-        const setCircleHeigthSpy = spyOn<any>(service.circleService, 'setCircleHeight').and.callThrough();
-
-        // const point: Vec2 = { x: 0, y: 0 };
-        service.firstPoint = { x: 30, y: 30 };
-        service.lastPoint = { x: 31, y: 31 };
-        service.drawCircle(baseCtxStub);
-        expect(setCircleHeigthSpy).toHaveBeenCalled();
-        expect(setCricleWidthSpy).toHaveBeenCalled();
-    });
-
-    it('drawCircle should call setCircleHeight and setCircleWidth', () => {
-        const setCricleWidthSpy = spyOn<any>(service.circleService, 'setCircleWidth').and.callThrough();
-        const setCircleHeigthSpy = spyOn<any>(service.circleService, 'setCircleHeight').and.callThrough();
-
-        const point: Vec2 = { x: 0, y: 0 };
-        service.circleService.firstPoint = { x: 30, y: 30 };
-        service.circleService.lastPoint = { x: 29, y: 31 };
-        service.circleService.drawCircle(baseCtxStub, point);
+    it('drawPolygone should call setCircleHeight and setCircleWidth', () => {
+        const setCricleWidthSpy = spyOn<any>(service, 'setCircleWidth');
+        const setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight');
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 0,
+            lineWidth: 1,
+            circleHeight: 1,
+            circleWidth: 1,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(baseCtxStub, service.polygoneData);
         expect(setCircleHeigthSpy).toHaveBeenCalled();
         expect(setCricleWidthSpy).toHaveBeenCalled();
     });
