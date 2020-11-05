@@ -68,6 +68,7 @@ export class PolygoneService extends Tool {
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -79,6 +80,7 @@ export class PolygoneService extends Tool {
             this.drawPolygone(this.drawingService.baseCtx, this.polygoneData);
             this.drawingService.updateStack(this.polygoneData);
             this.mouseDown = false;
+            this.drawingService.setIsToolInUse(false);
 
             // Temp fix
             this.circleWidth = 0;

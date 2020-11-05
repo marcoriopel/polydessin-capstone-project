@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -12,6 +13,15 @@ export class DrawingService {
     previewCanvas: HTMLCanvasElement;
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
+    isToolInUse: Subject<boolean> = new Subject<boolean>();
+
+    setIsToolInUse(isInUse: boolean): void {
+        this.isToolInUse.next(isInUse);
+    }
+
+    getIsToolInUse(): Observable<boolean> {
+        return this.isToolInUse.asObservable();
+    }
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);

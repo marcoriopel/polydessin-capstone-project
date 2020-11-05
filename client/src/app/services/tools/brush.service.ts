@@ -34,6 +34,7 @@ export class BrushService extends Tool {
             this.pathData.push(this.mouseDownCoord);
             this.updateBrushData();
             this.drawLine(this.drawingService.previewCtx, this.brushData);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -46,6 +47,7 @@ export class BrushService extends Tool {
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.applyPattern('none');
+            this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();

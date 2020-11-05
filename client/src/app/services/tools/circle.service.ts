@@ -67,6 +67,7 @@ export class CircleService extends Tool {
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -75,6 +76,7 @@ export class CircleService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
+            this.drawingService.setIsToolInUse(false);
         }
     }
 

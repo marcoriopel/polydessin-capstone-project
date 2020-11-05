@@ -37,6 +37,34 @@ export class SidebarComponent implements OnInit {
                 this.selectedTool = tool;
             }
         });
+
+        this.undoRedoService.getUndoAvailability().subscribe((value) => {
+            if (value) {
+                const element: HTMLElement | null = document.getElementById('undo');
+                if (element) {
+                    element.style.color = 'white';
+                }
+            } else {
+                const element: HTMLElement | null = document.getElementById('undo');
+                if (element) {
+                    element.style.color = 'red';
+                }
+            }
+        });
+
+        this.undoRedoService.getRedoAvailability().subscribe((value) => {
+            if (value) {
+                const element: HTMLElement | null = document.getElementById('redo');
+                if (element) {
+                    element.style.color = 'white';
+                }
+            } else {
+                const element: HTMLElement | null = document.getElementById('redo');
+                if (element) {
+                    element.style.color = 'red';
+                }
+            }
+        });
     }
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;

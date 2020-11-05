@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
-// import { Brush, Eraser, Fill, Line, Pencil, Resize, Polygone } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -10,10 +9,17 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { Observable, Subject } from 'rxjs';
+
 @Injectable({
     providedIn: 'root',
 })
 export class UndoRedoService {
+    isUndoAvailable: boolean = false;
+    isUndoAvailableSubject: Subject<boolean> = new Subject<boolean>();
+    isRedoAvailable: boolean = false;
+    isRedoAvailableSubject: Subject<boolean> = new Subject<boolean>();
+
     constructor(
         public drawingService: DrawingService,
         public circleService: CircleService,
@@ -24,9 +30,44 @@ export class UndoRedoService {
         public lineService: LineService,
         public brushService: BrushService,
         public polygoneService: PolygoneService,
-    ) {}
+    ) {
+        this.drawingService.getIsToolInUse().subscribe((value) => {
+            if (value) {
+                this.setUndoAvailability(false);
+                this.setRedoAvailability(false);
+            } else {
+                this.setRedoAvailability(true);
+                this.setRedoAvailability(true);
+                this.changeUndoAvailability();
+                this.changeRedoAvailability();
+            }
+        });
+    }
+
+    setUndoAvailability(isAvailable: boolean): void {
+        this.isUndoAvailable = isAvailable;
+        this.isUndoAvailableSubject.next(isAvailable);
+    }
+
+    setRedoAvailability(isAvailable: boolean): void {
+        this.isRedoAvailable = isAvailable;
+        this.isRedoAvailableSubject.next(isAvailable);
+    }
+
+    getUndoAvailability(): Observable<boolean> {
+        return this.isUndoAvailableSubject.asObservable();
+    }
+
+    getRedoAvailability(): Observable<boolean> {
+        return this.isRedoAvailableSubject.asObservable();
+    }
 
     undo(): void {
+        this.changeUndoAvailability();
+        this.changeRedoAvailability();
+        if (!this.isUndoAvailable) {
+            return;
+        }
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
         if (modification !== undefined) {
@@ -36,9 +77,16 @@ export class UndoRedoService {
         this.drawingService.undoStack.forEach((element) => {
             this.drawElement(element);
         });
+        this.changeUndoAvailability();
+        this.changeRedoAvailability();
     }
 
     redo(): void {
+        this.changeUndoAvailability();
+        this.changeRedoAvailability();
+        if (!this.isRedoAvailable) {
+            return;
+        }
         const redoStackLength = this.drawingService.redoStack.length;
         const element = this.drawingService.redoStack[redoStackLength - 1];
         if (redoStackLength) {
@@ -47,6 +95,25 @@ export class UndoRedoService {
             if (modification !== undefined) {
                 this.drawingService.undoStack.push(modification);
             }
+        }
+        this.changeUndoAvailability();
+        this.changeRedoAvailability();
+    }
+
+    changeUndoAvailability(): void {
+        console.log(this.drawingService.undoStack.length);
+        if (this.drawingService.undoStack.length) {
+            this.setUndoAvailability(true);
+        } else {
+            this.setUndoAvailability(false);
+        }
+    }
+
+    changeRedoAvailability(): void {
+        if (this.drawingService.redoStack.length) {
+            this.setRedoAvailability(true);
+        } else {
+            this.setRedoAvailability(false);
         }
     }
 
