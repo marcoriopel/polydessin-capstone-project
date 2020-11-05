@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -12,7 +13,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-describe('SidebarComponent', () => {
+xdescribe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;
@@ -70,13 +71,18 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalled();
     });
 
-    it('should call openWarning', () => {
+    it('should call openWarningModal', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
         button.click();
         expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
     });
 
-    it('should not change tool nor set cursor on an invalid event', () => {
+    it('should call open whit the export component', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
+    });
+
+    it('should not change tool nor handle cursor on an invalid event', () => {
         const value = undefined;
         const target = ({
             value,

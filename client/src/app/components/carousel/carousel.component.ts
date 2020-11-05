@@ -160,15 +160,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
             );
     }
 
-    drawImageOnCanvas(image: string): void {
-        const drawing = new Image();
-        drawing.src = image;
-        drawing.onload = () => {
-            this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-            this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-        };
-    }
-
     addTag(event: MatChipInputEvent): void {
         const input = event.input;
         const value = event.value;
@@ -226,6 +217,17 @@ export class CarouselComponent implements OnInit, OnDestroy {
             }
         }
         this.manageShownDrawings();
+    }
+    async drawImageOnCanvas(image: string): Promise<void> {
+        return new Promise<void>((resolve) => {
+            const drawing = new Image();
+            drawing.src = image;
+            drawing.onload = () => {
+                this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
+                this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+                resolve();
+            };
+        });
     }
 
     deleteDrawing(): void {

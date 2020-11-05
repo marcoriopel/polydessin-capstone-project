@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Vec2 } from '@app/classes/vec2';
+import { Rectangle } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -16,10 +16,6 @@ describe('SquareService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let setRectangleWidthSpy: jasmine.Spy<any>;
-    let setRectangleHeigthSpy: jasmine.Spy<any>;
-    let drawRectSpy: jasmine.Spy<any>;
-    let topLeftPointSpy: jasmine.Spy<any>;
     let ctxFillSpy: jasmine.Spy<any>;
     let colorPickerStub: ColorSelectionService;
     const WIDTH = 100;
@@ -47,12 +43,6 @@ describe('SquareService', () => {
             ],
         });
         service = TestBed.inject(SquareService);
-        drawShapeSpy = spyOn<any>(service, 'drawShape').and.callThrough();
-        setRectangleWidthSpy = spyOn<any>(service, 'setRectangleWidth').and.callThrough();
-        setRectangleHeigthSpy = spyOn<any>(service, 'setRectangleHeight').and.callThrough();
-        topLeftPointSpy = spyOn<any>(service, 'findTopLeftPoint').and.callThrough();
-        drawRectSpy = spyOn<any>(service, 'drawRectangle').and.callThrough();
-        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect').and.callThrough();
 
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
@@ -74,6 +64,12 @@ describe('SquareService', () => {
         service.width = 0;
         service.changeWidth(1);
         expect(service.width).toBe(1);
+    });
+
+    it('should change preview ctx linecap to square on init', () => {
+        drawServiceSpy.previewCtx.lineCap = 'round';
+        service.initialize();
+        expect(drawServiceSpy.previewCtx.lineCap).toEqual('square');
     });
 
     it('should change the fillStyle', () => {
@@ -113,21 +109,8 @@ describe('SquareService', () => {
         expect(service.isShiftKeyDown).toBe(false);
     });
 
-    it(' onMouseUp should call drawShape if mouse was already down', () => {
-        const mouseEventLClick = {
-            offsetX: 0,
-            offsetY: 0,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.onMouseDown(mouseEventLClick);
-        service.onMouseUp(mouseEvent);
-        expect(setRectangleHeigthSpy).toHaveBeenCalled();
-        expect(setRectangleWidthSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
-        expect(drawShapeSpy).toHaveBeenCalled();
-    });
-
-    it('should draw rectangle ', () => {
+    it('onMouseUp should call drawShape if mouse was already down', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,
@@ -135,8 +118,7 @@ describe('SquareService', () => {
         } as MouseEvent;
         service.onMouseDown(mouseEventLClick);
         service.onMouseUp(mouseEvent);
-        expect(drawRectSpy).toHaveBeenCalled();
-        expect(topLeftPointSpy).toHaveBeenCalled();
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
@@ -161,17 +143,19 @@ describe('SquareService', () => {
         expect(service.rectangleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
-    it('should drawRect if mouse is down and shift is unpressed', () => {
+    it('should call drawshape if mouse is down and shift is unpressed', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.onMouseDown(mouseEvent);
         service.isShiftKeyDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
         service.onKeyUp(event);
-        expect(drawRectSpy).toHaveBeenCalled();
+        expect(drawShapeSpy).toHaveBeenCalled();
     });
 
     it('should drawShape when mouse is down on mousemove', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         const mouseEventLClick = {
             offsetX: 25,
             offsetY: 26,
@@ -182,61 +166,78 @@ describe('SquareService', () => {
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 
+    it('should drawShape ', () => {
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 25, y: 25 };
+        const shape = service.drawShape(drawServiceSpy.baseCtx);
+        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+    });
+
+    it('should not clear canvas if drawshape is on preview', () => {
+        service.firstPoint = { x: 30, y: 30 };
+        service.lastPoint = { x: 25, y: 25 };
+        const shape = service.drawShape(drawServiceSpy.previewCtx);
+        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+        expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
+    });
+
+    it('should set square attributes if shift is down on drawshape ', () => {
+        const squareAttributesSpy = spyOn(service, 'setSquareAttributes');
+        service.isShiftKeyDown = true;
+        service.firstPoint = { x: 30, y: 30 };
+        service.topLeftPoint = { x: 25, y: 25 };
+        service.lastPoint = { x: 25, y: 25 };
+        const shape = service.drawShape(drawServiceSpy.baseCtx);
+        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+        expect(squareAttributesSpy).toHaveBeenCalled();
+    });
+
     it('should finTopLeftPoint if firstPoint is top left corner', () => {
         // Top left is first point
+        service.rectangleHeight = 1;
+        service.rectangleWidth = 1;
         service.firstPoint = { x: 1, y: 1 };
+        service.topLeftPoint = { x: 0, y: 0 };
         service.lastPoint = { x: 2, y: 2 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        expect(topLeft).toEqual(service.firstPoint);
+        service.setSquareAttributes();
+        const topLeft = { x: 1, y: 1 };
+        expect(service.topLeftPoint).toEqual(topLeft);
     });
 
     it('should finTopLeftPoint if firstPoint is top right corner', () => {
         // top left is left by width of first point
+        service.rectangleHeight = 1;
+        service.rectangleWidth = 1;
+        service.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 2, y: 2 };
         service.lastPoint = { x: 1, y: 3 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 1, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
+        service.setSquareAttributes();
+        const expectedValue = { x: 1, y: 2 };
+        expect(service.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
         // top left is up by heigth of first point
+        service.rectangleHeight = 1;
+        service.rectangleWidth = 1;
+        service.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 1, y: 2 };
         service.lastPoint = { x: 2, y: 1 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 1, y: 1 };
-        expect(topLeft).toEqual(expectedValue);
+        service.setSquareAttributes();
+        const expectedValue = { x: 1, y: 1 };
+        expect(service.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
         // top left is last point
+        service.rectangleHeight = 1;
+        service.rectangleWidth = 1;
+        service.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 3, y: 3 };
         service.lastPoint = { x: 2, y: 2 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
-        const topLeft = service.findTopLeftPoint(service.rectangleWidth, service.rectangleHeight);
-        const expectedValue: Vec2 = { x: 2, y: 2 };
-        expect(topLeft).toEqual(expectedValue);
-    });
-
-    it('should call fillRect if option is not to draw only the border', () => {
-        service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(ctxFillSpy).toHaveBeenCalled();
-    });
-
-    it('should not call fillRect if option is not to draw only the border', () => {
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
+        service.setSquareAttributes();
+        const expectedValue = { x: 2, y: 2 };
+        expect(service.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should not set isShiftKeyDown to true if key down of anything else than shift', () => {
@@ -249,6 +250,7 @@ describe('SquareService', () => {
     });
 
     it('should not draw anything if key up of shift but not mousedown', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.isShiftKeyDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
@@ -259,53 +261,61 @@ describe('SquareService', () => {
     });
 
     it('should not draw anything on detection of mouse up if it was not down', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
     it('should not draw anything on detection of mouse move if it was not down', () => {
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawShapeSpy).not.toHaveBeenCalled();
     });
 
     it('should fill square if style is not set to border', () => {
-        service.isShiftKeyDown = true;
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.fillStyle = FILL_STYLES.FILL;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect');
+        const rectangleData: Rectangle = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 10,
+            width: 10,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.drawRectangle(baseCtxStub, rectangleData);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it('should not fill square if style is set to border', () => {
-        service.isShiftKeyDown = true;
-        const mouseEventLClick = {
-            offsetX: 25,
-            offsetY: 26,
-            button: MouseButton.LEFT,
-        } as MouseEvent;
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.onMouseDown(mouseEvent);
-        service.onMouseUp(mouseEventLClick);
+        ctxFillSpy = spyOn<any>(baseCtxStub, 'fillRect');
+        const rectangleData: Rectangle = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 10,
+            width: 10,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        service.drawRectangle(baseCtxStub, rectangleData);
         expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should call drawShape if mouseDown is true', () => {
-        service.firstPoint = { x: 1, y: 2 };
-        service.lastPoint = { x: 2, y: 1 };
-        service.setRectangleHeight();
-        service.setRectangleWidth();
+        drawShapeSpy = spyOn<any>(service, 'drawShape');
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
         service.mouseDown = true;
         service.onKeyDown(event);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawShapeSpy).toHaveBeenCalled();
     });
 });

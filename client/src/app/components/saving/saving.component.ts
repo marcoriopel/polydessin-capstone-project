@@ -68,14 +68,7 @@ export class SavingComponent implements OnInit, OnDestroy {
         const value = event.value;
 
         if ((value || '').trim()) {
-            if (this.tags.length < MAX_NUMBER_TAG) {
-                if (value.length > MAX_TAG_LENGTH) {
-                    this.isLastTagInvalid = true;
-                } else {
-                    this.tags.push(value.trim());
-                    this.isLastTagInvalid = false;
-                }
-            }
+            this.validateTag(value);
         }
         if (this.tags.length === MAX_NUMBER_TAG) {
             this.maxTags = true;
@@ -86,6 +79,16 @@ export class SavingComponent implements OnInit, OnDestroy {
         }
     }
 
+    validateTag(tag: string): void {
+        if (this.tags.length < MAX_NUMBER_TAG) {
+            if (tag.length > MAX_TAG_LENGTH) {
+                this.isLastTagInvalid = true;
+            } else {
+                this.tags.push(tag.trim());
+                this.isLastTagInvalid = false;
+            }
+        }
+    }
     removeTag(tag: string): void {
         const index = this.tags.indexOf(tag);
         if (this.maxTags) {
@@ -110,10 +113,12 @@ export class SavingComponent implements OnInit, OnDestroy {
                 (data) => {
                     this.isSaveButtonDisabled = false;
                     this.serverResponseService.saveConfirmSnackBar();
+                    this.dialog.closeAll();
                 },
                 (error) => {
                     this.isSaveButtonDisabled = false;
                     this.serverResponseService.saveErrorSnackBar(error.error);
+                    this.dialog.closeAll();
                 },
             );
     }

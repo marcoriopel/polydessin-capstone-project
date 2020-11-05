@@ -47,6 +47,8 @@ export class LineService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         if (event.button !== MouseButton.LEFT) {
             return;
         }
@@ -162,6 +164,8 @@ export class LineService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         if (event.key === 'Shift') {
             this.isShiftKeyDown = true;
             this.onMouseMove(this.mouseEvent);

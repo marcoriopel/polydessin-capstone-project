@@ -39,6 +39,8 @@ export interface Rectangle {
 }
 
 export interface Ellipse {
+    lastPoint: Vec2;
+    firstPoint: Vec2;
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -84,6 +86,11 @@ export interface Resize {
 }
 
 export interface Fill {
+    type: string;
+    imageData: ImageData;
+}
+
+export interface Selection {
     type: string;
     imageData: ImageData;
 }

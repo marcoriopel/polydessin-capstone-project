@@ -14,7 +14,7 @@ describe('NewDrawingService', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
 
     beforeEach(async(() => {
-        matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'clearCanvas']);
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -38,8 +38,8 @@ describe('NewDrawingService', () => {
         const canvas = document.createElement('canvas');
         const baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         baseCtxStub.fillRect(0, 0, RECTANGLE_WIDTH, RECTANGLE_HEIGTH);
-        service.drawingService.canvas = canvas;
-        service.drawingService.baseCtx = baseCtxStub;
+        drawingServiceSpy.canvas = canvas;
+        drawingServiceSpy.baseCtx = baseCtxStub;
 
         service.openWarningModal();
         expect(drawingServiceSpy.isCanvasBlank(baseCtxStub)).toBeFalsy();

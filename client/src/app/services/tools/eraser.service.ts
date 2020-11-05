@@ -22,11 +22,12 @@ export class EraserService extends Tool {
     }
 
     setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'none';
+        this.drawingService.previewCanvas.style.cursor = 'none';
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
         if (event.button !== MouseButton.LEFT) {
             return;
         } else {

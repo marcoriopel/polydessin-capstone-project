@@ -15,17 +15,24 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { SelectionService } from '@app/services/tools/selection.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
+import { PolygoneService } from '@app/services/tools/polygone.service';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
+// tslint:disable: no-empty
 
 class MockTool extends Tool {
     constructor(name: string) {
         super({} as DrawingService);
         this.name = name;
     }
+    initialize(): void {}
+    reset(): void {}
+    setCursor(): void {}
 }
 
 describe('ToolSelectionService', () => {
@@ -36,6 +43,7 @@ describe('ToolSelectionService', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
     let obs: Subject<string>;
     let keyboardEvent: KeyboardEvent;
+    let eraserServiceMock: MockTool;
     beforeEach(() => {
         obs = new Subject<string>();
         matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
@@ -43,7 +51,7 @@ describe('ToolSelectionService', () => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
-
+        eraserServiceMock = new MockTool(TOOL_NAMES.ERASER_TOOL_NAME);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
@@ -51,13 +59,16 @@ describe('ToolSelectionService', () => {
                 { provide: MatDialog, useValue: matdialogSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
                 { provide: PencilService, useValue: new MockTool(TOOL_NAMES.PENCIL_TOOL_NAME) },
-                { provide: SelectionService, useValue: new MockTool(TOOL_NAMES.SELECTION_TOOL_NAME) },
-                { provide: EraserService, useValue: new MockTool(TOOL_NAMES.ERASER_TOOL_NAME) },
+                { provide: EraserService, useValue: eraserServiceMock },
                 { provide: BrushService, useValue: new MockTool(TOOL_NAMES.BRUSH_TOOL_NAME) },
                 { provide: SquareService, useValue: new MockTool(TOOL_NAMES.SQUARE_TOOL_NAME) },
                 { provide: CircleService, useValue: new MockTool(TOOL_NAMES.CIRCLE_TOOL_NAME) },
                 { provide: LineService, useValue: new MockTool(TOOL_NAMES.LINE_TOOL_NAME) },
                 { provide: FillService, useValue: new MockTool(TOOL_NAMES.FILL_TOOL_NAME) },
+                { provide: SquareSelectionService, useValue: new MockTool(TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME) },
+                { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
+                { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
+                { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
             ],
         });
         service = TestBed.inject(ToolSelectionService);
@@ -73,8 +84,15 @@ describe('ToolSelectionService', () => {
     });
 
     it('should clear canvas when tool change', () => {
+        const currentToolResetSpy = spyOn(service.currentTool, 'reset');
+        const currentToolInitializeSpy = spyOn(eraserServiceMock, 'initialize');
+        const currentToolSetCursorSpy = spyOn(eraserServiceMock, 'setCursor');
+
         service.changeTool(TOOL_NAMES.ERASER_TOOL_NAME);
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(currentToolResetSpy).toHaveBeenCalled();
+        expect(currentToolInitializeSpy).toHaveBeenCalled();
+        expect(currentToolSetCursorSpy).toHaveBeenCalled();
     });
 
     it('should get current tool', () => {

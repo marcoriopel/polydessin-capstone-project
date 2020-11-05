@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -14,8 +15,10 @@ import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
-import { SelectionService } from '@app/services/tools/selection.service';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -38,8 +41,10 @@ export class ToolSelectionService {
         lineService: LineService,
         fillService: FillService,
         eraserService: EraserService,
+        public squareSelectionService: SquareSelectionService,
+        circleSelectionService: CircleSelectionService,
         polygoneService: PolygoneService,
-        selectionService: SelectionService,
+        pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
     ) {
@@ -51,7 +56,9 @@ export class ToolSelectionService {
             [TOOL_NAMES.LINE_TOOL_NAME, lineService],
             [TOOL_NAMES.FILL_TOOL_NAME, fillService],
             [TOOL_NAMES.ERASER_TOOL_NAME, eraserService],
-            [TOOL_NAMES.SELECTION_TOOL_NAME, selectionService],
+            [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
+            [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
+            [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
         ]);
         this.currentTool = pencilService;
@@ -72,6 +79,8 @@ export class ToolSelectionService {
         if (selectedTool) {
             this.currentTool.reset();
             this.currentTool = selectedTool;
+            this.currentTool.initialize();
+            this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
     }
@@ -87,7 +96,17 @@ export class ToolSelectionService {
             case this.sidebarElements.SAVE_SERVER_NAME:
                 this.dialog.open(SavingComponent);
                 break;
+            case this.sidebarElements.EXPORT_DRAWING_NAME:
+                this.dialog.open(ExportComponent);
+            case this.sidebarElements.SELECT_ALL:
+                this.selectAll();
+                break;
         }
+    }
+
+    selectAll(): void {
+        this.changeTool(TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME);
+        this.squareSelectionService.selectAll();
     }
 
     getCurrentToolName(): string {
@@ -120,5 +139,9 @@ export class ToolSelectionService {
 
     currentToolMouseLeave(): void {
         this.currentTool.onMouseLeave();
+    }
+
+    currentToolMouseEnter(): void {
+        this.currentTool.onMouseEnter();
     }
 }

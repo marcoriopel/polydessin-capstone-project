@@ -1,4 +1,6 @@
 /* tslint:disable:no-unused-variable */
+// tslint:disable: no-magic-numbers
+
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -133,7 +135,6 @@ describe('CarouselComponent', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
         component.filteredMetadata = [DBDATA, DBDATA, DBDATA, DBDATA, DBDATA];
         component.manageShownDrawings();
-        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes.length).toEqual(3);
     });
 
@@ -231,25 +232,13 @@ describe('CarouselComponent', () => {
         expect(routerSpy).toHaveBeenCalled();
     });
 
-    // it('should drawImageOnCanvas', async (done) => {
-    //     // const spy = spyOn(component, 'drawImageOnCanvas').and.callThrough();
-    //     // const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
-    //     // component.drawingOfInterest = 1;
-    //     // component.databaseMetadata = [DBDATA, DBDATA, DBDATA];
-    //     // const image = new Blob();
-    //     // component.applySelectedDrawing(1);
-    //     // imageObservable.next(image);
-    //     // expect(spy).toHaveBeenCalled();
-    //     // expect(baseCtxSpy.drawImage).toHaveBeenCalled();
-    //     const image = new Image();
-    //     const img = URL.createObjectURL(image);
-    //     const spy = spyOn(component, 'drawImageOnCanvas').and.callThrough();
-    //     await component.drawImageOnCanvas(img).then(() => {
-    //         done();
-    //     });
-    //     expect(baseCtxSpy.drawImage).toHaveBeenCalled();
-    //     expect(spy).toHaveBeenCalled();
-    // });
+    it('should drawImageOnCanvas', async () => {
+        const canvasTest = document.createElement('canvas').toDataURL();
+        const blob = await (await fetch(canvasTest)).blob();
+        const img = URL.createObjectURL(blob);
+        await component.drawImageOnCanvas(img);
+        expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+    });
 
     it('should delete drawing on delete call', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag', 'tag2'], fileName: 'filename' };
@@ -324,7 +313,6 @@ describe('CarouselComponent', () => {
         component.filteredMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
         component.visibleDrawingsIndexes = [0, 1, 2];
         component.onNextClick();
-        // tslint:disable-next-line: no-magic-numbers
         expect(component.visibleDrawingsIndexes).toEqual([1, 2, 3]);
     });
 

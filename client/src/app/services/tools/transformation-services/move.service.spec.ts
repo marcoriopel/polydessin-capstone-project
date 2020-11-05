@@ -1,5 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Rectangle } from '@app/classes/rectangle';
+import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from './move.service';
@@ -7,6 +7,8 @@ import SpyObj = jasmine.SpyObj;
 
 // tslint:disable: no-magic-numbers
 // tslint:disable: max-file-line-count
+// tslint:disable: no-string-literal
+// tslint:disable: no-empty
 
 describe('MoveService', () => {
     let service: MoveService;
@@ -15,7 +17,7 @@ describe('MoveService', () => {
 
     beforeEach(() => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
 
         TestBed.configureTestingModule({
@@ -23,9 +25,9 @@ describe('MoveService', () => {
         });
         service = TestBed.inject(MoveService);
 
-        const selection: Rectangle = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
-        const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255]), height: 1, width: 1 };
-        service.initialize(selection, selectionData);
+        service.selection = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
+        // const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255]), height: 1, width: 1 };
+        // service.initialize(selection, selectionData);
 
         service.pressedKeys.set(ARROW_KEYS.LEFT, false);
         service.pressedKeys.set(ARROW_KEYS.UP, false);
@@ -46,41 +48,21 @@ describe('MoveService', () => {
     });
 
     it('should initialize service', () => {
-        const selection: Rectangle = { startingPoint: { x: 3, y: 3 }, width: 2, height: 1 };
-        const selectionData: ImageData = { data: new Uint8ClampedArray([255, 255, 255, 255, 0, 0, 0, 255]), height: 1, width: 2 };
-        service.initialize(selection, selectionData);
+        const selection: SelectionBox = { startingPoint: { x: 3, y: 3 }, width: 2, height: 1 };
+        const selectionImage: HTMLCanvasElement = document.createElement('canvas');
+        service.initialize(selection, selectionImage);
 
         expect(service.initialSelection).toEqual(selection);
         expect(service.selection).toEqual(selection);
-        expect(service.selectionData).toEqual(selectionData);
+        expect(service.selectionImage).toEqual(selectionImage);
     });
 
     it('onMouseDown should set isTransformationOver to false if isTransformationOver is true', () => {
         service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
         service.onMouseDown({} as MouseEvent);
 
         expect(service.isTransformationOver).toBe(false);
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseDown should call printSelectionOnPreview if isTransformationOver is true', () => {
-        service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseDown({} as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseDown should not call printSelectionOnPreview if isTransformationOver is false', () => {
-        service.isTransformationOver = false;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseDown({} as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseMove should call printSelectionOnPreview', () => {
@@ -90,16 +72,6 @@ describe('MoveService', () => {
         service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-    });
-
-    it('onMouseMove should call drawingService.clearCanvas', () => {
-        service.isTransformationOver = true;
-        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-
-        service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
-
-        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
-        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it('onMouseMove should set selection.startingPoint', () => {
@@ -185,7 +157,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowLeft', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
@@ -197,7 +168,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowLeft and ArrowLeft is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
@@ -210,7 +180,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowRight', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
@@ -222,7 +191,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowRight and ArrowRight is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
@@ -235,7 +203,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowUp', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
@@ -247,7 +214,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowUp and ArrowUp is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.UP, true);
@@ -260,7 +226,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowDown', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
@@ -272,7 +237,6 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowDown and ArrowDown is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
@@ -284,7 +248,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should not clear interval if interval if isArrowKeyPressed', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
@@ -303,7 +266,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should clear interval if interval is not undefined and if none of the keys are pressed', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
 
@@ -314,7 +276,6 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should set pressedKeys ARROW_KEYS.LEFT to false if previously true', () => {
-        // tslint:disable-next-line: no-empty
         service.intervalId = setTimeout(() => {}, 100);
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
@@ -323,32 +284,32 @@ describe('MoveService', () => {
         expect(service.pressedKeys.get(ARROW_KEYS.LEFT)).toBe(false);
     });
 
-    it('clearSelectionBackground should set selection background to white', () => {
-        // create a black dummy canvas
-        const canvas: HTMLCanvasElement = document.createElement('canvas');
-        canvas.height = 10;
-        canvas.width = 10;
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // it('clearSelectionBackground should set selection background to white', () => {
+    //     // create a black dummy canvas
+    //     const canvas: HTMLCanvasElement = document.createElement('canvas');
+    //     canvas.height = 10;
+    //     canvas.width = 10;
+    //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    //     ctx.fillStyle = 'black';
+    //     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        service.clearSelectionBackground(ctx);
+    //     service.clearSelectionBackground();
 
-        expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
-    });
+    //     expect(ctx.getImageData(0, 0, 1, 1).data).toEqual(new Uint8ClampedArray([255, 255, 255, 255]));
+    // });
 
-    it('clearSelectionBackground should not change fillStyle', () => {
-        // create a black dummy canvas
-        const canvas: HTMLCanvasElement = document.createElement('canvas');
-        canvas.height = 10;
-        canvas.width = 10;
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        ctx.fillStyle = 'black';
+    // it('clearSelectionBackground should not change fillStyle', () => {
+    //     // create a black dummy canvas
+    //     const canvas: HTMLCanvasElement = document.createElement('canvas');
+    //     canvas.height = 10;
+    //     canvas.width = 10;
+    //     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+    //     ctx.fillStyle = 'black';
 
-        service.clearSelectionBackground(ctx);
+    //     service.clearSelectionBackground(ctx);
 
-        expect(ctx.fillStyle).toEqual('#000000');
-    });
+    //     expect(ctx.fillStyle).toEqual('#000000');
+    // });
 
     it('printSelectionOnPreview should call drawingService.clearCanvas and clearSelectionBackground', () => {
         const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
@@ -359,39 +320,18 @@ describe('MoveService', () => {
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
-    it('printSelectionOnPreview should call drawingService.previewCtx.putImageData', () => {
+    it('printSelectionOnPreview should call drawingService.previewCtx.drawImage', () => {
         const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
 
         service.printSelectionOnPreview();
 
         expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(previewCtxSpy.putImageData).toHaveBeenCalled();
-    });
-
-    it('printSelectionOnPreview should set isTransformationOver to false if isTransformationOver is true', () => {
-        const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
-        service.isTransformationOver = true;
-
-        service.printSelectionOnPreview();
-
-        expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(service.isTransformationOver).toBe(false);
-    });
-
-    it('printSelectionOnPreview should leave isTransformationOver to false if isTransformationOver is false', () => {
-        const clearSelectionBackgroundSpy = spyOn(service, 'clearSelectionBackground');
-        service.isTransformationOver = false;
-
-        service.printSelectionOnPreview();
-
-        expect(clearSelectionBackgroundSpy).toHaveBeenCalled();
-        expect(service.isTransformationOver).toBe(false);
+        expect(previewCtxSpy.drawImage).toHaveBeenCalled();
     });
 
     it('move should call printSelectionOnPreview', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -401,7 +341,6 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const initialStartingPoint = service.selection.startingPoint;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -413,7 +352,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -425,7 +363,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -437,7 +374,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.UP, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -449,7 +385,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -464,7 +399,6 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialStartingPoint = service.selection.startingPoint;
 
-        // tslint:disable-next-line: no-string-literal
         service['move'](service);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
@@ -474,7 +408,6 @@ describe('MoveService', () => {
     it('isArrowKeyPressed should return true if at least one arrowKey is pressed', () => {
         service.pressedKeys.set(ARROW_KEYS.UP, true);
 
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
 
@@ -484,12 +417,10 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
 
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
 
     it('isArrowKeyPressed should return false if no arrowKeys are pressed', () => {
-        // tslint:disable-next-line: no-string-literal
         expect(service['isArrowKeyPressed']()).toBe(false);
     });
 });
