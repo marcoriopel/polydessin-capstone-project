@@ -2,7 +2,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatChipInputEvent, MatChipList, MatChipsModule } from '@angular/material/chips';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CarouselComponent } from '@app/components//carousel/carousel.component';
@@ -32,7 +32,6 @@ describe('CarouselComponent', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     let routerSpy: SpyObj<RouterTestingModule>;
-    let chipListStub: MatChipList;
     beforeEach(async(() => {
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
@@ -43,7 +42,6 @@ describe('CarouselComponent', () => {
         dBDataObservable = new Subject<DBData[]>();
         imageObservable = new Subject<Blob>();
         deleteDrawingObservable = new Subject<void>();
-        chipListStub = {} as MatChipList;
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
         drawingServiceSpy.baseCtx = baseCtxSpy;
         databaseServiceSpy.getAllDBData.and.returnValue(dBDataObservable.asObservable());
@@ -62,7 +60,6 @@ describe('CarouselComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceSpy },
             ],
         }).compileComponents();
-        component.chipList = chipListStub;
     }));
 
     beforeEach(() => {
@@ -473,10 +470,31 @@ describe('CarouselComponent', () => {
         expect(haveSpace).toEqual(false);
     });
 
-    it('should chiplist error state be false if name is correct ', () => {
-        component.chipList.errorState = true;
+    it('should chiplist error state be false if tag is correct ', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [1, 2, 3];
+        component.filteredMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.gotImages = true;
         const name = 'smallTag';
-        component.currentTagInput(name);
-        expect(component.chipList.errorState).toEqual(false);
+        fixture.detectChanges();
+        await fixture.whenRenderingDone().then(() => {
+            component.currentTagInput(name);
+            expect(component.chipList.errorState).toEqual(false);
+        });
+    });
+
+    it('should chiplist error state be true if tag is inccorrect ', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [1, 2, 3];
+        component.filteredMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.gotImages = true;
+        const name = 'tagthatiswaytoolongtobeadded';
+        fixture.detectChanges();
+        await fixture.whenRenderingDone().then(() => {
+            component.currentTagInput(name);
+            expect(component.chipList.errorState).toEqual(true);
+        });
     });
 });

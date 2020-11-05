@@ -49,7 +49,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public resizeDrawingService: ResizeDrawingService,
     ) {}
 
-    @ViewChild('chipList') chipList: MatChipList;
+    @ViewChild('chipList', { static: false }) chipList: MatChipList;
 
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
@@ -206,7 +206,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
         if (this.tags.length === 0) {
             this.filteredMetadata = this.databaseMetadata;
         }
-        console.log(this.filteredMetadata);
         for (const data of this.databaseMetadata) {
             if (data.tags.length > 0) {
                 if (Array.isArray(data.tags)) {
