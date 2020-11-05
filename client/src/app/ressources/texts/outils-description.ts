@@ -6,7 +6,7 @@ export interface GroupFeature extends Feature {
 
 export const OTHER_FEATURES: Feature[] = [
     // { name: 'Grille et magnétisme', description: '..', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Annuler-refaire', description: '..', picture: './../../../assets/img/picture_test.jpg' },
+    { name: 'Annuler-refaire', description: '..', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Palette de couleur',
         description:
@@ -86,8 +86,8 @@ export const FILL: Feature[] = [
 ];
 
 export const TRANSFORMATIONS: Feature[] = [
-    // { name: 'Déplacement', description: '', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Redimensionnement', description: '', picture: './../../../assets/video/resizing.gif' },
+    { name: 'Déplacement', description: '', picture: './../../../assets/img/picture_test.jpg' },
+    { name: 'Redimensionnement', description: '', picture: './../../../assets/video/resizing.gif' },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
     // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];
