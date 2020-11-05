@@ -13,7 +13,6 @@ describe('ExportComponent', () => {
     let drawingServiceStub: DrawingService;
     let canvasStub: HTMLCanvasElement;
     let filterCanvasStub: HTMLCanvasElement;
-    let linkStub: HTMLAnchorElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -36,7 +35,6 @@ describe('ExportComponent', () => {
         fixture = TestBed.createComponent(ExportComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        linkStub = document.createElement('a');
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
@@ -49,7 +47,6 @@ describe('ExportComponent', () => {
 
         // tslint:disable-next-line: no-string-literal
         component['drawingService'].canvas = canvasStub;
-        component.link = linkStub;
         component.filterCanvas = filterCanvasStub;
     });
 
