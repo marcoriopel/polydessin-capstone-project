@@ -5,7 +5,6 @@ export interface GroupFeature extends Feature {
 }
 
 export const OTHER_FEATURES: Feature[] = [
-    // { name: 'Grille et magnétisme', description: '..', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Palette de couleur',
         description:
@@ -24,7 +23,6 @@ export const UNDO_REDO: Feature[] = [
 ];
 
 export const BASIC_TOOLS: Feature[] = [
-    // { name: 'Texte', description: 'texte ...', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Efface',
         description:
@@ -37,14 +35,12 @@ export const BASIC_TOOLS: Feature[] = [
             "Cet outil permet de tracer une ligne composée d'un ou plusieurs segments. Un premier clic définit la position de départ de la ligne. Ensuite, chaque clic qui suit « connecte » avec le clic qui le précède pour former un segment de la ligne. Un double clic permet de terminer le segment. Si le double clic est fait près du point initial de la ligne, le segment se fusionnera au point initial. \nLa commande shifth permet de mettre la ligne a 90° ou 45°  de celle tracé précédemment. Il est possible d'afficher un point de jonction entre les segments en cliquant dans la boîte «Afficher jonction». La couleur des points de jonction est déterminée par la couleur secondaire.   ",
         picture: './../../../assets/video/ligne.mp4',
     },
-    // { name: 'Étampe', description: 'etampe ...', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Pipette',
         description:
             "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente les pixels sous la souris surdimensionnés et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
-        picture: './../../../assets/img/picture_test.jpg',
+        picture: './../../../assets/video/brush.mp4',
     },
-    // { name: 'Baguette magique', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];
 
 export const DRAWING_TOOLS: Feature[] = [
@@ -60,8 +56,6 @@ export const DRAWING_TOOLS: Feature[] = [
             "Le pinceau permet de faire des traits de différente texture. Vous pouvez changer de texture en sélectionnant l'image correspondant à la texture désirée.",
         picture: './../../../assets/video/brush.mp4',
     },
-    // { name: 'Plume', description: 'plume ...', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Aréosol', description: 'aérosol ...', picture: './../../../assets/img/picture_test.jpg' },
 ];
 
 export const SHAPES: Feature[] = [
@@ -112,6 +106,4 @@ export const TRANSFORMATIONS: Feature[] = [
             'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il suffit de glisser et déposer avec le bouton gauche de la souris.',
         picture: './../../../assets/video/redimensionnement.mp4',
     },
-    // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];

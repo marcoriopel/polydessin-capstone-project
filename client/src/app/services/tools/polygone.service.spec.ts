@@ -133,25 +133,6 @@ describe('PolygoneService', () => {
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
     });
 
-    it('should not call fill if option is to draw only the border', () => {
-        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.polygoneData = {
-            type: 'polygone',
-            primaryColor: 'black',
-            secondaryColor: 'black',
-            fillStyle: 2,
-            lineWidth: 1,
-            circleHeight: 1,
-            circleWidth: 1,
-            firstPoint: { x: 30, y: 30 },
-            lastPoint: { x: 29, y: 29 },
-            sides: 3,
-        };
-        service.drawPolygone(baseCtxStub, service.polygoneData);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
-    });
-
     it('should call fill also if option is not to draw only the border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;

@@ -7,11 +7,5 @@ import { SquareSelectionService } from '@app/services/tools/selection-services/s
     styleUrls: ['./square-selection-attributes.component.scss'],
 })
 export class SquareselectionAttributesComponent {
-    // toolWidth: number;
-    // fillStyle: number;
-
-    constructor(public squareSelectionService: SquareSelectionService) {
-        // this.toolWidth = squareSelectionService.squareService.width;
-        // this.fillStyle = squareSelectionService.squareService.fillStyle;
-    }
+    constructor(public squareSelectionService: SquareSelectionService) {}
 }
