@@ -13,7 +13,7 @@ export class SquareSelectionService extends SelectionService {
     name: string = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
     constructor(drawingService: DrawingService, public squareService: SquareService, public moveService: MoveService) {
         super(drawingService, moveService);
-        super.underliyingService = squareService;
+        super.underlyingService = squareService;
     }
 
     setSelectionData(selection: SelectionBox): void {
