@@ -107,7 +107,7 @@ describe('CarouselComponent', () => {
         expect(twodrawingsSpy).toHaveBeenCalled();
     });
 
-    it('should call not do anything with 1 drawing on arrow press', () => {
+    it('should not do anything with 1 drawing on arrow press', () => {
         const DBDATA: DBData = { id: 'test', name: 'meta', tags: ['tag'], fileName: 'filename' };
         component.databaseMetadata.push(DBDATA);
         component.isArrowEventsChecked = true;
