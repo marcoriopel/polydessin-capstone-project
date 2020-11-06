@@ -142,10 +142,10 @@ describe('PolygoneService', () => {
             secondaryColor: 'black',
             fillStyle: 0,
             lineWidth: 1,
-            circleHeight: 1,
-            circleWidth: 1,
+            circleHeight: 5,
+            circleWidth: 5,
             firstPoint: { x: 30, y: 30 },
-            lastPoint: { x: 29, y: 29 },
+            lastPoint: { x: 20, y: 20 },
             sides: 3,
         };
         service.drawPolygone(baseCtxStub, service.polygoneData);

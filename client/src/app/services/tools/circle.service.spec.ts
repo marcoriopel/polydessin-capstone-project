@@ -241,7 +241,7 @@ describe('CircleService', () => {
             primaryColor: 'black',
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
-            radius: { x: 0, y: 0 },
+            radius: { x: 10, y: 10 },
             fillStyle: 1,
             firstPoint: { x: 0, y: 0 },
             lastPoint: { x: 0, y: 1 },
@@ -311,7 +311,7 @@ describe('CircleService', () => {
         service.fillStyle = FILL_STYLES.FILL;
         service.firstPoint = { x: 0, y: 0 };
         service.ellipseCenter = { x: 0, y: 0 };
-        service.lastPoint = { x: 0, y: 1 };
+        service.lastPoint = { x: 10, y: 11 };
         service.ellipseData = {
             type: 'ellipse',
             primaryColor: 'black',
@@ -332,7 +332,7 @@ describe('CircleService', () => {
     it('should call fill of circle if if last point is top left', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service.firstPoint = { x: 1, y: 1 };
+        service.firstPoint = { x: 10, y: 10 };
         service.ellipseCenter = { x: 0, y: 0 };
         service.lastPoint = { x: 0, y: 0 };
         service.ellipseData = {
@@ -355,15 +355,15 @@ describe('CircleService', () => {
     it('should call fill of circle if if last point is top right', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service.firstPoint = { x: 0, y: 1 };
+        service.firstPoint = { x: 0, y: 10 };
         service.ellipseCenter = { x: 0, y: 0 };
-        service.lastPoint = { x: 1, y: 0 };
+        service.lastPoint = { x: 10, y: 0 };
         service.ellipseData = {
             type: 'ellipse',
             primaryColor: 'black',
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
-            radius: { x: 0, y: 0 },
+            radius: { x: 10, y: 10 },
             fillStyle: 1,
             firstPoint: { x: 0, y: 1 },
             lastPoint: { x: 1, y: 0 },
