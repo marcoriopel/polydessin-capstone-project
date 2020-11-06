@@ -46,6 +46,7 @@ class DrawingServiceMock {
     getIsToolInUse(): Observable<boolean> {
         return this.isToolInUse.asObservable();
     }
+    resetStack(): void {}
 }
 
 // tslint:disable: no-magic-numbers
