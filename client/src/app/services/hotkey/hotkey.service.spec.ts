@@ -19,6 +19,13 @@ describe('Service: Hotkey', () => {
     }));
 
     it('should change toolName on a keyboard event of one of the shortcut keys without ctrl', () => {
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true });
+        const eventSpy = spyOn(service.toolName, 'next');
+        service.onKeyDown(keyboardEvent);
+        expect(eventSpy).toHaveBeenCalled();
+    });
+
+    it('should change toolName on a keyboard event of one of the shortcut keys with ctrl and shift', () => {
         keyboardEvent = new KeyboardEvent('keydown', { key: 'w' });
         const eventSpy = spyOn(service.toolName, 'next');
         service.onKeyDown(keyboardEvent);

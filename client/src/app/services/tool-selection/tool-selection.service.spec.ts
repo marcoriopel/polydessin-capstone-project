@@ -55,12 +55,7 @@ describe('ToolSelectionService', () => {
         newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarningModal']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
-        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', [
-            'setUndoAvailability',
-            'setRedoAvailability',
-            'changeUndoAvailability',
-            'changeRedoAvailability',
-        ]);
+        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', ['undo', 'redo']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         eraserServiceMock = new MockTool(TOOL_NAMES.ERASER_TOOL_NAME);
         TestBed.configureTestingModule({
@@ -147,10 +142,34 @@ describe('ToolSelectionService', () => {
     });
 
     it('should call select all of selection service on square call', () => {
-        const selectAllSPy = spyOn(service, 'selectAll');
+        const selectAllSpy = spyOn(service, 'selectAll');
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         obs.next(SIDEBAR_ELEMENTS.SELECT_ALL);
-        expect(selectAllSPy).toHaveBeenCalled();
+        expect(selectAllSpy).toHaveBeenCalled();
+    });
+
+    it('should call undo on call', () => {
+        const undoSpy = spyOn(service, 'undo');
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.UNDO);
+        expect(undoSpy).toHaveBeenCalled();
+    });
+
+    it('should call redo on call', () => {
+        const redoSpy = spyOn(service, 'redo');
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.REDO);
+        expect(redoSpy).toHaveBeenCalled();
+    });
+
+    it('should call undo of undo service on call', () => {
+        service.undo();
+        expect(undoRedoServiceSpy.undo).toHaveBeenCalled();
+    });
+
+    it('should call redo of redo service on call', () => {
+        service.redo();
+        expect(undoRedoServiceSpy.redo).toHaveBeenCalled();
     });
 
     it('selectAll should call the selectAll of square selection', () => {
