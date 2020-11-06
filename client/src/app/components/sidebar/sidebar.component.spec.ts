@@ -14,7 +14,7 @@ import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;
