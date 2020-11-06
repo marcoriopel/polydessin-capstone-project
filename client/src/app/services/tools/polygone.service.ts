@@ -155,7 +155,6 @@ export class PolygoneService extends Tool {
                 center.x = polygoneData.firstPoint.x + circleRadius;
                 center.y = polygoneData.firstPoint.y - circleRadius;
                 break;
-            default:
         }
         ctx.beginPath();
         ctx.moveTo(center.x, center.y - circleRadius);
