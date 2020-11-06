@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MoveService } from '../transformation-services/move.service';
+import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { CircleSelectionService } from './circle-selection.service';
 
 fdescribe('CircleSelectionService', () => {
