@@ -149,10 +149,15 @@ export class CircleService extends Tool {
         }
 
         ctx.beginPath();
-        ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
-        if (ellipse.fillStyle !== FILL_STYLES.BORDER && ellipse.fillStyle !== FILL_STYLES.DASHED) {
-            ctx.fill();
+        if (ellipse.radius.x > ctx.lineWidth / 2 && ellipse.radius.y > ctx.lineWidth / 2) {
+            ellipse.radius.x -= ctx.lineWidth / 2;
+            ellipse.radius.y -= ctx.lineWidth / 2;
+            ctx.ellipse(ellipse.center.x, ellipse.center.y, ellipse.radius.x, ellipse.radius.y, 0, 0, Math.PI * 2, false);
+            if (ellipse.fillStyle !== FILL_STYLES.BORDER && ellipse.fillStyle !== FILL_STYLES.DASHED) {
+                ctx.fill();
+            }
         }
+
         ctx.stroke();
     }
 
@@ -162,7 +167,7 @@ export class CircleService extends Tool {
         this.quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
         const ellipseRadiusX = this.circleWidth / 2;
         const ellipseRadiusY = this.circleHeight / 2;
-        const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
+        let circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
         let ellipseCenterX = point.x + circleRadius;
         let ellipseCenterY = point.y + circleRadius;
         switch (this.quadrant) {
@@ -184,10 +189,14 @@ export class CircleService extends Tool {
                 break;
         }
         ctx.beginPath();
-        ctx.arc(ellipseCenterX, ellipseCenterY, circleRadius, 0, Math.PI * 2, false);
-        if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
-            ctx.fill();
+        if (circleRadius > ctx.lineWidth / 2) {
+            circleRadius -= ctx.lineWidth / 2;
+            ctx.arc(ellipseCenterX, ellipseCenterY, circleRadius, 0, Math.PI * 2, false);
+            if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
+                ctx.fill();
+            }
         }
+
         ctx.stroke();
 
         this.ellipseRadius = { x: circleRadius, y: circleRadius };

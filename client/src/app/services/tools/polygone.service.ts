@@ -4,7 +4,15 @@ import { Tool } from '@app/classes/tool';
 import { Polygone } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MAX_SIDES, MIN_SIDES, MouseButton, Quadrant } from '@app/ressources/global-variables/global-variables';
+import {
+    DASH_LENGTH,
+    DASH_SPACE_LENGTH,
+    LINE_WIDTH_POLYGONE_CORRECTION,
+    MAX_SIDES,
+    MIN_SIDES,
+    MouseButton,
+    Quadrant,
+} from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -133,7 +141,7 @@ export class PolygoneService extends Tool {
         this.setCircleWidth();
         const ellipseRadiusX = polygoneData.circleWidth / 2;
         const ellipseRadiusY = polygoneData.circleHeight / 2;
-        const circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
+        let circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
         const quadrant = this.trigonometry.findQuadrant(polygoneData.firstPoint, polygoneData.lastPoint);
         const center: Vec2 = { x: 0, y: 0 };
 
@@ -156,18 +164,22 @@ export class PolygoneService extends Tool {
                 break;
         }
         ctx.beginPath();
-        ctx.moveTo(center.x, center.y - circleRadius);
         ctx.lineWidth = polygoneData.lineWidth;
 
-        for (let i = 0; i <= this.sides + 1; i++) {
-            ctx.lineTo(
-                center.x + circleRadius * Math.cos((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
-                center.y + circleRadius * Math.sin((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
-            );
+        if (circleRadius > ctx.lineWidth / LINE_WIDTH_POLYGONE_CORRECTION) {
+            circleRadius -= ctx.lineWidth / LINE_WIDTH_POLYGONE_CORRECTION;
+            ctx.moveTo(center.x, center.y - circleRadius);
+            for (let i = 0; i <= this.sides + 1; i++) {
+                ctx.lineTo(
+                    center.x + circleRadius * Math.cos((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
+                    center.y + circleRadius * Math.sin((i * 2 * Math.PI) / polygoneData.sides - Math.PI / 2),
+                );
+            }
             if (this.fillStyle !== FILL_STYLES.BORDER) {
                 ctx.fill();
             }
         }
+
         ctx.stroke();
         ctx.closePath();
     }
