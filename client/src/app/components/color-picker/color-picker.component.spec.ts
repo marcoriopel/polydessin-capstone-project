@@ -198,18 +198,6 @@ describe('ColorPickerComponent', () => {
         expect(component.primaryOpacity).toEqual(MAX_OPACITY);
     });
 
-    it('should block primary opacity change if opacity input contains chars (reset back to 100%)', () => {
-        const opacity = 'test';
-        component.changePrimaryOpacity(opacity, keyboardEvent);
-        expect(component.primaryOpacity).toEqual(MAX_OPACITY);
-    });
-
-    it('should block secondary opacity change if opacity input contains chars (reset back to 100%)', () => {
-        const opacity = 'test';
-        component.changeSecondaryOpacity(opacity, keyboardEvent);
-        expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
-    });
-
     it('should block primary opacity change if opacity input is less than 0 (reset back to 100%)', () => {
         const opacity = -1;
         component.changePrimaryOpacity(opacity, keyboardEvent);
@@ -234,30 +222,18 @@ describe('ColorPickerComponent', () => {
         expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
     });
 
-    it('should block primary opacity change if opacity input is an empty string (reset back to 100%)', () => {
-        const opacity = '';
-        component.changePrimaryOpacity(opacity, keyboardEvent);
-        expect(component.primaryOpacity).toEqual(MAX_OPACITY);
-    });
-
-    it('should block secondary opacity change if opacity input is an empty string (reset back to 100%)', () => {
-        const opacity = '';
-        component.changeSecondaryOpacity(opacity, keyboardEvent);
-        expect(component.secondaryOpacity).toEqual(MAX_OPACITY);
-    });
-
     it('should change primary opacity if input respect validation conditions', () => {
         component.primaryOpacity = MAX_OPACITY;
-        const opacity = '90';
+        const opacity = 90;
         component.changePrimaryOpacity(opacity, keyboardEvent);
-        expect(component.primaryOpacity.toString()).toEqual(opacity);
+        expect(component.primaryOpacity).toEqual(opacity);
     });
 
     it('should change secondary opacity if input respect validation conditions', () => {
         component.secondaryOpacity = MAX_OPACITY;
-        const opacity = '90';
+        const opacity = 90;
         component.changeSecondaryOpacity(opacity, keyboardEvent);
-        expect(component.secondaryOpacity.toString()).toEqual(opacity);
+        expect(component.secondaryOpacity).toEqual(opacity);
     });
 
     it('should change primary color when restoring a previously used color (#ffffff)', () => {
