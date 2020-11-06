@@ -33,10 +33,6 @@ export class HotkeyService {
     ]);
     keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
-    constructor() {
-        this.isHotkeyEnabled = true;
-    }
-
     onKeyDown(event: KeyboardEvent): void {
         if (!this.isHotkeyEnabled) return;
         event.preventDefault();
