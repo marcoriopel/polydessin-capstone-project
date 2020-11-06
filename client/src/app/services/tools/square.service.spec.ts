@@ -66,10 +66,10 @@ describe('SquareService', () => {
         expect(service.width).toBe(1);
     });
 
-    it('should change preview ctx linecap to square on init', () => {
-        drawServiceSpy.previewCtx.lineCap = 'round';
+    it('should change preview ctx lineJoin to witer on init', () => {
+        drawServiceSpy.previewCtx.lineJoin = 'round';
         service.initialize();
-        expect(drawServiceSpy.previewCtx.lineCap).toEqual('square');
+        expect(drawServiceSpy.previewCtx.lineJoin).toEqual('miter');
     });
 
     it('should change the fillStyle', () => {
@@ -170,14 +170,14 @@ describe('SquareService', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 25, y: 25 };
         const shape = service.drawShape(drawServiceSpy.baseCtx);
-        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+        expect(shape).toEqual({ startingPoint: { x: 25.5, y: 25.5 }, width: 5, height: 5 });
     });
 
     it('should not clear canvas if drawshape is on preview', () => {
         service.firstPoint = { x: 30, y: 30 };
         service.lastPoint = { x: 25, y: 25 };
         const shape = service.drawShape(drawServiceSpy.previewCtx);
-        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+        expect(shape).toEqual({ startingPoint: { x: 25.5, y: 25.5 }, width: 5, height: 5 });
         expect(drawServiceSpy.clearCanvas).not.toHaveBeenCalled();
     });
 
@@ -188,7 +188,7 @@ describe('SquareService', () => {
         service.topLeftPoint = { x: 25, y: 25 };
         service.lastPoint = { x: 25, y: 25 };
         const shape = service.drawShape(drawServiceSpy.baseCtx);
-        expect(shape).toEqual({ startingPoint: { x: 25, y: 25 }, width: 5, height: 5 });
+        expect(shape).toEqual({ startingPoint: { x: 25.5, y: 25.5 }, width: 5, height: 5 });
         expect(squareAttributesSpy).toHaveBeenCalled();
     });
 

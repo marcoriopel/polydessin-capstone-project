@@ -100,6 +100,7 @@ export class ToolSelectionService {
                 break;
             case this.sidebarElements.EXPORT_DRAWING_NAME:
                 this.dialog.open(ExportComponent);
+                break;
             case this.sidebarElements.SELECT_ALL:
                 this.selectAll();
                 break;

@@ -7,11 +7,5 @@ import { CircleSelectionService } from '@app/services/tools/selection-services/c
     styleUrls: ['./circle-selection-attributes.component.scss'],
 })
 export class CircleselectionAttributesComponent {
-    // toolWidth: number;
-    // fillStyle: number;
-
-    constructor(public circleSelectionService: CircleSelectionService) {
-        // this.toolWidth = circleSelectionService.circleService.width;
-        // this.fillStyle = circleSelectionService.circleService.fillStyle;
-    }
+    constructor(public circleSelectionService: CircleSelectionService) {}
 }
