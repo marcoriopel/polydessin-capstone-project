@@ -1,10 +1,10 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
-import { MAX_NUMBER_VISIBLE_DRAWINGS } from '@app/ressources/global-variables/global-variables';
+import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -22,10 +22,13 @@ import { takeUntil } from 'rxjs/operators';
 export class CarouselComponent implements OnInit, OnDestroy {
     destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
-    isArrowEventsChecked: boolean = true;
+    filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
     isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
+    currentTag: string = '';
+    maxTags: boolean = false;
+    isArrowEventsChecked: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
     selectable: boolean = true;
@@ -46,6 +49,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public resizeDrawingService: ResizeDrawingService,
     ) {}
 
+    @ViewChild('chipList', { static: false }) chipList: MatChipList;
+
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
         this.loadDBData();
@@ -63,6 +68,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (!this.isArrowEventsChecked) return;
+        if (this.databaseMetadata.length <= 1) return;
+        if (this.databaseMetadata.length === 2 && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+            this.onClickTwoDrawings();
+            return;
+        }
         if (event.key === 'ArrowLeft') {
             this.onPreviousClick();
         } else if (event.key === 'ArrowRight') {
@@ -79,9 +89,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroy$))
             .subscribe((dBData: DBData[]) => {
                 this.databaseMetadata = dBData;
+                this.filteredMetadata = this.databaseMetadata;
                 this.manageShownDrawings();
                 this.gotImages = true;
             });
+
+        this.showDrawingsWithFilter();
     }
 
     isArray(object: DBData): boolean {
@@ -89,7 +102,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     manageShownDrawings(): void {
-        for (let i = 0; i < this.databaseMetadata.length; i++) {
+        for (let i = 0; i < this.filteredMetadata.length; i++) {
             if (i >= MAX_NUMBER_VISIBLE_DRAWINGS) {
                 break;
             }
@@ -98,9 +111,10 @@ export class CarouselComponent implements OnInit, OnDestroy {
             }
             this.visibleDrawingsIndexes.push(i);
         }
+        this.gotImages = true;
     }
     onPreviewClick(positionIndex: number): void {
-        if (this.databaseMetadata.length === 2) {
+        if (this.filteredMetadata.length === 2) {
             if (positionIndex === this.drawingOfInterest) this.loadSelectedDrawing(positionIndex);
             else this.onClickTwoDrawings();
         } else {
@@ -138,7 +152,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
             this.currentRoute = '/editor';
         }
         this.databaseService
-            .getDrawingPng(this.databaseMetadata[index].fileName)
+            .getDrawingPng(this.filteredMetadata[index].fileName)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
                 (image: Blob) => {
@@ -151,6 +165,64 @@ export class CarouselComponent implements OnInit, OnDestroy {
             );
     }
 
+    addTag(event: MatChipInputEvent): void {
+        const input = event.input;
+        const value = event.value;
+
+        if ((value || '').trim()) {
+            if (this.tags.length < MAX_NUMBER_TAG) {
+                if (value.length < MAX_TAG_LENGTH) {
+                    this.tags.push(value.trim());
+                }
+            }
+            if (this.tags.length === MAX_NUMBER_TAG) {
+                this.maxTags = true;
+            }
+        }
+        if (input) {
+            input.value = '';
+        }
+        this.showDrawingsWithFilter();
+    }
+
+    removeTag(tags: string): void {
+        const index = this.tags.indexOf(tags);
+        if (this.maxTags) {
+            this.maxTags = false;
+        }
+
+        if (index >= 0) {
+            this.tags.splice(index, 1);
+        }
+        this.showDrawingsWithFilter();
+    }
+
+    showDrawingsWithFilter(): void {
+        this.gotImages = false;
+        this.filteredMetadata = [];
+        this.visibleDrawingsIndexes = [];
+        if (this.tags.length === 0) {
+            this.filteredMetadata = this.databaseMetadata;
+        }
+        for (const data of this.databaseMetadata) {
+            if (!data.tags.length) return;
+
+            if (!Array.isArray(data.tags)) {
+                if (this.tags.includes(data.tags)) {
+                    this.filteredMetadata.push(data);
+                    return;
+                }
+            }
+
+            for (const tag of data.tags) {
+                if (this.tags.includes(tag)) {
+                    this.filteredMetadata.push(data);
+                    break;
+                }
+            }
+        }
+        this.manageShownDrawings();
+    }
     async drawImageOnCanvas(image: string): Promise<void> {
         return new Promise<void>((resolve) => {
             const drawing = new Image();
@@ -162,12 +234,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
             };
         });
     }
-
-    // tslint:disable-next-line: no-empty
-    addTag(event: MatChipInputEvent): void {}
-
-    // tslint:disable-next-line: no-empty
-    removeTag(tags: string): void {}
 
     deleteDrawing(): void {
         this.gotImages = false;
@@ -198,26 +264,45 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     onPreviousClick(): void {
-        if (this.databaseMetadata.length > 2) {
-            this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
-        }
+        this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
         if (this.visibleDrawingsIndexes[0] === 0) {
-            this.visibleDrawingsIndexes[0] = this.databaseMetadata.length - 1;
+            this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
         } else {
             this.visibleDrawingsIndexes[0]--;
         }
     }
 
     onNextClick(): void {
-        if (this.databaseMetadata.length > 2) {
-            this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
-        }
+        this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
-        if (this.visibleDrawingsIndexes[2] === this.databaseMetadata.length - 1) {
+
+        if (this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1) {
             this.visibleDrawingsIndexes[2] = 0;
         } else {
             this.visibleDrawingsIndexes[2]++;
+        }
+    }
+
+    hasLengthTagError(tag: string): boolean {
+        return tag.length > MAX_NAME_LENGTH;
+    }
+
+    hasSpaceTagError(tag: string): boolean {
+        if (tag.indexOf(' ') < 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    currentTagInput(tag: string): void {
+        this.currentTag = tag;
+        if (tag.length > MAX_TAG_LENGTH || tag.indexOf(' ') >= 0) {
+            this.chipList.errorState = true;
+            this.chipList._markAsTouched();
+        } else {
+            this.chipList.errorState = false;
         }
     }
 

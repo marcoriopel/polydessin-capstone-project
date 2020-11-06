@@ -18,8 +18,8 @@ export class ColorPickerComponent implements AfterViewInit {
 
     constructor(public colorSelectionService: ColorSelectionService, public pipetteService: PipetteService) {
         // Initial values for the colors on application opening
-        this.colorSelectionService.setPrimaryColor(this.primaryColor);
-        this.colorSelectionService.setSecondaryColor(this.secondaryColor);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
         this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
         this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
     }

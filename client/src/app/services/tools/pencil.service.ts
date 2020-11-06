@@ -39,6 +39,7 @@ export class PencilService extends Tool {
             this.pathData.push(this.mouseDownCoord);
             this.updatePencilData();
             this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -50,6 +51,7 @@ export class PencilService extends Tool {
             this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
             this.drawingService.updateStack(this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();

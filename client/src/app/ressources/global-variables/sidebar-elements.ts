@@ -4,6 +4,8 @@ export interface SidebarElements {
     SAVE_SERVER_NAME: string;
     EXPORT_DRAWING_NAME: string;
     SELECT_ALL: string;
+    UNDO: string;
+    REDO: string;
 }
 
 export const SIDEBAR_ELEMENTS: SidebarElements = {
@@ -12,4 +14,6 @@ export const SIDEBAR_ELEMENTS: SidebarElements = {
     SAVE_SERVER_NAME: 'SauvegardeServeur',
     EXPORT_DRAWING_NAME: 'ExporterDessin',
     SELECT_ALL: 'Tout sélectionner',
+    UNDO: 'Annuler',
+    REDO: 'Refaire',
 };

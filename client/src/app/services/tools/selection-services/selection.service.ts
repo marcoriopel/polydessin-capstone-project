@@ -50,6 +50,7 @@ export class SelectionService extends Tool {
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
         }
+        this.drawingService.setIsToolInUse(true);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -73,6 +74,7 @@ export class SelectionService extends Tool {
         }
         this.strokeSelection();
         this.setSelectionPoint();
+        this.drawingService.setIsToolInUse(false);
     }
 
     onMouseMove(event: MouseEvent): void {

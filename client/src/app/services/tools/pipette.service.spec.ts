@@ -22,7 +22,7 @@ describe('PipetteService', () => {
     const HEIGHT_ZOOM_CANVAS = 50;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'setIsToolInUse']);
 
         canvas = document.createElement('canvas');
         canvas.width = WIDTH_DRAWING_CANVAS;
