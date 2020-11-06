@@ -2,7 +2,7 @@ import { MAX_BORDER, MAX_TOOL_WIDTH, MIN_BORDER, MIN_TOOL_WIDTH } from '@app/res
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Vec2 } from './vec2';
 
-// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+// disabling ts lint because methods have to be empty since they are implemented in the inhereting classes (polymorphism)
 // tslint:disable:no-empty
 export abstract class Tool {
     mouseDownCoord: Vec2;

@@ -6,12 +6,20 @@ export interface GroupFeature extends Feature {
 
 export const OTHER_FEATURES: Feature[] = [
     // { name: 'Grille et magnétisme', description: '..', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Annuler-refaire', description: '..', picture: './../../../assets/img/picture_test.jpg' },
     {
         name: 'Palette de couleur',
         description:
             'Cet outil permet de définir la couleur de tous les outils. Vous pouvez définir deux couleurs : principale et secondaire. Ces deux couleurs peuvent intéragir entre eux. Vous pouvez choisir la couleur avec le panneau de couleur contenant toutes les couleurs. En changeant de couleur, l ancienne couleur est enregistré pour vous permettre de la récupérer au besoin. ',
-        picture: './../../../assets/video/couleur.mp4',
+        picture: './../../../assets/img/couleur.PNG',
+    },
+];
+
+export const UNDO_REDO: Feature[] = [
+    {
+        name: 'Annuler-refaire',
+        description:
+            "Cet outil permet d'annuler et de refaire vos dernières modifications sur la surface du dessin. IL est possible d'utiliser le raccourci CTRL + Z pour annuler une action et le raccourci CTRL + SHIFT + Z pour refaire une action.",
+        picture: './../../../assets/img/Annuler.PNG',
     },
 ];
 
@@ -30,7 +38,12 @@ export const BASIC_TOOLS: Feature[] = [
         picture: './../../../assets/video/ligne.mp4',
     },
     // { name: 'Étampe', description: 'etampe ...', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Pipette', description: 'pipette ...', picture: './../../../assets/img/picture_test.jpg' },
+    {
+        name: 'Pipette',
+        description:
+            "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente les pixels sous la souris surdimensionnés et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
+        picture: './../../../assets/img/picture_test.jpg',
+    },
     // { name: 'Baguette magique', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];
 
@@ -38,7 +51,7 @@ export const DRAWING_TOOLS: Feature[] = [
     {
         name: 'Crayon',
         description:
-            'Le crayon vous permet de tracer des traits simple. Il peut être de différente épaisseur. Vous pouvez changer la taille avec les boutons dans la barre a gauche',
+            'Le crayon vous permet de tracer des traits simples. Il peut être de différente épaisseur. Vous pouvez changer la taille avec les boutons dans la barre a gauche',
         picture: './../../../assets/video/crayon.mp4',
     },
     {
@@ -55,26 +68,50 @@ export const SHAPES: Feature[] = [
     {
         name: 'Rectangle',
         description:
-            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé peut avoir un remplissage uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un carré avec la commande shift.',
+            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé peut avoir un remplissage uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de faire un carré avec la commande shift.',
         picture: './../../../assets/video/rectangle.mp4',
     },
     {
         name: 'Ellipse',
         description:
-            "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
+            "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
         picture: './../../../assets/video/ellipse.mp4',
     },
-    // { name: 'Polygone', description: 'polygone ...', picture: './../../../assets/img/picture_test.jpg' },
+    {
+        name: 'Polygone',
+        description:
+            'Cet outil permet de dessiner des polygones de différente taille. Le polygone tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de choisir le nombre de côté du polygone (3 à 12)',
+        picture: './../../../assets/video/polygone.mp4',
+    },
 ];
 
-/*export const FILL: Feature[] = [
-    { name: 'Pixels contigus', description: 'pixels contigus', picture: './../../../assets/img/picture_test.jpg' },
-    { name: 'Pixels non contigus', description: 'pixels non contigus', picture: './../../../assets/img/picture_test.jpg' },
-];*/
+export const FILL: Feature[] = [
+    {
+        name: 'Sceau de peinture ',
+        description: "Cet outil permet de remplir une région de la couleur principal. La tolérance définit l'étendue de la région à remplir.",
+        picture: './../../../assets/video/remplissage.mp4',
+    },
+];
 
 export const TRANSFORMATIONS: Feature[] = [
-    // { name: 'Déplacement', description: '', picture: './../../../assets/img/picture_test.jpg' },
-    // { name: 'Redimensionnement', description: '', picture: './../../../assets/video/resizing.gif' },
+    {
+        name: 'Déplacement par rectangle',
+        description:
+            "Cette fonctionnalité permet de sélection une section en forme de rectangle de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
+        picture: './../../../assets/video/selection_par_rectangle.mp4',
+    },
+    {
+        name: 'Déplacement par ellipse',
+        description:
+            "Cette fonctionnalité permet de sélection une section en forme d'ellipse de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
+        picture: './../../../assets/video/selection_par_ellipse.mp4',
+    },
+    {
+        name: 'Redimensionnement',
+        description:
+            'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il suffit de glisser et déposer avec le bouton gauche de la souris.',
+        picture: './../../../assets/video/redimensionnement.mp4',
+    },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
     // { name: 'Presse-papier', description: '...', picture: './../../../assets/img/picture_test.jpg' },
 ];

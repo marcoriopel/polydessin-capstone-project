@@ -13,7 +13,7 @@ export class CircleSelectionService extends SelectionService {
     name: string = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
     constructor(drawingService: DrawingService, public circleService: CircleService, public moveService: MoveService) {
         super(drawingService, moveService);
-        super.underliyingService = circleService;
+        super.underlyingService = circleService;
     }
 
     setSelectionData(selection: SelectionBox): void {
