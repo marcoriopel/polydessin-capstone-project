@@ -11,6 +11,9 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 @Injectable({
     providedIn: 'root',
 })
+
+// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+// tslint:disable:no-empty
 export class SelectionService extends Tool {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -175,12 +178,8 @@ export class SelectionService extends Tool {
         this.initialSelection.height = selection.height;
     }
 
-    // disabling tslint because methods have to be empty since they are implemented in the inheriting services (polymorphism)
-
-    // tslint:disable-next-line: no-empty
     setSelectionData(selection: SelectionBox): void {}
 
-    // tslint:disable-next-line: no-empty
     strokeSelection(): void {}
 
     applyPreview(): void {
