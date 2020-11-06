@@ -243,14 +243,6 @@ describe('UndoRedoService', () => {
         expect(drawingService.redoStack.length).toEqual(1);
     });
 
-    it('should not return if tool is not in use when calling redo', () => {
-        obs.next(false);
-        service.redo();
-        expect(selectionServiceSpy.reset).toHaveBeenCalled();
-        expect(changeUndoAvailabilitySpy).toHaveBeenCalled();
-        expect(changeRedoAvailabilitySpy).toHaveBeenCalled();
-    });
-
     it('should not call drawElement if tool is in use (should not complete redo operation because unavailable', () => {
         const drawElementSpy: jasmine.SpyObj<any> = spyOn<any>(service, 'drawElement');
         obs.next(true);
