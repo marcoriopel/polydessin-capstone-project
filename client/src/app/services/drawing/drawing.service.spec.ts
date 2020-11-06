@@ -28,6 +28,22 @@ describe('DrawingService', () => {
         expect(service).toBeTruthy();
     });
 
+    // it('should reset undo and redo stack (empty)', () => {
+    //     const pencilData: Pencil = {
+    //         type: 'pencil',
+    //         path: [{ x: 0, y: 0 }],
+    //         lineWidth: 1,
+    //         primaryColor: '#000000',
+    //     };
+    //     service.undoStack = [];
+    //     service.redoStack = [];
+    //     service.redoStack.push(pencilData);
+    //     service.undoStack.push(pencilData);
+    //     service.resetStack();
+    //     expect(service.undoStack).toEqual([]);
+    //     expect(service.redoStack).toEqual([]);
+    // });
+
     it('should clear the whole canvas', () => {
         service.clearCanvas(service.baseCtx);
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);

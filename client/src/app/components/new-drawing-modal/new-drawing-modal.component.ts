@@ -18,6 +18,7 @@ export class NewDrawingModalComponent implements OnInit, OnDestroy {
         this.resizeDrawingService.setDefaultCanvasSize();
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.resetStack();
     }
 
     ngOnDestroy(): void {

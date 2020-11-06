@@ -72,4 +72,9 @@ export class DrawingService {
         const canvasData = this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         return canvasData;
     }
+
+    resetStack(): void {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
 }
