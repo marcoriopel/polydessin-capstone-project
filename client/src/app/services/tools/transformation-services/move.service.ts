@@ -32,9 +32,7 @@ export class MoveService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (this.isTransformationOver) {
-            this.isTransformationOver = false;
-        }
+        this.isTransformationOver = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -85,9 +83,7 @@ export class MoveService {
 
         if (isArrowKey) {
             this.printSelectionOnPreview();
-            if (this.isTransformationOver) {
-                this.isTransformationOver = false;
-            }
+            this.isTransformationOver = false;
         }
     }
 
