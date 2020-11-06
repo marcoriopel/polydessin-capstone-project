@@ -26,7 +26,7 @@ describe('PolygoneService', () => {
     const HEIGHT = 100;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas', 'setIsToolInUse']);
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle']);
 
         const canvas = document.createElement('canvas');
