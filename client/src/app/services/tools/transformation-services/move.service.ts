@@ -74,6 +74,7 @@ export class MoveService {
 
         setTimeout(() => {
             if (this.isArrowKeyPressed()) {
+                this.drawingService.setIsToolInUse(true);
                 if (this.intervalId === undefined) {
                     this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
                 }
@@ -89,6 +90,7 @@ export class MoveService {
     onKeyUp(event: KeyboardEvent): void {
         if (this.pressedKeys.has(event.key)) {
             this.pressedKeys.set(event.key, false);
+            this.drawingService.setIsToolInUse(false);
         }
 
         if (this.intervalId !== undefined) {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -19,6 +20,7 @@ import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 @Injectable({
@@ -33,19 +35,20 @@ export class ToolSelectionService {
     constructor(
         public dialog: MatDialog,
         public hotkeyService: HotkeyService,
-        pencilService: PencilService,
-        brushService: BrushService,
-        squareService: SquareService,
-        circleService: CircleService,
-        lineService: LineService,
-        fillService: FillService,
-        eraserService: EraserService,
+        public pencilService: PencilService,
+        public brushService: BrushService,
+        public squareService: SquareService,
+        public circleService: CircleService,
+        public lineService: LineService,
+        public fillService: FillService,
+        public eraserService: EraserService,
         public squareSelectionService: SquareSelectionService,
-        circleSelectionService: CircleSelectionService,
-        polygoneService: PolygoneService,
-        pipetteService: PipetteService,
+        public circleSelectionService: CircleSelectionService,
+        public polygoneService: PolygoneService,
+        public pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
+        public undoRedoService: UndoRedoService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
@@ -95,10 +98,26 @@ export class ToolSelectionService {
             case this.sidebarElements.SAVE_SERVER_NAME:
                 this.dialog.open(SavingComponent);
                 break;
+            case this.sidebarElements.EXPORT_DRAWING_NAME:
+                this.dialog.open(ExportComponent);
             case this.sidebarElements.SELECT_ALL:
                 this.selectAll();
                 break;
+            case this.sidebarElements.UNDO:
+                this.undo();
+                break;
+            case this.sidebarElements.REDO:
+                this.redo();
+                break;
         }
+    }
+
+    undo(): void {
+        this.undoRedoService.undo();
+    }
+
+    redo(): void {
+        this.undoRedoService.redo();
     }
 
     selectAll(): void {

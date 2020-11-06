@@ -2,7 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MainPageComponent } from './main-page.component';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { MainPageComponent } from '@app/components/main-page/main-page.component';
 
 import SpyObj = jasmine.SpyObj;
 
@@ -38,5 +39,10 @@ describe('MainPageComponent', () => {
     it('should call open of MatDialog', () => {
         component.openUserguide();
         expect(matDialogSpy.open).toHaveBeenCalled();
+    });
+
+    it('should open carousel component on call', () => {
+        component.openCarousel();
+        expect(matDialogSpy.open).toHaveBeenCalledWith(CarouselComponent);
     });
 });

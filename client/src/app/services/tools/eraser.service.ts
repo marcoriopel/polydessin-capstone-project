@@ -37,6 +37,7 @@ export class EraserService extends Tool {
             this.pathData.push(this.mouseDownCoord);
             this.updateEraserData();
             this.drawRect(this.drawingService.previewCtx, this.pathData);
+            this.drawingService.setIsToolInUse(true);
         }
         this.squareCursor(event);
     }
@@ -48,6 +49,7 @@ export class EraserService extends Tool {
             this.updateEraserData();
             this.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
             this.drawingService.updateStack(this.eraserData);
+            this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();

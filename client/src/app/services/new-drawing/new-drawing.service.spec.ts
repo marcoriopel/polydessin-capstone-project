@@ -45,4 +45,10 @@ describe('NewDrawingService', () => {
         expect(drawingServiceSpy.isCanvasBlank(baseCtxStub)).toBeFalsy();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
+
+    it('Should not open Warning if canvas is blank', () => {
+        drawingServiceSpy.isCanvasBlank.and.returnValue(true);
+        service.openWarningModal();
+        expect(matDialogSpy.open).not.toHaveBeenCalled();
+    });
 });
