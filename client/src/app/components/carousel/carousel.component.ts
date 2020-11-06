@@ -201,7 +201,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         this.gotImages = false;
         this.filteredMetadata = [];
         this.visibleDrawingsIndexes = [];
-        if (this.tags.length === 0) {
+        if (!this.tags.length) {
             this.filteredMetadata = this.databaseMetadata;
         }
         for (const data of this.databaseMetadata) {
@@ -266,7 +266,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     onPreviousClick(): void {
         this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
-        if (this.visibleDrawingsIndexes[0] === 0) {
+        if (!this.visibleDrawingsIndexes[0]) {
             this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
         } else {
             this.visibleDrawingsIndexes[0]--;

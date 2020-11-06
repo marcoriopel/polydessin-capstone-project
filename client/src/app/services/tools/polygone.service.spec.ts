@@ -110,51 +110,12 @@ describe('PolygoneService', () => {
         expect(drawPolygoneSpy).toHaveBeenCalled();
     });
 
-    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
-    });
-
-    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
-    });
-
-    it('should not draw anything on detection of mouse up if it was not down', () => {
-        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
-
-        service.mouseDown = false;
-        service.onMouseUp(mouseEvent);
-        expect(drawPolygoneSpy).not.toHaveBeenCalled();
-    });
-
     it('should not draw anything on detection of mouse move if it was not down', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
 
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
-    });
-
-    it('should not call fill if option is to draw only the border', () => {
-        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.polygoneData = {
-            type: 'polygone',
-            primaryColor: 'black',
-            secondaryColor: 'black',
-            fillStyle: 2,
-            lineWidth: 1,
-            circleHeight: 1,
-            circleWidth: 1,
-            firstPoint: { x: 30, y: 30 },
-            lastPoint: { x: 29, y: 29 },
-            sides: 3,
-        };
-        service.drawPolygone(baseCtxStub, service.polygoneData);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should call fill also if option is not to draw only the border', () => {
