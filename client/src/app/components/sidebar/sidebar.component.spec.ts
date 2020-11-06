@@ -64,14 +64,14 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('curso should be not-allowed if undo and redo are not available', () => {
+    it('cursor should be not-allowed if undo and redo are not available', () => {
         obsRedoButton.next(false);
         obsUndoButton.next(false);
         expect(document.getElementById('undo')?.style.cursor).toEqual('not-allowed');
         expect(document.getElementById('redo')?.style.cursor).toEqual('not-allowed');
     });
 
-    it('curso should be pointer if undo and redo are available', () => {
+    it('cursor should be pointer if undo and redo are available', () => {
         obsRedoButton.next(true);
         obsUndoButton.next(true);
         expect(document.getElementById('undo')?.style.cursor).toEqual('pointer');
