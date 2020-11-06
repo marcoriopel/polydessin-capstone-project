@@ -64,7 +64,6 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateBrushData();
             this.drawLine(this.drawingService.previewCtx, this.brushData);
@@ -99,7 +98,6 @@ export class BrushService extends Tool {
             this.drawingService.baseCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
             this.drawingService.previewCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
         }
-        // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
         this.drawingService.baseCtx.strokeRect(-this.drawingService.baseCtx.lineWidth, 0, 1, 0);
         this.drawingService.previewCtx.strokeRect(-this.drawingService.previewCtx.lineWidth, 0, 1, 0);
     }
