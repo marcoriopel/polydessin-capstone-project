@@ -81,7 +81,7 @@ export const SHAPES: Feature[] = [
         name: 'Polygone',
         description:
             'Cet outil permet de dessiner des polygones de différente taille. Le polygone tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de choisir le nombre de côté du polygone (3 à 12)',
-        picture: './../../../assets/img/picture_test.jpg',
+        picture: './../../../assets/video/polygone.mp4',
     },
 ];
 
