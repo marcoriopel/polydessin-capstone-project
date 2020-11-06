@@ -230,6 +230,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
             drawing.onload = () => {
                 this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
                 this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
+                this.drawingService.resetStack();
                 resolve();
             };
         });
