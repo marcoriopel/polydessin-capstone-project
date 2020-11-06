@@ -12,7 +12,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
     providedIn: 'root',
 })
 
-// Ceci est justifié vu qu'on a des fonctions qui seront gérés par les classes enfant
+// disabling ts lint because methods have to be empty since they are implemented in the inhereting classes (polymorphism)
 // tslint:disable:no-empty
 export class SelectionService extends Tool {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
