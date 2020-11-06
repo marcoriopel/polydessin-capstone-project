@@ -196,6 +196,13 @@ describe('UndoRedoService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should reset undo and redo stack (empty)', () => {
+        drawingService.undoStack = [];
+        drawingService.redoStack = [];
+        drawingService.redoStack.push(pencilData);
+        drawingService.undoStack.push(pencilData);
+    });
+
     it('should not return if tool is not in use when calling undo', () => {
         changeRedoAvailabilitySpy = spyOn<any>(service, 'changeRedoAvailability');
         changeUndoAvailabilitySpy = spyOn<any>(service, 'changeUndoAvailability');

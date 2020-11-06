@@ -32,9 +32,7 @@ export class MoveService {
     }
 
     onMouseDown(event: MouseEvent): void {
-        if (this.isTransformationOver) {
-            this.isTransformationOver = false;
-        }
+        this.isTransformationOver = false;
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -48,22 +46,22 @@ export class MoveService {
 
         switch (event.key) {
             case ARROW_KEYS.LEFT:
-                if (this.pressedKeys.get(ARROW_KEYS.LEFT) === false) {
+                if (!this.pressedKeys.get(ARROW_KEYS.LEFT)) {
                     this.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
                 }
                 break;
             case ARROW_KEYS.UP:
-                if (this.pressedKeys.get(ARROW_KEYS.UP) === false) {
+                if (!this.pressedKeys.get(ARROW_KEYS.UP)) {
                     this.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
                 }
                 break;
             case ARROW_KEYS.RIGHT:
-                if (this.pressedKeys.get(ARROW_KEYS.RIGHT) === false) {
+                if (!this.pressedKeys.get(ARROW_KEYS.RIGHT)) {
                     this.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
                 }
                 break;
             case ARROW_KEYS.DOWN:
-                if (this.pressedKeys.get(ARROW_KEYS.DOWN) === false) {
+                if (!this.pressedKeys.get(ARROW_KEYS.DOWN)) {
                     this.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
                 }
                 break;
@@ -85,9 +83,7 @@ export class MoveService {
 
         if (isArrowKey) {
             this.printSelectionOnPreview();
-            if (this.isTransformationOver) {
-                this.isTransformationOver = false;
-            }
+            this.isTransformationOver = false;
         }
     }
 

@@ -39,7 +39,7 @@ export const BASIC_TOOLS: Feature[] = [
         name: 'Pipette',
         description:
             "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente les pixels sous la souris surdimensionnés et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
-        picture: './../../../assets/img/picture_test.jpg',
+        picture: './../../../assets/video/brush.mp4',
     },
 ];
 

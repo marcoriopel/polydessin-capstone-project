@@ -34,8 +34,8 @@ export class HotkeyService {
     keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
     onKeyDown(event: KeyboardEvent): void {
+        if (event.shiftKey || event.ctrlKey) event.preventDefault();
         if (!this.isHotkeyEnabled) return;
-        event.preventDefault();
         let keyName: string | undefined;
         if (event.shiftKey && event.ctrlKey) {
             keyName = this.keysNeedShift.get(event.key.toString());

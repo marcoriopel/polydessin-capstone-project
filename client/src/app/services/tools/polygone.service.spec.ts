@@ -66,6 +66,13 @@ describe('PolygoneService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should set lineJoin', () => {
+        service.initialize();
+
+        expect(previewCtxStub.lineJoin).toEqual('miter');
+        expect(baseCtxStub.lineJoin).toEqual('miter');
+    });
+
     it('should change the fillStyle', () => {
         service.fillStyle = FILL_STYLES.FILL;
         service.changeFillStyle(FILL_STYLES.BORDER);
@@ -110,18 +117,6 @@ describe('PolygoneService', () => {
         expect(drawPolygoneSpy).toHaveBeenCalled();
     });
 
-    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
-    });
-
-    it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
-    });
-
     it('should not draw anything on detection of mouse up if it was not down', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
 
@@ -136,25 +131,6 @@ describe('PolygoneService', () => {
         service.mouseDown = false;
         service.onMouseMove(mouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
-    });
-
-    it('should not call fill if option is to draw only the border', () => {
-        const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
-        service.fillStyle = FILL_STYLES.BORDER;
-        service.polygoneData = {
-            type: 'polygone',
-            primaryColor: 'black',
-            secondaryColor: 'black',
-            fillStyle: 2,
-            lineWidth: 1,
-            circleHeight: 1,
-            circleWidth: 1,
-            firstPoint: { x: 30, y: 30 },
-            lastPoint: { x: 29, y: 29 },
-            sides: 3,
-        };
-        service.drawPolygone(baseCtxStub, service.polygoneData);
-        expect(ctxFillSpy).not.toHaveBeenCalled();
     });
 
     it('should call fill also if option is not to draw only the border', () => {
@@ -299,9 +275,21 @@ describe('PolygoneService', () => {
 
     it('should draw polygone on mouseUp if mouse was down', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
+        service.firstPoint = { x: 0, y: 0 };
+        service.lastPoint = { x: 5, y: 5 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(drawPolygoneSpy).toHaveBeenCalled();
+    });
+
+    it('should not draw polygone on mouseUp if first point is same as last point', () => {
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
+        const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse');
+        getPositionFromMouseSpy.and.returnValue({ x: 0, y: 0 });
+        service.firstPoint = { x: 0, y: 0 };
+        service.mouseDown = true;
+        service.onMouseUp({} as MouseEvent);
+        expect(drawPolygoneSpy).not.toHaveBeenCalled();
     });
 
     it('should not get position from mouse if not mouse down', () => {
@@ -314,23 +302,6 @@ describe('PolygoneService', () => {
         const positionSpy = spyOn<any>(service, 'getPositionFromMouse');
         service.onMouseDown(mouseRightclick);
         expect(positionSpy).not.toHaveBeenCalled();
-    });
-
-    it('should clearcanvas on drawPolygone if ctx is base', () => {
-        service.polygoneData = {
-            type: 'polygone',
-            primaryColor: 'black',
-            secondaryColor: 'black',
-            fillStyle: 0,
-            lineWidth: 1,
-            circleHeight: 1,
-            circleWidth: 1,
-            firstPoint: { x: 30, y: 30 },
-            lastPoint: { x: 29, y: 29 },
-            sides: 3,
-        };
-        service.drawPolygone(baseCtxStub, service.polygoneData);
-        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 
     it('should call stroke on drawPolygone if ctx is preview', () => {
