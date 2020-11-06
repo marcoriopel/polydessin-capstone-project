@@ -238,7 +238,6 @@ describe('SelectionService', () => {
     });
 
     it('onKeyDown should set isEscapeKeyPressed to true and call reset if EscapeKey pressed', () => {
-        service.isNewSelection = true;
         const resetSpy = spyOn(service, 'reset');
         const event = {
             key: 'Escape',
@@ -248,5 +247,40 @@ describe('SelectionService', () => {
 
         expect(service.isEscapeKeyPressed).toEqual(true);
         expect(resetSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyDown should set isShiftKeyDown to true and call reset if Shift is pressed', () => {
+        const event = {
+            key: 'Shift',
+        } as KeyboardEvent;
+
+        service.onKeyDown(event);
+
+        expect(service.isShiftKeyDown).toEqual(true);
+    });
+
+    it('selectAll should set selection to canvas width and canvas height', () => {
+        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setSelectionDataSpy = spyOn(service, 'setSelectionData');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'].canvas = document.createElement('canvas');
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'].canvas.width = 10;
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'].canvas.height = 10;
+        underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 10, height: 10 });
+
+        service.selectAll();
+
+        expect(service.selection).toEqual({
+            startingPoint: { x: 0, y: 0 },
+            width: 10,
+            height: 10,
+        });
+
+        expect(setInitialSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionDataSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
     });
 });
