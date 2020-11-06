@@ -32,8 +32,13 @@ describe('PolygoneService', () => {
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
+
+        const drawCanvas = document.createElement('canvas');
+        drawCanvas.width = WIDTH;
+        drawCanvas.height = HEIGHT;
+
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
-        previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
+        previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
         colorPickerStub = new ColorSelectionService();
 
@@ -278,4 +283,72 @@ describe('PolygoneService', () => {
         service.drawPolygone(baseCtxStub, service.polygoneData);
         expect(quadrant).toBe(Quadrant.BOTTOM_LEFT);
     });
+
+    it('should find the bottom right quadrant', () => {
+        const point1: Vec2 = { x: 10, y: 10 };
+        const point2: Vec2 = { x: 20, y: 20 };
+        service.polygoneData = {} as Polygone;
+        service.polygoneData.firstPoint = point1;
+        service.polygoneData.lastPoint = point2;
+        service.polygoneData.circleWidth = 10;
+        service.polygoneData.circleHeight = 10;
+        const quadrant = service.trigonometry.findQuadrant(point1, point2);
+        service.drawPolygone(baseCtxStub, service.polygoneData);
+        expect(quadrant).toBe(Quadrant.BOTTOM_RIGHT);
+    });
+
+    it('should draw polygone on mouseUp if mouse was down', () => {
+        const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
+        service.mouseDown = true;
+        service.onMouseUp(mouseEvent);
+        expect(drawPolygoneSpy).toHaveBeenCalled();
+    });
+
+    it('should not get position from mouse if not mouse down', () => {
+        const mouseRightclick = ({
+            clientX: 500,
+            clientY: 500,
+            button: MouseButton.RIGHT,
+        } as unknown) as MouseEvent;
+        service.mouseDown = false;
+        const positionSpy = spyOn<any>(service, 'getPositionFromMouse');
+        service.onMouseDown(mouseRightclick);
+        expect(positionSpy).not.toHaveBeenCalled();
+    });
+
+    it('should clearcanvas on drawPolygone if ctx is base', () => {
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 0,
+            lineWidth: 1,
+            circleHeight: 1,
+            circleWidth: 1,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(baseCtxStub, service.polygoneData);
+        expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
+    });
+
+    it('should call stroke on drawPolygone if ctx is preview', () => {
+        const strokeSpy = spyOn(previewCtxStub, 'stroke');
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 0,
+            lineWidth: 1,
+            circleHeight: 1,
+            circleWidth: 1,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(previewCtxStub, service.polygoneData);
+        expect(strokeSpy).toHaveBeenCalled();
+    });
+    // tslint:disable-next-line: max-file-line-count
 });

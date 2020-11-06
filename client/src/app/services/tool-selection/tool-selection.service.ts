@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Tool } from '@app/classes/tool';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -97,6 +98,8 @@ export class ToolSelectionService {
             case this.sidebarElements.SAVE_SERVER_NAME:
                 this.dialog.open(SavingComponent);
                 break;
+            case this.sidebarElements.EXPORT_DRAWING_NAME:
+                this.dialog.open(ExportComponent);
             case this.sidebarElements.SELECT_ALL:
                 this.selectAll();
                 break;

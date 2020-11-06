@@ -256,4 +256,18 @@ describe('ResizeDrawingService', () => {
         service.onMouseUp();
         expect(service.canvasSize).toEqual(expectedResult);
     });
+
+    it('should resize canvas size', () => {
+        const expectedResult = { x: 500, y: 500 };
+        service.resizeCanvasSize(expectedResult.x, expectedResult.y);
+        expect(service.previewSize).toEqual(expectedResult);
+    });
+
+    it('should restore canvas', () => {
+        const imageDataSpy = spyOn(drawingService.baseCtx, 'putImageData');
+        const expectedData = { type: {} as string, canvasSize: { x: 500, y: 500 }, imageData: {} as ImageData };
+        service.restoreCanvas(expectedData);
+        expect(service.previewSize).toEqual(expectedData.canvasSize);
+        expect(imageDataSpy).toHaveBeenCalled();
+    });
 });
