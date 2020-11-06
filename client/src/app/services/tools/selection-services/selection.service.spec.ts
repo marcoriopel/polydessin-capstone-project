@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { SelectionBox } from '@app/classes/selection-box';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -7,19 +8,26 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
+// tslint:disable: no-string-literal
+// tslint:disable: max-file-line-count
+// tslint:disable: no-magic-numbers
+
 describe('SelectionService', () => {
     let service: SelectionService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
+    let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['printSelectionOnPreview', 'onMouseDown', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect']);
+        baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
+        drawingServiceSpy.baseCtx = baseCtxSpy;
 
         TestBed.configureTestingModule({
             providers: [
@@ -82,7 +90,7 @@ describe('SelectionService', () => {
         service.onMouseDown(mouseEvent);
 
         expect(isInSelectionSpy).toHaveBeenCalled();
-        expect(moveServiceSpy.isTransformationOver).toEqual(true);
+        expect(moveServiceSpy.isTransformationOver).toBeTrue();
         expect(moveServiceSpy.printSelectionOnPreview).toHaveBeenCalled();
         expect(applyPreviewSpy).toHaveBeenCalled();
     });
@@ -157,7 +165,7 @@ describe('SelectionService', () => {
 
         service.onMouseUp({} as MouseEvent);
 
-        expect(service.isNewSelection).toEqual(false);
+        expect(service.isNewSelection).toBeFalse();
         expect(strokeSelectionSpy).toHaveBeenCalled();
         expect(setSelectionPointSpy).toHaveBeenCalled();
     });
@@ -221,6 +229,16 @@ describe('SelectionService', () => {
         expect(moveServiceSpy.onMouseMove).toHaveBeenCalledWith({} as MouseEvent);
     });
 
+    it('onMouseMove should not call moveService.onMouseMove or underlyingService.onMouseMove', () => {
+        service.isNewSelection = false;
+        service.transormation = '';
+
+        service.onMouseMove({} as MouseEvent);
+
+        expect(underlyingServiceSpy.onMouseMove).not.toHaveBeenCalled();
+        expect(moveServiceSpy.onMouseMove).not.toHaveBeenCalled();
+    });
+
     it('onKeyDown should call moveService.onKeyDown if selection is not empty', () => {
         service.selection = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
 
@@ -245,7 +263,7 @@ describe('SelectionService', () => {
 
         service.onKeyDown(event);
 
-        expect(service.isEscapeKeyPressed).toEqual(true);
+        expect(service.isEscapeKeyPressed).toBeTrue();
         expect(resetSpy).toHaveBeenCalled();
     });
 
@@ -256,18 +274,31 @@ describe('SelectionService', () => {
 
         service.onKeyDown(event);
 
-        expect(service.isShiftKeyDown).toEqual(true);
+        expect(service.isShiftKeyDown).toBeTrue();
+    });
+
+    it('selectAll should call setInitialSelection, setSelectionData and setSelectionPoint', () => {
+        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setSelectionDataSpy = spyOn(service, 'setSelectionData');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service['drawingService'].canvas = document.createElement('canvas');
+        service['drawingService'].canvas.width = 10;
+        service['drawingService'].canvas.height = 10;
+        underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 10, height: 10 });
+
+        service.selectAll();
+
+        expect(setInitialSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionDataSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
     });
 
     it('selectAll should set selection to canvas width and canvas height', () => {
         const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].canvas = document.createElement('canvas');
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].canvas.width = 10;
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].canvas.height = 10;
         underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 10, height: 10 });
 
@@ -282,5 +313,261 @@ describe('SelectionService', () => {
         expect(setInitialSelectionSpy).toHaveBeenCalled();
         expect(setSelectionDataSpy).toHaveBeenCalled();
         expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('selectAll should call clear canvas', () => {
+        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setSelectionDataSpy = spyOn(service, 'setSelectionData');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service['drawingService'].canvas = document.createElement('canvas');
+        service['drawingService'].canvas.width = 10;
+        service['drawingService'].canvas.height = 10;
+        underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 10, height: 10 });
+
+        service.selectAll();
+
+        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(setInitialSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionDataSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('selectAll should set attributes for underlyingService', () => {
+        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setSelectionDataSpy = spyOn(service, 'setSelectionData');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service['drawingService'].canvas = document.createElement('canvas');
+        service['drawingService'].canvas.width = 10;
+        service['drawingService'].canvas.height = 10;
+        underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 10, height: 10 });
+
+        service.selectAll();
+
+        expect(underlyingServiceSpy.firstPoint).toEqual({ x: 0, y: 0 });
+        expect(underlyingServiceSpy.lastPoint).toEqual({ x: 10, y: 10 });
+        expect(underlyingServiceSpy.fillStyle).toEqual(FILL_STYLES.DASHED);
+        expect(setInitialSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionDataSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyUp  should call moveService.onKeyUp and setSelectionPoint', () => {
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.isShiftKeyDown = true;
+
+        service.onKeyUp({} as KeyboardEvent);
+
+        expect(moveServiceSpy.onKeyUp).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyUp  should call underlyingService.onKeyUp and strokeSelection if isShiftKeyDown', () => {
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        service.isShiftKeyDown = false;
+
+        service.onKeyUp({} as KeyboardEvent);
+
+        expect(underlyingServiceSpy.onKeyUp).toHaveBeenCalled();
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyUp should set underlyingService.isShiftKeyDown to false and isShiftKeyDown to false if shift key up', () => {
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.isShiftKeyDown = true;
+        service.underlyingService.isShiftKeyDown = true;
+
+        service.onKeyUp({ key: 'Shift' } as KeyboardEvent);
+
+        expect(service.isShiftKeyDown).toBeFalse();
+        expect(service.underlyingService.isShiftKeyDown).toBeFalse();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('onKeyUp should set underlyingService.isShiftKeyDown to false and isShiftKeyDown to false if shift key up', () => {
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.isShiftKeyDown = true;
+        service.isNewSelection = true;
+
+        service.onKeyUp({ key: 'Shift' } as KeyboardEvent);
+
+        expect(service.underlyingService.onKeyUp).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('isInSelection should return false when selection is empty', () => {
+        const getPositionFromMouseSpy = spyOn(service, 'getPositionFromMouse');
+        getPositionFromMouseSpy.and.returnValue({ x: 1, y: 2 });
+
+        const result = service.isInSelection({} as MouseEvent);
+
+        expect(result).toBeFalse();
+        expect(getPositionFromMouseSpy).toHaveBeenCalled();
+    });
+
+    it('isInSelection should return false when mouseEvent is out of selection', () => {
+        const getPositionFromMouseSpy = spyOn(service, 'getPositionFromMouse');
+        getPositionFromMouseSpy.and.returnValue({ x: 14, y: 14 });
+
+        service.selection = {
+            startingPoint: { x: 0, y: 0 },
+            width: 10,
+            height: 10,
+        };
+
+        const result = service.isInSelection({} as MouseEvent);
+
+        expect(result).toBeFalse();
+        expect(getPositionFromMouseSpy).toHaveBeenCalled();
+    });
+
+    it('isInSelection should return true when mouseEvent is in of selection', () => {
+        const getPositionFromMouseSpy = spyOn(service, 'getPositionFromMouse');
+        getPositionFromMouseSpy.and.returnValue({ x: 1, y: 2 });
+
+        service.selection = {
+            startingPoint: { x: 0, y: 0 },
+            width: 10,
+            height: 10,
+        };
+
+        const result = service.isInSelection({} as MouseEvent);
+
+        expect(result).toBeTrue();
+        expect(getPositionFromMouseSpy).toHaveBeenCalled();
+    });
+
+    it('reset should call previewCtx.setLineDash and drawingService.clearCanvas', () => {
+        service.reset();
+
+        expect(previewCtxSpy.setLineDash).toHaveBeenCalledWith([0]);
+        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalledWith(previewCtxSpy);
+    });
+
+    it('reset should reset internal attributes', () => {
+        service.reset();
+
+        expect(service.selection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
+        expect(service.mouseDown).toBeFalse();
+        expect(service.transormation).toEqual('');
+    });
+
+    it('reset should reset moveService attributes attributes', () => {
+        service.reset();
+
+        expect(moveServiceSpy.initialSelection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
+        expect(moveServiceSpy.isTransformationOver).toBeTrue();
+    });
+
+    it('reset should call moveService.printSelectionOnPreview and applyPreview', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+
+        service.selection = {
+            startingPoint: { x: 0, y: 0 },
+            width: 10,
+            height: 10,
+        };
+
+        service.reset();
+
+        expect(moveServiceSpy.printSelectionOnPreview).toHaveBeenCalled();
+        expect(applyPreviewSpy).toHaveBeenCalled();
+    });
+
+    it('setInitialSelection should set initial selection', () => {
+        const selection: SelectionBox = {
+            startingPoint: { x: 0, y: 0 },
+            width: 10,
+            height: 10,
+        };
+
+        service.setInitialSelection(selection);
+
+        expect(service.initialSelection).toEqual(selection);
+    });
+
+    it('applyPreview should update selection data', () => {
+        const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
+
+        service.applyPreview();
+
+        expect(updateSelectionDataSpy).toHaveBeenCalled();
+    });
+
+    it('applyPreview should draw on baseCtx and clear preview', () => {
+        const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
+
+        service.applyPreview();
+
+        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
+        expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+        expect(updateSelectionDataSpy).toHaveBeenCalled();
+    });
+
+    it('applyPreview should get canvas and save it in canvasData', () => {
+        const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
+        const canvasData: ImageData = { data: new Uint8ClampedArray([1, 1, 1, 1, 0, 0, 0, 1]), height: 1, width: 2 };
+        drawingServiceSpy.getCanvasData.and.returnValue(canvasData);
+
+        service.applyPreview();
+
+        expect(drawingServiceSpy.getCanvasData).toHaveBeenCalled();
+        expect(service.canvasData).toEqual(canvasData);
+        expect(updateSelectionDataSpy).toHaveBeenCalled();
+    });
+
+    it('applyPreview should update undo stack with selection data', () => {
+        const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
+
+        service.applyPreview();
+
+        expect(drawingServiceSpy.updateStack).toHaveBeenCalledWith(service.selectionData);
+        expect(updateSelectionDataSpy).toHaveBeenCalled();
+    });
+
+    it('updateSelectionData should set selectionData', () => {
+        const imageData: ImageData = { data: new Uint8ClampedArray([1, 1, 1, 1, 0, 0, 0, 1]), height: 1, width: 2 };
+        service.selectionData = { type: '', imageData };
+        const canvasData: ImageData = { data: new Uint8ClampedArray([2, 2, 2, 2, 2, 2, 2, 1]), height: 1, width: 2 };
+        service.canvasData = canvasData;
+
+        service.updateSelectionData();
+
+        expect(service.selectionData).toEqual({
+            type: 'selection',
+            imageData: canvasData,
+        });
+    });
+
+    it('setSelectionPoint should draw 8 blue squares if selection is not empty', () => {
+        service.selection = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
+        previewCtxSpy.fillStyle = 'black';
+
+        service.setSelectionPoint();
+
+        expect(previewCtxSpy.fillStyle).toEqual('#09acd9');
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledTimes(8);
+    });
+
+    it('setSelectionPoint should draw 8 blue squares around selection', () => {
+        service.selection = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
+
+        service.setSelectionPoint();
+
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, -3, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(2, -3, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, -3, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, 2, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, 2, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, 2, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(2, 7, 6, 6);
+        expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, 7, 6, 6);
+    });
+
+    it('setSelectionPoint should not draw blue squares if selection is empty', () => {
+        service.setSelectionPoint();
+
+        expect(previewCtxSpy.fillRect).not.toHaveBeenCalled();
     });
 });

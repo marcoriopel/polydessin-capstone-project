@@ -23,7 +23,7 @@ export class SelectionService extends Tool {
     canvasData: ImageData;
     isNewSelection: boolean = false;
 
-    constructor(drawingService: DrawingService, public moveService: MoveService) {
+    constructor(public drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
     }
 
