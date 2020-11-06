@@ -517,6 +517,16 @@ describe('CarouselComponent', () => {
         expect(component.filteredMetadata[0].tags).toEqual(tag);
     });
 
+    it('should filteredMetadata be empty if does not match any tags and isnotarray', () => {
+        const notArrayTag = ('smalltag' as unknown) as string[];
+        const tag = 'smalltag2';
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: notArrayTag, fileName: 'filename' };
+        component.databaseMetadata = [DBDATA];
+        component.tags = [tag];
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata.length).toEqual(0);
+    });
+
     it('should return true if the name is to long', () => {
         const name = 'tagthatiswaytoolongtobeadded';
         expect(component.hasLengthTagError(name)).toBeTrue();
@@ -536,6 +546,15 @@ describe('CarouselComponent', () => {
         const name = 'geadg';
         const haveSpace = component.hasSpaceTagError(name);
         expect(haveSpace).toEqual(false);
+    });
+
+    it('should keep filteredmetadata to empty if no corresponding tags', () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: [], fileName: 'filename' };
+        component.databaseMetadata = [DBDATA, DBDATA, DBDATA, DBDATA];
+        component.visibleDrawingsIndexes = [1, 2, 3];
+        component.tags = ['tag'];
+        component.showDrawingsWithFilter();
+        expect(component.filteredMetadata.length).toEqual(0);
     });
 
     it('should chiplist error state be false if tag is correct ', async () => {
