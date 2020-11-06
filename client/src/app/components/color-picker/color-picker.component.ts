@@ -10,7 +10,7 @@ import { PipetteService } from '@app/services/tools/pipette.service';
 })
 export class ColorPickerComponent implements AfterViewInit {
     @ViewChild('primary', { read: ElementRef }) primaryColorElement: ElementRef;
-    @ViewChild('primary', { read: ElementRef }) secondaryColorElement: ElementRef;
+    @ViewChild('secondary', { read: ElementRef }) secondaryColorElement: ElementRef;
     primaryColor: string = '#000000';
     secondaryColor: string = '#000000';
     colors: string[] = ['#000000'];
