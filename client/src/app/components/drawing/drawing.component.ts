@@ -11,7 +11,6 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 })
 export class DrawingComponent implements AfterViewInit {
     @ViewChild('baseCanvas', { static: false }) baseCanvas: ElementRef<HTMLCanvasElement>;
-    // On utilise ce canvas pour dessiner sans affecter le dessin final
     @ViewChild('previewCanvas', { static: false }) previewCanvas: ElementRef<HTMLCanvasElement>;
 
     @Input() canvasSize: Vec2;
@@ -33,27 +32,31 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCtx = this.previewCtx;
         this.drawingService.canvas = this.baseCanvas.nativeElement;
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
-        this.toolSelectionService.currentTool.handleCursor();
+        this.toolSelectionService.setCurrentToolCursor();
     }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
-        this.toolSelectionService.currentTool.onMouseMove(event);
+        this.toolSelectionService.currentToolMouseMove(event);
     }
 
     @HostListener('mousedown', ['$event'])
     onMouseDown(event: MouseEvent): void {
-        this.toolSelectionService.currentTool.onMouseDown(event);
+        this.toolSelectionService.currentToolMouseDown(event);
     }
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        this.toolSelectionService.currentTool.onMouseUp(event);
+        this.toolSelectionService.currentToolMouseUp(event);
     }
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(): void {
-        this.toolSelectionService.currentTool.onMouseLeave();
+        this.toolSelectionService.currentToolMouseLeave();
+    }
+    @HostListener('mouseenter', ['$event'])
+    onMouseEnter(): void {
+        this.toolSelectionService.currentToolMouseEnter();
     }
 
     get width(): number {

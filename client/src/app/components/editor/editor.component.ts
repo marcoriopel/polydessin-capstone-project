@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingComponent } from '@app/components/drawing/drawing.component';
 import { CanvasResizingPoints, CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
@@ -8,11 +8,9 @@ import {
     MINIMUM_WORKSPACE_HEIGHT,
     MINIMUM_WORKSPACE_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
-import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
-import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-
 @Component({
     selector: 'app-editor',
     templateUrl: './editor.component.html',
@@ -20,66 +18,53 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 })
 export class EditorComponent implements AfterViewInit {
     @ViewChild('drawingComponent', { static: false }) drawingComponent: DrawingComponent;
+    @ViewChild('workSpace', { static: false }) workSpaceRef: ElementRef<HTMLDivElement>;
+    @ViewChild('previewDiv', { static: false }) previewDivRef: ElementRef<HTMLDivElement>;
 
-    toolNames: ToolNames = TOOL_NAMES;
-    canvasSize: Vec2;
-    private workSpaceSize: Vec2;
-    previewSize: Vec2;
-    previewDiv: HTMLDivElement;
+    workSpaceSize: Vec2 = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+    previewSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
+    canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
+    previewDiv: HTMLDivElement;
 
-    // TODO -> Add missing keys for new tools as we create them
-    keyToolMapping: Map<string, string> = new Map([
-        ['c', this.toolNames.PENCIL_TOOL_NAME],
-        ['w', this.toolNames.BRUSH_TOOL_NAME],
-        ['1', this.toolNames.SQUARE_TOOL_NAME],
-        ['2', this.toolNames.CIRCLE_TOOL_NAME],
-        ['l', this.toolNames.LINE_TOOL_NAME],
-        ['e', this.toolNames.ERASER_TOOL_NAME],
-    ]);
+    shortcutsArray: string[] = ['c', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z'];
 
     constructor(
+        public hotkeyService: HotkeyService,
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
-        public newDrawingService: NewDrawingService,
     ) {
-        this.canvasSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.previewSize = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
-        this.workSpaceSize = { x: MINIMUM_WORKSPACE_WIDTH, y: MINIMUM_WORKSPACE_HEIGHT };
+        this.resizeDrawingService.workSpaceSize = this.workSpaceSize;
+        this.resizeDrawingService.previewSize = this.previewSize;
+        this.resizeDrawingService.canvasSize = this.canvasSize;
     }
 
     ngAfterViewInit(): void {
         setTimeout(() => {
-            const workspaceElement: HTMLElement = document.querySelector('#workSpace') as HTMLElement;
+            const workspaceElement: HTMLElement = this.workSpaceRef.nativeElement;
             this.workSpaceSize.x = workspaceElement.offsetWidth;
             this.workSpaceSize.y = workspaceElement.offsetHeight;
-            this.previewDiv = document.querySelector('#previewDiv') as HTMLDivElement;
+            this.previewDiv = this.previewDivRef.nativeElement;
             this.previewDiv.style.display = 'none';
             this.previewDiv.style.borderWidth = '1px';
             this.previewDiv.style.borderColor = '#09acd9';
             this.previewDiv.style.borderStyle = 'dashed';
             this.previewDiv.style.position = 'absolute';
-            this.setDefaultCanvasSize();
+            this.resizeDrawingService.setDefaultCanvasSize();
         });
     }
 
     @HostListener('document:keyup', ['$event'])
-    handleKeyUp(event: KeyboardEvent): void {
-        const keyName: string | undefined = this.keyToolMapping.get(event.key.toString());
-        if (keyName) {
-            (document.querySelector('#' + keyName) as HTMLElement).click();
-        } else {
-            this.toolSelectionService.currentTool.onKeyUp(event);
-        }
+    onKeyUp(event: KeyboardEvent): void {
+        this.toolSelectionService.currentToolKeyUp(event);
     }
 
     @HostListener('document:keydown', ['$event'])
-    handleKeyDown(event: KeyboardEvent): void {
-        if (event.key === 'o' && event.ctrlKey) {
-            event.preventDefault();
-            this.newDrawingService.openWarning();
+    onKeyDown(event: KeyboardEvent): void {
+        if (this.shortcutsArray.includes(event.key.toString())) {
+            this.hotkeyService.onKeyDown(event);
         } else {
-            this.toolSelectionService.currentTool.onKeyDown(event);
+            this.toolSelectionService.currentToolKeyDown(event);
         }
     }
 
@@ -95,32 +80,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('mouseup', ['$event'])
     onMouseUp(event: MouseEvent): void {
-        if (this.resizeDrawingService.onMouseUp()) {
-            const tempCanvas: HTMLCanvasElement = document.createElement('canvas');
-            tempCanvas.width = this.canvasSize.x;
-            tempCanvas.height = this.canvasSize.y;
-            const tempCanvasCtx: CanvasRenderingContext2D = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
-            tempCanvasCtx.drawImage(this.drawingComponent.baseCanvas.nativeElement, 0, 0);
-
-            this.canvasSize.x = this.previewSize.x;
-            this.canvasSize.y = this.previewSize.y;
-            this.previewDiv.style.display = 'none';
-
-            setTimeout(() => {
-                let baseCtx: CanvasRenderingContext2D;
-                baseCtx = this.drawingComponent.baseCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-                baseCtx.drawImage(tempCanvas, 0, 0);
-            });
-        }
-    }
-
-    private setDefaultCanvasSize(): void {
-        this.previewSize = this.resizeDrawingService.setDefaultCanvasSize(this.workSpaceSize);
-        this.canvasSize.x = this.previewSize.x;
-        this.canvasSize.y = this.previewSize.y;
-    }
-
-    getWorkSpaceSize(): Vec2 {
-        return this.workSpaceSize;
+        this.resizeDrawingService.onMouseUp();
+        this.previewDiv.style.display = 'none';
     }
 }

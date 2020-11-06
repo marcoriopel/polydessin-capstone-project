@@ -3,6 +3,7 @@ export const MINIMUM_CANVAS_WIDTH = 250;
 export const MINIMUM_CANVAS_HEIGHT = 250;
 export const MINIMUM_WORKSPACE_WIDTH = 500;
 export const MINIMUM_WORKSPACE_HEIGHT = 500;
+export const ZOOM_RADIUS = 75;
 export const HALF_RATIO = 0.5;
 export const TOOLTIP_DELAY = 1000;
 export const MAXIMUM_DISTANCE_LINE_CONNECTION = 20;
@@ -12,11 +13,30 @@ export const MAX_OPACITY = 100;
 export const ONE_NEGATIVE_PIXEL = -1;
 export const MAX_TOOL_WIDTH = 50;
 export const MIN_TOOL_WIDTH = 1;
+export const MIN_ERASER_TOOL_WIDTH = 5;
 export const MAX_BORDER = 20;
 export const MIN_BORDER = 1;
 export const DASH_LENGTH = 5;
 export const DASH_SPACE_LENGTH = 3;
+export const GROWTH_ZOOM_PIPETTE = 16;
+export const MIN_TOLERANCE_VALUE = 0;
+export const MAX_TOLERANCE_VALUE = 100;
+export const MAX_PERCENTAGE = 100;
+export const RGBA_STRING_ = 100;
+export const CONFIRM_SAVED_DURATION = 5000;
+export const CONFIRM_KEY_PRESS_DURATION = 500;
+export const KEY_PRESS_INTERVAL_DURATION = 100;
+export const SELECTION_MOVE_STEP_SIZE = 3;
+export const LINE_WIDTH_POLYGONE_CORRECTION = 1.4;
 
+export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
+export const MIN_SIDES = 3;
+export const MAX_SIDES = 12;
+export const MAX_TAG_LENGTH = 15;
+export const MAX_NAME_LENGTH = 15;
+export const SELECTION_POINT_WIDTH = 6;
+export const MAX_NUMBER_TAG = 5;
+export const MAX_OPACITY_RGBA = 255;
 export enum Quadrant {
     TOP_RIGHT = 0,
     TOP_LEFT = 1,
@@ -36,9 +56,9 @@ export enum LineAngle {
 }
 
 export enum MouseButton {
-    Left = 0,
-    Middle = 1,
-    Right = 2,
-    Back = 3,
-    Forward = 4,
+    LEFT = 0,
+    MIDDLE = 1,
+    RIGHT = 2,
+    BACK = 3,
+    FORWARD = 4,
 }

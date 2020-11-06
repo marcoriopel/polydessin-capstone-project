@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PencilService } from '@app/services/tools/pencil-service';
+import { PencilService } from '@app/services/tools/pencil.service';
 
 @Component({
     selector: 'app-pencil-attributes',
@@ -13,7 +13,7 @@ export class PencilAttributesComponent {
         this.toolWidth = pencilService.width;
     }
 
-    handleWidthChange(newWidth: number): void {
+    changeWidth(newWidth: number): void {
         this.toolWidth = newWidth;
         this.pencilService.changeWidth(this.toolWidth);
     }

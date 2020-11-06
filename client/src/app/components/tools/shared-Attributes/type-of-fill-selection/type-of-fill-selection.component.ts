@@ -14,9 +14,10 @@ export class TypeOfFillSelectionComponent {
         FILL_AND_BORDER: FILL_STYLES.FILL_AND_BORDER,
         FILL: FILL_STYLES.FILL,
         BORDER: FILL_STYLES.BORDER,
+        DASHED: FILL_STYLES.DASHED,
     };
 
-    handleValueChange(event: Event): void {
+    changeValue(event: Event): void {
         const target = event.target as HTMLInputElement;
         this.valueChange.emit(Number(target.value));
     }

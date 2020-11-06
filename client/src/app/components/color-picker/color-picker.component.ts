@@ -1,29 +1,28 @@
-import { Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
+import { MAXIMUM_RGBA_VALUE } from '@app/ressources/global-variables/rgba';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
+import { PipetteService } from '@app/services/tools/pipette.service';
 @Component({
     selector: 'app-color-picker',
     templateUrl: './color-picker.component.html',
     styleUrls: ['./color-picker.component.scss'],
 })
-export class ColorPickerComponent {
-    primaryColor: string;
-    secondaryColor: string;
-    primaryOpacity: number;
-    secondaryOpacity: number;
+export class ColorPickerComponent implements AfterViewInit {
+    @ViewChild('primary', { read: ElementRef }) primaryColorElement: ElementRef;
+    @ViewChild('secondary', { read: ElementRef }) secondaryColorElement: ElementRef;
+    primaryColor: string = '#000000';
+    secondaryColor: string = '#000000';
     colors: string[] = ['#000000'];
     minOpacity: number = 0;
     maxOpacity: number = MAX_OPACITY;
+    primaryOpacity: number = MAX_OPACITY;
+    secondaryOpacity: number = MAX_OPACITY;
 
-    constructor(public colorSelectionService: ColorSelectionService) {
-        this.primaryColor = '#000000';
-        this.secondaryColor = '#000000';
-        this.primaryOpacity = MAX_OPACITY;
-        this.secondaryOpacity = MAX_OPACITY;
-
+    constructor(public colorSelectionService: ColorSelectionService, public pipetteService: PipetteService) {
         // Initial values for the colors on application opening
-        this.colorSelectionService.setPrimaryColor(this.primaryColor);
-        this.colorSelectionService.setSecondaryColor(this.secondaryColor);
+        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
         this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
         this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
     }
@@ -87,11 +86,9 @@ export class ColorPickerComponent {
         this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
     }
 
-    // We had to disable any here to handle different type of input from user
-    // tslint:disable-next-line: no-any
-    changePrimaryOpacity(opacity: any, event: KeyboardEvent): void {
+    changePrimaryOpacity(opacity: number, event: KeyboardEvent): void {
         event.stopPropagation();
-        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity.toString() === '') {
             this.primaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
             alert("L'opacité doit être un nombre entre 0 et 100.");
@@ -101,11 +98,9 @@ export class ColorPickerComponent {
         }
     }
 
-    // We had to disable any here to handle different type of input from user
-    // tslint:disable-next-line: no-any
-    changeSecondaryOpacity(opacity: any, event: KeyboardEvent): void {
+    changeSecondaryOpacity(opacity: number, event: KeyboardEvent): void {
         event.stopPropagation();
-        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity === '') {
+        if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity.toString() === '') {
             this.secondaryOpacity = MAX_OPACITY;
             this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
             alert("L'opacité doit être un nombre entre 0 et 100.");
@@ -126,12 +121,31 @@ export class ColorPickerComponent {
     }
 
     hexToRGBA(color: string, opacity: number): string {
-        // Using variables for string slicing would be as meaningless as not using variables
-        // tslint:disable: no-magic-numbers
-        const r: number = parseInt(color.slice(-6, -4), 16);
-        const g: number = parseInt(color.slice(-4, -2), 16);
-        const b: number = parseInt(color.slice(-2), 16);
+        const SLICING_END = 16;
+        const SLICING_START_R_1 = -6;
+        const SLICING_START_R_2 = -4;
+        const SLICING_START_G_1 = -4;
+        const SLICING_START_G_2 = -2;
+        const SLICING_START_B = -2;
+        const r: number = parseInt(color.slice(SLICING_START_R_1, SLICING_START_R_2), SLICING_END);
+        const g: number = parseInt(color.slice(SLICING_START_G_1, SLICING_START_G_2), SLICING_END);
+        const b: number = parseInt(color.slice(SLICING_START_B), SLICING_END);
         const rgba: string = 'rgba(' + r + ',' + g + ',' + b + ',' + (opacity / MAX_OPACITY).toString() + ')';
         return rgba;
+    }
+
+    ngAfterViewInit(): void {
+        this.pipetteService.primaryColor.subscribe((data: string[]) => {
+            this.changePrimaryColor(data[0]);
+            this.primaryOpacity = Math.round((Number(data[1]) / MAXIMUM_RGBA_VALUE) * MAX_OPACITY);
+            const primary = this.primaryColorElement.nativeElement;
+            primary.value = data[0];
+        });
+        this.pipetteService.secondaryColor.subscribe((data: string[]) => {
+            this.changeSecondaryColor(data[0]);
+            this.secondaryOpacity = Math.round((Number(data[1]) / MAXIMUM_RGBA_VALUE) * MAX_OPACITY);
+            const secondary = this.secondaryColorElement.nativeElement;
+            secondary.value = data[0];
+        });
     }
 }

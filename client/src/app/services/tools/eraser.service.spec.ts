@@ -13,7 +13,7 @@ describe('EraserService', () => {
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
-    let drawLineSpy: jasmine.Spy<any>;
+    let drawEraserStrokeSpy: jasmine.Spy<any>;
     let strokeRectSpy: jasmine.Spy<any>;
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -28,16 +28,15 @@ describe('EraserService', () => {
 
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
         previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(EraserService);
-        drawLineSpy = spyOn<any>(service, 'drawLine').and.callThrough();
+        drawEraserStrokeSpy = spyOn<any>(service, 'drawEraserStroke').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
@@ -47,7 +46,7 @@ describe('EraserService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -76,10 +75,10 @@ describe('EraserService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
-        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseUp should call drawLine if mouse was already down', () => {
@@ -87,7 +86,7 @@ describe('EraserService', () => {
         service.mouseDown = true;
 
         service.onMouseUp(mouseEvent);
-        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
@@ -95,7 +94,7 @@ describe('EraserService', () => {
         service.mouseDownCoord = { x: 0, y: 0 };
 
         service.onMouseUp(mouseEvent);
-        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should call drawLine if mouse was already down', () => {
@@ -104,7 +103,7 @@ describe('EraserService', () => {
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).toHaveBeenCalled();
     });
 
     it(' onMouseMove should not call drawLine if mouse was not already down', () => {
@@ -113,7 +112,7 @@ describe('EraserService', () => {
 
         service.onMouseMove(mouseEvent);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(drawLineSpy).not.toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).not.toHaveBeenCalled();
     });
 
     it(' should change the pixel of the canvas ', () => {
@@ -125,7 +124,6 @@ describe('EraserService', () => {
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         // tslint:disable:no-magic-numbers
         expect(imageData.data[0]).toEqual(255); // R
@@ -136,14 +134,14 @@ describe('EraserService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('none');
     });
 
     it(' should draw line on cursor leave of canvas', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseLeave();
-        expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawEraserStrokeSpy).toHaveBeenCalled();
     });
 
     it(' should show custom cursor on canvas', () => {

@@ -53,6 +53,16 @@
     }
 }
 
+#undo {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#redo {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @media screen and (max-height: 380px) {
     .material-icons {
         font-size: 4vh;

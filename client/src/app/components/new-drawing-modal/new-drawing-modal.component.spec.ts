@@ -27,9 +27,11 @@ describe('NewDrawingComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call clearCanvas', () => {
-        const testSpy = spyOn(component.drawingService, 'clearCanvas');
+    it('should call clearCanvas and setDefaultCanvasSize', () => {
+        const clearCanvasSpy = spyOn(component.drawingService, 'clearCanvas');
+        const setDefaultCanvasSizeSpy = spyOn(component.resizeDrawingService, 'setDefaultCanvasSize');
         component.createNewDrawing();
-        expect(testSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalled();
+        expect(setDefaultCanvasSizeSpy).toHaveBeenCalled();
     });
 });

@@ -30,7 +30,7 @@ describe('BrushService', () => {
         previewCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -46,7 +46,7 @@ describe('BrushService', () => {
         mouseEvent = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Left,
+            button: MouseButton.LEFT,
         } as MouseEvent;
     });
 
@@ -62,7 +62,7 @@ describe('BrushService', () => {
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.previewCanvas.style.cursor = 'none';
-        service.handleCursor();
+        service.setCursor();
         expect(previewCanvasStub.style.cursor).toEqual('crosshair');
     });
 
@@ -81,7 +81,7 @@ describe('BrushService', () => {
         const mouseEventRClick = {
             offsetX: 25,
             offsetY: 25,
-            button: MouseButton.Right,
+            button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
         expect(drawLineSpy).not.toHaveBeenCalled();
@@ -127,7 +127,6 @@ describe('BrushService', () => {
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
 
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -159,5 +158,10 @@ describe('BrushService', () => {
         service.applyPattern('invalid string');
         expect(previewCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
         expect(baseCtxStub.filter).toEqual('url(/assets/patterns.svg#' + pattern + ')');
+    });
+
+    it(' should draw line on mouseleave', () => {
+        service.onMouseLeave();
+        expect(drawLineSpy).toHaveBeenCalled();
     });
 });

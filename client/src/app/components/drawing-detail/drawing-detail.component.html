@@ -42,6 +42,31 @@
             <video autoplay loop muted><source class="animated-gif" src="{{ shape.picture }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
+
+    <mat-expansion-panel *ngFor="let fill of fills">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ fill.name }}
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>{{ fill.description }}</p>
+        <video autoplay loop muted><source class="animated-gif" src="{{ fill.picture }}" type="video/mp4" /></video>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title> Outils de sélection </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-expansion-panel *ngFor="let transformation of transformations" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ transformation.name }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>{{ transformation.description }}</p>
+            <video autoplay loop muted><source class="animated-gif" src="{{ transformation.picture }}" type="video/mp4" /></video>
+        </mat-expansion-panel>
+    </mat-expansion-panel>
 </mat-expansion-panel>
 
 <mat-expansion-panel *ngFor="let feature of otherFeatures">
@@ -51,5 +76,16 @@
         </mat-panel-title>
     </mat-expansion-panel-header>
     <p>{{ feature.description }}</p>
-    <video autoplay loop muted><source class="animated-gif" src="{{ feature.picture }}" type="video/mp4" /></video>
+    <img class="image" src="{{ feature.picture }}" type="image/png" />
+</mat-expansion-panel>
+
+<mat-expansion-panel *ngFor="let undo of undoredo">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{ undo.name }}
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>{{ undo.description }}</p>
+    <div><img class="image" src="{{ undo.picture }}" type="image/png" /></div>
+    <div><img class="image" src="../../../assets/img/Refaire.PNG" type="image/png" /></div>
 </mat-expansion-panel>

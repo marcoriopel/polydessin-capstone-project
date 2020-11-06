@@ -1,9 +1,10 @@
-# Exclusion des dépendences du projet. Elles peuvent être regénérées 
+# Exclusion des dépendences du projet. Elles peuvent être regénérées
 # automatiquement.
 .nyc_output/
 node_modules/
 false/
 
+images/
 # Exclusion des fichiers Javascripts
 out/
 
@@ -15,6 +16,7 @@ npm-debug.log
 *.js.map
 *.js
 
+images/
 
 # Garder les fichiers necessaires pour les tests
 !systemjs.config.js
@@ -24,3 +26,6 @@ npm-debug.log
 !tslint.json
 !tsconfig.json
 !package-lock.json
+
+debug.log
+drawing.json

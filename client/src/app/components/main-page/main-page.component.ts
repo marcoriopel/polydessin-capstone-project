@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { UserguideComponent } from '@app/components/userguide/userguide.component';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { UserGuideComponent } from '@app/components/userguide/user-guide.component';
 
 @Component({
     selector: 'app-main-page',
@@ -12,6 +13,10 @@ export class MainPageComponent {
     constructor(public dialog: MatDialog) {}
 
     openUserguide(): void {
-        this.dialog.open(UserguideComponent);
+        this.dialog.open(UserGuideComponent);
+    }
+
+    openCarousel(): void {
+        this.dialog.open(CarouselComponent);
     }
 }

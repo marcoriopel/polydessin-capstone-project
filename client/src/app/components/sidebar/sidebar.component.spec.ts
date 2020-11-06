@@ -1,56 +1,62 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { By } from '@angular/platform-browser';
-import { Tool } from '@app/classes/tool';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CarouselComponent } from '@app/components/carousel/carousel.component';
+import { ExportComponent } from '@app/components/export/export.component';
+import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { DrawingService } from '@app/services/drawing/drawing.service';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
-import { BrushService } from '@app/services/tools/brush.service';
-import { CircleService } from '@app/services/tools/circle.service';
-import { EraserService } from '@app/services/tools/eraser.service';
-import { LineService } from '@app/services/tools/line.service';
-import { PencilService } from '@app/services/tools/pencil-service';
-import { SquareService } from '@app/services/tools/square.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
+import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-class ToolStub extends Tool {}
-
 describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
-    let toolStub: ToolStub;
-    let toolSelectionStub: ToolSelectionService;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
+    let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let obs: Subject<string>;
+    let undoRedoServiceSpy: SpyObj<UndoRedoService>;
+    let obsUndoButton: Subject<boolean>;
+    let obsRedoButton: Subject<boolean>;
 
-    beforeEach(async(() => {
-        toolStub = new ToolStub({} as DrawingService);
-        toolSelectionStub = new ToolSelectionService(
-            toolStub as PencilService,
-            toolStub as BrushService,
-            toolStub as SquareService,
-            toolStub as CircleService,
-            toolStub as LineService,
-            toolStub as EraserService,
-        );
+    beforeEach(() => {
+        obs = new Subject<string>();
+        obsUndoButton = new Subject<boolean>();
+        obsRedoButton = new Subject<boolean>();
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll']);
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
-        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarning']);
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', ['getUndoAvailability', 'getRedoAvailability']);
+        undoRedoServiceSpy.getUndoAvailability.and.returnValue(obsUndoButton.asObservable());
+        undoRedoServiceSpy.getRedoAvailability.and.returnValue(obsRedoButton.asObservable());
+        newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningModal']);
+
         TestBed.configureTestingModule({
+            imports: [BrowserAnimationsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [SidebarComponent],
             providers: [
-                { provide: ToolSelectionService, useValue: toolSelectionStub },
-                { provide: MatDialog, useValue: matdialogSpy },
+                { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
+                { provide: MatDialog, useValue: matdialogSpy },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],
         }).compileComponents();
-    }));
+    });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         fixture = TestBed.createComponent(SidebarComponent);
         component = fixture.componentInstance;
+        await fixture.whenStable();
         fixture.detectChanges();
     });
 
@@ -58,18 +64,24 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should call toolSelectionService.changeTool', () => {
-        const spy = spyOn(component.toolSelectionService, 'changeTool');
-        const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
-        button.click();
-        expect(spy).toHaveBeenCalled();
+    it('cursor should be not-allowed if undo and redo are not available', () => {
+        obsRedoButton.next(false);
+        obsUndoButton.next(false);
+        expect(document.getElementById('undo')?.style.cursor).toEqual('not-allowed');
+        expect(document.getElementById('redo')?.style.cursor).toEqual('not-allowed');
     });
 
-    it('should call toolSelectionService.currentTool.handleCursor', () => {
-        const spy = spyOn(toolStub, 'handleCursor');
+    it('cursor should be pointer if undo and redo are available', () => {
+        obsRedoButton.next(true);
+        obsUndoButton.next(true);
+        expect(document.getElementById('undo')?.style.cursor).toEqual('pointer');
+        expect(document.getElementById('redo')?.style.cursor).toEqual('pointer');
+    });
+
+    it('should call toolSelectionService.changeTool', () => {
         const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
         button.click();
-        expect(spy).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.changeTool).toHaveBeenCalled();
     });
 
     it('should call open of MatDialog', () => {
@@ -77,12 +89,15 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalled();
     });
 
-    it('should call openWarning', () => {
-        const button: DebugElement = fixture.debugElement.query(By.css('mat-icon[type=newDrawing]'));
-        fixture.detectChanges();
-        button.triggerEventHandler('click', null);
-        fixture.detectChanges();
-        expect(newDrawingServiceSpy.openWarning).toHaveBeenCalled();
+    it('should call openWarningModal', () => {
+        const button = fixture.debugElement.nativeElement.querySelector('#new-drawing');
+        button.click();
+        expect(newDrawingServiceSpy.openWarningModal).toHaveBeenCalled();
+    });
+
+    it('should call open whit the export component', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
     it('should not change tool nor handle cursor on an invalid event', () => {
@@ -90,15 +105,48 @@ describe('SidebarComponent', () => {
         const target = ({
             value,
         } as unknown) as HTMLInputElement;
-
         const event = ({
             target,
         } as unknown) as InputEvent;
-
-        const cursorSpy = spyOn(toolStub, 'handleCursor');
-        const toolSpy = spyOn(component.toolSelectionService, 'changeTool');
         component.onToolChange(event);
-        expect(cursorSpy).not.toHaveBeenCalled();
-        expect(toolSpy).not.toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.changeTool).not.toHaveBeenCalled();
+    });
+
+    it('should change tool on hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next('invalidtool');
+        expect(component.selectedTool).toEqual(TOOL_NAMES.PENCIL_TOOL_NAME);
+    });
+
+    it('should not change tool on invalid hotkey call', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open save window', () => {
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(TOOL_NAMES.BRUSH_TOOL_NAME);
+        expect(component.selectedTool).toEqual(TOOL_NAMES.BRUSH_TOOL_NAME);
+    });
+
+    it('should open carousel component on call', () => {
+        component.openCarouselWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(CarouselComponent);
+    });
+
+    it('should open save component on call', () => {
+        component.openSaveWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
+    });
+
+    it('should call selectall of tool selection service', () => {
+        component.selectAll();
+        expect(toolSelectionServiceSpy.selectAll).toHaveBeenCalled();
+    });
+
+    it('should open export component on call', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 });

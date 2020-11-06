@@ -1,0 +1,54 @@
+<div #exportModal class="exporting">
+    <h1>Exportation du dessin</h1>
+    <p><img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" /></p>
+    <div>
+        <form class="export" autocomplete="off" [formGroup]="ownerForm">
+            <label>Fichier: </label>
+            <mat-form-field appearance="fill">
+                <mat-label>Nom du dessin</mat-label>
+                <input
+                    matInput
+                    #name
+                    type="text"
+                    id="name"
+                    [required]="true"
+                    formControlName="name"
+                    (keyup)="this.changeName(name.value)"
+                    placeholder="Ex: Forêt Boréal"
+                />
+                <mat-hint class="mat-hint">Max 15 charactères</mat-hint>
+                <mat-error *ngIf="hasNameError('name', 'required')">Nom est requis</mat-error>
+                <mat-error *ngIf="hasNameError('name', 'maxlength')">Nom est trop long. (max. 15 charactères)</mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div>
+        <label>Filtre</label>
+        <div class="radioContainer">
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
+            <label>Aucun filtre</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
+            <label>Noir et blanc</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SEPHIA" (change)="this.changeFilter($event)" />
+            <label>Sephia</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SATURATE" (change)="this.changeFilter($event)" />
+            <label>Saturer</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.INVERT" (change)="this.changeFilter($event)" />
+            <label>Inverser</label>
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLUR" (change)="this.changeFilter($event)" />
+            <label>Embrouiller</label>
+        </div>
+    </div>
+    <label>Exporter en: </label>
+    <div class="radioContainer">
+        <input type="radio" name="typeOfFile" [value]="0" (change)="this.getImageUrl($event)" checked />
+        <label>PNG</label>
+        <input type="radio" name="typeOfFile" [value]="1" (change)="this.getImageUrl($event)" />
+        <label>JPG</label>
+    </div>
+    <div></div>
+
+    <button mat-button id="export" (click)="exportLocally()">Exporter</button>
+    <button mat-button mat-dialog-close>Fermer</button>
+</div>
