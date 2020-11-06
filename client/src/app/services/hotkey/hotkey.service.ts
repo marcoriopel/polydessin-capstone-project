@@ -29,7 +29,9 @@ export class HotkeyService {
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
         ['e', this.sidebarElements.EXPORT_DRAWING_NAME],
         ['a', this.sidebarElements.SELECT_ALL],
+        ['z', this.sidebarElements.UNDO],
     ]);
+    keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
     constructor() {
         this.isHotkeyEnabled = true;
@@ -39,7 +41,9 @@ export class HotkeyService {
         if (!this.isHotkeyEnabled) return;
         event.preventDefault();
         let keyName: string | undefined;
-        if (event.ctrlKey) {
+        if (event.shiftKey && event.ctrlKey) {
+            keyName = this.keysNeedShift.get(event.key.toString());
+        } else if (event.ctrlKey) {
             keyName = this.keysNeedCtrl.get(event.key.toString());
         } else {
             keyName = this.keyMapping.get(event.key.toString());

@@ -68,6 +68,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
         if (!this.isArrowEventsChecked) return;
+        if (this.databaseMetadata.length <= 1) return;
+        if (this.databaseMetadata.length === 2 && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+            this.onClickTwoDrawings();
+            return;
+        }
         if (event.key === 'ArrowLeft') {
             this.onPreviousClick();
         } else if (event.key === 'ArrowRight') {
@@ -259,9 +264,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     onPreviousClick(): void {
-        if (this.filteredMetadata.length > 2) {
-            this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
-        }
+        this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
         if (this.visibleDrawingsIndexes[0] === 0) {
             this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
@@ -271,10 +274,9 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     onNextClick(): void {
-        if (this.filteredMetadata.length > 2) {
-            this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
-        }
+        this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
+
         if (this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1) {
             this.visibleDrawingsIndexes[2] = 0;
         } else {

@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Observable, Subject } from 'rxjs';
 import { ResizeDrawingService } from './resize-drawing.service';
 
 class DrawingServiceMock {
@@ -15,7 +16,7 @@ class DrawingServiceMock {
     pixelData: Uint8ClampedArray;
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-
+    isToolInUse: Subject<boolean>;
     constructor() {
         this.canvas.height = MINIMUM_CANVAS_HEIGHT;
         this.canvas.width = MINIMUM_CANVAS_WIDTH;
@@ -40,6 +41,10 @@ class DrawingServiceMock {
     restoreSelection(): void {}
     getPreviewData(): ImageData {
         return this.imageData;
+    }
+    setIsToolInUse(): void {}
+    getIsToolInUse(): Observable<boolean> {
+        return this.isToolInUse.asObservable();
     }
 }
 
@@ -250,5 +255,19 @@ describe('ResizeDrawingService', () => {
 
         service.onMouseUp();
         expect(service.canvasSize).toEqual(expectedResult);
+    });
+
+    it('should resize canvas size', () => {
+        const expectedResult = { x: 500, y: 500 };
+        service.resizeCanvasSize(expectedResult.x, expectedResult.y);
+        expect(service.previewSize).toEqual(expectedResult);
+    });
+
+    it('should restore canvas', () => {
+        const imageDataSpy = spyOn(drawingService.baseCtx, 'putImageData');
+        const expectedData = { type: {} as string, canvasSize: { x: 500, y: 500 }, imageData: {} as ImageData };
+        service.restoreCanvas(expectedData);
+        expect(service.previewSize).toEqual(expectedData.canvasSize);
+        expect(imageDataSpy).toHaveBeenCalled();
     });
 });

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
@@ -20,7 +20,9 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './sidebar.component.html',
     styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild('undo', { read: ElementRef }) undoButton: ElementRef;
+    @ViewChild('redo', { read: ElementRef }) redoButton: ElementRef;
     destroy$: Subject<boolean> = new Subject<boolean>();
     elementDescriptions: SidebarElementTooltips = SIDEBAR_ELEMENT_TOOLTIPS;
     tooltipShowDelay: number = TOOLTIP_DELAY;
@@ -46,6 +48,29 @@ export class SidebarComponent implements OnInit, OnDestroy {
                 }
             });
     }
+
+    ngAfterViewInit(): void {
+        this.undoRedoService.getUndoAvailability().subscribe((value) => {
+            if (value) {
+                this.undoButton.nativeElement.style.cursor = 'pointer';
+                this.undoButton.nativeElement.style.opacity = '1';
+            } else {
+                this.undoButton.nativeElement.style.cursor = 'not-allowed';
+                this.undoButton.nativeElement.style.opacity = '0.5';
+            }
+        });
+
+        this.undoRedoService.getRedoAvailability().subscribe((value) => {
+            if (value) {
+                this.redoButton.nativeElement.style.cursor = 'pointer';
+                this.redoButton.nativeElement.style.opacity = '1';
+            } else {
+                this.redoButton.nativeElement.style.cursor = 'not-allowed';
+                this.redoButton.nativeElement.style.opacity = '0.5';
+            }
+        });
+    }
+
     onToolChange(event: Event): void {
         const target = event.target as HTMLInputElement;
         if (target.value != undefined) {

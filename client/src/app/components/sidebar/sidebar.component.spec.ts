@@ -13,7 +13,7 @@ import { ToolSelectionService } from '@app/services/tool-selection/tool-selectio
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
-xdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
     let component: SidebarComponent;
     let fixture: ComponentFixture<SidebarComponent>;
     let matdialogSpy: SpyObj<MatDialog>;
@@ -24,7 +24,7 @@ xdescribe('SidebarComponent', () => {
 
     beforeEach(() => {
         obs = new Subject<string>();
-        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'setCurrentToolCursor']);
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll']);
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
@@ -60,12 +60,6 @@ xdescribe('SidebarComponent', () => {
         expect(toolSelectionServiceSpy.changeTool).toHaveBeenCalled();
     });
 
-    it('should call toolSelectionService.setCurrentToolCursor', () => {
-        const button = fixture.debugElement.nativeElement.querySelector('#Pinceau');
-        button.click();
-        expect(toolSelectionServiceSpy.setCurrentToolCursor).toHaveBeenCalled();
-    });
-
     it('should call open of MatDialog', () => {
         component.openUserguide();
         expect(matdialogSpy.open).toHaveBeenCalled();
@@ -91,7 +85,6 @@ xdescribe('SidebarComponent', () => {
             target,
         } as unknown) as InputEvent;
         component.onToolChange(event);
-        expect(toolSelectionServiceSpy.setCurrentToolCursor).not.toHaveBeenCalled();
         expect(toolSelectionServiceSpy.changeTool).not.toHaveBeenCalled();
     });
 
@@ -121,5 +114,15 @@ xdescribe('SidebarComponent', () => {
     it('should open save component on call', () => {
         component.openSaveWindow();
         expect(matdialogSpy.open).toHaveBeenCalledWith(SavingComponent);
+    });
+
+    it('should call selectall of tool selection service', () => {
+        component.selectAll();
+        expect(toolSelectionServiceSpy.selectAll).toHaveBeenCalled();
+    });
+
+    it('should open export component on call', () => {
+        component.openExportWindow();
+        expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 });
