@@ -17,6 +17,7 @@ export class HotkeyService {
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
+        ['3', this.toolNames.POLYGONE_TOOL_NAME],
         ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
@@ -37,6 +38,7 @@ export class HotkeyService {
         if (event.shiftKey || event.ctrlKey) event.preventDefault();
         if (!this.isHotkeyEnabled) return;
         let keyName: string | undefined;
+
         if (event.shiftKey && event.ctrlKey) {
             keyName = this.keysNeedShift.get(event.key.toString());
         } else if (event.ctrlKey) {
