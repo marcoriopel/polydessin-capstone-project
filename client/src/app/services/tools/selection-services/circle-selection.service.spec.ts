@@ -4,7 +4,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { CircleSelectionService } from './circle-selection.service';
 
-fdescribe('CircleSelectionService', () => {
+describe('CircleSelectionService', () => {
     let service: CircleSelectionService;
     let drawingService: DrawingService;
     let selectionBox: SelectionBox;
