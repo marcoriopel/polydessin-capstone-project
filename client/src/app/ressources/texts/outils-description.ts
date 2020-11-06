@@ -41,7 +41,7 @@ export const BASIC_TOOLS: Feature[] = [
     {
         name: 'Pipette',
         description:
-            "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente la surdimension des pixels sous la souris et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
+            "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente les pixels sous la souris surdimensionnés et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
         picture: './../../../assets/img/picture_test.jpg',
     },
     // { name: 'Baguette magique', description: '...', picture: './../../../assets/img/picture_test.jpg' },
@@ -51,7 +51,7 @@ export const DRAWING_TOOLS: Feature[] = [
     {
         name: 'Crayon',
         description:
-            'Le crayon vous permet de tracer des traits simple. Il peut être de différente épaisseur. Vous pouvez changer la taille avec les boutons dans la barre a gauche',
+            'Le crayon vous permet de tracer des traits simples. Il peut être de différente épaisseur. Vous pouvez changer la taille avec les boutons dans la barre a gauche',
         picture: './../../../assets/video/crayon.mp4',
     },
     {
@@ -68,19 +68,19 @@ export const SHAPES: Feature[] = [
     {
         name: 'Rectangle',
         description:
-            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé peut avoir un remplissage uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un carré avec la commande shift.',
+            'Cet outil permet de dessiner des rectangles de différente taille. Le rectangle tracé peut avoir un remplissage uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de faire un carré avec la commande shift.',
         picture: './../../../assets/video/rectangle.mp4',
     },
     {
         name: 'Ellipse',
         description:
-            "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
+            "Cet outil permet de dessiner des ellipses de différente taille. L'ellipse tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de faire un cercle parfait avec la commande shift.",
         picture: './../../../assets/video/ellipse.mp4',
     },
     {
         name: 'Polygone',
         description:
-            'Cet outil permet de dessiner des polygone de différente taille. Le polygone tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la coleur secondaire. Il est possible de choisir le nombre de côté du polygone (3 à 12)',
+            'Cet outil permet de dessiner des polygones de différente taille. Le polygone tracé peut avoir un remplissage complet et uni, juste un contour ou les deux. La couleur du remplissage est la couleur primaire et la couleur du contour est la couleur secondaire. Il est possible de choisir le nombre de côté du polygone (3 à 12)',
         picture: './../../../assets/img/picture_test.jpg',
     },
 ];
@@ -88,7 +88,7 @@ export const SHAPES: Feature[] = [
 export const FILL: Feature[] = [
     {
         name: 'Sceau de peinture ',
-        description: 'Cet outil permet de remplir une région de la couleur principal. La tolérance définit l étendue de la région à remplir.',
+        description: "Cet outil permet de remplir une région de la couleur principal. La tolérance définit l'étendue de la région à remplir.",
         picture: './../../../assets/video/remplissage.mp4',
     },
 ];
@@ -109,7 +109,7 @@ export const TRANSFORMATIONS: Feature[] = [
     {
         name: 'Redimensionnement',
         description:
-            'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il sufit de glisser et déposer avec le bouton gauche de la souris.',
+            'Cette fonctionnalité permet de redimensionner la surface de dessin sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il suffit de glisser et déposer avec le bouton gauche de la souris.',
         picture: './../../../assets/video/redimensionnement.mp4',
     },
     // { name: 'Rotation', description: '...', picture: './../../../assets/img/picture_test.jpg' },
