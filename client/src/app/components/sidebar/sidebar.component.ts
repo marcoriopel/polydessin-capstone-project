@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { SendComponent } from '@app/components//send/send.component';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
@@ -70,6 +71,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
+    }
+    openSendWindow(): void {
+        this.dialog.open(SendComponent);
     }
     openExportWindow(): void {
         this.dialog.open(ExportComponent);

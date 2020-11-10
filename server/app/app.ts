@@ -5,6 +5,7 @@ import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
 import { DatabaseController } from './controllers/database.controller';
+import { EmailController } from './controllers/email.controller';
 import { TYPES } from './types';
 
 @injectable()
@@ -12,7 +13,10 @@ export class Application {
     private readonly internalError: number = 500;
     app: express.Application;
 
-    constructor(@inject(TYPES.DatabaseController) private databaseController: DatabaseController) {
+    constructor(
+        @inject(TYPES.DatabaseController) private databaseController: DatabaseController,
+        @inject(TYPES.EmailController) private emailcontroller: EmailController,
+    ) {
         this.app = express();
 
         this.config();
@@ -30,6 +34,7 @@ export class Application {
 
     bindRoutes(): void {
         this.app.use('/api/database', this.databaseController.router);
+        this.app.use('/api/email', this.emailcontroller.router);
         this.errorHandling();
     }
 

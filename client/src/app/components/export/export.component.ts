@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -30,8 +31,14 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
+    emailAddress: string;
 
-    constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private dialogRef: MatDialogRef<ExportComponent>) {}
+    constructor(
+        public drawingService: DrawingService,
+        public hotkeyService: HotkeyService,
+        private dialogRef: MatDialogRef<ExportComponent>,
+        private httpClient: HttpClient,
+    ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
@@ -88,5 +95,26 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
+    }
+
+    sendMail(): void {
+        const url = 'http://localhost:3000/api/email/';
+        const base64 = this.urlImage.split(',')[1];
+        const body = {
+            to: this.emailAddress,
+            playload: base64,
+            filename: this.name,
+            format: this.typeOfFile,
+        };
+        this.httpClient
+            .post(url, body)
+            .toPromise()
+            .then(() => {
+                alert(' Readyyyy ! ');
+            })
+            // tslint:disable-next-line: no-shadowed-variable
+            .catch((E: Error) => {
+                throw E;
+            });
     }
 }

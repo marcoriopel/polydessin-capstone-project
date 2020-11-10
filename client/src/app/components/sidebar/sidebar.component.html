@@ -214,6 +214,15 @@
     </div>
     <div class="sidebarSection">
         <mat-icon
+        class="material-icons"
+        [matTooltip]="elementDescriptions.SEND_DESCRIPTION"
+        matTooltipPosition="right"
+        [matTooltipShowDelay]="tooltipShowDelay"
+        mat-button
+        (click)="openSendWindow()"
+        >forward_to_inbox</mat-icon
+    >
+        <mat-icon
             class="material-icons"
             [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
             matTooltipPosition="right"

@@ -25,30 +25,37 @@
 
     <div>
         <label>Filtre</label>
-        <div class="radioContainer">
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
+        <div class="radioContainer" filter= " ">
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked /><br>
             <label>Aucun filtre</label>
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" /><br>
             <label>Noir et blanc</label>
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.SEPHIA" (change)="this.changeFilter($event)" />
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SEPHIA" (change)="this.changeFilter($event)" /><br>
             <label>Sephia</label>
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.SATURATE" (change)="this.changeFilter($event)" />
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.SATURATE" (change)="this.changeFilter($event)" /><br>
             <label>Saturer</label>
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.INVERT" (change)="this.changeFilter($event)" />
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.INVERT" (change)="this.changeFilter($event)" /><br>
             <label>Inverser</label>
-            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLUR" (change)="this.changeFilter($event)" />
+            <input type="radio" name="typeOfFilter" [value]="filterStyles.BLUR" (change)="this.changeFilter($event)" /><br>
             <label>Embrouiller</label>
         </div>
     </div>
-    <label>Exporter en: </label>
+
+    <label>Format d'exxportation</label>&nbsp;&nbsp;
     <div class="radioContainer">
         <input type="radio" name="typeOfFile" [value]="0" (change)="this.getImageUrl($event)" checked />
         <label>PNG</label>
         <input type="radio" name="typeOfFile" [value]="1" (change)="this.getImageUrl($event)" />
         <label>JPG</label>
     </div>
-    <div></div>
 
-    <button mat-button id="export" (click)="exportLocally()">Exporter</button>
+    <div>
+        <label> email
+        </label>
+        <input type="email" placeholder="bocar@polymtl.ca" [(ngModel)]= "this.emailAddress">
+    </div>
+    &nbsp;
+    <button mat-button id="export" (click)="exportLocally()">Exporter sur ordinateur</button>
+    <button mat-button id="export" (click)="sendMail()">Envoyer par email</button>
     <button mat-button mat-dialog-close>Fermer</button>
 </div>
