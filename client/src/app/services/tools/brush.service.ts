@@ -22,6 +22,10 @@ export class BrushService extends Tool {
         this.clearPath();
     }
 
+    setCursor(): void {
+        this.drawingService.gridCanvas.style.cursor = 'crosshair';
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (event.button !== MouseButton.LEFT) {
             return;

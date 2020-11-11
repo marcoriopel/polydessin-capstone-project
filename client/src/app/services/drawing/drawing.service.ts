@@ -8,12 +8,37 @@ import { Observable, Subject } from 'rxjs';
 })
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridSpacing: number;
+    opacity: number;
+    isGridEnabled: boolean;
     canvas: HTMLCanvasElement;
+    gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
+
+    setGrid(): void {
+        this.clearCanvas(this.gridCtx);
+        const bw = this.canvas.width;
+        const bh = this.canvas.height;
+        this.gridCtx.beginPath();
+        for (let x = 0; x <= bw; x += this.gridSpacing) {
+            this.gridCtx.moveTo(x, 0);
+            this.gridCtx.lineTo(x, bh);
+        }
+
+        for (let x = 0; x <= bh; x += this.gridSpacing) {
+            this.gridCtx.moveTo(0, x);
+            this.gridCtx.lineTo(bw, x);
+        }
+        this.gridCtx.globalAlpha = this.opacity;
+        this.gridCtx.strokeStyle = 'black';
+        this.gridCtx.closePath();
+        this.gridCtx.stroke();
+    }
 
     setIsToolInUse(isInUse: boolean): void {
         this.isToolInUse.next(isInUse);
@@ -28,6 +53,7 @@ export class DrawingService {
     }
 
     initializeBaseCanvas(): void {
+        if (this.isGridEnabled) this.setGrid();
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }

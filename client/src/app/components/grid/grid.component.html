@@ -13,11 +13,11 @@
     ></app-slider>
     <app-slider
         title="Opacité des lignes"
-        [min]="minSquareSize"
-        [max]="maxSquareSize"
-        [step]="5"
-        [value]="currentSquareSize"
-        (valueChange)="changeGridSize($event)"
+        [min]="minOpacity"
+        [max]="maxOpacity"
+        [step]="0.1"
+        [value]="currentOpacity"
+        (valueChange)="changeOpacity($event)"
     ></app-slider>
 </div>
 <hr />
