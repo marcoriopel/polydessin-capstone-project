@@ -27,6 +27,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportComponent } from './components/export/export.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
+import { GridComponent } from './components/grid/grid.component';
 import { LoadSelectedDrawingAlertComponent } from './components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { NewDrawingModalComponent } from './components/new-drawing-modal/new-drawing-modal.component';
@@ -50,6 +51,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
 @NgModule({
     declarations: [
         AppComponent,
+        GridComponent,
         EditorComponent,
         SidebarComponent,
         DrawingComponent,
