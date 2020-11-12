@@ -10,9 +10,8 @@ export class EmailService {
     constructor() {}
 
     async sendByEmail(data: EmailData): Promise<void | string> {
-        // console.log('on est dans envoie donner valide');
         if (this.validatedata(data.to)) {
-            const MAIL_API_X_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
+            const MAIL_API_208_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
             const MAIL_API_URL = 'http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true';
 
             const formData: FormData = new FormData();
@@ -20,13 +19,13 @@ export class EmailService {
 
             formData.append('to', data.to);
             formData.append('payload', buffer, {
-                contentType: 'image/' + data.format,
-                filename: data.filename + '.' + data.format,
+                contentType: data.format,
+                filename: data.filename + '.' + data.format.split('/')[1],
             });
             const formHeaders = formData.getHeaders();
             const config = {
                 headers: {
-                    'x-team-key': MAIL_API_X_TEAM_KEY,
+                    'x-team-key': MAIL_API_208_TEAM_KEY,
                     'content-type': 'multipart/form-data',
                     ...formHeaders,
                 },

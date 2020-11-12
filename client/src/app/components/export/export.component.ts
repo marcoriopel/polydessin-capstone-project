@@ -22,7 +22,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         BLUR: FILTER_STYLES.BLUR,
     };
     differentFilter: string[] = ['none', 'grayscale(100%)', 'sepia(100%)', 'saturate(8)', 'invert(100%)', 'blur(5px)'];
-    typeOfFile: string[] = ['image/png', 'image/jpeg'];
+    extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
     emailAdress: string = '';
@@ -77,7 +77,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     getImageUrl(event: Event): void {
         const target = event.target as HTMLInputElement;
         const typeNumber: number = Number(target.value);
-        this.urlImage = this.filterCanvas.toDataURL(this.typeOfFile[typeNumber]);
+        this.urlImage = this.filterCanvas.toDataURL(this.extension[typeNumber]);
     }
 
     exportLocally(): void {
@@ -98,13 +98,14 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
+        const sendNum = 0;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
             to: this.emailAddress,
-            playload: base64,
+            payload: base64,
             filename: this.name,
-            format: this.typeOfFile,
+            format: this.extension[sendNum],
         };
         this.httpClient
             .post(url, body)
@@ -112,7 +113,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             .then(() => {
                 alert(' Readyyyy ! ');
             })
-            // tslint:disable-next-line: no-shadowed-variable
             .catch((E: Error) => {
                 throw E;
             });

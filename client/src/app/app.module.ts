@@ -31,7 +31,6 @@ import { LoadSelectedDrawingAlertComponent } from './components/load-selected-dr
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { NewDrawingModalComponent } from './components/new-drawing-modal/new-drawing-modal.component';
 import { SavingComponent } from './components/saving/saving.component';
-import { SendComponent } from './components/send/send.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { BrushAttributesComponent } from './components/tools/brush-attributes/brush-attributes.component';
 import { CircleAttributesComponent } from './components/tools/circle-attributes/circle-attributes.component';
@@ -79,7 +78,6 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PolygoneAttributesComponent,
         SquareselectionAttributesComponent,
         CircleselectionAttributesComponent,
-        SendComponent,
     ],
     imports: [
         BrowserModule,
@@ -105,7 +103,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatCheckboxModule,
         MatInputModule,
     ],
-    entryComponents: [UserGuideComponent, MainPageComponent, SendComponent],
+    entryComponents: [UserGuideComponent, MainPageComponent],
     providers: [],
     bootstrap: [AppComponent],
 })
