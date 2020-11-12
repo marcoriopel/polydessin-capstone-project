@@ -10,6 +10,7 @@ export interface ToolNames {
     CIRCLE_SELECTION_TOOL_NAME: string;
     PIPETTE_TOOL_NAME: string;
     POLYGONE_TOOL_NAME: string;
+    MAGIC_WAND_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -24,6 +25,7 @@ export const TOOL_NAMES: ToolNames = {
     CIRCLE_SELECTION_TOOL_NAME: 'Sélection - Ellipse',
     PIPETTE_TOOL_NAME: 'Pipette',
     POLYGONE_TOOL_NAME: 'Polygone',
+    MAGIC_WAND_TOOL_NAME: 'Baguette Magique',
 };
 
 export const TOOL_NAMES_ARRAY: string[] = [
@@ -38,4 +40,5 @@ export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME,
     TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME,
     TOOL_NAMES.POLYGONE_TOOL_NAME,
+    TOOL_NAMES.MAGIC_WAND_TOOL_NAME,
 ];
