@@ -28,6 +28,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     emailAdress: string = '';
     imagesrc: string = '';
     urlImage: string = '';
+    urlExtension: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
@@ -78,6 +79,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         const target = event.target as HTMLInputElement;
         const typeNumber: number = Number(target.value);
         this.urlImage = this.filterCanvas.toDataURL(this.extension[typeNumber]);
+        this.urlExtension = this.extension[typeNumber];
     }
 
     exportLocally(): void {
@@ -98,14 +100,14 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
-        const sendNum = 0;
+        // const sendNum = 0;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
             to: this.emailAddress,
             payload: base64,
             filename: this.name,
-            format: this.extension[sendNum],
+            format: this.urlExtension,
         };
         this.httpClient
             .post(url, body)

@@ -43,10 +43,6 @@
 
     <label>Format d'exxportation</label>&nbsp;
     <div class="radioContainer">
-        <!-- <input type="radio" name="extension" [value]="0" (change)="this.getImageUrl($event)" checked />
-        <label>PNG</label>
-        <input type="radio" name="extension" [value]="1" (change)="this.getImageUrl($event)" />
-        <label>JPG</label> -->
         <select name="extension" (change)="this.getImageUrl($event)" [value]='0' >
             <option [value]='0'> PNG </option>
             <option [value]='1'> JPEG </option>
