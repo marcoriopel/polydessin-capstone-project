@@ -22,17 +22,17 @@ export class DrawingService {
 
     setGrid(): void {
         this.clearCanvas(this.gridCtx);
-        const bw = this.canvas.width;
-        const bh = this.canvas.height;
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
         this.gridCtx.beginPath();
-        for (let x = 0; x <= bw; x += this.gridSpacing) {
+        for (let x = 0; x <= canvasWidth; x += this.gridSpacing) {
             this.gridCtx.moveTo(x, 0);
-            this.gridCtx.lineTo(x, bh);
+            this.gridCtx.lineTo(x, canvasHeight);
         }
 
-        for (let x = 0; x <= bh; x += this.gridSpacing) {
+        for (let x = 0; x <= canvasHeight; x += this.gridSpacing) {
             this.gridCtx.moveTo(0, x);
-            this.gridCtx.lineTo(bw, x);
+            this.gridCtx.lineTo(canvasWidth, x);
         }
         this.gridCtx.globalAlpha = this.opacity;
         this.gridCtx.strokeStyle = 'black';

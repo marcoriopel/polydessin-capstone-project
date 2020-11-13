@@ -1,4 +1,12 @@
 import { Component } from '@angular/core';
+import {
+    DEFAULT_GRID_OPACITY,
+    DEFAULT_GRID_SIZE,
+    MAX_GRID_OPACITY,
+    MAX_GRID_SQUARE_SIZE,
+    MIN_GRID_OPACITY,
+    MIN_GRID_SQUARE_SIZE,
+} from '@app/ressources/global-variables/global-variables';
 import { GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -10,12 +18,12 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 })
 export class GridComponent {
     isEnabled: boolean = false;
-    minSquareSize: number = 1;
-    maxSquareSize: number = 200;
-    minOpacity: number = 0.1;
-    maxOpacity: number = 1;
-    currentSquareSize: number = 5;
-    currentOpacity: number = 1;
+    minSquareSize: number = MIN_GRID_SQUARE_SIZE;
+    maxSquareSize: number = MAX_GRID_SQUARE_SIZE;
+    minOpacity: number = MIN_GRID_OPACITY;
+    maxOpacity: number = MAX_GRID_OPACITY;
+    currentSquareSize: number = DEFAULT_GRID_SIZE;
+    currentOpacity: number = DEFAULT_GRID_OPACITY;
 
     constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService) {
         this.drawingService.gridSpacing = this.currentSquareSize;
