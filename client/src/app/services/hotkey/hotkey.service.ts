@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_NAME, SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
 
@@ -23,6 +23,7 @@ export class HotkeyService {
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['g', GRID_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
         ['o', this.sidebarElements.NEW_DRAWING_NAME],

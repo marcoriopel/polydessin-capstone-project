@@ -9,6 +9,7 @@ describe('EraserService', () => {
     let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let gridCanvasStub: HTMLCanvasElement;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -25,6 +26,7 @@ describe('EraserService', () => {
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -41,6 +43,8 @@ describe('EraserService', () => {
         service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
+
         strokeRectSpy = spyOn<any>(previewCtxStub, 'fillRect').and.callThrough();
 
         mouseEvent = {
@@ -133,9 +137,9 @@ describe('EraserService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
+        drawServiceSpy.gridCanvas.style.cursor = 'crosshair';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('none');
+        expect(gridCanvasStub.style.cursor).toEqual('none');
     });
 
     it(' should draw line on cursor leave of canvas', () => {

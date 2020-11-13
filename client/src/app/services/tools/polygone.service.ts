@@ -47,6 +47,10 @@ export class PolygoneService extends Tool {
         this.drawingService.baseCtx.lineJoin = 'miter';
     }
 
+    setCursor(): void {
+        this.drawingService.gridCanvas.style.cursor = 'crosshair';
+    }
+
     changeFillStyle(newFillStyle: number): void {
         this.fillStyle = newFillStyle;
     }

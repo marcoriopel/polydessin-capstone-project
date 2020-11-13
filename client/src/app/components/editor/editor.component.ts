@@ -63,6 +63,8 @@ export class EditorComponent implements AfterViewInit {
     onKeyDown(event: KeyboardEvent): void {
         if (this.shortcutsArray.includes(event.key.toString())) {
             this.hotkeyService.onKeyDown(event);
+        } else if (event.key.toString() === '+' || event.key.toString() === '-') {
+            this.toolSelectionService.currentToolKeyDown(event);
         } else {
             this.toolSelectionService.currentToolKeyDown(event);
         }
