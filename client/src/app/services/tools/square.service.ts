@@ -34,8 +34,12 @@ export class SquareService extends Tool {
 
     initialize(): void {
         this.mouseDown = false;
-        this.drawingService.previewCtx.lineCap = 'square';
-        this.drawingService.baseCtx.lineCap = 'square';
+        this.drawingService.previewCtx.lineJoin = 'miter';
+        this.drawingService.baseCtx.lineJoin = 'miter';
+    }
+
+    setCursor(): void {
+        this.drawingService.gridCanvas.style.cursor = 'crosshair';
     }
 
     setRectangleWidth(): void {
@@ -61,6 +65,7 @@ export class SquareService extends Tool {
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -69,6 +74,7 @@ export class SquareService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
+            this.drawingService.setIsToolInUse(false);
         }
     }
 
@@ -132,9 +138,15 @@ export class SquareService extends Tool {
             ctx.lineWidth = 1;
         }
         ctx.beginPath();
-        ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
-        if (rectangle.fillStyle !== FILL_STYLES.BORDER && rectangle.fillStyle !== FILL_STYLES.DASHED) {
-            ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+        if (rectangle.width > ctx.lineWidth && rectangle.height > ctx.lineWidth) {
+            rectangle.width -= ctx.lineWidth;
+            rectangle.height -= ctx.lineWidth;
+            rectangle.topLeftPoint.x += ctx.lineWidth / 2;
+            rectangle.topLeftPoint.y += ctx.lineWidth / 2;
+            ctx.rect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+            if (rectangle.fillStyle !== FILL_STYLES.BORDER && rectangle.fillStyle !== FILL_STYLES.DASHED) {
+                ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
+            }
         }
         ctx.stroke();
     }

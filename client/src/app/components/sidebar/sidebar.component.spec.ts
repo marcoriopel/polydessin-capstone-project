@@ -10,6 +10,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
@@ -21,13 +22,21 @@ describe('SidebarComponent', () => {
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
+    let undoRedoServiceSpy: SpyObj<UndoRedoService>;
+    let obsUndoButton: Subject<boolean>;
+    let obsRedoButton: Subject<boolean>;
 
     beforeEach(() => {
         obs = new Subject<string>();
+        obsUndoButton = new Subject<boolean>();
+        obsRedoButton = new Subject<boolean>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll']);
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', ['getUndoAvailability', 'getRedoAvailability']);
+        undoRedoServiceSpy.getUndoAvailability.and.returnValue(obsUndoButton.asObservable());
+        undoRedoServiceSpy.getRedoAvailability.and.returnValue(obsRedoButton.asObservable());
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningModal']);
 
         TestBed.configureTestingModule({
@@ -39,6 +48,7 @@ describe('SidebarComponent', () => {
                 { provide: NewDrawingService, useValue: newDrawingServiceSpy },
                 { provide: MatDialog, useValue: matdialogSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],
         }).compileComponents();
     });
@@ -52,6 +62,20 @@ describe('SidebarComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('cursor should be not-allowed if undo and redo are not available', () => {
+        obsRedoButton.next(false);
+        obsUndoButton.next(false);
+        expect(document.getElementById('undo')?.style.cursor).toEqual('not-allowed');
+        expect(document.getElementById('redo')?.style.cursor).toEqual('not-allowed');
+    });
+
+    it('cursor should be pointer if undo and redo are available', () => {
+        obsRedoButton.next(true);
+        obsUndoButton.next(true);
+        expect(document.getElementById('undo')?.style.cursor).toEqual('pointer');
+        expect(document.getElementById('redo')?.style.cursor).toEqual('pointer');
     });
 
     it('should call toolSelectionService.changeTool', () => {

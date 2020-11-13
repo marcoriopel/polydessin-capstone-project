@@ -24,14 +24,12 @@ describe('SavingComponent', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
     let imageObservable: Subject<void>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
-    // let canvasSpy: SpyObj<HTMLCanvasElement>;
     let baseCanvas: HTMLCanvasElement;
     let baseCtx: CanvasRenderingContext2D;
 
     beforeEach(async(() => {
         baseCanvas = document.createElement('canvas');
         baseCtx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
-        // canvasSpy = jasmine.createSpyObj('HTMLCanvasElement', ['toDataURL']);
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['saveConfirmSnackBar', 'saveErrorSnackBar']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);

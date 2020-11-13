@@ -15,6 +15,8 @@ describe('CircleService', () => {
     let mouseEvent: MouseEvent;
     let drawServiceSpy: SpyObj<DrawingService>;
     let baseCtxStub: CanvasRenderingContext2D;
+    let gridCanvasStub: HTMLCanvasElement;
+
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
     let colorPickerStub: ColorSelectionService;
@@ -29,8 +31,9 @@ describe('CircleService', () => {
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -46,6 +49,7 @@ describe('CircleService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -133,9 +137,9 @@ describe('CircleService', () => {
         expect(drawShapeSpy).toHaveBeenCalled();
     });
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it('should get number from calculation of circleWidth', () => {
@@ -241,7 +245,7 @@ describe('CircleService', () => {
             primaryColor: 'black',
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
-            radius: { x: 0, y: 0 },
+            radius: { x: 10, y: 10 },
             fillStyle: 1,
             firstPoint: { x: 0, y: 0 },
             lastPoint: { x: 0, y: 1 },
@@ -311,7 +315,7 @@ describe('CircleService', () => {
         service.fillStyle = FILL_STYLES.FILL;
         service.firstPoint = { x: 0, y: 0 };
         service.ellipseCenter = { x: 0, y: 0 };
-        service.lastPoint = { x: 0, y: 1 };
+        service.lastPoint = { x: 10, y: 11 };
         service.ellipseData = {
             type: 'ellipse',
             primaryColor: 'black',
@@ -332,7 +336,7 @@ describe('CircleService', () => {
     it('should call fill of circle if if last point is top left', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service.firstPoint = { x: 1, y: 1 };
+        service.firstPoint = { x: 10, y: 10 };
         service.ellipseCenter = { x: 0, y: 0 };
         service.lastPoint = { x: 0, y: 0 };
         service.ellipseData = {
@@ -355,15 +359,15 @@ describe('CircleService', () => {
     it('should call fill of circle if if last point is top right', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service.fillStyle = FILL_STYLES.FILL;
-        service.firstPoint = { x: 0, y: 1 };
+        service.firstPoint = { x: 0, y: 10 };
         service.ellipseCenter = { x: 0, y: 0 };
-        service.lastPoint = { x: 1, y: 0 };
+        service.lastPoint = { x: 10, y: 0 };
         service.ellipseData = {
             type: 'ellipse',
             primaryColor: 'black',
             secondaryColor: 'black',
             center: { x: 0, y: 0 },
-            radius: { x: 0, y: 0 },
+            radius: { x: 10, y: 10 },
             fillStyle: 1,
             firstPoint: { x: 0, y: 1 },
             lastPoint: { x: 1, y: 0 },

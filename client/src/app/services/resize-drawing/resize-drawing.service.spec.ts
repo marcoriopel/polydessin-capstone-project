@@ -4,18 +4,24 @@ import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Observable, Subject } from 'rxjs';
 import { ResizeDrawingService } from './resize-drawing.service';
 
 class DrawingServiceMock {
-    canvas: HTMLCanvasElement = document.createElement('canvas');
-    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
     baseCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridSpacing: number;
+    opacity: number;
+    isGridEnabled: boolean;
+    canvas: HTMLCanvasElement = document.createElement('canvas');
+    gridCanvas: HTMLCanvasElement;
+    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
+    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
+    isToolInUse: Subject<boolean> = new Subject<boolean>();
     imageData: ImageData;
     pixelData: Uint8ClampedArray;
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-
     constructor() {
         this.canvas.height = MINIMUM_CANVAS_HEIGHT;
         this.canvas.width = MINIMUM_CANVAS_WIDTH;
@@ -30,6 +36,8 @@ class DrawingServiceMock {
     isCanvasBlank(): boolean {
         return false;
     }
+
+    setGrid(): void {}
     updateStack(): void {}
     getPixelData(): Uint8ClampedArray {
         return this.pixelData;
@@ -41,6 +49,11 @@ class DrawingServiceMock {
     getPreviewData(): ImageData {
         return this.imageData;
     }
+    setIsToolInUse(): void {}
+    getIsToolInUse(): Observable<boolean> {
+        return this.isToolInUse.asObservable();
+    }
+    resetStack(): void {}
 }
 
 // tslint:disable: no-magic-numbers

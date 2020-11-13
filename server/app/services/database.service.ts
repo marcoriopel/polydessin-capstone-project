@@ -52,7 +52,7 @@ export class DatabaseService {
     }
 
     isValidData(dBData: DBData): boolean {
-        if (dBData.name.length === 0) {
+        if (!dBData.name.length) {
             return false;
         }
 

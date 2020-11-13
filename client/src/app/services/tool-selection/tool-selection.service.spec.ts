@@ -21,6 +21,7 @@ import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
@@ -39,6 +40,7 @@ class MockTool extends Tool {
 describe('ToolSelectionService', () => {
     let service: ToolSelectionService;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
+    let undoRedoServiceSpy: SpyObj<UndoRedoService>;
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
@@ -51,8 +53,9 @@ describe('ToolSelectionService', () => {
         squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['reset', 'initialize', 'setCursor', 'selectAll']);
         matdialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         newDrawingServiceSpy = jasmine.createSpyObj('NewDrawingService', ['openWarningModal']);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['openWarning', 'clearCanvas', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
+        undoRedoServiceSpy = jasmine.createSpyObj('UndoRedoService', ['undo', 'redo']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         eraserServiceMock = new MockTool(TOOL_NAMES.ERASER_TOOL_NAME);
         TestBed.configureTestingModule({
@@ -72,6 +75,7 @@ describe('ToolSelectionService', () => {
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
                 { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
+                { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],
         });
         service = TestBed.inject(ToolSelectionService);
@@ -138,10 +142,34 @@ describe('ToolSelectionService', () => {
     });
 
     it('should call select all of selection service on square call', () => {
-        const selectAllSPy = spyOn(service, 'selectAll');
+        const selectAllSpy = spyOn(service, 'selectAll');
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         obs.next(SIDEBAR_ELEMENTS.SELECT_ALL);
-        expect(selectAllSPy).toHaveBeenCalled();
+        expect(selectAllSpy).toHaveBeenCalled();
+    });
+
+    it('should call undo on call', () => {
+        const undoSpy = spyOn(service, 'undo');
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.UNDO);
+        expect(undoSpy).toHaveBeenCalled();
+    });
+
+    it('should call redo on call', () => {
+        const redoSpy = spyOn(service, 'redo');
+        hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
+        obs.next(SIDEBAR_ELEMENTS.REDO);
+        expect(redoSpy).toHaveBeenCalled();
+    });
+
+    it('should call undo of undo service on call', () => {
+        service.undo();
+        expect(undoRedoServiceSpy.undo).toHaveBeenCalled();
+    });
+
+    it('should call redo of redo service on call', () => {
+        service.redo();
+        expect(undoRedoServiceSpy.redo).toHaveBeenCalled();
     });
 
     it('selectAll should call the selectAll of square selection', () => {

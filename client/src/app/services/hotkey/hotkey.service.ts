@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_NAME, SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
 
@@ -17,11 +17,13 @@ export class HotkeyService {
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
+        ['3', this.toolNames.POLYGONE_TOOL_NAME],
         ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['g', GRID_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
@@ -29,17 +31,18 @@ export class HotkeyService {
         ['s', this.sidebarElements.SAVE_SERVER_NAME],
         ['e', this.sidebarElements.EXPORT_DRAWING_NAME],
         ['a', this.sidebarElements.SELECT_ALL],
+        ['z', this.sidebarElements.UNDO],
     ]);
-
-    constructor() {
-        this.isHotkeyEnabled = true;
-    }
+    keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
     onKeyDown(event: KeyboardEvent): void {
+        if (event.shiftKey || event.ctrlKey) event.preventDefault();
         if (!this.isHotkeyEnabled) return;
-        event.preventDefault();
         let keyName: string | undefined;
-        if (event.ctrlKey) {
+
+        if (event.shiftKey && event.ctrlKey) {
+            keyName = this.keysNeedShift.get(event.key.toString());
+        } else if (event.ctrlKey) {
             keyName = this.keysNeedCtrl.get(event.key.toString());
         } else {
             keyName = this.keyMapping.get(event.key.toString());

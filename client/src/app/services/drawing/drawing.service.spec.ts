@@ -119,4 +119,10 @@ describe('DrawingService', () => {
         service.getPreviewData();
         expect(imageDataSpy).toHaveBeenCalled();
     });
+
+    it('should set tool in use', () => {
+        const setSpy = spyOn(service.isToolInUse, 'next');
+        service.setIsToolInUse(true);
+        expect(setSpy).toHaveBeenCalled();
+    });
 });

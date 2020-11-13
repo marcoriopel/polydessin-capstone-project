@@ -22,7 +22,7 @@ describe('PipetteService', () => {
     const HEIGHT_ZOOM_CANVAS = 50;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'setIsToolInUse']);
 
         canvas = document.createElement('canvas');
         canvas.width = WIDTH_DRAWING_CANVAS;
@@ -124,11 +124,9 @@ describe('PipetteService', () => {
         const X = 25;
         const Y = 25;
         const imageData = copyctx.getImageData(X, Y, 1, 1);
-        console.log(imageData);
         service.drawOnZoom(mouseEventLeft);
 
         const zoomCtxData = service.zoomCtx.getImageData(zoomCanvasStud.width / 2, zoomCanvasStud.height / 2, 1, 1);
-        console.log(zoomCtxData);
         expect(zoomCtxData).toEqual(imageData);
     });
 

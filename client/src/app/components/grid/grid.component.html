@@ -1,0 +1,23 @@
+<div class="grid">
+    <div>
+        <h3>Grid Settings</h3>
+    </div>
+    <mat-checkbox (change)="changeGridView($event.checked)" [checked]="isEnabled">Afficher grille</mat-checkbox>
+    <app-slider
+        title="Grosseur Carrés"
+        [min]="minSquareSize"
+        [max]="maxSquareSize"
+        [step]="5"
+        [value]="currentSquareSize"
+        (valueChange)="changeGridSize($event)"
+    ></app-slider>
+    <app-slider
+        title="Opacité des lignes"
+        [min]="minOpacity"
+        [max]="maxOpacity"
+        [step]="0.1"
+        [value]="currentOpacity"
+        (valueChange)="changeOpacity($event)"
+    ></app-slider>
+</div>
+<hr />

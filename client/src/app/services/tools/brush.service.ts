@@ -22,6 +22,10 @@ export class BrushService extends Tool {
         this.clearPath();
     }
 
+    setCursor(): void {
+        this.drawingService.gridCanvas.style.cursor = 'crosshair';
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (event.button !== MouseButton.LEFT) {
             return;
@@ -33,6 +37,7 @@ export class BrushService extends Tool {
             this.pathData.push(this.mouseDownCoord);
             this.updateBrushData();
             this.drawLine(this.drawingService.previewCtx, this.brushData);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 
@@ -45,6 +50,7 @@ export class BrushService extends Tool {
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.applyPattern('none');
+            this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();
@@ -62,7 +68,6 @@ export class BrushService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
 
-            // On dessine sur le canvas de prévisualisation et on l'efface à chaque déplacement de la souris
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updateBrushData();
             this.drawLine(this.drawingService.previewCtx, this.brushData);
@@ -97,7 +102,6 @@ export class BrushService extends Tool {
             this.drawingService.baseCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
             this.drawingService.previewCtx.filter = 'url(/assets/patterns.svg#' + pattern + ')';
         }
-        // Les deux lignes ci-dessous servent a faire rafraichir les canvas pour appliquer le filtre
         this.drawingService.baseCtx.strokeRect(-this.drawingService.baseCtx.lineWidth, 0, 1, 0);
         this.drawingService.previewCtx.strokeRect(-this.drawingService.previewCtx.lineWidth, 0, 1, 0);
     }
