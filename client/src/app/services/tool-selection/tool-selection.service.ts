@@ -19,6 +19,7 @@ import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
+import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
@@ -37,6 +38,7 @@ export class ToolSelectionService {
         public hotkeyService: HotkeyService,
         public pencilService: PencilService,
         public brushService: BrushService,
+        public sprayService: SprayService,
         public squareService: SquareService,
         public circleService: CircleService,
         public lineService: LineService,
@@ -53,6 +55,7 @@ export class ToolSelectionService {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
             [TOOL_NAMES.BRUSH_TOOL_NAME, brushService],
+            [TOOL_NAMES.SPRAY_TOOL_NAME, sprayService],
             [TOOL_NAMES.SQUARE_TOOL_NAME, squareService],
             [TOOL_NAMES.CIRCLE_TOOL_NAME, circleService],
             [TOOL_NAMES.LINE_TOOL_NAME, lineService],
