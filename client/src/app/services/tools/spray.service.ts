@@ -16,6 +16,7 @@ export class SprayService extends Tool {
     mouseCoord: Vec2;
     minToolWidth: number = 5;
     width: number = this.minToolWidth;
+    dotWidth: number = 1;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -54,13 +55,17 @@ export class SprayService extends Tool {
             const angle = self.getRandomFloat(0, Math.PI * 2);
             const radius = self.getRandomFloat(0, self.width);
             ctx.globalAlpha = Math.random();
+            ctx.strokeStyle = self.colorSelectionService.primaryColor;
             ctx.fillStyle = self.colorSelectionService.primaryColor;
-            ctx.fillRect(
+            ctx.beginPath();
+            ctx.arc(
                 self.mouseCoord.x + radius * Math.cos(angle),
                 self.mouseCoord.y + radius * Math.sin(angle),
-                self.getRandomFloat(1, 2),
-                self.getRandomFloat(1, 2),
+                self.getRandomFloat(1, self.dotWidth),
+                0,
+                2 * Math.PI,
             );
+            ctx.fill();
         }
         if (!self.timeoutId) return;
         self.timeoutId = setTimeout(self.drawSpray, 50, self, ctx);
@@ -72,6 +77,10 @@ export class SprayService extends Tool {
 
     changeWidth(newWidth: number): void {
         this.width = newWidth;
+    }
+
+    changeDotWidth(newDotWidth: number): void {
+        this.dotWidth = newDotWidth;
     }
 
     reset(): void {
