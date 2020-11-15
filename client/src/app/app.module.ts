@@ -47,6 +47,7 @@ import { TypeOfFillSelectionComponent } from './components/tools/shared-Attribut
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
+import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 
 @NgModule({
     declarations: [
@@ -80,6 +81,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PolygoneAttributesComponent,
         SquareselectionAttributesComponent,
         CircleselectionAttributesComponent,
+        PenAttributesComponent,
     ],
     imports: [
         BrowserModule,
