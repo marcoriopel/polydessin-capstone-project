@@ -10,4 +10,6 @@
     >
     </app-slider>
     <app-slider title="Diamètre des gouttes" [min]="1" [max]="10" [step]="1" [value]="dropWidth" (valueChange)="changeDotWidth($event)"> </app-slider>
+    <app-slider title="Émission par seconde" [min]="10" [max]="50" [step]="1" [value]="sprayFrequency" (valueChange)="changeSprayFrequency($event)">
+    </app-slider>
 </div>

@@ -17,6 +17,7 @@ export class SprayService extends Tool {
     minToolWidth: number = 5;
     width: number = this.minToolWidth;
     dotWidth: number = 1;
+    sprayFrequency: number = 10;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -30,7 +31,7 @@ export class SprayService extends Tool {
         } else {
             this.mouseDown = true;
             this.mouseCoord = this.getPositionFromMouse(event);
-            this.timeoutId = setTimeout(this.drawSpray, 50, this, this.drawingService.previewCtx);
+            this.timeoutId = setTimeout(this.drawSpray, 1000 / this.sprayFrequency, this, this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
     }
@@ -68,7 +69,7 @@ export class SprayService extends Tool {
             ctx.fill();
         }
         if (!self.timeoutId) return;
-        self.timeoutId = setTimeout(self.drawSpray, 50, self, ctx);
+        self.timeoutId = setTimeout(self.drawSpray, 1000 / self.sprayFrequency, self, ctx);
     }
 
     getRandomFloat(min: number, max: number): number {
@@ -81,6 +82,10 @@ export class SprayService extends Tool {
 
     changeDotWidth(newDotWidth: number): void {
         this.dotWidth = newDotWidth;
+    }
+
+    changeSprayFrequency(newSprayFrequency: number): void {
+        this.sprayFrequency = newSprayFrequency;
     }
 
     reset(): void {
