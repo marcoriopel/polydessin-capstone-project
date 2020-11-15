@@ -88,7 +88,7 @@
 //             target,
 //         } as unknown) as InputEvent;
 
-//         const typeOfUrl = component.urlImage;
+//         const typeOfUrl = component.extension[value];
 //         const urlTest = component.filterCanvas.toDataURL(typeOfUrl);
 
 //         component.getImageUrl(event);
