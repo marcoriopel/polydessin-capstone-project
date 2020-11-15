@@ -1,0 +1,12 @@
+<div id="sprayAttributes">
+    <h2 class="toolName">{{ sprayService.name }}</h2>
+    <app-slider
+        title="Diamètre"
+        [min]="sprayService.minToolWidth"
+        [max]="sprayService.maxToolWidth"
+        [step]="1"
+        [value]="toolWidth"
+        (valueChange)="changeWidth($event)"
+    >
+    </app-slider>
+</div>

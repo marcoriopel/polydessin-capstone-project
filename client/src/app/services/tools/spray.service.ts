@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
@@ -9,9 +10,12 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
     providedIn: 'root',
 })
 export class SprayService extends Tool {
+    name: string = TOOL_NAMES.SPRAY_TOOL_NAME;
     density: number = 40;
     timeoutId: ReturnType<typeof setTimeout>;
     mouseCoord: Vec2;
+    minToolWidth: number = 5;
+    width: number = this.minToolWidth;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -48,7 +52,7 @@ export class SprayService extends Tool {
     drawSpray(self: SprayService, ctx: CanvasRenderingContext2D): void {
         for (let i = self.density; i--; ) {
             const angle = self.getRandomFloat(0, Math.PI * 2);
-            const radius = self.getRandomFloat(0, 30);
+            const radius = self.getRandomFloat(0, self.width);
             ctx.globalAlpha = Math.random();
             ctx.fillStyle = self.colorSelectionService.primaryColor;
             ctx.fillRect(
@@ -64,6 +68,10 @@ export class SprayService extends Tool {
 
     getRandomFloat(min: number, max: number): number {
         return Math.random() * (max - min) + min;
+    }
+
+    changeWidth(newWidth: number): void {
+        this.width = newWidth;
     }
 
     reset(): void {
