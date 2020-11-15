@@ -8,13 +8,20 @@ import { PenService } from '@app/services/tools/pen.service';
 })
 export class PenAttributesComponent {
     toolWidth: number;
+    angle: number;
 
     constructor(public penService: PenService) {
         this.toolWidth = penService.width;
+        this.angle = penService.angle;
     }
 
     changeWidth(newWidth: number): void {
         this.toolWidth = newWidth;
         this.penService.changeWidth(this.toolWidth);
+    }
+
+    changeAngle(newAngle: number): void {
+        this.angle = newAngle;
+        this.penService.changeAngle(this.angle);
     }
 }

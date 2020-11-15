@@ -13,6 +13,7 @@ export class PenService extends Tool {
     private pathData: Vec2[];
     name: string = TOOL_NAMES.PEN_TOOL_NAME;
     width: number = 1;
+    angle: number = 0;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -21,6 +22,10 @@ export class PenService extends Tool {
 
     changeWidth(newWidth: number): void {
         this.width = newWidth;
+    }
+
+    changeAngle(newAngle: number): void {
+        this.angle = newAngle;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -70,14 +75,19 @@ export class PenService extends Tool {
             const point = this.pathData[i];
             ctx.moveTo(lastPoint.x, lastPoint.y);
             ctx.lineTo(point.x, point.y);
+            const angleRadians = this.toRadians(this.angle);
             for (let j = 1; j <= this.width / 2; j++) {
-                ctx.moveTo(lastPoint.x - j, lastPoint.y - j);
-                ctx.lineTo(point.x - j, point.y - j);
-                ctx.moveTo(lastPoint.x + j, lastPoint.y + j);
-                ctx.lineTo(point.x + j, point.y + j);
+                ctx.moveTo(lastPoint.x - j * Math.sin(angleRadians), lastPoint.y - j * Math.cos(angleRadians));
+                ctx.lineTo(point.x - j * Math.sin(angleRadians), point.y - j * Math.cos(angleRadians));
+                ctx.moveTo(lastPoint.x + j * Math.sin(angleRadians), lastPoint.y + j * Math.cos(angleRadians));
+                ctx.lineTo(point.x + j * Math.sin(angleRadians), point.y + j * Math.cos(angleRadians));
             }
         }
         ctx.stroke();
+    }
+
+    toRadians(angle: number): number {
+        return angle * (Math.PI / 180);
     }
 
     private clearPath(): void {
