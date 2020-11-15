@@ -184,8 +184,7 @@ export class SelectionService extends Tool {
     strokeSelection(): void {}
 
     applyPreview(): void {
-        this.drawingService.baseCtx.drawImage(this.drawingService.previewCanvas, 0, 0);
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.drawingService.applyPreview();
         this.canvasData = this.drawingService.getCanvasData();
         this.updateSelectionData();
         this.drawingService.updateStack(this.selectionData);
