@@ -3,13 +3,7 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import {
-    ANGLE_HALF_TURN,
-    DASH_LENGTH,
-    DASH_SPACE_LENGTH,
-    MouseButton,
-    SELECTION_POINT_WIDTH,
-} from '@app/ressources/global-variables/global-variables';
+import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, SELECTION_POINT_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -227,9 +221,7 @@ export class SelectionService extends Tool {
             const rightX: number = this.selection.startingPoint.x + this.selection.width - SELECTION_POINT_WIDTH / 2;
 
             this.drawingService.previewCtx.save();
-            this.drawingService.previewCtx.translate(this.rotateService.calculateCenter().x, this.rotateService.calculateCenter().y);
-            this.drawingService.previewCtx.rotate(this.rotateService.rotation * (Math.PI / ANGLE_HALF_TURN));
-            this.drawingService.previewCtx.translate(-this.rotateService.calculateCenter().x, -this.rotateService.calculateCenter().y);
+            this.rotateService.rotatePreviewCanvas();
             this.drawingService.previewCtx.fillStyle = '#09acd9';
             this.drawingService.previewCtx.fillRect(leftX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
             this.drawingService.previewCtx.fillRect(middleX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);

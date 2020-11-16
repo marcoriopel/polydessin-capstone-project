@@ -19,7 +19,7 @@ export class RotateService {
     constructor(public drawingService: DrawingService) {}
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     selectionImageCtx: CanvasRenderingContext2D;
-    rotation: number = 0;
+    angle: number = 0;
     isRotationOver: boolean = true;
     isAltKeyDown: boolean = false;
     mouseWheel: boolean = false;
@@ -36,6 +36,10 @@ export class RotateService {
         this.selectionImageCtx = selectionImage.getContext('2d') as CanvasRenderingContext2D;
     }
 
+    changeAngle(angle: number): void {
+        this.angle = angle;
+    }
+
     onMouseWheel(event: WheelEvent): void {
         this.mouseWheel = true;
         this.isRotationOver = false;
@@ -45,17 +49,18 @@ export class RotateService {
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
-        this.drawOnPreviewCanvas(this.rotation, centerX, centerY);
-        this.rotateSelectedCanvas(this.rotation, centerX, centerY);
+        this.drawOnPreviewCanvas();
+        this.rotateSelectedCanvas(this.angle, centerX, centerY);
     }
 
     setAngleRotation(deltaAngle: number, event: WheelEvent): void {
         const delY = Math.abs(event.deltaY);
-        if (Math.abs(this.rotation) === MAX_ANGLE) {
-            this.rotation = 0;
+        if (Math.abs(this.angle) === MAX_ANGLE) {
+            this.angle = 0;
         }
-        this.rotation += (event.deltaY / delY) * deltaAngle;
+        this.angle += (event.deltaY / delY) * deltaAngle;
     }
+
     rotateSelectedCanvas(angle: number, centerX: number, centerY: number): void {
         this.selectionImageCtx.translate(centerX, centerY);
         this.selectionImageCtx.rotate(angle * (Math.PI / ANGLE_HALF_TURN));
@@ -69,11 +74,17 @@ export class RotateService {
         return centerSelection;
     }
 
-    drawOnPreviewCanvas(angle: number, centerX: number, centerY: number): void {
-        this.drawingService.previewCtx.save();
+    rotatePreviewCanvas(): void {
+        const centerX = this.calculateCenter().x;
+        const centerY = this.calculateCenter().y;
         this.drawingService.previewCtx.translate(centerX, centerY);
-        this.drawingService.previewCtx.rotate(angle * (Math.PI / ANGLE_HALF_TURN));
+        this.drawingService.previewCtx.rotate(this.angle * (Math.PI / ANGLE_HALF_TURN));
         this.drawingService.previewCtx.translate(-centerX, -centerY);
+    }
+
+    drawOnPreviewCanvas(): void {
+        this.drawingService.previewCtx.save();
+        this.rotatePreviewCanvas();
         this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
         this.drawingService.previewCtx.restore();
     }
@@ -98,7 +109,7 @@ export class RotateService {
 
     restoreSelection(): void {
         this.isRotationOver = true;
-        this.rotation = 0;
+        this.angle = 0;
     }
 
     onKeyDown(event: KeyboardEvent): void {

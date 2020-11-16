@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
-import { ANGLE_HALF_TURN } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -45,10 +44,7 @@ export class SquareSelectionService extends SelectionService {
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
-            this.drawingService.previewCtx.translate(this.rotateService.calculateCenter().x, this.rotateService.calculateCenter().y);
-            this.drawingService.previewCtx.rotate(this.rotateService.rotation * (Math.PI / ANGLE_HALF_TURN));
-            this.drawingService.previewCtx.translate(-this.rotateService.calculateCenter().x, -this.rotateService.calculateCenter().y);
-
+            this.rotateService.rotatePreviewCanvas();
             this.drawingService.previewCtx.strokeRect(
                 this.selection.startingPoint.x,
                 this.selection.startingPoint.y,

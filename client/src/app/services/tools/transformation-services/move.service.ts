@@ -123,12 +123,8 @@ export class MoveService {
     printSelectionOnPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
-        const centerX = this.rotateService.calculateCenter().x;
-        const centerY = this.rotateService.calculateCenter().y;
         this.drawingService.previewCtx.save();
-        this.drawingService.previewCtx.translate(centerX, centerY);
-        this.drawingService.previewCtx.rotate(this.rotateService.rotation * (Math.PI / 180));
-        this.drawingService.previewCtx.translate(-centerX, -centerY);
+        this.rotateService.rotatePreviewCanvas();
         this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
         this.drawingService.previewCtx.restore();
     }
