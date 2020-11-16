@@ -50,7 +50,7 @@ export class SprayService extends Tool {
         }
     }
 
-    onMouseUp(event: MouseEvent): void {
+    onMouseUp(): void {
         if (this.mouseDown) {
             clearTimeout(this.timeoutId);
             this.drawingService.applyPreview();
