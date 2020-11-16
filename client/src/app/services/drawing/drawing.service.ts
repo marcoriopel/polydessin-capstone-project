@@ -69,6 +69,11 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
+    applyPreview(): void {
+        this.baseCtx.drawImage(this.previewCanvas, 0, 0);
+        this.clearCanvas(this.previewCtx);
+    }
+
     updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection): void {
         this.undoStack.push(modification);
         if (this.redoStack.length) {
