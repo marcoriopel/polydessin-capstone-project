@@ -21,7 +21,6 @@ export class PenService extends Tool {
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-        this.clearPath();
     }
 
     changeWidth(newWidth: number): void {
@@ -44,7 +43,6 @@ export class PenService extends Tool {
             return;
         } else {
             this.mouseDown = true;
-            this.clearPath();
             this.lastPoint = this.getPositionFromMouse(event);
             this.currentPoint = this.getPositionFromMouse(event);
             this.drawPenStroke(this.drawingService.previewCtx);
@@ -59,7 +57,6 @@ export class PenService extends Tool {
             this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
-        this.clearPath();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -118,9 +115,5 @@ export class PenService extends Tool {
 
     getAngle(): Observable<number> {
         return this.angleObservable;
-    }
-
-    private clearPath(): void {
-        this.pathData = [];
     }
 }
