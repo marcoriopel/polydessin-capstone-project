@@ -21,7 +21,7 @@ describe('SelectionService', () => {
     let underlyingServiceSpy: SpyObj<SquareService>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['printSelectionOnPreview', 'onMouseDown', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect']);
@@ -495,13 +495,12 @@ describe('SelectionService', () => {
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 
-    it('applyPreview should draw on baseCtx and clear preview', () => {
+    it('applyPreview should draw on baseCtx', () => {
         const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
 
         service.applyPreview();
 
-        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+        expect(drawingServiceSpy.applyPreview).toHaveBeenCalled();
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 

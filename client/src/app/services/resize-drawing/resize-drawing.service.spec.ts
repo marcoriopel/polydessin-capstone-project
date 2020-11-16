@@ -54,6 +54,7 @@ class DrawingServiceMock {
         return this.isToolInUse.asObservable();
     }
     resetStack(): void {}
+    applyPreview(): void {}
 }
 
 // tslint:disable: no-magic-numbers
