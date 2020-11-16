@@ -44,10 +44,10 @@ import { PipetteAttributesComponent } from './components/tools/pipette-attribute
 import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
+import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
-import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 
 @NgModule({
     declarations: [
