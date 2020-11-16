@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
-import { RotateService } from '../transformation-services/rotate.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { CircleSelectionService } from './circle-selection.service';
 
 describe('CircleSelectionService', () => {

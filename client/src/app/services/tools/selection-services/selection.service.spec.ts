@@ -5,7 +5,7 @@ import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/glo
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
-import { RotateService } from '../transformation-services/rotate.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
