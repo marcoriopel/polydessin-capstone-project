@@ -100,7 +100,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
-        // const sendNum = 0;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
