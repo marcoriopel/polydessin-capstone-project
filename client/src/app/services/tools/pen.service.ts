@@ -11,12 +11,13 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class PenService extends Tool {
-    private pathData: Vec2[];
     name: string = TOOL_NAMES.PEN_TOOL_NAME;
     width: number = 1;
     angle: number = 0;
     angleObservable: Subject<number> = new Subject<number>();
     altKeyPressed: boolean = false;
+    lastPoint: Vec2;
+    currentPoint: Vec2;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -44,8 +45,8 @@ export class PenService extends Tool {
         } else {
             this.mouseDown = true;
             this.clearPath();
-            this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
+            this.lastPoint = this.getPositionFromMouse(event);
+            this.currentPoint = this.getPositionFromMouse(event);
             this.drawPenStroke(this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
@@ -53,9 +54,7 @@ export class PenService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawPenStroke(this.drawingService.baseCtx);
+            this.drawingService.applyPreview();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(false);
         }
@@ -65,9 +64,8 @@ export class PenService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.lastPoint = this.currentPoint;
+            this.currentPoint = this.getPositionFromMouse(event);
             this.drawPenStroke(this.drawingService.previewCtx);
         }
     }
@@ -100,18 +98,16 @@ export class PenService extends Tool {
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.beginPath();
-        for (let i = 1; i < this.pathData.length; i++) {
-            const lastPoint = this.pathData[i - 1];
-            const point = this.pathData[i];
-            ctx.moveTo(lastPoint.x, lastPoint.y);
-            ctx.lineTo(point.x, point.y);
-            const angleRadians = this.toRadians(this.angle);
-            for (let j = 1; j <= this.width / 2; j++) {
-                ctx.moveTo(lastPoint.x - j * Math.sin(angleRadians), lastPoint.y - j * Math.cos(angleRadians));
-                ctx.lineTo(point.x - j * Math.sin(angleRadians), point.y - j * Math.cos(angleRadians));
-                ctx.moveTo(lastPoint.x + j * Math.sin(angleRadians), lastPoint.y + j * Math.cos(angleRadians));
-                ctx.lineTo(point.x + j * Math.sin(angleRadians), point.y + j * Math.cos(angleRadians));
-            }
+        const lastPoint = this.lastPoint;
+        const point = this.currentPoint;
+        ctx.moveTo(lastPoint.x, lastPoint.y);
+        ctx.lineTo(point.x, point.y);
+        const angleRadians = this.toRadians(this.angle);
+        for (let j = 1; j <= this.width / 2; j++) {
+            ctx.moveTo(lastPoint.x - j * Math.sin(angleRadians), lastPoint.y - j * Math.cos(angleRadians));
+            ctx.lineTo(point.x - j * Math.sin(angleRadians), point.y - j * Math.cos(angleRadians));
+            ctx.moveTo(lastPoint.x + j * Math.sin(angleRadians), lastPoint.y + j * Math.cos(angleRadians));
+            ctx.lineTo(point.x + j * Math.sin(angleRadians), point.y + j * Math.cos(angleRadians));
         }
         ctx.stroke();
     }
