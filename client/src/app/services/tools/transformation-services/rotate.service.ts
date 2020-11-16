@@ -103,6 +103,7 @@ export class RotateService {
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Alt' && !this.isAltKeyDown) {
+            event.preventDefault();
             this.isAltKeyDown = true;
             this.deltaRotation = ANGLE_ROTATION_SELECTION_ALT;
         }
