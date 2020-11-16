@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import {
+    MAX_SPRAY_DOT_WIDTH,
+    MAX_SPRAY_FREQUENCY,
+    MIN_SPRAY_DOT_WIDTH,
+    MIN_SPRAY_FREQUENCY,
+    MIN_SPRAY_WIDTH,
+    MouseButton,
+    ONE_SECOND,
+    SPRAY_DENSITY,
+} from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -11,13 +20,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class SprayService extends Tool {
     name: string = TOOL_NAMES.SPRAY_TOOL_NAME;
-    density: number = 40;
+    density: number = SPRAY_DENSITY;
+    minDotWidth: number = MIN_SPRAY_DOT_WIDTH;
+    maxDotWidth: number = MAX_SPRAY_DOT_WIDTH;
+    minFrequency: number = MIN_SPRAY_FREQUENCY;
+    maxFrequency: number = MAX_SPRAY_FREQUENCY;
+    minToolWidth: number = MIN_SPRAY_WIDTH;
+
     timeoutId: ReturnType<typeof setTimeout>;
     mouseCoord: Vec2;
-    minToolWidth: number = 5;
     width: number = this.minToolWidth;
-    dotWidth: number = 1;
-    sprayFrequency: number = 10;
+    dotWidth: number = this.minDotWidth;
+    sprayFrequency: number = this.minFrequency;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -31,7 +45,7 @@ export class SprayService extends Tool {
         } else {
             this.mouseDown = true;
             this.mouseCoord = this.getPositionFromMouse(event);
-            this.timeoutId = setTimeout(this.drawSpray, 1000 / this.sprayFrequency, this, this.drawingService.previewCtx);
+            this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
     }
@@ -69,7 +83,7 @@ export class SprayService extends Tool {
             ctx.fill();
         }
         if (!self.timeoutId) return;
-        self.timeoutId = setTimeout(self.drawSpray, 1000 / self.sprayFrequency, self, ctx);
+        self.timeoutId = setTimeout(self.drawSpray, ONE_SECOND / self.sprayFrequency, self, ctx);
     }
 
     getRandomFloat(min: number, max: number): number {
