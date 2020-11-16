@@ -28,7 +28,10 @@ export const CONFIRM_KEY_PRESS_DURATION = 500;
 export const KEY_PRESS_INTERVAL_DURATION = 100;
 export const SELECTION_MOVE_STEP_SIZE = 3;
 export const LINE_WIDTH_POLYGONE_CORRECTION = 1.4;
-
+export const ANGLE_ROTATION_SELECTION = 15;
+export const ANGLE_HALF_TURN = 180;
+export const MAX_ANGLE = 360;
+export const ANGLE_ROTATION_SELECTION_ALT = 1;
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;

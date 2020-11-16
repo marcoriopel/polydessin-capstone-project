@@ -3,6 +3,7 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { RotateService } from './rotate.service';
 
 @Injectable({
     providedIn: 'root',
@@ -20,7 +21,7 @@ export class MoveService {
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
-    constructor(public drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
@@ -122,7 +123,14 @@ export class MoveService {
     printSelectionOnPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
+        const centerX = this.rotateService.calculateCenter().x;
+        const centerY = this.rotateService.calculateCenter().y;
+        this.drawingService.previewCtx.save();
+        this.drawingService.previewCtx.translate(centerX, centerY);
+        this.drawingService.previewCtx.rotate(this.rotateService.rotation * (Math.PI / 180));
+        this.drawingService.previewCtx.translate(-centerX, -centerY);
         this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        this.drawingService.previewCtx.restore();
     }
 
     private move(self: MoveService): void {

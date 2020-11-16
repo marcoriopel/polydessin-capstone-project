@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
+import { ANGLE_HALF_TURN } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -11,8 +13,13 @@ import { SelectionService } from './selection.service';
 })
 export class CircleSelectionService extends SelectionService {
     name: string = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
-    constructor(drawingService: DrawingService, public circleService: CircleService, public moveService: MoveService) {
-        super(drawingService, moveService);
+    constructor(
+        drawingService: DrawingService,
+        public circleService: CircleService,
+        public moveService: MoveService,
+        public rotateService: RotateService,
+    ) {
+        super(drawingService, moveService, rotateService);
         super.underlyingService = circleService;
     }
 
@@ -38,11 +45,16 @@ export class CircleSelectionService extends SelectionService {
             selection.height,
         );
         this.moveService.initialize(selection, this.selectionImage);
+        this.rotateService.initialize(selection, this.selectionImage);
     }
 
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.beginPath();
+            this.drawingService.previewCtx.save();
+            this.drawingService.previewCtx.translate(this.rotateService.calculateCenter().x, this.rotateService.calculateCenter().y);
+            this.drawingService.previewCtx.rotate(this.rotateService.rotation * (Math.PI / ANGLE_HALF_TURN));
+            this.drawingService.previewCtx.translate(-this.rotateService.calculateCenter().x, -this.rotateService.calculateCenter().y);
             this.drawingService.previewCtx.ellipse(
                 this.selection.startingPoint.x + this.selection.width / 2,
                 this.selection.startingPoint.y + this.selection.height / 2,
@@ -58,6 +70,7 @@ export class CircleSelectionService extends SelectionService {
                 this.selection.width,
                 this.selection.height,
             );
+            this.drawingService.previewCtx.restore();
             this.drawingService.previewCtx.stroke();
         }
     }

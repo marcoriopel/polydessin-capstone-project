@@ -161,4 +161,8 @@ export class ToolSelectionService {
     currentToolMouseEnter(): void {
         this.currentTool.onMouseEnter();
     }
+
+    currentToolMouseWheel(event: WheelEvent): void {
+        this.currentTool.onMouseWheel(event);
+    }
 }
