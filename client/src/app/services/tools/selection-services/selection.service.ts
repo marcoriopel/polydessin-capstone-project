@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
+import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, SELECTION_POINT_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,6 +26,9 @@ export class SelectionService extends Tool {
     selectionData: Selection;
     canvasData: ImageData;
     isNewSelection: boolean = false;
+    isMagnetism: boolean = true;
+    gridSpacing: number = 20;
+    mouseDownCoord: Vec2 = { x: 0, y: 0 };
 
     constructor(public drawingService: DrawingService, public moveService: MoveService) {
         super(drawingService);
@@ -37,6 +41,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.mouseDownCoord.x = event.x;
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true;
@@ -49,6 +54,7 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.underlyingService.onMouseDown(event);
         } else {
+            this.mouseDownCoord.y = event.y;
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
         }
@@ -86,8 +92,46 @@ export class SelectionService extends Tool {
             this.underlyingService.onMouseMove(event);
             this.underlyingService.fillStyle = currentFillStyle;
         } else if (this.transormation === 'move') {
-            this.moveService.onMouseMove(event);
+            const translationX = event.movementX;
+            const translationY = event.movementY;
+            if (this.isMagnetism) {
+                console.log('MouseEvent: ' + event.x);
+                console.log('mouseDownCoord: ' + this.mouseDownCoord.x);
+                const mousePosX = event.x - this.mouseDownCoord.x;
+                console.log(mousePosX);
+                // const mousePosY = event.y - this.mouseDownCoord.y;
+                this.onMouseMoveMagnetism(mousePosX, translationY);
+            } else {
+                this.moveService.onMouseMove(translationX, translationY);
+            }
         }
+    }
+
+    onMouseMoveMagnetism(movementX: number, movementY: number): void {
+        const topLeftX = this.selection.startingPoint.x + movementX;
+        const lowestXDistance = topLeftX % this.gridSpacing;
+        let gridCoordX = 0;
+        if (lowestXDistance > this.gridSpacing / 2) {
+            gridCoordX = topLeftX + this.gridSpacing - lowestXDistance;
+            console.log('Inside coord:' + this.mouseDownCoord.x);
+        } else {
+            gridCoordX = topLeftX - lowestXDistance;
+            console.log('Inside coord:' + this.mouseDownCoord.x);
+        }
+        const changeX = gridCoordX - this.selection.startingPoint.x;
+        this.mouseDownCoord.x = this.mouseDownCoord.x + changeX;
+
+        // const topLeftY = this.selection.startingPoint.y + movementY;
+        // const lowestYDistance = topLeftY % this.gridSpacing;
+        // let gridCoordY = 0;
+        // if (lowestYDistance > this.gridSpacing / 2) {
+        //     gridCoordY = topLeftY + this.gridSpacing - lowestYDistance;
+        //     this.mouseDownCoord.y = topLeftY + this.gridSpacing - lowestYDistance;
+        // } else {
+        //     gridCoordY = topLeftY - lowestYDistance;
+        // }
+        // const changeY = gridCoordY - this.selection.startingPoint.y;
+        this.moveService.onMouseMove(changeX, movementY);
     }
 
     onKeyDown(event: KeyboardEvent): void {

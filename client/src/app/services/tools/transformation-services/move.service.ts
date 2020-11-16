@@ -35,9 +35,9 @@ export class MoveService {
         this.isTransformationOver = false;
     }
 
-    onMouseMove(event: MouseEvent): void {
-        this.selection.startingPoint.x += event.movementX;
-        this.selection.startingPoint.y += event.movementY;
+    onMouseMove(movementX: number, movementY: number): void {
+        this.selection.startingPoint.x += movementX;
+        this.selection.startingPoint.y += movementY;
         this.printSelectionOnPreview();
     }
 
