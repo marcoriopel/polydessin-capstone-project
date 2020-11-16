@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { Vec2 } from '@app/classes/vec2';
-import {
-    ANGLE_HALF_TURN,
-    ANGLE_ROTATION_SELECTION,
-    ANGLE_ROTATION_SELECTION_ALT,
-    MAX_ANGLE,
-} from '@app/ressources/global-variables/global-variables';
+import { ANGLE_HALF_TURN, MAX_ANGLE, ROTATION_STEP, ROTATION_STEP_ALT } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -23,7 +18,7 @@ export class RotateService {
     isRotationOver: boolean = true;
     isAltKeyDown: boolean = false;
     mouseWheel: boolean = false;
-    deltaRotation: number = ANGLE_ROTATION_SELECTION;
+    deltaRotation: number = ROTATION_STEP;
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
@@ -40,7 +35,7 @@ export class RotateService {
         this.angle = angle;
     }
 
-    onMouseWheel(event: WheelEvent): void {
+    onWheelEvent(event: WheelEvent): void {
         this.mouseWheel = true;
         this.isRotationOver = false;
         const centerX = this.calculateCenter().x;
@@ -116,14 +111,14 @@ export class RotateService {
         if (event.key === 'Alt' && !this.isAltKeyDown) {
             event.preventDefault();
             this.isAltKeyDown = true;
-            this.deltaRotation = ANGLE_ROTATION_SELECTION_ALT;
+            this.deltaRotation = ROTATION_STEP_ALT;
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
         if (this.isAltKeyDown && event.key === 'Alt') {
             this.isAltKeyDown = false;
-            this.deltaRotation = ANGLE_ROTATION_SELECTION;
+            this.deltaRotation = ROTATION_STEP;
         }
     }
 }

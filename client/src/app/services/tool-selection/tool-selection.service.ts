@@ -14,6 +14,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
+import { PenService } from '@app/services/tools/pen.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
@@ -37,6 +38,7 @@ export class ToolSelectionService {
         public dialog: MatDialog,
         public hotkeyService: HotkeyService,
         public pencilService: PencilService,
+        public penService: PenService,
         public brushService: BrushService,
         public sprayService: SprayService,
         public squareService: SquareService,
@@ -54,6 +56,7 @@ export class ToolSelectionService {
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
+            [TOOL_NAMES.PEN_TOOL_NAME, penService],
             [TOOL_NAMES.BRUSH_TOOL_NAME, brushService],
             [TOOL_NAMES.SPRAY_TOOL_NAME, sprayService],
             [TOOL_NAMES.SQUARE_TOOL_NAME, squareService],
@@ -165,7 +168,7 @@ export class ToolSelectionService {
         this.currentTool.onMouseEnter();
     }
 
-    currentToolMouseWheel(event: WheelEvent): void {
-        this.currentTool.onMouseWheel(event);
+    currentToolWheelEvent(event: WheelEvent): void {
+        this.currentTool.onWheelEvent(event);
     }
 }

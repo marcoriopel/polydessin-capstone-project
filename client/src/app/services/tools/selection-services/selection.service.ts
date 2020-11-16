@@ -234,9 +234,9 @@ export class SelectionService extends Tool {
         }
     }
 
-    onMouseWheel(event: WheelEvent): void {
+    onWheelEvent(event: WheelEvent): void {
         if (!this.isSelectionOver) {
-            this.rotateService.onMouseWheel(event);
+            this.rotateService.onWheelEvent(event);
             this.strokeSelection();
             this.setSelectionPoint();
         }

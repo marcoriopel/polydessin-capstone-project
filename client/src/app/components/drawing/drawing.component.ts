@@ -65,7 +65,7 @@ export class DrawingComponent implements AfterViewInit {
     }
     @HostListener('mousewheel', ['$event'])
     onMouseWheel(event: WheelEvent): void {
-        this.toolSelectionService.currentToolMouseWheel(event);
+        this.toolSelectionService.currentToolWheelEvent(event);
     }
 
     get width(): number {
