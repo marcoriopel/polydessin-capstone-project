@@ -8,12 +8,37 @@ import { Observable, Subject } from 'rxjs';
 })
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridSpacing: number;
+    opacity: number;
+    isGridEnabled: boolean;
     canvas: HTMLCanvasElement;
+    gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
+
+    setGrid(): void {
+        this.clearCanvas(this.gridCtx);
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
+        this.gridCtx.beginPath();
+        for (let x = 0; x <= canvasWidth; x += this.gridSpacing) {
+            this.gridCtx.moveTo(x, 0);
+            this.gridCtx.lineTo(x, canvasHeight);
+        }
+
+        for (let x = 0; x <= canvasHeight; x += this.gridSpacing) {
+            this.gridCtx.moveTo(0, x);
+            this.gridCtx.lineTo(canvasWidth, x);
+        }
+        this.gridCtx.globalAlpha = this.opacity;
+        this.gridCtx.strokeStyle = 'black';
+        this.gridCtx.closePath();
+        this.gridCtx.stroke();
+    }
 
     setIsToolInUse(isInUse: boolean): void {
         this.isToolInUse.next(isInUse);
@@ -28,6 +53,7 @@ export class DrawingService {
     }
 
     initializeBaseCanvas(): void {
+        if (this.isGridEnabled) this.setGrid();
         this.baseCtx.fillStyle = 'white';
         this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
@@ -41,6 +67,11 @@ export class DrawingService {
         blankCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         return context.canvas.toDataURL() === blank.toDataURL();
+    }
+
+    applyPreview(): void {
+        this.baseCtx.drawImage(this.previewCanvas, 0, 0);
+        this.clearCanvas(this.previewCtx);
     }
 
     updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection): void {

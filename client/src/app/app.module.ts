@@ -27,6 +27,7 @@ import { DrawingComponent } from './components/drawing/drawing.component';
 import { EditorComponent } from './components/editor/editor.component';
 import { ExportComponent } from './components/export/export.component';
 import { GeneralDetailComponent } from './components/general-detail/general-detail.component';
+import { GridComponent } from './components/grid/grid.component';
 import { LoadSelectedDrawingAlertComponent } from './components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MainPageComponent } from './components/main-page/main-page.component';
 import { NewDrawingModalComponent } from './components/new-drawing-modal/new-drawing-modal.component';
@@ -43,6 +44,7 @@ import { PipetteAttributesComponent } from './components/tools/pipette-attribute
 import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
+import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
@@ -50,6 +52,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
 @NgModule({
     declarations: [
         AppComponent,
+        GridComponent,
         EditorComponent,
         SidebarComponent,
         DrawingComponent,
@@ -78,6 +81,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PolygoneAttributesComponent,
         SquareselectionAttributesComponent,
         CircleselectionAttributesComponent,
+        SprayAttributesComponent,
     ],
     imports: [
         BrowserModule,

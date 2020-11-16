@@ -12,6 +12,7 @@ describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
     let previewCanvasStub: HTMLCanvasElement;
+    let gridCanvasStub: HTMLCanvasElement;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -24,6 +25,7 @@ describe('LineService', () => {
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
@@ -44,6 +46,7 @@ describe('LineService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -57,9 +60,9 @@ describe('LineService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it('should not set isDrawing to true if mouse button is not left on mouse up', () => {

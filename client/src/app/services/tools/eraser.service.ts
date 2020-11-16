@@ -22,7 +22,7 @@ export class EraserService extends Tool {
     }
 
     setCursor(): void {
-        this.drawingService.previewCanvas.style.cursor = 'none';
+        this.drawingService.gridCanvas.style.cursor = 'none';
     }
 
     onMouseDown(event: MouseEvent): void {
