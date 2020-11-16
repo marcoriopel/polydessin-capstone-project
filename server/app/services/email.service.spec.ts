@@ -1,16 +1,17 @@
-// import { expect } from 'chai';
+// // tslint:disable: no-any no-string-literal
 
-// import { EmailService } from './email.service';
+// import chai from 'chai';
+// import express from 'express';
+// import { myContainer } from '../inversify.config';
+// import { EmailService } from '../services/email.service';
+// import { TYPES } from '../types';
 
-// // describe('EmailService', () => {
-// //     let service: EmailService;
+// describe('emailservice', () => {
+// 	let app: express.Express;
+// 	let email: EmailService;
 
-// //     beforeEach(() => {
-// //         TestBed.configureTestingModule({});
-// //         service = TestBed.inject(EmailService);
-// //     });
-
-// //     it('should be created', () => {
-// //         expect(service).toBeTruthy();
-// //     });
-// // });
+// 	before(() => {
+// 		app = express();
+// 		email = myContainer.get<EmailService>(TYPES.EmailService);
+//   });
+// });

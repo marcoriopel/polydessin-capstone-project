@@ -19,3 +19,6 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
     container.bind(TYPES.EmailService).to(EmailService);
     return container;
 };
+const myContainer = new Container();
+
+export { myContainer };
