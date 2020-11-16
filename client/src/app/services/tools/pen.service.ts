@@ -64,6 +64,11 @@ export class PenService extends Tool {
         }
     }
 
+    onWheelEvent(event: WheelEvent): void {
+        const newAngle = this.angle + (event.deltaY / 100) * 15;
+        this.changeAngle(newAngle);
+    }
+
     drawPenStroke(ctx: CanvasRenderingContext2D): void {
         ctx.lineWidth = 2;
         ctx.strokeStyle = this.colorSelectionService.primaryColor;
