@@ -35,6 +35,15 @@ export const MAX_GRID_OPACITY = 1;
 export const DEFAULT_GRID_SIZE = 5;
 export const DEFAULT_GRID_OPACITY = 1;
 
+// constants for spray service
+export const SPRAY_DENSITY = 40;
+export const MIN_SPRAY_WIDTH = 5;
+export const MIN_SPRAY_DOT_WIDTH = 1;
+export const MAX_SPRAY_DOT_WIDTH = 10;
+export const MIN_SPRAY_FREQUENCY = 10;
+export const MAX_SPRAY_FREQUENCY = 50;
+export const ONE_SECOND = 1000;
+
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;
@@ -43,6 +52,7 @@ export const MAX_NAME_LENGTH = 15;
 export const SELECTION_POINT_WIDTH = 6;
 export const MAX_NUMBER_TAG = 5;
 export const MAX_OPACITY_RGBA = 255;
+
 export enum Quadrant {
     TOP_RIGHT = 0,
     TOP_LEFT = 1,

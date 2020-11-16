@@ -14,6 +14,7 @@ export class HotkeyService {
     keyMapping: Map<string, string> = new Map([
         ['c', this.toolNames.PENCIL_TOOL_NAME],
         ['w', this.toolNames.BRUSH_TOOL_NAME],
+        ['a', this.toolNames.SPRAY_TOOL_NAME],
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
