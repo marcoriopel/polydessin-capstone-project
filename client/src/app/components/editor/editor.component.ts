@@ -27,7 +27,7 @@ export class EditorComponent implements AfterViewInit {
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
 
-    shortcutsArray: string[] = ['c', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z'];
+    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z'];
 
     constructor(
         public hotkeyService: HotkeyService,
@@ -84,5 +84,10 @@ export class EditorComponent implements AfterViewInit {
     onMouseUp(event: MouseEvent): void {
         this.resizeDrawingService.onMouseUp();
         this.previewDiv.style.display = 'none';
+    }
+
+    @HostListener('wheel', ['$event'])
+    onWheelEvent(event: WheelEvent): void {
+        this.toolSelectionService.currentToolWheelEvent(event);
     }
 }

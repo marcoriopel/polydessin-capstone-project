@@ -13,6 +13,7 @@ export class HotkeyService {
     isHotkeyEnabled: boolean = true;
     keyMapping: Map<string, string> = new Map([
         ['c', this.toolNames.PENCIL_TOOL_NAME],
+        ['p', this.toolNames.PEN_TOOL_NAME],
         ['w', this.toolNames.BRUSH_TOOL_NAME],
         ['a', this.toolNames.SPRAY_TOOL_NAME],
         ['1', this.toolNames.SQUARE_TOOL_NAME],

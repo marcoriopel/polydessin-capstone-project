@@ -44,6 +44,10 @@ export const MIN_SPRAY_FREQUENCY = 10;
 export const MAX_SPRAY_FREQUENCY = 50;
 export const ONE_SECOND = 1000;
 
+// constants for pen service
+export const DELTA_Y_BASIC_VALUE = 100;
+export const ROTATION_STEP = 15;
+
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;
 export const MIN_SIDES = 3;
 export const MAX_SIDES = 12;

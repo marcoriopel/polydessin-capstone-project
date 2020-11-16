@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { Pencil } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DEGREES_180, DELTA_Y_BASIC_VALUE, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -10,22 +9,23 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class PencilService extends Tool {
+export class PenService extends Tool {
     private pathData: Vec2[];
-    private pencilData: Pencil;
-    name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
+    name: string = TOOL_NAMES.PEN_TOOL_NAME;
     width: number = 1;
+    angle: number = 0;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
         this.clearPath();
     }
 
-    onMouseLeave(): void {
-        this.updatePencilData();
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
-        this.clearPath();
+    changeWidth(newWidth: number): void {
+        this.width = newWidth;
+    }
+
+    changeAngle(newAngle: number): void {
+        this.angle = newAngle;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -38,8 +38,7 @@ export class PencilService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pathData.push(this.mouseDownCoord);
-            this.updatePencilData();
-            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawPenStroke(this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
     }
@@ -48,9 +47,7 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
-            this.updatePencilData();
-            this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
-            this.drawingService.updateStack(this.pencilData);
+            this.drawPenStroke(this.drawingService.baseCtx);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(false);
         }
@@ -63,34 +60,39 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pathData.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updatePencilData();
-            this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
+            this.drawPenStroke(this.drawingService.previewCtx);
         }
     }
 
-    drawPencilStroke(ctx: CanvasRenderingContext2D, pencil: Pencil): void {
-        ctx.lineWidth = pencil.lineWidth;
-        ctx.strokeStyle = pencil.primaryColor;
+    onWheelEvent(event: WheelEvent): void {
+        const newAngle = this.angle + (event.deltaY / DELTA_Y_BASIC_VALUE) * ROTATION_STEP;
+        this.changeAngle(newAngle);
+    }
+
+    drawPenStroke(ctx: CanvasRenderingContext2D): void {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = this.colorSelectionService.primaryColor;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         ctx.beginPath();
-        for (const point of pencil.path) {
+        for (let i = 1; i < this.pathData.length; i++) {
+            const lastPoint = this.pathData[i - 1];
+            const point = this.pathData[i];
+            ctx.moveTo(lastPoint.x, lastPoint.y);
             ctx.lineTo(point.x, point.y);
+            const angleRadians = this.toRadians(this.angle);
+            for (let j = 1; j <= this.width / 2; j++) {
+                ctx.moveTo(lastPoint.x - j * Math.sin(angleRadians), lastPoint.y - j * Math.cos(angleRadians));
+                ctx.lineTo(point.x - j * Math.sin(angleRadians), point.y - j * Math.cos(angleRadians));
+                ctx.moveTo(lastPoint.x + j * Math.sin(angleRadians), lastPoint.y + j * Math.cos(angleRadians));
+                ctx.lineTo(point.x + j * Math.sin(angleRadians), point.y + j * Math.cos(angleRadians));
+            }
         }
         ctx.stroke();
     }
 
-    changeWidth(newWidth: number): void {
-        this.width = newWidth;
-    }
-
-    private updatePencilData(): void {
-        this.pencilData = {
-            type: 'pencil',
-            path: this.pathData,
-            lineWidth: this.width,
-            primaryColor: this.colorSelectionService.primaryColor,
-        };
+    toRadians(angle: number): number {
+        return angle * (Math.PI / DEGREES_180);
     }
 
     private clearPath(): void {
