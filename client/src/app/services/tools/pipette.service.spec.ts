@@ -16,6 +16,7 @@ describe('PipetteService', () => {
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
+    let gridCanvasStub: HTMLCanvasElement;
     const WIDTH_DRAWING_CANVAS = 100;
     const HEIGHT_DRAWING_CANVAS = 100;
     const WIDTH_ZOOM_CANVAS = 50;
@@ -30,6 +31,7 @@ describe('PipetteService', () => {
         colorArray = ['#000000', '255'];
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
+        gridCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub.fillStyle = '#000000';
         baseCtxStub.fillRect(0, 0, canvas.width, canvas.height);
         baseCtxStub.fill();
@@ -52,6 +54,8 @@ describe('PipetteService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         // tslint:disable-next-line: no-string-literal
         service['drawingService'].previewCanvas = previewCanvasStub;
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'].gridCanvas = gridCanvasStub;
         service.zoom = zoomCanvasStud;
         service.zoomCtx = zoomCtxStud;
 
@@ -72,9 +76,9 @@ describe('PipetteService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {

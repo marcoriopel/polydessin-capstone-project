@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { DEGREES_180, DELTA_Y_BASIC_VALUE, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -65,7 +65,7 @@ export class PenService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
-        const newAngle = this.angle + (event.deltaY / 100) * 15;
+        const newAngle = this.angle + (event.deltaY / DELTA_Y_BASIC_VALUE) * ROTATION_STEP;
         this.changeAngle(newAngle);
     }
 
@@ -92,7 +92,7 @@ export class PenService extends Tool {
     }
 
     toRadians(angle: number): number {
-        return angle * (Math.PI / 180);
+        return angle * (Math.PI / DEGREES_180);
     }
 
     private clearPath(): void {
