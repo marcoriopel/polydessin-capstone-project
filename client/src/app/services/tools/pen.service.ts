@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { DEGREES_180, DELTA_Y_BASIC_VALUE, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
+import { DEGREES_180, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -14,6 +14,7 @@ export class PenService extends Tool {
     name: string = TOOL_NAMES.PEN_TOOL_NAME;
     width: number = 1;
     angle: number = 0;
+    altKeyPressed: boolean = false;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -25,6 +26,10 @@ export class PenService extends Tool {
     }
 
     changeAngle(newAngle: number): void {
+        newAngle %= DEGREES_180;
+        if (newAngle < 0) {
+            newAngle += DEGREES_180;
+        }
         this.angle = newAngle;
     }
 
@@ -64,8 +69,25 @@ export class PenService extends Tool {
         }
     }
 
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.altKey && !this.altKeyPressed) {
+            event.preventDefault();
+            this.altKeyPressed = true;
+        }
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
+        if (event.key === 'Alt') {
+            this.altKeyPressed = false;
+        }
+    }
+
     onWheelEvent(event: WheelEvent): void {
-        const newAngle = this.angle + (event.deltaY / DELTA_Y_BASIC_VALUE) * ROTATION_STEP;
+        let rotationStep = ROTATION_STEP;
+        if (this.altKeyPressed) {
+            rotationStep = 1;
+        }
+        const newAngle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
         this.changeAngle(newAngle);
     }
 
