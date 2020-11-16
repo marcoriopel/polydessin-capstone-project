@@ -3,6 +3,7 @@ export interface SidebarElementTooltips {
     PENCIL_TOOL_DESCRIPTION: string;
     PEN_TOOL_DESCRIPTION: string;
     BRUSH_TOOL_DESCRIPTION: string;
+    SPRAY_TOOL_DESCRIPTION: string;
     SQUARE_TOOL_DESCRIPTION: string;
     CIRCLE_TOOL_DESCRIPTION: string;
     LINE_TOOL_DESCRIPTION: string;
@@ -27,6 +28,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     PENCIL_TOOL_DESCRIPTION: 'Crayon (C)',
     PEN_TOOL_DESCRIPTION: 'Plume (P)',
     BRUSH_TOOL_DESCRIPTION: 'Pinceau (W)',
+    SPRAY_TOOL_DESCRIPTION: 'Aérosol (A)',
     SQUARE_TOOL_DESCRIPTION: 'Rectangle (1)',
     CIRCLE_TOOL_DESCRIPTION: 'Ellipse (2)',
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',

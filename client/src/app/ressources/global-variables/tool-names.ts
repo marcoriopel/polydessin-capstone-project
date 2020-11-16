@@ -2,6 +2,7 @@ export interface ToolNames {
     PENCIL_TOOL_NAME: string;
     PEN_TOOL_NAME: string;
     BRUSH_TOOL_NAME: string;
+    SPRAY_TOOL_NAME: string;
     SQUARE_TOOL_NAME: string;
     CIRCLE_TOOL_NAME: string;
     LINE_TOOL_NAME: string;
@@ -17,6 +18,7 @@ export const TOOL_NAMES: ToolNames = {
     PENCIL_TOOL_NAME: 'Crayon',
     PEN_TOOL_NAME: 'Plume',
     BRUSH_TOOL_NAME: 'Pinceau',
+    SPRAY_TOOL_NAME: 'Aérosol',
     SQUARE_TOOL_NAME: 'Rectangle',
     CIRCLE_TOOL_NAME: 'Ellipse',
     LINE_TOOL_NAME: 'Ligne',
@@ -32,6 +34,7 @@ export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.PENCIL_TOOL_NAME,
     TOOL_NAMES.PEN_TOOL_NAME,
     TOOL_NAMES.BRUSH_TOOL_NAME,
+    TOOL_NAMES.SPRAY_TOOL_NAME,
     TOOL_NAMES.SQUARE_TOOL_NAME,
     TOOL_NAMES.CIRCLE_TOOL_NAME,
     TOOL_NAMES.LINE_TOOL_NAME,
