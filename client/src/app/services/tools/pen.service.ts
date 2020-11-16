@@ -5,6 +5,7 @@ import { DEGREES_180, MouseButton, ROTATION_STEP } from '@app/ressources/global-
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -14,6 +15,7 @@ export class PenService extends Tool {
     name: string = TOOL_NAMES.PEN_TOOL_NAME;
     width: number = 1;
     angle: number = 0;
+    angleObservable: Subject<number> = new Subject<number>();
     altKeyPressed: boolean = false;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
@@ -31,6 +33,7 @@ export class PenService extends Tool {
             newAngle += DEGREES_180;
         }
         this.angle = newAngle;
+        this.angleObservable.next(this.angle);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -115,6 +118,10 @@ export class PenService extends Tool {
 
     toRadians(angle: number): number {
         return angle * (Math.PI / DEGREES_180);
+    }
+
+    getAngle(): Observable<number> {
+        return this.angleObservable;
     }
 
     private clearPath(): void {

@@ -13,6 +13,10 @@ export class PenAttributesComponent {
     constructor(public penService: PenService) {
         this.toolWidth = penService.width;
         this.angle = penService.angle;
+
+        this.penService.getAngle().subscribe((angle) => {
+            this.angle = angle as number;
+        });
     }
 
     changeWidth(newWidth: number): void {
