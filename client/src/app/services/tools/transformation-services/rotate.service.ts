@@ -63,9 +63,9 @@ export class RotateService {
     }
 
     calculateCenter(): Vec2 {
-        const cx = this.selection.startingPoint.x + this.selection.width / 2;
-        const cy = this.selection.startingPoint.y + this.selection.height / 2;
-        const centerSelection: Vec2 = { x: cx, y: cy };
+        const centerX = this.selection.startingPoint.x + this.selection.width / 2;
+        const centerY = this.selection.startingPoint.y + this.selection.height / 2;
+        const centerSelection: Vec2 = { x: centerX, y: centerY };
         return centerSelection;
     }
 
