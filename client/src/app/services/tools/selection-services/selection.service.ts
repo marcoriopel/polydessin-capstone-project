@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -25,8 +26,9 @@ export class SelectionService extends Tool {
     selectionData: Selection;
     canvasData: ImageData;
     isNewSelection: boolean = false;
+    isSelectionOver: boolean = true;
 
-    constructor(public drawingService: DrawingService, public moveService: MoveService) {
+    constructor(public drawingService: DrawingService, public moveService: MoveService, public rotateService: RotateService) {
         super(drawingService);
     }
 
@@ -39,16 +41,23 @@ export class SelectionService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
-            this.isNewSelection = true;
+            this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
             if (!this.moveService.isTransformationOver) {
+                // A l'exterieur de la selection
                 this.moveService.isTransformationOver = true;
                 this.moveService.printSelectionOnPreview();
                 this.applyPreview();
             }
+            if (!this.rotateService.isRotationOver) {
+                this.rotateService.restoreSelection();
+                this.applyPreview();
+            }
+            this.isSelectionOver = true;
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.underlyingService.onMouseDown(event);
         } else {
+            this.isSelectionOver = false;
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
         }
@@ -58,12 +67,14 @@ export class SelectionService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.isNewSelection) {
             // setUp underlying service
+
             this.underlyingService.lastPoint = this.getPositionFromMouse(event);
             const currentFillStyle = this.underlyingService.fillStyle;
             this.underlyingService.fillStyle = FILL_STYLES.DASHED;
             // draw selection
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
+                this.isSelectionOver = false;
                 this.setInitialSelection(this.selection);
                 this.setSelectionData(this.selection);
             }
@@ -91,6 +102,7 @@ export class SelectionService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        this.rotateService.onKeyDown(event);
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.moveService.onKeyDown(event);
         }
@@ -130,6 +142,7 @@ export class SelectionService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
+        this.rotateService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
             this.underlyingService.onKeyUp(event);
             this.strokeSelection();
@@ -206,6 +219,8 @@ export class SelectionService extends Tool {
             const middleX: number = this.selection.startingPoint.x + this.selection.width / 2 - SELECTION_POINT_WIDTH / 2;
             const rightX: number = this.selection.startingPoint.x + this.selection.width - SELECTION_POINT_WIDTH / 2;
 
+            this.drawingService.previewCtx.save();
+            this.rotateService.rotatePreviewCanvas();
             this.drawingService.previewCtx.fillStyle = '#09acd9';
             this.drawingService.previewCtx.fillRect(leftX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
             this.drawingService.previewCtx.fillRect(middleX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
@@ -215,6 +230,15 @@ export class SelectionService extends Tool {
             this.drawingService.previewCtx.fillRect(leftX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
             this.drawingService.previewCtx.fillRect(middleX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
             this.drawingService.previewCtx.fillRect(rightX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
+            this.drawingService.previewCtx.restore();
+        }
+    }
+
+    onWheelEvent(event: WheelEvent): void {
+        if (!this.isSelectionOver) {
+            this.rotateService.onWheelEvent(event);
+            this.strokeSelection();
+            this.setSelectionPoint();
         }
     }
 }

@@ -3,6 +3,7 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from './move.service';
+import { RotateService } from './rotate.service';
 import SpyObj = jasmine.SpyObj;
 
 // tslint:disable: no-magic-numbers
@@ -14,14 +15,19 @@ describe('MoveService', () => {
     let service: MoveService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
+    let rotateServiceSpy: SpyObj<RotateService>;
 
     beforeEach(() => {
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage', 'fillRect']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData', 'drawImage', 'fillRect', 'save', 'restore']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'setIsToolInUse']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['rotatePreviewCanvas']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawingServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawingServiceSpy },
+                { provide: RotateService, useValue: rotateServiceSpy },
+            ],
         });
         service = TestBed.inject(MoveService);
 

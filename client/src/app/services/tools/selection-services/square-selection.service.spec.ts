@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { SquareSelectionService } from './square-selection.service';
 
 describe('SquareSelectionService', () => {
@@ -11,7 +12,7 @@ describe('SquareSelectionService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let moveServiceSpy: jasmine.SpyObj<MoveService>;
-
+    let rotateServiceSpy: jasmine.SpyObj<RotateService>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
@@ -22,8 +23,12 @@ describe('SquareSelectionService', () => {
             height: 10,
         };
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['initialize']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas']);
         TestBed.configureTestingModule({
-            providers: [{ provide: MoveService, useValue: moveServiceSpy }],
+            providers: [
+                { provide: MoveService, useValue: moveServiceSpy },
+                { provide: RotateService, useValue: rotateServiceSpy },
+            ],
         });
         service = TestBed.inject(SquareSelectionService);
         drawingService = TestBed.inject(DrawingService);
