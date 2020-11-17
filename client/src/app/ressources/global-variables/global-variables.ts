@@ -36,6 +36,11 @@ export const DEFAULT_GRID_SIZE = 5;
 export const DEFAULT_GRID_OPACITY = 0.1;
 export const TWO_DECIMAL_MULTIPLIER = 100;
 
+// constant rotation service
+export const ANGLE_HALF_TURN = 180;
+export const MAX_ANGLE = 360;
+export const ROTATION_STEP_ALT = 1;
+
 // constants for spray service
 export const SPRAY_DENSITY = 40;
 export const MIN_SPRAY_WIDTH = 5;
