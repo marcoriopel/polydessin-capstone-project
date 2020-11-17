@@ -40,6 +40,10 @@ export class CircleSelectionService extends SelectionService {
         this.moveService.initialize(selection, this.selectionImage);
     }
 
+    setMagnetismAlignment(alignment: string): void {
+        this.currentAlignment = alignment;
+    }
+
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.beginPath();

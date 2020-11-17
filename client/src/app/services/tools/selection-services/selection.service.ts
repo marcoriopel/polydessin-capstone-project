@@ -3,6 +3,7 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { AlignmentNames, ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, SELECTION_POINT_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -26,8 +27,10 @@ export class SelectionService extends Tool {
     selectionData: Selection;
     canvasData: ImageData;
     isNewSelection: boolean = false;
-    isMagnetism: boolean = true;
-    gridSpacing: number = 20;
+    isMagnetism: boolean = false;
+    squareSize: number;
+    alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
+    currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;
     mouseDownCoord: Vec2 = { x: 0, y: 0 };
 
     constructor(public drawingService: DrawingService, public moveService: MoveService) {
@@ -38,6 +41,14 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+    }
+
+    setGridSpacing(size: number): void {
+        this.squareSize = size;
+    }
+
+    enableMagnetism(isChecked: boolean): void {
+        this.isMagnetism = isChecked;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -92,46 +103,79 @@ export class SelectionService extends Tool {
             this.underlyingService.onMouseMove(event);
             this.underlyingService.fillStyle = currentFillStyle;
         } else if (this.transormation === 'move') {
-            const translationX = event.movementX;
-            const translationY = event.movementY;
             if (this.isMagnetism) {
-                console.log('MouseEvent: ' + event.x);
-                console.log('mouseDownCoord: ' + this.mouseDownCoord.x);
-                const mousePosX = event.x - this.mouseDownCoord.x;
-                console.log(mousePosX);
-                // const mousePosY = event.y - this.mouseDownCoord.y;
-                this.onMouseMoveMagnetism(mousePosX, translationY);
+                const mousePosDifferenceX = event.x - this.mouseDownCoord.x;
+                const mousePosDifferenceY = event.y - this.mouseDownCoord.y;
+                this.onMouseMoveMagnetism(mousePosDifferenceX, mousePosDifferenceY);
             } else {
-                this.moveService.onMouseMove(translationX, translationY);
+                this.moveService.onMouseMove(event.movementX, event.movementY);
             }
         }
     }
 
-    onMouseMoveMagnetism(movementX: number, movementY: number): void {
-        const topLeftX = this.selection.startingPoint.x + movementX;
-        const lowestXDistance = topLeftX % this.gridSpacing;
-        let gridCoordX = 0;
-        if (lowestXDistance > this.gridSpacing / 2) {
-            gridCoordX = topLeftX + this.gridSpacing - lowestXDistance;
-            console.log('Inside coord:' + this.mouseDownCoord.x);
-        } else {
-            gridCoordX = topLeftX - lowestXDistance;
-            console.log('Inside coord:' + this.mouseDownCoord.x);
-        }
-        const changeX = gridCoordX - this.selection.startingPoint.x;
-        this.mouseDownCoord.x = this.mouseDownCoord.x + changeX;
+    onMouseMoveMagnetism(mousePosDifferenceX: number, mousePosDifferenceY: number): void {
+        const changeX = this.magnetismXAxisChange(mousePosDifferenceX);
+        const changeY = this.magnetismYAxisChange(mousePosDifferenceY);
+        this.moveService.onMouseMove(changeX, changeY);
+    }
 
-        // const topLeftY = this.selection.startingPoint.y + movementY;
-        // const lowestYDistance = topLeftY % this.gridSpacing;
-        // let gridCoordY = 0;
-        // if (lowestYDistance > this.gridSpacing / 2) {
-        //     gridCoordY = topLeftY + this.gridSpacing - lowestYDistance;
-        //     this.mouseDownCoord.y = topLeftY + this.gridSpacing - lowestYDistance;
-        // } else {
-        //     gridCoordY = topLeftY - lowestYDistance;
-        // }
-        // const changeY = gridCoordY - this.selection.startingPoint.y;
-        this.moveService.onMouseMove(changeX, movementY);
+    magnetismXAxisChange(mousePosDifferenceX: number): number {
+        const startingCoordRefX = this.magnetismCoordinateReference().x;
+        const coordToSnapX = startingCoordRefX + mousePosDifferenceX;
+        const lowestXDistance = coordToSnapX % this.squareSize;
+        if (lowestXDistance > this.squareSize / 2) {
+            mousePosDifferenceX = mousePosDifferenceX + this.squareSize;
+        }
+        const changeX = mousePosDifferenceX - lowestXDistance;
+        this.mouseDownCoord.x = this.mouseDownCoord.x + changeX;
+        return changeX;
+    }
+
+    magnetismYAxisChange(mousePosDifferenceY: number): number {
+        const startingCoordRefY = this.magnetismCoordinateReference().y;
+        const coordToSnapY = startingCoordRefY + mousePosDifferenceY;
+        const lowestYDistance = coordToSnapY % this.squareSize;
+        if (lowestYDistance > this.squareSize / 2) {
+            mousePosDifferenceY = mousePosDifferenceY + this.squareSize;
+        }
+        const changeY = mousePosDifferenceY - lowestYDistance;
+        this.mouseDownCoord.y = this.mouseDownCoord.y + changeY;
+        return changeY;
+    }
+
+    magnetismCoordinateReference(): Vec2 {
+        switch (this.currentAlignment) {
+            case this.alignmentNames.ALIGN_TOP_CENTER_NAME: {
+                return { x: this.selection.startingPoint.x + this.selection.width / 2, y: this.selection.startingPoint.y };
+            }
+            case this.alignmentNames.ALIGN_TOP_RIGHT_NAME: {
+                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y };
+            }
+            case this.alignmentNames.ALIGN_CENTER_LEFT_NAME: {
+                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y + this.selection.height / 2 };
+            }
+            case this.alignmentNames.ALIGN_CENTER_RIGHT_NAME: {
+                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y + this.selection.height / 2 };
+            }
+            case this.alignmentNames.ALIGN_CENTER_NAME: {
+                return {
+                    x: this.selection.startingPoint.x + this.selection.width / 2,
+                    y: this.selection.startingPoint.y + this.selection.height / 2,
+                };
+            }
+            case this.alignmentNames.ALIGN_BOTTOM_LEFT_NAME: {
+                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y + this.selection.height };
+            }
+            case this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME: {
+                return { x: this.selection.startingPoint.x + this.selection.width / 2, y: this.selection.startingPoint.y + this.selection.height };
+            }
+            case this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME: {
+                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y + this.selection.height };
+            }
+            default: {
+                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y };
+            }
+        }
     }
 
     onKeyDown(event: KeyboardEvent): void {
