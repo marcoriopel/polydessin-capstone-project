@@ -5,8 +5,8 @@
     <div id="sliderDetails">
         <input type="text" [(value)]="value" (change)="this.changeValue()" [min]="min" [max]="max" readonly />
         <div>
-            <button (click)="decrementToolWidth()">-</button>
-            <button (click)="incrementToolWidth()">+</button>
+            <button (click)="decrement()">-</button>
+            <button (click)="increment()">+</button>
         </div>
     </div>
     <hr class="bottomBorder" />

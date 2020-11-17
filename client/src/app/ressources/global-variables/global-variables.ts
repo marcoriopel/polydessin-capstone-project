@@ -28,12 +28,12 @@ export const CONFIRM_KEY_PRESS_DURATION = 500;
 export const KEY_PRESS_INTERVAL_DURATION = 100;
 export const SELECTION_MOVE_STEP_SIZE = 3;
 export const LINE_WIDTH_POLYGONE_CORRECTION = 1.4;
-export const MIN_GRID_SQUARE_SIZE = 1;
+export const MIN_GRID_SQUARE_SIZE = 5;
 export const MAX_GRID_SQUARE_SIZE = 200;
 export const MIN_GRID_OPACITY = 0.1;
 export const MAX_GRID_OPACITY = 1;
 export const DEFAULT_GRID_SIZE = 5;
-export const DEFAULT_GRID_OPACITY = 1;
+export const DEFAULT_GRID_OPACITY = 0.1;
 
 // constants for spray service
 export const SPRAY_DENSITY = 40;

@@ -28,7 +28,7 @@ describe('SliderComponent', () => {
     it('should decrement value', () => {
         component.min = 0;
         component.value = 1;
-        component.decrementToolWidth();
+        component.decrement();
         fixture.detectChanges();
         expect(component.value).toBe(0);
     });
@@ -36,7 +36,7 @@ describe('SliderComponent', () => {
     it('should not decrement value', () => {
         component.min = 0;
         component.value = 0;
-        component.decrementToolWidth();
+        component.decrement();
         fixture.detectChanges();
         expect(component.value).toBe(0);
     });
@@ -44,7 +44,7 @@ describe('SliderComponent', () => {
     it('should increment value', () => {
         component.max = 1;
         component.value = 0;
-        component.incrementToolWidth();
+        component.increment();
         fixture.detectChanges();
         expect(component.value).toBe(1);
     });
@@ -52,7 +52,7 @@ describe('SliderComponent', () => {
     it('should not increment value', () => {
         component.max = 1;
         component.value = 1;
-        component.incrementToolWidth();
+        component.increment();
         fixture.detectChanges();
         expect(component.value).toBe(1);
     });

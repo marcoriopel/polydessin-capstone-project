@@ -14,16 +14,18 @@ export class SliderComponent {
 
     @Output() valueChange: EventEmitter<number> = new EventEmitter();
 
-    decrementToolWidth(): void {
+    decrement(): void {
         if (this.value > this.min) {
-            --this.value;
+            this.value -= this.step;
+            this.value = Math.round((this.value + Number.EPSILON) * 100) / 100;
         }
         this.changeValue();
     }
 
-    incrementToolWidth(): void {
+    increment(): void {
         if (this.value < this.max) {
-            ++this.value;
+            this.value += this.step;
+            this.value = Math.round((this.value + Number.EPSILON) * 100) / 100;
         }
         this.changeValue();
     }
