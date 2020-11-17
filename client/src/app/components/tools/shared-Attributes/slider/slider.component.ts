@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { TWO_DECIMAL_MULTIPLIER } from '@app/ressources/global-variables/global-variables';
 
 @Component({
     selector: 'app-slider',
@@ -17,7 +18,7 @@ export class SliderComponent {
     decrement(): void {
         if (this.value > this.min) {
             this.value -= this.step;
-            this.value = Math.round((this.value + Number.EPSILON) * 100) / 100;
+            this.value = Math.round((this.value + Number.EPSILON) * TWO_DECIMAL_MULTIPLIER) / TWO_DECIMAL_MULTIPLIER;
         }
         this.changeValue();
     }
@@ -25,7 +26,7 @@ export class SliderComponent {
     increment(): void {
         if (this.value < this.max) {
             this.value += this.step;
-            this.value = Math.round((this.value + Number.EPSILON) * 100) / 100;
+            this.value = Math.round((this.value + Number.EPSILON) * TWO_DECIMAL_MULTIPLIER) / TWO_DECIMAL_MULTIPLIER;
         }
         this.changeValue();
     }

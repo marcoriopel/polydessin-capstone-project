@@ -34,6 +34,7 @@ export const MIN_GRID_OPACITY = 0.1;
 export const MAX_GRID_OPACITY = 1;
 export const DEFAULT_GRID_SIZE = 5;
 export const DEFAULT_GRID_OPACITY = 0.1;
+export const TWO_DECIMAL_MULTIPLIER = 100;
 
 // constants for spray service
 export const SPRAY_DENSITY = 40;
@@ -45,7 +46,6 @@ export const MAX_SPRAY_FREQUENCY = 50;
 export const ONE_SECOND = 1000;
 
 // constants for pen service
-export const DELTA_Y_BASIC_VALUE = 100;
 export const ROTATION_STEP = 15;
 
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;

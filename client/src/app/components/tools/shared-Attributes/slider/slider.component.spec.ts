@@ -28,6 +28,7 @@ describe('SliderComponent', () => {
     it('should decrement value', () => {
         component.min = 0;
         component.value = 1;
+        component.step = 1;
         component.decrement();
         fixture.detectChanges();
         expect(component.value).toBe(0);
@@ -36,6 +37,7 @@ describe('SliderComponent', () => {
     it('should not decrement value', () => {
         component.min = 0;
         component.value = 0;
+        component.step = 1;
         component.decrement();
         fixture.detectChanges();
         expect(component.value).toBe(0);
@@ -44,6 +46,7 @@ describe('SliderComponent', () => {
     it('should increment value', () => {
         component.max = 1;
         component.value = 0;
+        component.step = 1;
         component.increment();
         fixture.detectChanges();
         expect(component.value).toBe(1);
@@ -52,6 +55,7 @@ describe('SliderComponent', () => {
     it('should not increment value', () => {
         component.max = 1;
         component.value = 1;
+        component.step = 1;
         component.increment();
         fixture.detectChanges();
         expect(component.value).toBe(1);
@@ -60,6 +64,7 @@ describe('SliderComponent', () => {
     it('should emit value', () => {
         spyOn(component.valueChange, 'emit');
         component.value = 1;
+        component.step = 1;
         component.changeValue();
         expect(component.valueChange.emit).toHaveBeenCalledWith(1);
     });
