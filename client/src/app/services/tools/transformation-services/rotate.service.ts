@@ -49,11 +49,13 @@ export class RotateService {
     }
 
     setAngleRotation(deltaAngle: number, event: WheelEvent): void {
-        const delY = Math.abs(event.deltaY);
-        if (Math.abs(this.angle) === MAX_ANGLE) {
+        const delY = Math.abs(event.deltaY) * 2;
+        if (Math.abs(this.angle) >= MAX_ANGLE) {
             this.angle = 0;
         }
-        this.angle += (event.deltaY / delY) * deltaAngle;
+        const newAngle = this.angle + (event.deltaY / delY) * deltaAngle;
+
+        this.changeAngle(newAngle);
     }
 
     rotateSelectedCanvas(angle: number, centerX: number, centerY: number): void {
