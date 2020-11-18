@@ -52,7 +52,6 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.mouseDownCoord.x = event.x;
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true;
@@ -65,6 +64,7 @@ export class SelectionService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.underlyingService.onMouseDown(event);
         } else {
+            this.mouseDownCoord.x = event.x;
             this.mouseDownCoord.y = event.y;
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
@@ -178,9 +178,20 @@ export class SelectionService extends Tool {
         }
     }
 
+    isSnappedOnGrid(coordinates: Vec2): boolean {
+        if (coordinates.x % this.squareSize === 0 && coordinates.y % this.squareSize === 0) return true;
+        return false;
+    }
     onKeyDown(event: KeyboardEvent): void {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
-            this.moveService.onKeyDown(event);
+            const axisCoordinates: Vec2 = this.magnetismCoordinateReference();
+            if (this.isMagnetism && !this.isSnappedOnGrid(axisCoordinates)) {
+                console.log('here');
+                this.moveService.snapOnGrid(event, axisCoordinates, this.squareSize);
+            } else {
+                console.log('key');
+                this.moveService.onKeyDown(event, this.isMagnetism, this.squareSize);
+            }
         }
         if (this.isNewSelection) {
             this.underlyingService.fillStyle = FILL_STYLES.DASHED;
