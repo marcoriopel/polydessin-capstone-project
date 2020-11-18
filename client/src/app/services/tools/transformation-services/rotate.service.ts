@@ -40,7 +40,7 @@ export class RotateService {
         this.isRotationOver = false;
         const centerX = this.calculateCenter().x;
         const centerY = this.calculateCenter().y;
-        this.setAngleRotation(this.deltaRotation, event);
+        this.setAngleRotation(event);
 
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
@@ -48,13 +48,11 @@ export class RotateService {
         this.rotateSelectedCanvas(this.angle, centerX, centerY);
     }
 
-    setAngleRotation(deltaAngle: number, event: WheelEvent): void {
-        const delY = Math.abs(event.deltaY) * 2;
+    setAngleRotation(event: WheelEvent): void {
         if (Math.abs(this.angle) >= MAX_ANGLE) {
             this.angle = 0;
         }
-        const newAngle = this.angle + (event.deltaY / delY) * deltaAngle;
-
+        const newAngle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * this.deltaRotation;
         this.changeAngle(newAngle);
     }
 
