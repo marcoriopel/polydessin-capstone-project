@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AlignmentNames, ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
+import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 
 @Component({
@@ -11,7 +13,14 @@ export class SquareselectionAttributesComponent {
     isMagnetismEnabled: boolean = false;
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
     currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;
-    constructor(public squareSelectionService: SquareSelectionService) {}
+    constructor(public squareSelectionService: SquareSelectionService, public hotkeyService: HotkeyService) {
+        this.hotkeyService.getKey().subscribe((toolName) => {
+            if (toolName === MAGNETISM_NAME) {
+                if (this.isMagnetismEnabled) this.enableGridMagnetism(false);
+                else this.enableGridMagnetism(true);
+            }
+        });
+    }
 
     enableGridMagnetism(isChecked: boolean): void {
         this.isMagnetismEnabled = isChecked;

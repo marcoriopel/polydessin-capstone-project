@@ -35,6 +35,9 @@ export const MAX_GRID_OPACITY = 1;
 export const DEFAULT_GRID_SIZE = 5;
 export const DEFAULT_GRID_OPACITY = 1;
 
+// constants for circle selection and square selection
+export const MAGNETISM_NAME = 'Magnétisme';
+
 // constants for spray service
 export const SPRAY_DENSITY = 40;
 export const MIN_SPRAY_WIDTH = 5;
