@@ -30,17 +30,17 @@ export class EmailService {
                     ...formHeaders,
                 },
             };
-            return axios
-                .post(MAIL_API_URL, formData, config)
-                .then(() => {
-                    console.log('email envoyer');
-                })
-                .catch((error: Error) => {
-                    console.log(buffer);
-                    throw error;
-                });
+            return (
+                axios
+                    .post(MAIL_API_URL, formData, config)
+                    // tslint:disable-next-line: no-empty
+                    .then(() => {})
+                    .catch((error: Error) => {
+                        throw error;
+                    })
+            );
+            // tslint:disable-next-line: no-empty
         } else {
-            console.log('Invalid donnees');
         }
     }
 

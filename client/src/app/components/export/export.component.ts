@@ -112,7 +112,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             .post(url, body)
             .toPromise()
             .then(() => {
-                alert(' Readyyyy ! ');
+                alert(' Mail Envoyé ! ');
             })
             .catch((E: Error) => {
                 throw E;

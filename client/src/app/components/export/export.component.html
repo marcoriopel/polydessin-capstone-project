@@ -25,7 +25,7 @@
 
     <div>
         <label>Filtre</label>
-        <div class="radioContainer" filter= " ">
+        <div class="radioContainer" >
             <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
             <label>Aucun filtre</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
@@ -50,7 +50,7 @@
     </div>
     <div>
         <label> email</label><br>
-        <input type="email" placeholder="albert.chambly@polymtl.ca" [(ngModel)]= "this.emailAddress">
+        <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]= "this.emailAddress">
     </div>
     <button mat-button id="export" (click)="exportLocally()">Exporter sur ordinateur</button>
     <button mat-button id="sendMail" (click)="sendMail()">Envoyer par email</button>
