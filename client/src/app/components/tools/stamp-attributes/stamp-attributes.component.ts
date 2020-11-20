@@ -13,5 +13,6 @@ export class StampAttributesComponent {
 
     changeSize(newSize: number): void {
         this.toolSize = newSize;
+        this.stampService.stampSize = newSize;
     }
 }
