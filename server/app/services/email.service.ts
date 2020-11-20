@@ -10,7 +10,7 @@ export class EmailService {
     constructor() {}
 
     async sendByEmail(data: EmailData): Promise<void | string> {
-        if (this.validatedata(data.to)) {
+        if (this.validateData(data.to)) {
             const MAIL_API_208_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
             const MAIL_API_URL = 'https://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true';
 
@@ -44,7 +44,7 @@ export class EmailService {
         }
     }
 
-    private validatedata(data: string): boolean {
+    private validateData(data: string): boolean {
         return this.validateEmail(data);
     }
     private validateEmail(email: string): boolean {
