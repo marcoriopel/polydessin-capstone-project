@@ -111,8 +111,8 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         this.httpClient
             .post(url, body)
             .toPromise()
-            .then(() => {
-            })
+            // tslint:disable-next-line: no-empty
+            .then(() => {})
             .catch((E: Error) => {
                 throw E;
             });
