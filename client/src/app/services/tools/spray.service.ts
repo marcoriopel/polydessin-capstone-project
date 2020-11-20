@@ -76,7 +76,7 @@ export class SprayService extends Tool {
             ctx.arc(
                 self.mouseCoord.x + radius * Math.cos(angle),
                 self.mouseCoord.y + radius * Math.sin(angle),
-                self.getRandomFloat(1, self.dotWidth),
+                self.getRandomFloat(1, self.dotWidth / 2),
                 0,
                 2 * Math.PI,
             );

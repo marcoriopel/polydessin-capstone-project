@@ -85,9 +85,4 @@ export class EditorComponent implements AfterViewInit {
         this.resizeDrawingService.onMouseUp();
         this.previewDiv.style.display = 'none';
     }
-
-    @HostListener('wheel', ['$event'])
-    onWheelEvent(event: WheelEvent): void {
-        this.toolSelectionService.currentToolWheelEvent(event);
-    }
 }

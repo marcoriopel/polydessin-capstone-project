@@ -4,6 +4,25 @@
     align-items: center;
 }
 
+#patterns {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+#patterns label {
+    margin: 0 10px 0 10px;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #cfcfcf;
+    width: 100%;
+    margin: 0;
+}
+
 .toolName {
     margin: 5px;
 }
