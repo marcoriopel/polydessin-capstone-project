@@ -20,6 +20,7 @@ export interface SidebarElementTooltips {
     CAROUSEL_DESCRIPTION: string;
     EXPORT_DRAWING_DESCRIPTION: string;
     SELECT_ALL_DESCRIPTION: string;
+    SEND_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -44,4 +45,5 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     SAVE_DRAWING_DESCRIPTION: 'Sauvegarder dessin (Ctrl + S)',
     EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
     SELECT_ALL_DESCRIPTION: 'Tout sélectionner (Ctrl + A)',
+    SEND_DESCRIPTION: 'Envoyer un dessin',
 };

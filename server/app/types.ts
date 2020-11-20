@@ -3,4 +3,6 @@ export const TYPES = {
     Application: Symbol('Application'),
     DatabaseController: Symbol('DatabaseController'),
     DatabaseService: Symbol('DatabaseService'),
+    EmailController: Symbol('EmailController'),
+    EmailService: Symbol('EmalService'),
 };

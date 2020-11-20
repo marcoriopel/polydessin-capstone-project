@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -21,17 +22,24 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         BLUR: FILTER_STYLES.BLUR,
     };
     differentFilter: string[] = ['none', 'grayscale(100%)', 'sepia(100%)', 'saturate(8)', 'invert(100%)', 'blur(5px)'];
-    typeOfFile: string[] = ['image/png', 'image/jpeg'];
+    extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
     emailAdress: string = '';
     imagesrc: string = '';
     urlImage: string = '';
+    urlExtension: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
+    emailAddress: string;
 
-    constructor(public drawingService: DrawingService, public hotkeyService: HotkeyService, private dialogRef: MatDialogRef<ExportComponent>) {}
+    constructor(
+        public drawingService: DrawingService,
+        public hotkeyService: HotkeyService,
+        private dialogRef: MatDialogRef<ExportComponent>,
+        private httpClient: HttpClient,
+    ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
@@ -70,7 +78,8 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     getImageUrl(event: Event): void {
         const target = event.target as HTMLInputElement;
         const typeNumber: number = Number(target.value);
-        this.urlImage = this.filterCanvas.toDataURL(this.typeOfFile[typeNumber]);
+        this.urlImage = this.filterCanvas.toDataURL(this.extension[typeNumber]);
+        this.urlExtension = this.extension[typeNumber];
     }
 
     exportLocally(): void {
@@ -88,5 +97,24 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.hotkeyService.isHotkeyEnabled = true;
+    }
+
+    sendMail(): void {
+        const url = 'http://localhost:3000/api/email/';
+        const base64 = this.urlImage.split(',')[1];
+        const body = {
+            to: this.emailAddress,
+            payload: base64,
+            filename: this.name,
+            format: this.urlExtension,
+        };
+        this.httpClient
+            .post(url, body)
+            .toPromise()
+            // tslint:disable-next-line: no-empty
+            .then(() => {})
+            .catch((E: Error) => {
+                throw E;
+            });
     }
 }
