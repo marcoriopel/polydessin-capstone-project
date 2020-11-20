@@ -42,7 +42,6 @@ export class HotkeyService {
         if (event.shiftKey || event.ctrlKey) event.preventDefault();
         if (!this.isHotkeyEnabled) return;
         let keyName: string | undefined;
-
         if (event.shiftKey && event.ctrlKey) {
             keyName = this.keysNeedShift.get(event.key.toString());
         } else if (event.ctrlKey) {

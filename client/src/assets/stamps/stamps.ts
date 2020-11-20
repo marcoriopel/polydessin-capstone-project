@@ -1,3 +1,6 @@
+export const SCALE_FACTOR = 20;
+export const TRANSLATION_FACTOR = 11;
+
 export interface Stamps {
     ANGULAR: string;
     NODEJS: string;

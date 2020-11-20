@@ -1,5 +1,6 @@
 <div id="stampAttributes">
     <h2 class="toolName">{{ stampService.name }}</h2>
+    <hr />
     <app-slider
         title="Taille de l'étampe"
         [min]="stampService.minSize"
@@ -11,28 +12,26 @@
     </app-slider>
     <div id="stamps">
         <label>
-            <input type="radio" id="pattern1" name="patterns" (change)="setPattern(this.patternNames.FIRST_PATTERN)" checked />
-            <img src="/assets/pattern1.png" />
+            <input type="radio" name="stamp" id="angular" (change)="changeStamp(this.stamps.ANGULAR)" checked />
+            <img src="/assets/stamps/angular-brands.svg" width="50px" height="50px" />
+        </label>
+        <label>
+            <input type="radio" name="stamp" (change)="changeStamp(this.stamps.JAVASCRIPT)" />
+            <img src="/assets/stamps/js-brands.svg" width="50px" height="50px" />
+        </label>
+        <label>
+            <input type="radio" name="stamp" (change)="changeStamp(this.stamps.DOCKER)" />
+            <img src="/assets/stamps/docker-brands.svg" width="50px" height="50px" />
         </label>
 
         <label>
-            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.SECOND_PATTERN)" />
-            <img src="/assets/pattern2.png" />
+            <input type="radio" name="stamp" name="stamp" (change)="changeStamp(this.stamps.GITLAB)" />
+            <img src="/assets/stamps/gitlab-brands.svg" width="50px" height="50px" />
         </label>
 
         <label>
-            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.THIRD_PATTERN)" />
-            <img src="/assets/pattern3.png" />
-        </label>
-
-        <label>
-            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FOURTH_PATTERN)" />
-            <img src="/assets/pattern4.png" />
-        </label>
-
-        <label>
-            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FIFTH_PATTERN)" />
-            <img src="/assets/pattern5.png" />
+            <input type="radio" name="stamp" (change)="changeStamp(this.stamps.NODEJS)" />
+            <img src="/assets/stamps/node-js-brands.svg" width="50px" height="50px" />
         </label>
     </div>
 </div>

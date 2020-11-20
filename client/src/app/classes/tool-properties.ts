@@ -94,3 +94,12 @@ export interface Selection {
     type: string;
     imageData: ImageData;
 }
+
+export interface Stamp {
+    type: string;
+    color: string;
+    opacity: number;
+    size: number;
+    position: Vec2;
+    stamp: string;
+}

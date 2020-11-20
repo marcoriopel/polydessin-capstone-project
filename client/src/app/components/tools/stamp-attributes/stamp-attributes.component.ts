@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Stamps, STAMPS } from '@app/../assets/stamps/stamps';
 import { StampService } from '@app/services/tools/stamp.service';
 
 @Component({
@@ -8,11 +9,18 @@ import { StampService } from '@app/services/tools/stamp.service';
 })
 export class StampAttributesComponent {
     toolSize: number = 5;
+    stamps: Stamps = STAMPS;
 
-    constructor(public stampService: StampService) {}
+    constructor(public stampService: StampService) {
+        this.stampService.currentStamp = STAMPS.ANGULAR;
+    }
 
     changeSize(newSize: number): void {
         this.toolSize = newSize;
         this.stampService.stampSize = newSize;
+    }
+
+    changeStamp(newStamp: string): void {
+        this.stampService.currentStamp = newStamp;
     }
 }
