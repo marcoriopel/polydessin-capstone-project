@@ -3,6 +3,7 @@
         <h3>Grid Settings</h3>
     </div>
     <mat-checkbox (change)="changeGridView($event.checked)" [checked]="isEnabled">Afficher grille</mat-checkbox>
+    <hr />
     <app-slider
         title="Grosseur Carrés"
         [min]="minSquareSize"

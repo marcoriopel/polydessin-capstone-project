@@ -5,6 +5,7 @@ import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/glo
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -19,13 +20,15 @@ describe('SelectionService', () => {
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
+    let rotateService: SpyObj<RotateService>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['printSelectionOnPreview', 'onMouseDown', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
+        rotateService = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
 
@@ -33,6 +36,7 @@ describe('SelectionService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MoveService, useValue: moveServiceSpy },
+                { provide: RotateService, useValue: rotateService },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -495,13 +499,12 @@ describe('SelectionService', () => {
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 
-    it('applyPreview should draw on baseCtx and clear preview', () => {
+    it('applyPreview should draw on baseCtx', () => {
         const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
 
         service.applyPreview();
 
-        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+        expect(drawingServiceSpy.applyPreview).toHaveBeenCalled();
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 

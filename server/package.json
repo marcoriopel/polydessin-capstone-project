@@ -12,7 +12,7 @@
         "coverage": "cross-env TS_NODE_PROJECT='./tsconfig.test.json' nyc mocha --config=test/.mocharc.json --node-env=test --exit"
     },
     "nyc": {
-        "check-coverage": true,
+        "check-coverage": false,
         "per-file": true,
         "include": [
             "app/**/*.ts"
@@ -43,7 +43,6 @@
         "instrument": true
     },
     "dependencies": {
-        "@types/jest": "^26.0.15",
         "@types/multer": "^1.4.4",
         "axios": "^0.21.0",
         "body-parser": "^1.19.0",
@@ -67,6 +66,7 @@
         "@types/cookie-parser": "1.4.2",
         "@types/cors": "2.8.6",
         "@types/express": "4.17.1",
+        "@types/jest": "^26.0.15",
         "@types/mocha": "^5.2.7",
         "@types/mongodb": "^3.3.14",
         "@types/morgan": "~1.7.35",

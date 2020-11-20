@@ -10,7 +10,7 @@ export class EmailService {
     constructor() {}
 
     async sendByEmail(data: EmailData): Promise<void | string> {
-        if (this.validatedata(data.to)) {
+        if (this.validateData(data.to)) {
             const MAIL_API_208_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
             const MAIL_API_URL = 'https://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true';
 
@@ -30,21 +30,21 @@ export class EmailService {
                     ...formHeaders,
                 },
             };
-            return axios
-                .post(MAIL_API_URL, formData, config)
-                .then(() => {
-                    console.log('email envoyer');
-                })
-                .catch((error: Error) => {
-                    console.log(buffer);
-                    throw error;
-                });
+            return (
+                axios
+                    .post(MAIL_API_URL, formData, config)
+                    // tslint:disable-next-line: no-empty
+                    .then(() => {})
+                    .catch((error: Error) => {
+                        throw error;
+                    })
+            );
+            // tslint:disable-next-line: no-empty
         } else {
-            console.log('Invalid donnees');
         }
     }
 
-    private validatedata(data: string): boolean {
+    private validateData(data: string): boolean {
         return this.validateEmail(data);
     }
     private validateEmail(email: string): boolean {

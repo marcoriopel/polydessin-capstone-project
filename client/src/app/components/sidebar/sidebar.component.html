@@ -42,6 +42,22 @@
         </label>
         <input
             type="radio"
+            [id]="this.toolNames.PEN_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.PEN_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.PEN_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.PEN_TOOL_NAME">
+            <mat-icon
+                class="fas fa-pen-fancy"
+                [matTooltip]="elementDescriptions.PEN_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+        <input
+            type="radio"
             [id]="this.toolNames.BRUSH_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.BRUSH_TOOL_NAME"
@@ -57,6 +73,24 @@
                 >brush</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.SPRAY_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.SPRAY_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.SPRAY_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.SPRAY_TOOL_NAME">
+            <mat-icon
+                class="fas fa-spray-can"
+                [matTooltip]="elementDescriptions.SPRAY_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+
         <input
             type="radio"
             [id]="this.toolNames.SQUARE_TOOL_NAME"
@@ -127,40 +161,40 @@
         </label>
 
         <input
-        type="radio"
-        [id]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
-        name="tool"
-        [value]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
-        (change)="onToolChange($event)"
-        [checked]="selectedTool.includes(this.toolNames.CIRCLE_SELECTION_TOOL_NAME)"
-    />
-    <label [for]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME">
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.CIRCLE_SELECTION_TOOL_NAME"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >vignette</mat-icon
-        >
-    </label>
+            type="radio"
+            [id]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.CIRCLE_SELECTION_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.CIRCLE_SELECTION_TOOL_NAME"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >vignette</mat-icon
+            >
+        </label>
 
-    <input
-    type="radio"
-    [id]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
-    name="tool"
-    [value]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
-    (change)="onToolChange($event)"
-    [checked]="selectedTool.includes(this.toolNames.SQUARE_SELECTION_TOOL_NAME)"
-/>
-<label [for]="this.toolNames.SQUARE_SELECTION_TOOL_NAME">
-    <mat-icon
-        class="material-icons"
-        [matTooltip]="elementDescriptions.SQUARE_SELECTION_TOOL_NAME"
-        matTooltipPosition="right"
-        [matTooltipShowDelay]="tooltipShowDelay"
-        >highlight_alt</mat-icon
-    >
-</label>
+        <input
+            type="radio"
+            [id]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.SQUARE_SELECTION_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.SQUARE_SELECTION_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.SQUARE_SELECTION_TOOL_NAME"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >highlight_alt</mat-icon
+            >
+        </label>
         <input
             type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
