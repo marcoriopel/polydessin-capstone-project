@@ -25,6 +25,7 @@ import { SquareService } from '@app/services/tools/square.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { StampService } from '../tools/stamp.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -53,6 +54,7 @@ export class ToolSelectionService {
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
         public undoRedoService: UndoRedoService,
+        public stampService: StampService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
@@ -68,6 +70,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService

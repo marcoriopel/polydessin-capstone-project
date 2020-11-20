@@ -49,6 +49,7 @@ import { SprayAttributesComponent } from './components/tools/spray-attributes/sp
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
+import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
 
 @NgModule({
     declarations: [
@@ -84,6 +85,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         CircleselectionAttributesComponent,
         PenAttributesComponent,
         SprayAttributesComponent,
+        StampAttributesComponent,
     ],
     imports: [
         BrowserModule,

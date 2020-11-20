@@ -25,6 +25,7 @@ export class HotkeyService {
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['d', this.toolNames.STAMP_TOOL_NAME],
         ['g', GRID_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([

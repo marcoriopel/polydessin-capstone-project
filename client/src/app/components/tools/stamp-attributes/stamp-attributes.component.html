@@ -1,0 +1,12 @@
+<div id="stampAttributes">
+    <h2 class="toolName">{{ stampService.name }}</h2>
+    <app-slider
+        title="Taille de l'étampe"
+        [min]="stampService.minSize"
+        [max]="stampService.maxSize"
+        [step]="1"
+        [value]="toolSize"
+        (valueChange)="changeSize($event)"
+    >
+    </app-slider>
+</div>
