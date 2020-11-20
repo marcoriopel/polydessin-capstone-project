@@ -29,27 +29,29 @@ export class StampService extends Tool implements OnInit {
         let mouseCoordinates: Vec2 = this.getPositionFromMouse(event);
         let ctx = this.drawingService.previewCtx;
         this.drawingService.clearCanvas(ctx);
-        let path = new Path2D(STAMPS.ANGULAR);
-        ctx.setTransform(1, 0, 0, 1, mouseCoordinates.x - 50, mouseCoordinates.y - this.stampSize - 50);
+        let path = new Path2D(STAMPS.DOCKER);
+        ctx.translate(mouseCoordinates.x - 50, mouseCoordinates.y - 50);
         ctx.scale(this.stampSize / 20, this.stampSize / 20);
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
         ctx.stroke(path);
         ctx.fill(path);
         ctx.scale(this.stampSize * 20, this.stampSize * 20);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     onMouseUp(event: MouseEvent): void {
         let mouseCoordinates: Vec2 = this.getPositionFromMouse(event);
         let ctx = this.drawingService.baseCtx;
-        let path = new Path2D(STAMPS.ANGULAR);
-        ctx.setTransform(1, 0, 0, 1, mouseCoordinates.x, mouseCoordinates.y);
+        let path = new Path2D(STAMPS.DOCKER);
+        ctx.translate(mouseCoordinates.x - 50, mouseCoordinates.y - 50);
         ctx.scale(this.stampSize / 20, this.stampSize / 20);
         ctx.strokeStyle = 'red';
         ctx.fillStyle = 'red';
         ctx.stroke(path);
         ctx.fill(path);
         ctx.scale(this.stampSize * 20, this.stampSize * 20);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     onMouseLeave(): void {

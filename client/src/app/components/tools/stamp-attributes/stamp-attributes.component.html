@@ -9,4 +9,30 @@
         (valueChange)="changeSize($event)"
     >
     </app-slider>
+    <div id="stamps">
+        <label>
+            <input type="radio" id="pattern1" name="patterns" (change)="setPattern(this.patternNames.FIRST_PATTERN)" checked />
+            <img src="/assets/pattern1.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.SECOND_PATTERN)" />
+            <img src="/assets/pattern2.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.THIRD_PATTERN)" />
+            <img src="/assets/pattern3.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FOURTH_PATTERN)" />
+            <img src="/assets/pattern4.png" />
+        </label>
+
+        <label>
+            <input type="radio" name="patterns" (change)="setPattern(this.patternNames.FIFTH_PATTERN)" />
+            <img src="/assets/pattern5.png" />
+        </label>
+    </div>
 </div>
