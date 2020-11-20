@@ -3,7 +3,13 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
-import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, SELECTION_POINT_WIDTH } from '@app/ressources/global-variables/global-variables';
+import {
+    ANGLE_HALF_TURN,
+    DASH_LENGTH,
+    DASH_SPACE_LENGTH,
+    MouseButton,
+    SELECTION_POINT_WIDTH,
+} from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -159,6 +165,21 @@ export class SelectionService extends Tool {
 
     isInSelection(event: MouseEvent): boolean {
         const currentPosition = this.getPositionFromMouse(event);
+        if (this.rotateService.mouseWheel) {
+            const angleRad = this.rotateService.angle * (Math.PI / ANGLE_HALF_TURN);
+            const sin = Math.sin(angleRad);
+            const cos = Math.cos(angleRad);
+            const x =
+                cos * (currentPosition.x - this.rotateService.calculateCenter().x) +
+                sin * (currentPosition.y - this.rotateService.calculateCenter().y) +
+                this.rotateService.calculateCenter().x;
+            const y =
+                cos * (currentPosition.y - this.rotateService.calculateCenter().y) -
+                sin * (currentPosition.x - this.rotateService.calculateCenter().x) +
+                this.rotateService.calculateCenter().y;
+            currentPosition.x = x;
+            currentPosition.y = y;
+        }
         if (
             currentPosition.x > this.selection.startingPoint.x &&
             currentPosition.x < this.selection.startingPoint.x + this.selection.width &&
