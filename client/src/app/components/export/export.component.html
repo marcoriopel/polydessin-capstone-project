@@ -25,7 +25,7 @@
 
     <div>
         <label>Filtre</label>
-        <div class="radioContainer">
+        <div class="radioContainer" >
             <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
             <label>Aucun filtre</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
@@ -40,15 +40,19 @@
             <label>Embrouiller</label>
         </div>
     </div>
-    <label>Exporter en: </label>
-    <div class="radioContainer">
-        <input type="radio" name="typeOfFile" [value]="0" (change)="this.getImageUrl($event)" checked />
-        <label>PNG</label>
-        <input type="radio" name="typeOfFile" [value]="1" (change)="this.getImageUrl($event)" />
-        <label>JPG</label>
-    </div>
-    <div></div>
 
-    <button mat-button id="export" (click)="exportLocally()">Exporter</button>
+    <label>Format d'exportation</label>
+    <div class="radioContainer">
+        <select name="extension" (change)="this.getImageUrl($event)" [value]='0' >
+            <option [value]='0'> PNG </option>
+            <option [value]='1'> JPEG </option>
+        </select>
+    </div>
+    <div>
+        <label> email</label><br>
+        <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]= "this.emailAddress">
+    </div>
+    <button mat-button id="export" (click)="exportLocally()">Exporter sur ordinateur</button>
+    <button mat-button id="sendMail" (click)="sendMail()">Envoyer par email</button>
     <button mat-button mat-dialog-close>Fermer</button>
 </div>

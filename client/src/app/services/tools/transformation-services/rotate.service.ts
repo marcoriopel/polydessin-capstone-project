@@ -45,7 +45,7 @@ export class RotateService {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
         this.drawOnPreviewCanvas();
-        this.rotateSelectedCanvas(this.angle, centerX, centerY);
+        this.rotateSelectedCanvas(this.selectionImageCtx, centerX, centerY);
     }
 
     setAngleRotation(event: WheelEvent): void {
@@ -56,10 +56,10 @@ export class RotateService {
         this.changeAngle(newAngle);
     }
 
-    rotateSelectedCanvas(angle: number, centerX: number, centerY: number): void {
-        this.selectionImageCtx.translate(centerX, centerY);
-        this.selectionImageCtx.rotate(angle * (Math.PI / ANGLE_HALF_TURN));
-        this.selectionImageCtx.translate(-centerX, -centerY);
+    rotateSelectedCanvas(ctx: CanvasRenderingContext2D, centerX: number, centerY: number): void {
+        ctx.translate(centerX, centerY);
+        ctx.rotate(this.angle * (Math.PI / ANGLE_HALF_TURN));
+        ctx.translate(-centerX, -centerY);
     }
 
     calculateCenter(): Vec2 {

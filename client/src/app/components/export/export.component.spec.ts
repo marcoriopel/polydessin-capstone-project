@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ describe('ExportComponent', () => {
     let canvasStub: HTMLCanvasElement;
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
+    let httpClientSpy: HttpClient;
     const WIDTH = 100;
     const HEIGHT = 100;
 
@@ -27,6 +29,7 @@ describe('ExportComponent', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingServiceStub },
                 { provide: MatDialogRef, useValue: dialogSpy },
+                { provide: HttpClient, useValue: httpClientSpy },
             ],
         }).compileComponents();
     }));
@@ -44,6 +47,8 @@ describe('ExportComponent', () => {
         filter.width = WIDTH;
         filter.height = HEIGHT;
         filterCanvasStub = filter;
+
+        httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
 
         // tslint:disable-next-line: no-string-literal
         component['drawingService'].canvas = canvasStub;
@@ -88,7 +93,7 @@ describe('ExportComponent', () => {
             target,
         } as unknown) as InputEvent;
 
-        const typeOfUrl = component.typeOfFile[value];
+        const typeOfUrl = component.extension[value];
         const urlTest = component.filterCanvas.toDataURL(typeOfUrl);
 
         component.getImageUrl(event);
@@ -110,4 +115,12 @@ describe('ExportComponent', () => {
         expect(clickSpy).not.toHaveBeenCalled();
         expect(dialogSpy.close).not.toHaveBeenCalled();
     });
+
+    // xit('should call the function click and close the modal when the name is to long', () => {
+    //     component.name = 'cercle';
+    //     const clickSpy = spyOn(component.link, 'click');
+    //     component.sendMail();
+    //     expect(clickSpy).toHaveBeenCalled();
+    //     expect(dialogSpy.close).toHaveBeenCalled();
+    // });
 });
