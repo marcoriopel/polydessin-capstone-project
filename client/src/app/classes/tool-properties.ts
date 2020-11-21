@@ -1,3 +1,4 @@
+import { StampAttributes } from '@app/classes/stamps';
 import { StraightLine } from './line';
 import { Vec2 } from './vec2';
 
@@ -93,4 +94,14 @@ export interface Fill {
 export interface Selection {
     type: string;
     imageData: ImageData;
+}
+
+export interface Stamp {
+    type: string;
+    color: string;
+    opacity: number;
+    size: number;
+    position: Vec2;
+    stamp: StampAttributes;
+    angle: number;
 }

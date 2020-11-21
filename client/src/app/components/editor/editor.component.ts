@@ -27,7 +27,7 @@ export class EditorComponent implements AfterViewInit {
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
 
-    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z', 'm'];
+    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z', 'd', 'm'];
 
     constructor(
         public hotkeyService: HotkeyService,

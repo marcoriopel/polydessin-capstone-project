@@ -26,6 +26,7 @@ export class HotkeyService {
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['d', this.toolNames.STAMP_TOOL_NAME],
         ['g', GRID_NAME],
         ['m', MAGNETISM_NAME],
     ]);
@@ -43,7 +44,6 @@ export class HotkeyService {
         if (event.shiftKey || event.ctrlKey) event.preventDefault();
         if (!this.isHotkeyEnabled) return;
         let keyName: string | undefined;
-
         if (event.shiftKey && event.ctrlKey) {
             keyName = this.keysNeedShift.get(event.key.toString());
         } else if (event.ctrlKey) {
