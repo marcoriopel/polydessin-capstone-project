@@ -87,7 +87,7 @@ export class SelectionService extends Tool {
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionOver = false;
-                this.setInitialSelection(this.selection);
+                this.setSelection(this.initialSelection, this.selection);
                 this.setSelectionData(this.selection);
             }
             // reset underlying service to original form
@@ -142,26 +142,36 @@ export class SelectionService extends Tool {
     ctrlKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case 'x': {
-                this.clipboardService.cut(this.selection, this.selectionImage);
-                this.moveService.clearSelectionBackground();
-                this.applyPreview();
-                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                this.moveService.isTransformationOver = true;
+                if (this.selection.height !== 0 || this.selection.height !== 0) {
+                    this.clipboardService.copy(this.selection, this.selectionImage);
+                    this.moveService.clearSelectionBackground();
+                    this.applyPreview();
+                    this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                    this.moveService.isTransformationOver = true;
+                }
                 break;
             }
             case 'c': {
-                // this.clipboardService.copy(this.selection, this.selectionImage);
+                if (this.selection.height !== 0 || this.selection.height !== 0) {
+                    this.clipboardService.copy(this.selection, this.selectionImage);
+                    this.moveService.printSelectionOnPreview();
+                }
                 break;
             }
             case 'v': {
-                this.setSelection(this.clipboardService.selection);
-                this.setSelectionImage(this.clipboardService.clipBoardCanvas);
-                this.moveService.initialize(this.selection, this.selectionImage);
-                this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                this.moveService.printSelectionOnPreview();
-                this.moveService.isTransformationOver = false;
-                this.strokeSelection();
-                this.setSelectionPoint();
+                if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+                    this.setSelection(this.selection, this.clipboardService.selection);
+                    this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+                    this.moveService.initialize(this.selection, this.selectionImage);
+                    this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                    if (!this.moveService.isTransformationOver) {
+                        this.moveService.initialSelection = this.initialSelection;
+                    }
+                    this.moveService.printSelectionOnPreview();
+                    this.moveService.isTransformationOver = false;
+                    this.strokeSelection();
+                    this.setSelectionPoint();
+                }
                 break;
             }
         }
@@ -178,7 +188,7 @@ export class SelectionService extends Tool {
         this.underlyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
         this.underlyingService.fillStyle = FILL_STYLES.DASHED;
         this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
-        this.setInitialSelection(this.selection);
+        this.setSelection(this.initialSelection, this.selection);
         this.setSelectionData(this.selection);
         this.setSelectionPoint();
     }
@@ -243,18 +253,11 @@ export class SelectionService extends Tool {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    setInitialSelection(selection: SelectionBox): void {
-        this.initialSelection.startingPoint.x = selection.startingPoint.x;
-        this.initialSelection.startingPoint.y = selection.startingPoint.y;
-        this.initialSelection.width = selection.width;
-        this.initialSelection.height = selection.height;
-    }
-
-    setSelection(selection: SelectionBox): void {
-        this.selection.startingPoint.x = selection.startingPoint.x;
-        this.selection.startingPoint.y = selection.startingPoint.y;
-        this.selection.width = selection.width;
-        this.selection.height = selection.height;
+    setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 
     setSelectionImage(selectionImage: HTMLCanvasElement): void {

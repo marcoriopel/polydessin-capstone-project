@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SelectionBox, SelectionObject } from '@app/classes/selection-box';
+import { SelectionBox } from '@app/classes/selection-box';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
 @Injectable({
@@ -12,23 +12,13 @@ export class ClipboardService {
 
     constructor(public drawingService: DrawingService) {}
 
-    cut(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
+    copy(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.setSelection(selection);
         this.clipBoardCanvas.width = this.selection.width;
         this.clipBoardCanvas.height = this.selection.height;
         const selectionImageCtx = this.clipBoardCanvas.getContext('2d') as CanvasRenderingContext2D;
         selectionImageCtx.drawImage(selectionImage, 0, 0);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-    }
-
-    // copy(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-    //     this.setSelection(selection);
-    //     const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
-    //     selectionImageCtx.drawImage(selectionImage, 0, 0);
-    // }
-
-    paste(): SelectionObject {
-        return { selectionBox: this.selection, selectionImage: this.clipBoardCanvas };
     }
 
     private setSelection(selection: SelectionBox): void {
