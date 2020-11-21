@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -17,8 +18,9 @@ export class CircleSelectionService extends SelectionService {
         public circleService: CircleService,
         public moveService: MoveService,
         public rotateService: RotateService,
+        public magnetismService: MagnetismService,
     ) {
-        super(drawingService, moveService, rotateService);
+        super(drawingService, moveService, rotateService, magnetismService);
         super.underlyingService = circleService;
     }
 

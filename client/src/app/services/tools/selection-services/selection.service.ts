@@ -12,8 +12,10 @@ import {
     MouseButton,
     SELECTION_POINT_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
+import { GridInfo } from '@app/ressources/global-variables/grid-info';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
+import { MagnetismService } from '@app/services/tools/selection-services/magnetism.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
@@ -41,7 +43,12 @@ export class SelectionService extends Tool {
     currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;
     mouseDownCoord: Vec2 = { x: 0, y: 0 };
 
-    constructor(public drawingService: DrawingService, public moveService: MoveService, public rotateService: RotateService) {
+    constructor(
+        public drawingService: DrawingService,
+        public moveService: MoveService,
+        public rotateService: RotateService,
+        public magnetismService: MagnetismService,
+    ) {
         super(drawingService);
     }
 
@@ -131,68 +138,12 @@ export class SelectionService extends Tool {
     }
 
     onMouseMoveMagnetism(mousePosDifferenceX: number, mousePosDifferenceY: number): void {
-        const changeX = this.magnetismXAxisChange(mousePosDifferenceX);
-        const changeY = this.magnetismYAxisChange(mousePosDifferenceY);
-        this.moveService.onMouseMove(changeX, changeY);
-    }
-
-    magnetismXAxisChange(mousePosDifferenceX: number): number {
-        const startingCoordRefX = this.magnetismCoordinateReference().x;
-        const coordToSnapX = startingCoordRefX + mousePosDifferenceX;
-        const lowestXDistance = coordToSnapX % this.squareSize;
-        if (lowestXDistance > this.squareSize / 2) {
-            mousePosDifferenceX = mousePosDifferenceX + this.squareSize;
-        }
-        const changeX = mousePosDifferenceX - lowestXDistance;
+        const gridInfo: GridInfo = { SQUARE_SIZE: this.squareSize, ALIGNMENT: this.currentAlignment };
+        const changeX = this.magnetismService.magnetismXAxisChange(mousePosDifferenceX, gridInfo, this.selection);
         this.mouseDownCoord.x = this.mouseDownCoord.x + changeX;
-        return changeX;
-    }
-
-    magnetismYAxisChange(mousePosDifferenceY: number): number {
-        const startingCoordRefY = this.magnetismCoordinateReference().y;
-        const coordToSnapY = startingCoordRefY + mousePosDifferenceY;
-        const lowestYDistance = coordToSnapY % this.squareSize;
-        if (lowestYDistance > this.squareSize / 2) {
-            mousePosDifferenceY = mousePosDifferenceY + this.squareSize;
-        }
-        const changeY = mousePosDifferenceY - lowestYDistance;
+        const changeY = this.magnetismService.magnetismYAxisChange(mousePosDifferenceY, gridInfo, this.selection);
         this.mouseDownCoord.y = this.mouseDownCoord.y + changeY;
-        return changeY;
-    }
-
-    magnetismCoordinateReference(): Vec2 {
-        switch (this.currentAlignment) {
-            case this.alignmentNames.ALIGN_TOP_CENTER_NAME: {
-                return { x: this.selection.startingPoint.x + this.selection.width / 2, y: this.selection.startingPoint.y };
-            }
-            case this.alignmentNames.ALIGN_TOP_RIGHT_NAME: {
-                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y };
-            }
-            case this.alignmentNames.ALIGN_CENTER_LEFT_NAME: {
-                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y + this.selection.height / 2 };
-            }
-            case this.alignmentNames.ALIGN_CENTER_RIGHT_NAME: {
-                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y + this.selection.height / 2 };
-            }
-            case this.alignmentNames.ALIGN_CENTER_NAME: {
-                return {
-                    x: this.selection.startingPoint.x + this.selection.width / 2,
-                    y: this.selection.startingPoint.y + this.selection.height / 2,
-                };
-            }
-            case this.alignmentNames.ALIGN_BOTTOM_LEFT_NAME: {
-                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y + this.selection.height };
-            }
-            case this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME: {
-                return { x: this.selection.startingPoint.x + this.selection.width / 2, y: this.selection.startingPoint.y + this.selection.height };
-            }
-            case this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME: {
-                return { x: this.selection.startingPoint.x + this.selection.width, y: this.selection.startingPoint.y + this.selection.height };
-            }
-            default: {
-                return { x: this.selection.startingPoint.x, y: this.selection.startingPoint.y };
-            }
-        }
+        this.magnetismService.onMouseMoveMagnetism(changeX, changeY);
     }
 
     isSnappedOnGrid(coordinates: Vec2): boolean {
@@ -202,7 +153,7 @@ export class SelectionService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
         if (this.selection.height !== 0 || this.selection.height !== 0) {
-            const axisCoordinates: Vec2 = this.magnetismCoordinateReference();
+            const axisCoordinates: Vec2 = this.magnetismService.magnetismCoordinateReference(this.currentAlignment, this.selection);
             if (this.isMagnetism && !this.isSnappedOnGrid(axisCoordinates)) {
                 console.log('here');
                 this.moveService.snapOnGrid(event, axisCoordinates, this.squareSize);
