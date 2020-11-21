@@ -33,7 +33,13 @@ export const MAX_GRID_SQUARE_SIZE = 200;
 export const MIN_GRID_OPACITY = 0.1;
 export const MAX_GRID_OPACITY = 1;
 export const DEFAULT_GRID_SIZE = 5;
-export const DEFAULT_GRID_OPACITY = 1;
+export const DEFAULT_GRID_OPACITY = 0.1;
+export const TWO_DECIMAL_MULTIPLIER = 100;
+
+// constant rotation service
+export const ANGLE_HALF_TURN = 180;
+export const MAX_ANGLE = 360;
+export const ROTATION_STEP_ALT = 1;
 
 // constants for circle selection and square selection
 export const MAGNETISM_NAME = 'Magnétisme';
@@ -42,13 +48,12 @@ export const MAGNETISM_NAME = 'Magnétisme';
 export const SPRAY_DENSITY = 40;
 export const MIN_SPRAY_WIDTH = 5;
 export const MIN_SPRAY_DOT_WIDTH = 1;
-export const MAX_SPRAY_DOT_WIDTH = 10;
+export const MAX_SPRAY_DOT_WIDTH = 20;
 export const MIN_SPRAY_FREQUENCY = 10;
 export const MAX_SPRAY_FREQUENCY = 50;
 export const ONE_SECOND = 1000;
 
 // constants for pen service
-export const DELTA_Y_BASIC_VALUE = 100;
 export const ROTATION_STEP = 15;
 
 export const MAX_NUMBER_VISIBLE_DRAWINGS = 3;

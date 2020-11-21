@@ -96,6 +96,7 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
     openCarouselWindow(): void {
         this.dialog.open(CarouselComponent);
     }
+
     openExportWindow(): void {
         this.dialog.open(ExportComponent);
     }
