@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StampAttributes, Stamps, STAMPS } from '@app/../assets/stamps/stamps';
+import { INITIAL_STAMP_ANGLE, StampAttributes, Stamps, STAMPS } from '@app/../assets/stamps/stamps';
 import { StampService } from '@app/services/tools/stamp.service';
 
 @Component({
@@ -8,11 +8,17 @@ import { StampService } from '@app/services/tools/stamp.service';
     styleUrls: ['./stamp-attributes.component.scss'],
 })
 export class StampAttributesComponent {
-    toolSize: number = 5;
     stamps: Stamps = STAMPS;
+    toolSize: number;
+    angle: number = INITIAL_STAMP_ANGLE;
 
     constructor(public stampService: StampService) {
         this.stampService.currentStamp = STAMPS.ANGULAR;
+        this.toolSize = this.stampService.stampSize;
+
+        this.stampService.getAngle().subscribe((angle) => {
+            this.angle = angle as number;
+        });
     }
 
     changeSize(newSize: number): void {
@@ -22,5 +28,10 @@ export class StampAttributesComponent {
 
     changeStamp(newStamp: StampAttributes): void {
         this.stampService.currentStamp = newStamp;
+    }
+
+    changeAngle(newAngle: number): void {
+        this.angle = newAngle;
+        this.stampService.angle = newAngle;
     }
 }

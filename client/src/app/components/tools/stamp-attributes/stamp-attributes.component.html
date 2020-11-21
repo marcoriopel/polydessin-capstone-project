@@ -10,6 +10,7 @@
         (valueChange)="changeSize($event)"
     >
     </app-slider>
+    <app-slider title="Angle" [min]="-360" [max]="360" [step]="1" [value]="angle" (valueChange)="changeAngle($event)"> </app-slider>
     <div id="stamps">
         <label>
             <input type="radio" name="stamp" id="angular" (change)="changeStamp(this.stamps.ANGULAR)" checked />

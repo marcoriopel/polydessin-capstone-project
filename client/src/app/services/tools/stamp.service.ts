@@ -14,12 +14,14 @@ import { Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { Observable, Subject } from 'rxjs';
 import { ColorSelectionService } from '../color-selection/color-selection.service';
 import { DrawingService } from '../drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
 export class StampService extends Tool {
+    angleObservable: Subject<number> = new Subject<number>();
     currentStamp: StampAttributes = STAMPS.ANGULAR;
     name: string = TOOL_NAMES.STAMP_TOOL_NAME;
     stampSize: number = INITIAL_STAMP_SIZE;
@@ -72,7 +74,7 @@ export class StampService extends Tool {
 
         // Rotate stamp
         ctx.translate(center.x, center.y);
-        ctx.rotate((stampData.angle * Math.PI) / 90);
+        ctx.rotate(-((stampData.angle * Math.PI) / 180));
         ctx.translate(-center.x, -center.y);
 
         // Move stamp center to cursor position
@@ -88,11 +90,11 @@ export class StampService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
-        let rotationStep = ROTATION_STEP;
+        let rotationStep = ROTATION_STEP * 2;
         if (this.isAltKeyDown) {
             rotationStep = 1;
         }
-        this.angle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
+        this.changeAngle(this.angle - (event.deltaY / Math.abs(event.deltaY)) * rotationStep);
         this.onMouseMove(this.currentMouseEvent);
     }
 
@@ -110,5 +112,19 @@ export class StampService extends Tool {
             stamp: this.currentStamp,
             angle: this.angle,
         };
+    }
+
+    getAngle(): Observable<number> {
+        return this.angleObservable;
+    }
+
+    changeAngle(newAngle: number): void {
+        if (newAngle < -360) {
+            newAngle = newAngle + 360;
+        } else if (newAngle > 360) {
+            newAngle = newAngle - 360;
+        }
+        this.angle = newAngle;
+        this.angleObservable.next(this.angle);
     }
 }
