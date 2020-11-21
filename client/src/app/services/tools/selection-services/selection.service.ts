@@ -115,10 +115,10 @@ export class SelectionService extends Tool {
 
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
+        if (event.ctrlKey) {
+            this.ctrlKeyDown(event);
+        }
         if (this.selection.height !== 0 || this.selection.height !== 0) {
-            if (event.ctrlKey) {
-                this.ctrlKeyDown(event);
-            }
             this.moveService.onKeyDown(event);
         }
         if (this.isNewSelection) {
@@ -150,16 +150,18 @@ export class SelectionService extends Tool {
                 break;
             }
             case 'c': {
-                this.clipboardService.copy(this.selection, this.selectionImage);
+                // this.clipboardService.copy(this.selection, this.selectionImage);
                 break;
             }
             case 'v': {
-                // const selectionObject: SelectionObject = this.clipboardService.paste();
-                // this.selection = selectionObject.selectionBox;
-                // this.selectionImage = selectionObject.selectionImage;
-                // this.moveService.printSelectionOnPreview();
-                // this.strokeSelection();
-                // this.setSelectionPoint();
+                this.setSelection(this.clipboardService.selection);
+                this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+                this.moveService.initialize(this.selection, this.selectionImage);
+                this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                this.moveService.printSelectionOnPreview();
+                this.moveService.isTransformationOver = false;
+                this.strokeSelection();
+                this.setSelectionPoint();
                 break;
             }
         }
@@ -246,6 +248,20 @@ export class SelectionService extends Tool {
         this.initialSelection.startingPoint.y = selection.startingPoint.y;
         this.initialSelection.width = selection.width;
         this.initialSelection.height = selection.height;
+    }
+
+    setSelection(selection: SelectionBox): void {
+        this.selection.startingPoint.x = selection.startingPoint.x;
+        this.selection.startingPoint.y = selection.startingPoint.y;
+        this.selection.width = selection.width;
+        this.selection.height = selection.height;
+    }
+
+    setSelectionImage(selectionImage: HTMLCanvasElement): void {
+        this.selectionImage.width = selectionImage.width;
+        this.selectionImage.height = selectionImage.height;
+        const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+        selectionImageCtx.drawImage(selectionImage, 0, 0);
     }
 
     setSelectionData(selection: SelectionBox): void {}

@@ -7,30 +7,34 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class ClipboardService {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selectionImage: HTMLCanvasElement = document.createElement('canvas');
+    clipBoardCanvas: HTMLCanvasElement = document.createElement('canvas');
     selectionType: number;
 
     constructor(public drawingService: DrawingService) {}
 
     cut(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.setSelection(this.selection, selection);
-        this.selectionImage = selectionImage;
+        this.setSelection(selection);
+        this.clipBoardCanvas.width = this.selection.width;
+        this.clipBoardCanvas.height = this.selection.height;
+        const selectionImageCtx = this.clipBoardCanvas.getContext('2d') as CanvasRenderingContext2D;
+        selectionImageCtx.drawImage(selectionImage, 0, 0);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
-    copy(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.setSelection(this.selection, selection);
-        this.selectionImage = selectionImage;
-    }
+    // copy(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
+    //     this.setSelection(selection);
+    //     const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+    //     selectionImageCtx.drawImage(selectionImage, 0, 0);
+    // }
 
     paste(): SelectionObject {
-        return { selectionBox: this.selection, selectionImage: this.selectionImage };
+        return { selectionBox: this.selection, selectionImage: this.clipBoardCanvas };
     }
 
-    private setSelection(internalSelection: SelectionBox, incomingSelection: SelectionBox): void {
-        internalSelection.startingPoint.x = incomingSelection.startingPoint.x;
-        internalSelection.startingPoint.y = incomingSelection.startingPoint.y;
-        internalSelection.height = incomingSelection.height;
-        internalSelection.width = incomingSelection.width;
+    private setSelection(selection: SelectionBox): void {
+        this.selection.startingPoint.x = selection.startingPoint.x;
+        this.selection.startingPoint.y = selection.startingPoint.y;
+        this.selection.height = selection.height;
+        this.selection.width = selection.width;
     }
 }
