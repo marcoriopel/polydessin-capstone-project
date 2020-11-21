@@ -155,10 +155,8 @@ export class SelectionService extends Tool {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             const axisCoordinates: Vec2 = this.magnetismService.magnetismCoordinateReference(this.currentAlignment, this.selection);
             if (this.isMagnetism && !this.isSnappedOnGrid(axisCoordinates)) {
-                console.log('here');
                 this.moveService.snapOnGrid(event, axisCoordinates, this.squareSize);
             } else {
-                console.log('key');
                 this.moveService.onKeyDown(event, this.isMagnetism, this.squareSize);
             }
         }
