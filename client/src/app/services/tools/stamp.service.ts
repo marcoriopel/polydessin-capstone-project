@@ -36,8 +36,12 @@ export class StampService extends Tool {
         super(drawingService);
     }
 
-    onMouseEnter(): void {
+    setCursor(): void {
         this.drawingService.gridCanvas.style.cursor = 'none';
+    }
+
+    onMouseEnter(): void {
+        this.setCursor();
     }
 
     onKeyDown(event: KeyboardEvent): void {
