@@ -48,8 +48,8 @@ import { TypeOfFillSelectionComponent } from './components/tools/shared-Attribut
 import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
-import { UserGuideComponent } from './components/userguide/user-guide.component';
 import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
+import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
     declarations: [

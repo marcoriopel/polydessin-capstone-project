@@ -1,4 +1,4 @@
-import { StampAttributes } from 'src/assets/stamps/stamps';
+import { StampAttributes } from '@app/classes/stamps';
 import { StraightLine } from './line';
 import { Vec2 } from './vec2';
 
