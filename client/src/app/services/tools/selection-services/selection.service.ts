@@ -10,6 +10,7 @@ import {
     MouseButton,
     SELECTION_POINT_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -34,7 +35,12 @@ export class SelectionService extends Tool {
     isNewSelection: boolean = false;
     isSelectionOver: boolean = true;
 
-    constructor(public drawingService: DrawingService, public moveService: MoveService, public rotateService: RotateService) {
+    constructor(
+        public drawingService: DrawingService,
+        public moveService: MoveService,
+        public rotateService: RotateService,
+        public clipboardService: ClipboardService,
+    ) {
         super(drawingService);
     }
 
@@ -110,6 +116,9 @@ export class SelectionService extends Tool {
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
         if (this.selection.height !== 0 || this.selection.height !== 0) {
+            if (event.ctrlKey) {
+                this.ctrlKeyDown(event);
+            }
             this.moveService.onKeyDown(event);
         }
         if (this.isNewSelection) {
@@ -125,6 +134,32 @@ export class SelectionService extends Tool {
             case 'Shift': {
                 this.isShiftKeyDown = true;
                 this.underlyingService.isShiftKeyDown = true;
+                break;
+            }
+        }
+    }
+
+    ctrlKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'x': {
+                this.clipboardService.cut(this.selection, this.selectionImage);
+                this.moveService.clearSelectionBackground();
+                this.applyPreview();
+                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                this.moveService.isTransformationOver = true;
+                break;
+            }
+            case 'c': {
+                this.clipboardService.copy(this.selection, this.selectionImage);
+                break;
+            }
+            case 'v': {
+                // const selectionObject: SelectionObject = this.clipboardService.paste();
+                // this.selection = selectionObject.selectionBox;
+                // this.selectionImage = selectionObject.selectionImage;
+                // this.moveService.printSelectionOnPreview();
+                // this.strokeSelection();
+                // this.setSelectionPoint();
                 break;
             }
         }

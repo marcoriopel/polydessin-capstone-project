@@ -5,3 +5,8 @@ export interface SelectionBox {
     width: number;
     height: number;
 }
+
+export interface SelectionObject {
+    selectionBox: SelectionBox;
+    selectionImage: HTMLCanvasElement;
+}

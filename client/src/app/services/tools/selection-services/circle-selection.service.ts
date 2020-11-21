@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
@@ -17,8 +18,9 @@ export class CircleSelectionService extends SelectionService {
         public circleService: CircleService,
         public moveService: MoveService,
         public rotateService: RotateService,
+        public clipboardService: ClipboardService,
     ) {
-        super(drawingService, moveService, rotateService);
+        super(drawingService, moveService, rotateService, clipboardService);
         super.underlyingService = circleService;
     }
 
