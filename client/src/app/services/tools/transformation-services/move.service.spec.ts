@@ -73,7 +73,7 @@ describe('MoveService', () => {
         service.isTransformationOver = true;
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
+        service.onMouseMove(1, 1);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
     });
@@ -82,7 +82,7 @@ describe('MoveService', () => {
         service.isTransformationOver = true;
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        service.onMouseMove({ movementX: 1, movementY: 1 } as MouseEvent);
+        service.onMouseMove(1, 1);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint).toEqual({ x: 1, y: 1 });
@@ -91,7 +91,7 @@ describe('MoveService', () => {
     it('onKeyDown should not call printSelectionOnPreview if key is not arrowKey', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
     });
@@ -100,7 +100,7 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const setTimeoutSpy = spyOn(global, 'setTimeout');
 
-        service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
         expect(setTimeoutSpy).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const setIntervalSpy = spyOn(global, 'setInterval');
 
-        service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         tick(501);
 
@@ -125,7 +125,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-        service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         tick(501);
 
@@ -138,7 +138,7 @@ describe('MoveService', () => {
 
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-        service.onKeyDown({ key: 't' } as KeyboardEvent);
+        service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         tick(501);
 
@@ -154,7 +154,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
     });
@@ -165,7 +165,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.isTransformationOver).toBeFalse();
@@ -176,7 +176,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
-        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue - 3);
@@ -188,7 +188,7 @@ describe('MoveService', () => {
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
 
-        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue);
@@ -199,7 +199,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
-        service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue + 3);
@@ -211,7 +211,7 @@ describe('MoveService', () => {
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
 
-        service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue);
@@ -222,7 +222,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
-        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.y).toBe(initialYValue - 3);
@@ -234,7 +234,7 @@ describe('MoveService', () => {
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.UP, true);
 
-        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue);
@@ -245,7 +245,7 @@ describe('MoveService', () => {
         service.intervalId = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
-        service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.y).toBe(initialYValue + 3);
@@ -257,7 +257,7 @@ describe('MoveService', () => {
         const initialXValue = service.selection.startingPoint.x;
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
 
-        service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent);
+        service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toBe(initialXValue);
@@ -362,7 +362,7 @@ describe('MoveService', () => {
     it('move should call printSelectionOnPreview', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
     });
@@ -371,7 +371,7 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const initialStartingPoint = service.selection.startingPoint;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint).toEqual(initialStartingPoint);
@@ -382,7 +382,7 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.LEFT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toEqual(initialXValue - 3);
@@ -393,7 +393,7 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
         const initialXValue = service.selection.startingPoint.x;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.x).toEqual(initialXValue + 3);
@@ -404,7 +404,7 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.UP, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.y).toEqual(initialYValue - 3);
@@ -415,7 +415,7 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialYValue = service.selection.startingPoint.y;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint.y).toEqual(initialYValue + 3);
@@ -429,7 +429,7 @@ describe('MoveService', () => {
         service.pressedKeys.set(ARROW_KEYS.DOWN, true);
         const initialStartingPoint = service.selection.startingPoint;
 
-        service['move'](service);
+        service['move'](service, false, 5);
 
         expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
         expect(service.selection.startingPoint).toEqual(initialStartingPoint);
