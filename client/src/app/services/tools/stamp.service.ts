@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
-import { SCALE_FACTOR, STAMPS, TRANSLATION_FACTOR } from '@app/../assets/stamps/stamps';
+import {
+    INITIAL_STAMP_ANGLE,
+    INITIAL_STAMP_SIZE,
+    MAX_STAMP_SIZE,
+    MIN_STAMP_SIZE,
+    SCALE_FACTOR,
+    StampAttributes,
+    STAMPS,
+    TRANSLATION_FACTOR,
+} from '@app/../assets/stamps/stamps';
 import { Tool } from '@app/classes/tool';
 import { Stamp } from '@app/classes/tool-properties';
+import { Vec2 } from '@app/classes/vec2';
 import { ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '../color-selection/color-selection.service';
@@ -10,15 +20,15 @@ import { DrawingService } from '../drawing/drawing.service';
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    currentMouseEvent: MouseEvent;
+    currentStamp: StampAttributes = STAMPS.ANGULAR;
     name: string = TOOL_NAMES.STAMP_TOOL_NAME;
-    minSize: number = 1;
-    maxSize: number = 10;
-    stampSize: number = 5;
-    currentStamp: string = STAMPS.ANGULAR;
-    stampData: Stamp;
+    stampSize: number = INITIAL_STAMP_SIZE;
+    angle: number = INITIAL_STAMP_ANGLE;
+    maxSize: number = MAX_STAMP_SIZE;
+    minSize: number = MIN_STAMP_SIZE;
+    currentMouseEvent: MouseEvent;
     isAltKeyDown: boolean = false;
-    angle: number = 0;
+    stampData: Stamp;
 
     constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -29,16 +39,16 @@ export class StampService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (event.altKey) {
+        if (event.key === 'Alt') {
+            event.preventDefault();
             this.isAltKeyDown = true;
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.altKey) {
+        if (event.key === 'Alt') {
             this.isAltKeyDown = false;
         }
-        console.log(this.isAltKeyDown);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -56,10 +66,20 @@ export class StampService extends Tool {
     }
 
     printStamp(ctx: CanvasRenderingContext2D, stampData: Stamp): void {
-        let path = new Path2D(stampData.stamp);
+        let path = new Path2D(stampData.stamp.path);
+
+        const center: Vec2 = { x: stampData.position.x, y: stampData.position.y };
+
+        // Rotate stamp
+        ctx.translate(center.x, center.y);
+        ctx.rotate((stampData.angle * Math.PI) / 90);
+        ctx.translate(-center.x, -center.y);
+
+        // Move stamp center to cursor position
         ctx.translate(stampData.position.x - stampData.size * TRANSLATION_FACTOR, stampData.position.y - stampData.size * TRANSLATION_FACTOR);
         ctx.scale(stampData.size / SCALE_FACTOR, stampData.size / SCALE_FACTOR);
-        ctx.rotate((this.angle * Math.PI) / 180);
+
+        // Print stamp on canvas
         ctx.strokeStyle = ctx.fillStyle = stampData.color;
         ctx.stroke(path);
         ctx.fill(path);
@@ -68,14 +88,12 @@ export class StampService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
-        this.onMouseMove(this.currentMouseEvent);
         let rotationStep = ROTATION_STEP;
         if (this.isAltKeyDown) {
             rotationStep = 1;
         }
-        const newAngle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
-        this.angle = newAngle;
-        console.log(newAngle);
+        this.angle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
+        this.onMouseMove(this.currentMouseEvent);
     }
 
     onMouseLeave(): void {
@@ -90,6 +108,7 @@ export class StampService extends Tool {
             size: this.stampSize,
             position: this.getPositionFromMouse(mouseEvent),
             stamp: this.currentStamp,
+            angle: this.angle,
         };
     }
 }

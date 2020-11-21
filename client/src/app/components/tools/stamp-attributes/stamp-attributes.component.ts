@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Stamps, STAMPS } from '@app/../assets/stamps/stamps';
+import { StampAttributes, Stamps, STAMPS } from '@app/../assets/stamps/stamps';
 import { StampService } from '@app/services/tools/stamp.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class StampAttributesComponent {
         this.stampService.stampSize = newSize;
     }
 
-    changeStamp(newStamp: string): void {
+    changeStamp(newStamp: StampAttributes): void {
         this.stampService.currentStamp = newStamp;
     }
 }

@@ -1,3 +1,4 @@
+import { StampAttributes } from 'src/assets/stamps/stamps';
 import { StraightLine } from './line';
 import { Vec2 } from './vec2';
 
@@ -101,5 +102,6 @@ export interface Stamp {
     opacity: number;
     size: number;
     position: Vec2;
-    stamp: string;
+    stamp: StampAttributes;
+    angle: number;
 }
