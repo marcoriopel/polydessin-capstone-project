@@ -13,7 +13,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class ContinueDesignService {
-    private designDraft: boolean = false;
+    private lastDesign: boolean = false;
     destroy$: Subject<boolean> = new Subject<boolean>();
     filteredMetadata: DBData[] = [];
     currentRoute: string;
@@ -33,15 +33,15 @@ export class ContinueDesignService {
     }
 
     loadOldDesign(): boolean {
-        return this.designDraft;
+        return this.lastDesign;
     }
 
     continueDesignAction(): void {
-        this.designDraft = localStorage.length > 0;
+        this.lastDesign = localStorage.length > 0;
     }
 
     continueDesignDesactivated(): void {
-        this.designDraft = false;
+        this.lastDesign = false;
     }
 
     clearCanvas(): void {
@@ -93,24 +93,7 @@ export class ContinueDesignService {
     //         };
     //     });
     // }
-    // async applySelectedDrawing(index: number): Promise<void> {
-    //     if (this.currentRoute === '/home') {
-    //         this.router.navigateByUrl('/editor');
-    //         this.currentRoute = '/editor';
-    //     }
-    //     this.databaseService
-    //         .getDrawingPng(this.filteredMetadata[index].fileName)
-    //         .pipe(takeUntil(this.destroy$))
-    //         .subscribe(
-    //             (image: Blob) => {
-    //                 const img = URL.createObjectURL(image);
-    //                 this.drawImageOnCanvas(img);
-    //             },
-    //             (error) => {
-    //                 this.serverResponseService.loadErrorSnackBar();
-    //             },
-    //         );
-    // }
+
     // convertURIToImageData(URI).then(function(imageData) {
     //   // Here you can use imageData
     //   console.log(imageData);

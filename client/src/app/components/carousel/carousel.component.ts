@@ -1,10 +1,11 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
+import { ContinueDesignService } from '@app/services/continue-design/continue-design.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -19,7 +20,17 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit, OnDestroy {
+export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
+    constructor(
+        public router: Router,
+        public hotkeyService: HotkeyService,
+        public serverResponseService: ServerResponseService,
+        public databaseService: DatabaseService,
+        public dialog: MatDialog,
+        public drawingService: DrawingService,
+        public resizeDrawingService: ResizeDrawingService,
+        public continueDesign: ContinueDesignService,
+    ) {}
     destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
@@ -39,17 +50,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
-    constructor(
-        public router: Router,
-        public hotkeyService: HotkeyService,
-        public serverResponseService: ServerResponseService,
-        public databaseService: DatabaseService,
-        public dialog: MatDialog,
-        public drawingService: DrawingService,
-        public resizeDrawingService: ResizeDrawingService,
-    ) {}
-
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
+    ngAfterViewInit(): void {
+        //
+        this.continueDesign.continueDesign();
+    }
 
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;

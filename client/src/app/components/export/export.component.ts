@@ -33,6 +33,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
     emailAddress: string;
+    userForm: FormGroup;
 
     constructor(
         public drawingService: DrawingService,
@@ -45,6 +46,9 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
+        });
+        this.userForm = new FormGroup({
+            email: new FormControl('', [Validators.required, Validators.email]),
         });
     }
     ngAfterViewInit(): void {
@@ -100,6 +104,8 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
+        console.log("voici l'email ");
+        console.log(this.emailAddress);
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
@@ -118,5 +124,10 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             });
         this.link.click();
         this.dialogRef.close();
+    }
+
+    // tslint:disable-next-line: no-any
+    changeEmail(email: any): void {
+        this.emailAddress = email.target.value;
     }
 }
