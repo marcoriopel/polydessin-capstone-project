@@ -229,4 +229,11 @@ describe('ToolSelectionService', () => {
         service.setCurrentToolCursor();
         expect(cursorSpy).toHaveBeenCalled();
     });
+
+    it('should call current tool onWheelEvent on WheelEvent', () => {
+        const wheelEvent = new WheelEvent('wheel');
+        const wheelSpy = spyOn(service.currentTool, 'onWheelEvent');
+        service.currentToolWheelEvent(wheelEvent);
+        expect(wheelSpy).toHaveBeenCalledWith(wheelEvent);
+    });
 });
