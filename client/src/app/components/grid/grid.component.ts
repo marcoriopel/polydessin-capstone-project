@@ -11,7 +11,6 @@ import { GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
-import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 
 @Component({
@@ -31,7 +30,6 @@ export class GridComponent {
     constructor(
         public drawingService: DrawingService,
         public hotkeyService: HotkeyService,
-        public selectionService: SelectionService,
         public circleSelectionService: CircleSelectionService,
         public squareSelectionService: SquareSelectionService,
     ) {
