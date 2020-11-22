@@ -182,6 +182,17 @@ describe('MoveService', () => {
         expect(service.selection.startingPoint.x).toBe(initialXValue - 3);
     });
 
+    it('onKeyDown should change selection.startingPoint.x of square size if key is ArrowLeft and there is magnetism', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        service.intervalId = setTimeout(() => {}, 100);
+        const initialXValue = service.selection.startingPoint.x;
+
+        service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, true, 5);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toBe(initialXValue - 5);
+    });
+
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowLeft and ArrowLeft is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         service.intervalId = setTimeout(() => {}, 100);
@@ -388,6 +399,17 @@ describe('MoveService', () => {
         expect(service.selection.startingPoint.x).toEqual(initialXValue - 3);
     });
 
+    it('move should change startingPoint.x of square size if isArrowKeyLeftPressed and there is magnetism', () => {
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        const initialXValue = service.selection.startingPoint.x;
+
+        service['move'](service, true, 5);
+
+        expect(printSelectionOnPreviewSpy).toHaveBeenCalled();
+        expect(service.selection.startingPoint.x).toEqual(initialXValue - 5);
+    });
+
     it('move should change startingPoint.x if isArrowKeyRightPressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
@@ -452,5 +474,107 @@ describe('MoveService', () => {
 
     it('isArrowKeyPressed should return false if no arrowKeys are pressed', () => {
         expect(service['isArrowKeyPressed']()).toBe(false);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowLeft', () => {
+        const baseCoordinates = { x: 14, y: 16 };
+        service.selection.startingPoint = { x: 14, y: 16 };
+        service.snapOnGrid({ key: 'ArrowLeft' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(10);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowLeft and changeY is bigger than half the square size', () => {
+        const baseCoordinates = { x: 14, y: 14 };
+        service.selection.startingPoint = { x: 14, y: 14 };
+        service.snapOnGrid({ key: 'ArrowLeft' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(10);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowRight', () => {
+        const baseCoordinates = { x: 16, y: 16 };
+        service.selection.startingPoint = { x: 16, y: 16 };
+        service.snapOnGrid({ key: 'ArrowRight' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(20);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change only selection.startingPoint.y if key is ArrowRight and x is on grid', () => {
+        const baseCoordinates = { x: 15, y: 16 };
+        service.selection.startingPoint = { x: 15, y: 16 };
+        service.snapOnGrid({ key: 'ArrowRight' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(15);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowRight and changeY is bigger than half the square size', () => {
+        const baseCoordinates = { x: 16, y: 18 };
+        service.selection.startingPoint = { x: 16, y: 18 };
+        service.snapOnGrid({ key: 'ArrowRight' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(20);
+        expect(service.selection.startingPoint.y).toBe(20);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowUp', () => {
+        const baseCoordinates = { x: 16, y: 16 };
+        service.selection.startingPoint = { x: 16, y: 16 };
+        service.snapOnGrid({ key: 'ArrowUp' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(15);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowUp and changeX is bigger than half the square size', () => {
+        const baseCoordinates = { x: 18, y: 18 };
+        service.selection.startingPoint = { x: 18, y: 18 };
+        service.snapOnGrid({ key: 'ArrowUp' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(20);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowDown', () => {
+        const baseCoordinates = { x: 16, y: 16 };
+        service.selection.startingPoint = { x: 16, y: 16 };
+        service.snapOnGrid({ key: 'ArrowDown' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(15);
+        expect(service.selection.startingPoint.y).toBe(20);
+    });
+
+    it('snapOnGrid should change selection.startingPoint.x and selection.startingPoint.x if key is ArrowDown and changeX is bigger than half the square size', () => {
+        const baseCoordinates = { x: 18, y: 16 };
+        service.selection.startingPoint = { x: 18, y: 16 };
+        service.snapOnGrid({ key: 'ArrowDown' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(20);
+        expect(service.selection.startingPoint.y).toBe(20);
+    });
+
+    it('snapOnGrid should change only selection.startingPoint.x if key is ArrowDown and y is on grid already', () => {
+        const baseCoordinates = { x: 16, y: 15 };
+        service.selection.startingPoint = { x: 16, y: 15 };
+        service.snapOnGrid({ key: 'ArrowDown' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(service.selection.startingPoint.x).toBe(15);
+        expect(service.selection.startingPoint.y).toBe(15);
+    });
+
+    it('snapOnGrid should not do anything if key is invalid', () => {
+        const baseCoordinates = { x: 16, y: 15 };
+        const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
+        // tslint:disable-next-line: no-empty
+        service.intervalId = setTimeout(() => {}, 100);
+        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+
+        service.snapOnGrid({ key: 'j' } as KeyboardEvent, baseCoordinates, 5);
+
+        expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
     });
 });
