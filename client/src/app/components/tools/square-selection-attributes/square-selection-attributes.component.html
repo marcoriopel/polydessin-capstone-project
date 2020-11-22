@@ -2,3 +2,76 @@
     <h2 class="toolName">{{ squareSelectionService.name }}</h2>
     <hr />
 </div>
+<mat-checkbox (change)="enableGridMagnetism($event.checked)" [checked]="isMagnetismEnabled">Magnétisme activé</mat-checkbox>
+<div class="alignmentTitle">Alignement magnétisme:</div>
+<div class="container-fluid">
+    <div class="row">
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_TOP_LEFT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_TOP_LEFT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_TOP_CENTER_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_TOP_CENTER_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_TOP_RIGHT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_TOP_RIGHT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+    </div>
+    <div class="row">
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_CENTER_LEFT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_CENTER_LEFT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_CENTER_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_CENTER_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_CENTER_RIGHT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_CENTER_RIGHT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+    </div>
+    <div class="row">
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_BOTTOM_LEFT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_BOTTOM_LEFT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+        <input
+            type="radio"
+            class="alignment btn btn-default col-md-4"
+            [value]="this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME"
+            [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME)"
+            (change)="onAlignmentChange($event)"
+        />
+    </div>
+</div>

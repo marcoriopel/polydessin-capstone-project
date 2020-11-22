@@ -41,6 +41,9 @@ export const ANGLE_HALF_TURN = 180;
 export const MAX_ANGLE = 360;
 export const ROTATION_STEP_ALT = 1;
 
+// constants for circle selection and square selection
+export const MAGNETISM_NAME = 'Magnétisme';
+
 // constants for spray service
 export const SPRAY_DENSITY = 40;
 export const MIN_SPRAY_WIDTH = 5;

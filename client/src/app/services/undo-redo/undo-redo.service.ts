@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -11,6 +11,7 @@ import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -36,6 +37,7 @@ export class UndoRedoService extends Tool {
         public brushService: BrushService,
         public polygoneService: PolygoneService,
         public selectionService: SelectionService,
+        public stampService: StampService,
     ) {
         super(drawingService);
         this.drawingService.getIsToolInUse().subscribe((value) => {
@@ -125,7 +127,7 @@ export class UndoRedoService extends Tool {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse): void {
+    drawElement(element: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
         switch (element.type) {
             case 'pencil':
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -156,6 +158,9 @@ export class UndoRedoService extends Tool {
                 break;
             case 'selection':
                 this.drawingService.restoreSelection(element as Selection);
+                break;
+            case 'stamp':
+                this.stampService.printStamp(this.drawingService.baseCtx, element as Stamp);
                 break;
         }
     }

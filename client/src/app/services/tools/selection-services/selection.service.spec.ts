@@ -230,7 +230,7 @@ describe('SelectionService', () => {
 
         service.onMouseMove({} as MouseEvent);
 
-        expect(moveServiceSpy.onMouseMove).toHaveBeenCalledWith({} as MouseEvent);
+        expect(moveServiceSpy.onMouseMove).toHaveBeenCalled();
     });
 
     it('onMouseMove should not call moveService.onMouseMove or underlyingService.onMouseMove', () => {
@@ -248,7 +248,7 @@ describe('SelectionService', () => {
 
         service.onKeyDown({} as KeyboardEvent);
 
-        expect(moveServiceSpy.onKeyDown).toHaveBeenCalledWith({} as KeyboardEvent);
+        expect(moveServiceSpy.onKeyDown).toHaveBeenCalled();
     });
 
     it('onKeyDown should call underlyingService.onKeyDown if isNewSelection', () => {
