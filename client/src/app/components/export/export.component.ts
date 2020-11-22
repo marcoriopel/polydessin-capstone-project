@@ -116,5 +116,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             .catch((E: Error) => {
                 throw E;
             });
+        this.link.click();
+        this.dialogRef.close();
     }
 }
