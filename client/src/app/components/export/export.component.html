@@ -49,8 +49,8 @@
         </select>
     </div>
     <div>
-        <!-- <label> email</label><br>
-        <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]= "this.emailAddress"> -->
+        <label> email</label><br>
+        <!-- <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]= "this.emailAddress"> -->
         <form
         [formGroup]="userForm"
         #formDirective="ngForm"
@@ -59,8 +59,8 @@
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email Address</mat-label>
             <input
-            matInput
-            id="sendMail" 
+            [(ngModel)]= "this.emailAddress"
+            matInput 
             placeholder="votre_email@polymtl.ca" 
             type="email" 
             (Keyup) = "changeEmail($event)"
