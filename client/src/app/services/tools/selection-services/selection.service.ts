@@ -143,7 +143,7 @@ export class SelectionService extends Tool {
         switch (event.key) {
             case 'x': {
                 if (this.selection.height !== 0 || this.selection.height !== 0) {
-                    this.clipboardService.copy(this.selection, this.selectionImage);
+                    this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
                     this.moveService.clearSelectionBackground();
                     this.applyPreview();
                     this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -153,7 +153,7 @@ export class SelectionService extends Tool {
             }
             case 'c': {
                 if (this.selection.height !== 0 || this.selection.height !== 0) {
-                    this.clipboardService.copy(this.selection, this.selectionImage);
+                    this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
                     this.moveService.printSelectionOnPreview();
                 }
                 break;
@@ -162,6 +162,10 @@ export class SelectionService extends Tool {
                 if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
                     this.setSelection(this.selection, this.clipboardService.selection);
                     this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+                    this.rotateService.initialize(this.selection, this.selectionImage);
+                    this.rotateService.angle = this.clipboardService.angle;
+                    this.rotateService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                    this.isSelectionOver = false;
                     this.moveService.initialize(this.selection, this.selectionImage);
                     this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
                     if (!this.moveService.isTransformationOver) {
