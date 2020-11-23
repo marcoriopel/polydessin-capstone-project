@@ -44,7 +44,6 @@ export class MoveService {
                     changeYLeft = changeYLeft - squareSize;
                 }
                 this.selection.startingPoint.y -= changeYLeft;
-
                 break;
             case ARROW_KEYS.UP:
                 this.selection.startingPoint.y -= baseCoordinates.y % squareSize;
@@ -53,7 +52,6 @@ export class MoveService {
                     changeXUp = changeXUp - squareSize;
                 }
                 this.selection.startingPoint.x -= changeXUp;
-
                 break;
             case ARROW_KEYS.RIGHT:
                 if (baseCoordinates.x % squareSize !== 0) this.selection.startingPoint.x += squareSize - (baseCoordinates.x % squareSize);
@@ -62,7 +60,6 @@ export class MoveService {
                     changeYRight = changeYRight - squareSize;
                 }
                 this.selection.startingPoint.y -= changeYRight;
-
                 break;
             case ARROW_KEYS.DOWN:
                 if (baseCoordinates.y % squareSize !== 0) this.selection.startingPoint.y += squareSize - (baseCoordinates.y % squareSize);
@@ -71,7 +68,6 @@ export class MoveService {
                     changeXDown = changeXDown - squareSize;
                 }
                 this.selection.startingPoint.x -= changeXDown;
-
                 break;
         }
 
