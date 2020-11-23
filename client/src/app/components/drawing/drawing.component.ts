@@ -41,26 +41,18 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
         this.drawingService.gridCanvas = this.gridCanvas.nativeElement;
         this.toolSelectionService.setCurrentToolCursor();
-        // Continuer dessin
-        this.baseCanvas.nativeElement.height = this.drawingService.canvas.height;
-        this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
-        // if (this.continueDesignService.loadOldDesign()) {
-        //     this.continueDesignService.continueDesign();
-        //     //     .then(() => {
-        //     //     //
-        //     // });
-        // }
-        if (localStorage.length !== 0 && this.drawingService.isSaveAuto) {
-            this.baseCanvas.nativeElement. = localStorage.getItem('theDesign');
-        }
+        // // Continuer dessin
+        // this.baseCanvas.nativeElement.height = this.drawingService.canvas.height;
+        // this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
     }
 
-    // // tslint:disable-next-line: use-lifecycle-interface
-    // ngOnInit(): void {
-    //     if (this.continueDesignService.newBaseCtx()) {
-    //         this.continueDesignService.resizeCanvas();
-    //     }
-    // }
+    recharged(): void {
+        if (this.drawingService.isSaveAuto && localStorage.length !== 0) {
+            this.baseCanvas.nativeElement.width = Number(localStorage.getItem('theWidth'));
+            this.baseCanvas.nativeElement.height = Number(localStorage.getItem('theHeight'));
+            this.baseCanvas.nativeElement.style.color = localStorage.getItem('theColor') as string;
+        }
+    }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
