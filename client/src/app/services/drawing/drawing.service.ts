@@ -109,4 +109,12 @@ export class DrawingService {
         this.undoStack = [];
         this.redoStack = [];
     }
+
+    backup(): void {
+        this.isSaveAuto = true;
+        localStorage.setItem('theDesign', this.previewCanvas.innerHTML);
+        localStorage.setItem('theWidth', JSON.stringify(this.canvas.width));
+        localStorage.setItem('theHeight', JSON.stringify(this.canvas.height));
+        localStorage.setItem('theColor', JSON.stringify(this.canvas.style.color));
+    }
 }

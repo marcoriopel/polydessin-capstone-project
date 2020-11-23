@@ -51,17 +51,16 @@ export class DrawingComponent implements AfterViewInit {
         //     // });
         // }
         if (localStorage.length !== 0 && this.drawingService.isSaveAuto) {
-            this.gridCtx. = localStorage.getItem('theDesign');
-        }
-
-    }
-
-    // tslint:disable-next-line: use-lifecycle-interface
-    ngOnInit(): void {
-        if (this.continueDesignService.newBaseCtx()) {
-            this.continueDesignService.resizeCanvas();
+            this.baseCanvas.nativeElement. = localStorage.getItem('theDesign');
         }
     }
+
+    // // tslint:disable-next-line: use-lifecycle-interface
+    // ngOnInit(): void {
+    //     if (this.continueDesignService.newBaseCtx()) {
+    //         this.continueDesignService.resizeCanvas();
+    //     }
+    // }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
