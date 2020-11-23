@@ -22,6 +22,7 @@ import { CircleSelectionService } from '@app/services/tools/selection-services/c
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -53,6 +54,7 @@ export class ToolSelectionService {
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
         public undoRedoService: UndoRedoService,
+        public textService: TextService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
@@ -68,6 +70,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.TEXT_TOOL_NAME, textService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService

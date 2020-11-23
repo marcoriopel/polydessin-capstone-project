@@ -9,6 +9,7 @@
         <app-line-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.LINE_TOOL_NAME"> </app-line-attributes>
         <app-fill-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.FILL_TOOL_NAME"> </app-fill-attributes>
         <app-eraser-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.ERASER_TOOL_NAME"> </app-eraser-attributes>
+        <app-text-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.TEXT_TOOL_NAME"> </app-text-attributes>
         <app-polygone-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.POLYGONE_TOOL_NAME"></app-polygone-attributes>
         <app-circleselection-attributes
             *ngIf="toolSelectionService.currentTool.name === this.toolNames.CIRCLE_SELECTION_TOOL_NAME"

@@ -48,6 +48,7 @@ import { TypeOfFillSelectionComponent } from './components/tools/shared-Attribut
 import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
+import { TextComponent } from './components/tools/text-attributes/text.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
@@ -84,6 +85,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         CircleselectionAttributesComponent,
         PenAttributesComponent,
         SprayAttributesComponent,
+        TextComponent,
     ],
     imports: [
         BrowserModule,

@@ -13,6 +13,7 @@ export interface SidebarElementTooltips {
     POLYGONE_TOOL_DESCRIPTION: string;
     CIRCLE_SELECTION_TOOL_NAME: string;
     SQUARE_SELECTION_TOOL_NAME: string;
+    TEXT_TOOL_NAME: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
     REDO_DESCRIPTION: string;
@@ -21,6 +22,7 @@ export interface SidebarElementTooltips {
     EXPORT_DRAWING_DESCRIPTION: string;
     SELECT_ALL_DESCRIPTION: string;
     SEND_DESCRIPTION: string;
+    TEXT_TOOL_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -35,10 +37,12 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
+    TEXT_TOOL_DESCRIPTION: 'Texte (T)',
     PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
     POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
     CIRCLE_SELECTION_TOOL_NAME: 'Sélection par ellipse (S)',
     SQUARE_SELECTION_TOOL_NAME: 'Sélection par rectangle (R)',
+    TEXT_TOOL_NAME: 'Texte (T)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
