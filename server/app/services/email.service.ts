@@ -12,11 +12,10 @@ export class EmailService {
     async sendByEmail(data: EmailData): Promise<void | string> {
         if (this.validateData(data.to)) {
             const MAIL_API_208_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
-            const MAIL_API_URL = 'https://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true';
+            const MAIL_API_URL = 'http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true';
 
             const formData: FormData = new FormData();
             const buffer = Buffer.from(data.payload, 'base64');
-
             formData.append('to', data.to);
             formData.append('payload', buffer, {
                 contentType: data.format,
@@ -30,11 +29,14 @@ export class EmailService {
                     ...formHeaders,
                 },
             };
+            console.log(buffer);
             return (
                 axios
                     .post(MAIL_API_URL, formData, config)
                     // tslint:disable-next-line: no-empty
-                    .then(() => {})
+                    .then(() => {
+                        console.log('mail envoyé');
+                    })
                     .catch((error: Error) => {
                         throw error;
                     })

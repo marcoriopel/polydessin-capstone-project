@@ -59,11 +59,11 @@
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email Address</mat-label>
             <input
-            [(ngModel)]= "this.emailAddress"
             matInput 
+            autocomplete="off"
             placeholder="votre_email@polymtl.ca" 
             type="email" 
-            (Keyup) = "changeEmail($event)"
+            [(ngModel)]= "this.emailAddress"
               formControlName="email"
               class="form-input-field"
               pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"

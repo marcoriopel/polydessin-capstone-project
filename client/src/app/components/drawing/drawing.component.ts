@@ -21,6 +21,7 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
+    isSaveAuto: boolean = true;
 
     constructor(
         private drawingService: DrawingService,
@@ -43,12 +44,16 @@ export class DrawingComponent implements AfterViewInit {
         // Continuer dessin
         this.baseCanvas.nativeElement.height = this.drawingService.canvas.height;
         this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
-        if (this.continueDesignService.loadOldDesign()) {
-            this.continueDesignService.continueDesign();
-            //     .then(() => {
-            //     //
-            // });
+        // if (this.continueDesignService.loadOldDesign()) {
+        //     this.continueDesignService.continueDesign();
+        //     //     .then(() => {
+        //     //     //
+        //     // });
+        // }
+        if (localStorage.length !== 0 && this.drawingService.isSaveAuto) {
+            this.gridCtx. = localStorage.getItem('theDesign');
         }
+
     }
 
     // tslint:disable-next-line: use-lifecycle-interface

@@ -25,14 +25,13 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
-    emailAdress: string = '';
     imagesrc: string = '';
     urlImage: string = '';
     urlExtension: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
-    emailAddress: string;
+    emailAddress: string = '';
     userForm: FormGroup;
 
     constructor(
@@ -104,8 +103,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
-        console.log("voici l'email ");
-        console.log(this.emailAddress);
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
