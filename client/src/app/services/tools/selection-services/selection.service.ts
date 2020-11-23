@@ -160,6 +160,11 @@ export class SelectionService extends Tool {
             }
             case 'v': {
                 if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+                    if (!this.moveService.isTransformationOver || !this.isSelectionOver) {
+                        this.moveService.clearSelectionBackground();
+                        this.moveService.printSelectionOnPreview();
+                        this.applyPreview();
+                    }
                     this.setSelection(this.selection, this.clipboardService.selection);
                     this.setSelectionImage(this.clipboardService.clipBoardCanvas);
                     this.rotateService.initialize(this.selection, this.selectionImage);
@@ -168,9 +173,6 @@ export class SelectionService extends Tool {
                     this.isSelectionOver = false;
                     this.moveService.initialize(this.selection, this.selectionImage);
                     this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                    if (!this.moveService.isTransformationOver) {
-                        this.moveService.initialSelection = this.initialSelection;
-                    }
                     this.moveService.printSelectionOnPreview();
                     this.moveService.isTransformationOver = false;
                     this.strokeSelection();
@@ -198,6 +200,10 @@ export class SelectionService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
+        if (event.key === 'z') {
+            console.log(this.initialSelection.startingPoint);
+            console.log(this.selection.startingPoint);
+        }
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
