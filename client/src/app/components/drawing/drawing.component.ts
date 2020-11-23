@@ -46,13 +46,13 @@ export class DrawingComponent implements AfterViewInit {
         // this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
     }
 
-    recharged(): void {
-        if (this.drawingService.isSaveAuto && localStorage.length !== 0) {
-            this.baseCanvas.nativeElement.width = Number(localStorage.getItem('theWidth'));
-            this.baseCanvas.nativeElement.height = Number(localStorage.getItem('theHeight'));
-            this.baseCanvas.nativeElement.style.color = localStorage.getItem('theColor') as string;
-        }
-    }
+    // recharged(): void {
+    //     if (this.drawingService.isSaveAuto && localStorage.length !== 0) {
+    //         this.baseCanvas.nativeElement.width = Number(localStorage.getItem('theWidth'));
+    //         this.baseCanvas.nativeElement.height = Number(localStorage.getItem('theHeight'));
+    //         this.baseCanvas.nativeElement.style.color = localStorage.getItem('theColor') as string;
+    //     }
+    // }
 
     @HostListener('mousemove', ['$event'])
     onMouseMove(event: MouseEvent): void {
