@@ -136,6 +136,17 @@ export class SelectionService extends Tool {
                 this.underlyingService.isShiftKeyDown = true;
                 break;
             }
+            case 'Delete': {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.moveService.clearSelectionBackground();
+                this.applyPreview();
+                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+                selectionImageCtx.clearRect(0, 0, this.selectionImage.width, this.selectionImage.height);
+                this.moveService.initialize(this.selection, this.selectionImage);
+                this.moveService.isTransformationOver = true;
+                break;
+            }
         }
     }
 
