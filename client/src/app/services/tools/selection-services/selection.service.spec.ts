@@ -181,7 +181,7 @@ describe('SelectionService', () => {
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service.isNewSelection = true;
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
 
         service.onMouseUp({} as MouseEvent);
@@ -282,7 +282,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should call setInitialSelection, setSelectionData and setSelectionPoint', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -298,7 +298,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should set selection to canvas width and canvas height', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -320,7 +320,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should call clear canvas', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -337,7 +337,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should set attributes for underlyingService', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -486,7 +486,7 @@ describe('SelectionService', () => {
             height: 10,
         };
 
-        service.setInitialSelection(selection);
+        service.setSelection(service.initialSelection, selection);
 
         expect(service.initialSelection).toEqual(selection);
     });
