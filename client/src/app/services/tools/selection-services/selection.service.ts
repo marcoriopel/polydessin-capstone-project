@@ -153,42 +153,15 @@ export class SelectionService extends Tool {
     ctrlKeyDown(event: KeyboardEvent): void {
         switch (event.key) {
             case 'x': {
-                if (this.selection.height !== 0 || this.selection.height !== 0) {
-                    this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
-                    this.moveService.clearSelectionBackground();
-                    this.applyPreview();
-                    this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                    this.moveService.isTransformationOver = true;
-                }
+                this.cut();
                 break;
             }
             case 'c': {
-                if (this.selection.height !== 0 || this.selection.height !== 0) {
-                    this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
-                    this.moveService.printSelectionOnPreview();
-                }
+                this.copy();
                 break;
             }
             case 'v': {
-                if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
-                    if (!this.moveService.isTransformationOver || !this.isSelectionOver) {
-                        this.moveService.clearSelectionBackground();
-                        this.moveService.printSelectionOnPreview();
-                        this.applyPreview();
-                    }
-                    this.setSelection(this.selection, this.clipboardService.selection);
-                    this.setSelectionImage(this.clipboardService.clipBoardCanvas);
-                    this.rotateService.initialize(this.selection, this.selectionImage);
-                    this.rotateService.angle = this.clipboardService.angle;
-                    this.rotateService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                    this.isSelectionOver = false;
-                    this.moveService.initialize(this.selection, this.selectionImage);
-                    this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-                    this.moveService.printSelectionOnPreview();
-                    this.moveService.isTransformationOver = false;
-                    this.strokeSelection();
-                    this.setSelectionPoint();
-                }
+                this.paste();
                 break;
             }
         }
@@ -333,6 +306,46 @@ export class SelectionService extends Tool {
     onWheelEvent(event: WheelEvent): void {
         if (!this.isSelectionOver) {
             this.rotateService.onWheelEvent(event);
+            this.strokeSelection();
+            this.setSelectionPoint();
+        }
+    }
+
+    cut(): void {
+        if (this.selection.height !== 0 || this.selection.height !== 0) {
+            this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.moveService.clearSelectionBackground();
+            this.applyPreview();
+            this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.moveService.isTransformationOver = true;
+            this.isSelectionOver = true;
+        }
+    }
+
+    copy(): void {
+        if (this.selection.height !== 0 || this.selection.height !== 0) {
+            this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.moveService.printSelectionOnPreview();
+        }
+    }
+
+    paste(): void {
+        if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+            if (!this.moveService.isTransformationOver || !this.isSelectionOver) {
+                this.moveService.clearSelectionBackground();
+                this.moveService.printSelectionOnPreview();
+                this.applyPreview();
+            }
+            this.setSelection(this.selection, this.clipboardService.selection);
+            this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+            this.rotateService.initialize(this.selection, this.selectionImage);
+            this.rotateService.angle = this.clipboardService.angle;
+            this.rotateService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.isSelectionOver = false;
+            this.moveService.initialize(this.selection, this.selectionImage);
+            this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.moveService.printSelectionOnPreview();
+            this.moveService.isTransformationOver = false;
             this.strokeSelection();
             this.setSelectionPoint();
         }

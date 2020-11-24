@@ -24,6 +24,7 @@ import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 import { takeUntil } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
@@ -33,6 +34,7 @@ export class ToolSelectionService {
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     private tools: Map<string, Tool>;
     currentTool: Tool;
+    currentToolName: Subject<string> = new Subject<string>();
 
     constructor(
         public dialog: MatDialog,
@@ -90,6 +92,7 @@ export class ToolSelectionService {
             this.currentTool.initialize();
             this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.currentToolName.next(toolName);
         }
     }
 
@@ -170,5 +173,9 @@ export class ToolSelectionService {
 
     currentToolWheelEvent(event: WheelEvent): void {
         this.currentTool.onWheelEvent(event);
+    }
+
+    getCurrentTool(): Observable<string> {
+        return this.currentToolName.asObservable();
     }
 }

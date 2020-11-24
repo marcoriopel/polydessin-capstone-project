@@ -1,5 +1,6 @@
 .sidebar {
     height: 100vh;
+    width: 76px;
     align-items: center;
     justify-content: space-between;
     background-color: #3b3737;
@@ -10,7 +11,7 @@
 
 .sidebarSection {
     display: flex;
-    flex-flow: column;
+    flex-flow: row wrap;
 }
 
 .topDivider {

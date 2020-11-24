@@ -245,8 +245,35 @@
                 >colorize</mat-icon
             >
         </label>
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.CUT_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="this.cut()"
+            >content_cut</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.COPY_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="this.copy()"
+            >content_copy</mat-icon
+        >
+        <mat-icon
+            class="material-icons"
+            [matTooltip]="elementDescriptions.PASTE_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="this.paste()"
+            >content_paste</mat-icon
+        >
     </div>
-    <div class="sidebarSection">
+    <div class="topDivider sidebarSection">
         <mat-icon
             class="material-icons"
             [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
@@ -284,6 +311,7 @@
             (click)="openUserguide()"
             >help</mat-icon
         >
+
         <mat-icon
             id="undo"
             #undo

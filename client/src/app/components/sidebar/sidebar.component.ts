@@ -10,6 +10,7 @@ import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
@@ -36,11 +37,12 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
         public undoRedoService: UndoRedoService,
         public hotkeyService: HotkeyService,
         public squareSelectionService: SquareSelectionService,
+        public circleSelectionService: CircleSelectionService,
     ) {}
 
     ngOnInit(): void {
-        this.hotkeyService
-            .getKey()
+        this.toolSelectionService
+            .getCurrentTool()
             .pipe(takeUntil(this.destroy$))
             .subscribe((tool) => {
                 if (TOOL_NAMES_ARRAY.includes(tool)) {
@@ -104,5 +106,45 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+    }
+
+    cut(): void {
+        console.log(this.selectedTool);
+        switch (this.selectedTool) {
+            case this.toolNames.SQUARE_SELECTION_TOOL_NAME: {
+                this.squareSelectionService.cut();
+                break;
+            }
+            case this.toolNames.CIRCLE_SELECTION_TOOL_NAME: {
+                this.circleSelectionService.cut();
+                break;
+            }
+        }
+    }
+
+    copy(): void {
+        switch (this.selectedTool) {
+            case this.toolNames.SQUARE_SELECTION_TOOL_NAME: {
+                this.squareSelectionService.copy();
+                break;
+            }
+            case this.toolNames.CIRCLE_SELECTION_TOOL_NAME: {
+                this.circleSelectionService.copy();
+                break;
+            }
+        }
+    }
+
+    paste(): void {
+        switch (this.selectedTool) {
+            case this.toolNames.SQUARE_SELECTION_TOOL_NAME: {
+                this.squareSelectionService.paste();
+                break;
+            }
+            case this.toolNames.CIRCLE_SELECTION_TOOL_NAME: {
+                this.circleSelectionService.paste();
+                break;
+            }
+        }
     }
 }
