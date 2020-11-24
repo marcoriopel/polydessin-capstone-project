@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -18,8 +19,9 @@ export class SquareSelectionService extends SelectionService {
         public moveService: MoveService,
         public rotateService: RotateService,
         public clipboardService: ClipboardService,
+        public magnetismService: MagnetismService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
         super.underlyingService = squareService;
     }
 
@@ -40,6 +42,10 @@ export class SquareSelectionService extends SelectionService {
         );
         this.moveService.initialize(this.selection, this.selectionImage);
         this.rotateService.initialize(this.selection, this.selectionImage);
+    }
+
+    setMagnetismAlignment(alignment: string): void {
+        this.currentAlignment = alignment;
     }
 
     strokeSelection(): void {

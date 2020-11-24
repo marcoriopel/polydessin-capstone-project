@@ -93,6 +93,23 @@
 
         <input
             type="radio"
+            [id]="this.toolNames.STAMP_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.STAMP_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.STAMP_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.STAMP_TOOL_NAME">
+            <mat-icon
+                class="fas fa-stamp"
+                [matTooltip]="elementDescriptions.STAMP_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+
+        <input
+            type="radio"
             [id]="this.toolNames.SQUARE_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.SQUARE_TOOL_NAME"
