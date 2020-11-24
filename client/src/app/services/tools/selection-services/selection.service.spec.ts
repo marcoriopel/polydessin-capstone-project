@@ -5,6 +5,8 @@ import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/glo
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -16,16 +18,32 @@ describe('SelectionService', () => {
     let service: SelectionService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;
+    let magnetismServiceSpy: SpyObj<MagnetismService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
+    let rotateService: SpyObj<RotateService>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse']);
-        moveServiceSpy = jasmine.createSpyObj('MoveService', ['printSelectionOnPreview', 'onMouseDown', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
+        magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
+            'magnetismXAxisChange',
+            'magnetismYAxisChange',
+            'onMouseMoveMagnetism',
+            'magnetismCoordinateReference',
+        ]);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
+        moveServiceSpy = jasmine.createSpyObj('MoveService', [
+            'printSelectionOnPreview',
+            'onMouseDown',
+            'onMouseMove',
+            'onKeyDown',
+            'onKeyUp',
+            'snapOnGrid',
+        ]);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
-        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect']);
+        previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
+        rotateService = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
 
@@ -33,6 +51,8 @@ describe('SelectionService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MoveService, useValue: moveServiceSpy },
+                { provide: RotateService, useValue: rotateService },
+                { provide: MagnetismService, useValue: magnetismServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -226,7 +246,7 @@ describe('SelectionService', () => {
 
         service.onMouseMove({} as MouseEvent);
 
-        expect(moveServiceSpy.onMouseMove).toHaveBeenCalledWith({} as MouseEvent);
+        expect(moveServiceSpy.onMouseMove).toHaveBeenCalled();
     });
 
     it('onMouseMove should not call moveService.onMouseMove or underlyingService.onMouseMove', () => {
@@ -244,7 +264,7 @@ describe('SelectionService', () => {
 
         service.onKeyDown({} as KeyboardEvent);
 
-        expect(moveServiceSpy.onKeyDown).toHaveBeenCalledWith({} as KeyboardEvent);
+        expect(moveServiceSpy.onKeyDown).toHaveBeenCalled();
     });
 
     it('onKeyDown should call underlyingService.onKeyDown if isNewSelection', () => {
@@ -495,13 +515,12 @@ describe('SelectionService', () => {
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 
-    it('applyPreview should draw on baseCtx and clear preview', () => {
+    it('applyPreview should draw on baseCtx', () => {
         const updateSelectionDataSpy = spyOn(service, 'updateSelectionData');
 
         service.applyPreview();
 
-        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
-        expect(baseCtxSpy.drawImage).toHaveBeenCalled();
+        expect(drawingServiceSpy.applyPreview).toHaveBeenCalled();
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 
@@ -567,7 +586,54 @@ describe('SelectionService', () => {
 
     it('setSelectionPoint should not draw blue squares if selection is empty', () => {
         service.setSelectionPoint();
-
         expect(previewCtxSpy.fillRect).not.toHaveBeenCalled();
+    });
+
+    it('should set grid spacing on setGridSpacing call', () => {
+        service.squareSize = 5;
+        service.setGridSpacing(10);
+        expect(service.squareSize).toEqual(10);
+    });
+
+    it('should set magnetism on enableMagnetism call', () => {
+        service.isMagnetism = false;
+        service.enableMagnetism(true);
+        expect(service.isMagnetism).toEqual(true);
+    });
+
+    it('should call onMouseMoveMagnetism if magnetism is enabled and the transformation is move', () => {
+        const mouveMoveMagnetismSpy = spyOn(service, 'onMouseMoveMagnetism');
+        service.isNewSelection = false;
+        service.transormation = 'move';
+        service.isMagnetism = true;
+        service.onMouseMove({} as MouseEvent);
+        expect(mouveMoveMagnetismSpy).toHaveBeenCalled();
+    });
+
+    it('should call the method in magnetismService on onMouseMoveMagnetism call', () => {
+        service.onMouseMoveMagnetism(2, 2);
+        expect(magnetismServiceSpy.magnetismXAxisChange).toHaveBeenCalled();
+        expect(magnetismServiceSpy.magnetismYAxisChange).toHaveBeenCalled();
+        expect(magnetismServiceSpy.onMouseMoveMagnetism).toHaveBeenCalled();
+    });
+
+    it('should return false if coordinates are not on grid', () => {
+        service.squareSize = 3;
+        expect(service.isSnappedOnGrid({ x: 2, y: 2 })).toBeFalsy();
+    });
+
+    it('should return true if coordinates are on grid', () => {
+        service.squareSize = 2;
+        expect(service.isSnappedOnGrid({ x: 4, y: 4 })).toBeTruthy();
+    });
+
+    it('onKeyDown should call snap on grid if it is not snapped', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.isMagnetism = true;
+        const isSnappedOnGridSpy = spyOn(service, 'isSnappedOnGrid').and.returnValue(false);
+        service.onKeyDown({} as KeyboardEvent);
+
+        expect(isSnappedOnGridSpy).toHaveBeenCalled();
+        expect(moveServiceSpy.snapOnGrid).toHaveBeenCalled();
     });
 });

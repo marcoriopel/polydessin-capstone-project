@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { Observable, Subject } from 'rxjs';
 
@@ -16,23 +16,23 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
 
     setGrid(): void {
         this.clearCanvas(this.gridCtx);
-        const bw = this.canvas.width;
-        const bh = this.canvas.height;
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
         this.gridCtx.beginPath();
-        for (let x = 0; x <= bw; x += this.gridSpacing) {
+        for (let x = 0; x <= canvasWidth; x += this.gridSpacing) {
             this.gridCtx.moveTo(x, 0);
-            this.gridCtx.lineTo(x, bh);
+            this.gridCtx.lineTo(x, canvasHeight);
         }
 
-        for (let x = 0; x <= bh; x += this.gridSpacing) {
+        for (let x = 0; x <= canvasHeight; x += this.gridSpacing) {
             this.gridCtx.moveTo(0, x);
-            this.gridCtx.lineTo(bw, x);
+            this.gridCtx.lineTo(canvasWidth, x);
         }
         this.gridCtx.globalAlpha = this.opacity;
         this.gridCtx.strokeStyle = 'black';
@@ -69,7 +69,12 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection): void {
+    applyPreview(): void {
+        this.baseCtx.drawImage(this.previewCanvas, 0, 0);
+        this.clearCanvas(this.previewCtx);
+    }
+
+    updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
         this.undoStack.push(modification);
         if (this.redoStack.length) {
             this.redoStack = [];

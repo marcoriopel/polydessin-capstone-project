@@ -39,14 +39,17 @@ import { CircleselectionAttributesComponent } from './components/tools/circle-se
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
+import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 import { MagicWandAttributesComponent } from './components/tools/magic-wand-attributes/magic-wand-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
 import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
+import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareselectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
+import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
@@ -82,6 +85,9 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PolygoneAttributesComponent,
         SquareselectionAttributesComponent,
         CircleselectionAttributesComponent,
+        PenAttributesComponent,
+        SprayAttributesComponent,
+        StampAttributesComponent,
     ],
     imports: [
         BrowserModule,

@@ -20,9 +20,6 @@ export class PencilService extends Tool {
         super(drawingService);
         this.clearPath();
     }
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
 
     onMouseLeave(): void {
         this.updatePencilData();
@@ -30,6 +27,7 @@ export class PencilService extends Tool {
         this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
         this.clearPath();
     }
+
     onMouseDown(event: MouseEvent): void {
         this.drawingService.baseCtx.filter = 'none';
         this.drawingService.previewCtx.filter = 'none';
