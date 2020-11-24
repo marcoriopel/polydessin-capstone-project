@@ -25,6 +25,8 @@ export class MagicWandService extends SelectionService {
     isNewSelection: boolean = false;
     tolerance: number = 15;
     selectionImageData: ImageData;
+    contourCanvas: HTMLCanvasElement = document.createElement('canvas');
+    contourCtx: CanvasRenderingContext2D = this.contourCanvas.getContext('2d') as CanvasRenderingContext2D;
 
     constructor(
         drawingService: DrawingService,
@@ -187,6 +189,7 @@ export class MagicWandService extends SelectionService {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
             this.rotateService.rotatePreviewCanvas();
+            this.setContourCanvas();
             this.drawingService.previewCtx.strokeRect(
                 this.selection.startingPoint.x,
                 this.selection.startingPoint.y,
@@ -195,6 +198,47 @@ export class MagicWandService extends SelectionService {
             );
             this.drawingService.previewCtx.restore();
         }
+    }
+
+    setContourPattern(): CanvasPattern {
+        const patternCanvas = document.createElement('canvas');
+        patternCanvas.width = 4;
+        patternCanvas.height = 4;
+        const pctx = patternCanvas.getContext('2d') as CanvasRenderingContext2D;
+
+        // Two green rects make a checkered square: two green, two transparent (white)
+        pctx.fillStyle = 'rgb(0, 0, 0)';
+        pctx.fillRect(0, 0, 2, 2);
+        pctx.fillRect(2, 2, 2, 2);
+        return pctx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
+    }
+
+    setContourCanvas(): void {
+        const contourThickness = 2; // thickness scale
+
+        this.contourCanvas.width = this.selectionImage.width + contourThickness;
+        this.contourCanvas.height = this.selectionImage.height + contourThickness;
+
+        // tslint:disable-next-line: no-magic-numbers
+        const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1]; // offset array
+
+        // draw images at offsets from the array scaled by s
+        for (let i = 0; i < dArr.length; i += 2)
+            this.contourCtx.drawImage(
+                this.selectionImage,
+                contourThickness + dArr[i] * contourThickness,
+                contourThickness + dArr[i + 1] * contourThickness,
+            );
+
+        // fill with color
+        this.contourCtx.globalCompositeOperation = 'source-in';
+        this.contourCtx.fillStyle = this.setContourPattern();
+        this.contourCtx.fillRect(0, 0, this.contourCanvas.width, this.contourCanvas.height);
+
+        // draw original image in normal mode
+        this.contourCtx.globalCompositeOperation = 'source-over';
+        this.contourCtx.drawImage(this.selectionImage, contourThickness, contourThickness);
+        this.drawingService.previewCtx.drawImage(this.contourCanvas, this.selection.startingPoint.x, this.selection.startingPoint.y);
     }
 
     wand(): void {
