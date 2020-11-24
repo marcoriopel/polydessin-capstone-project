@@ -7,6 +7,7 @@ import { UserGuideComponent } from '@app/components/userguide/user-guide.compone
 import { TOOLTIP_DELAY } from '@app/ressources/global-variables/global-variables';
 import { SidebarElementTooltips, SIDEBAR_ELEMENT_TOOLTIPS } from '@app/ressources/global-variables/sidebar-element-tooltips';
 import { ToolNames, TOOL_NAMES, TOOL_NAMES_ARRAY } from '@app/ressources/global-variables/tool-names';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -22,6 +23,9 @@ import { takeUntil } from 'rxjs/operators';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
+    @ViewChild('cutButton', { read: ElementRef }) cutButton: ElementRef;
+    @ViewChild('copyButton', { read: ElementRef }) copyButton: ElementRef;
+    @ViewChild('pasteButton', { read: ElementRef }) pasteButton: ElementRef;
     @ViewChild('undo', { read: ElementRef }) undoButton: ElementRef;
     @ViewChild('redo', { read: ElementRef }) redoButton: ElementRef;
     destroy$: Subject<boolean> = new Subject<boolean>();
@@ -38,6 +42,7 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
         public hotkeyService: HotkeyService,
         public squareSelectionService: SquareSelectionService,
         public circleSelectionService: CircleSelectionService,
+        public clipboardService: ClipboardService,
     ) {}
 
     ngOnInit(): void {
@@ -69,6 +74,44 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
             } else {
                 this.redoButton.nativeElement.style.cursor = 'not-allowed';
                 this.redoButton.nativeElement.style.opacity = '0.5';
+            }
+        });
+
+        this.squareSelectionService.getIsSelectionEmptySubject().subscribe((value) => {
+            if (!value) {
+                this.cutButton.nativeElement.style.cursor = 'pointer';
+                this.cutButton.nativeElement.style.opacity = '1';
+                this.copyButton.nativeElement.style.cursor = 'pointer';
+                this.copyButton.nativeElement.style.opacity = '1';
+            } else {
+                this.cutButton.nativeElement.style.cursor = 'not-allowed';
+                this.cutButton.nativeElement.style.opacity = '0.5';
+                this.copyButton.nativeElement.style.cursor = 'not-allowed';
+                this.copyButton.nativeElement.style.opacity = '0.5';
+            }
+        });
+
+        this.circleSelectionService.getIsSelectionEmptySubject().subscribe((value) => {
+            if (!value) {
+                this.cutButton.nativeElement.style.cursor = 'pointer';
+                this.cutButton.nativeElement.style.opacity = '1';
+                this.copyButton.nativeElement.style.cursor = 'pointer';
+                this.copyButton.nativeElement.style.opacity = '1';
+            } else {
+                this.cutButton.nativeElement.style.cursor = 'not-allowed';
+                this.cutButton.nativeElement.style.opacity = '0.5';
+                this.copyButton.nativeElement.style.cursor = 'not-allowed';
+                this.copyButton.nativeElement.style.opacity = '0.5';
+            }
+        });
+
+        this.clipboardService.getIsPasteAvailableSubject().subscribe((value) => {
+            if (value) {
+                this.pasteButton.nativeElement.style.cursor = 'pointer';
+                this.pasteButton.nativeElement.style.opacity = '1';
+            } else {
+                this.pasteButton.nativeElement.style.cursor = 'not-allowed';
+                this.pasteButton.nativeElement.style.opacity = '0.5';
             }
         });
     }
@@ -109,7 +152,6 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     cut(): void {
-        console.log(this.selectedTool);
         switch (this.selectedTool) {
             case this.toolNames.SQUARE_SELECTION_TOOL_NAME: {
                 this.squareSelectionService.cut();

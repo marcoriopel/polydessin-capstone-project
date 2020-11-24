@@ -246,30 +246,33 @@
             >
         </label>
         <mat-icon
-            class="material-icons"
+            #cutButton
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.CUT_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
             mat-button
-            (click)="this.cut()"
+            (click)="cut()"
             >content_cut</mat-icon
         >
         <mat-icon
-            class="material-icons"
+            #copyButton
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.COPY_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
             mat-button
-            (click)="this.copy()"
+            (click)="copy()"
             >content_copy</mat-icon
         >
         <mat-icon
-            class="material-icons"
+            #pasteButton
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.PASTE_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
             mat-button
-            (click)="this.paste()"
+            (click)="paste()"
             >content_paste</mat-icon
         >
     </div>
@@ -315,7 +318,7 @@
         <mat-icon
             id="undo"
             #undo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
@@ -325,7 +328,7 @@
         <mat-icon
             id="redo"
             #redo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"

@@ -54,7 +54,6 @@ describe('SquareSelectionService', () => {
     it('should call drawImage with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(ctx, 'drawImage');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         const startingPointX = 0;
@@ -62,6 +61,7 @@ describe('SquareSelectionService', () => {
         service.selection.height = height;
         service.selection.width = width;
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
+        service.setSelectionData();
         expect(drawImageSpy).toHaveBeenCalledWith(
             drawingService.canvas,
             startingPointX,

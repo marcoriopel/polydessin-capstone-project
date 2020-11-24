@@ -1,11 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
-import { CircleselectionAttributesComponent } from './circle-selection-attributes.component';
+import { CircleSelectionAttributesComponent } from './circle-selection-attributes.component';
 
 describe('CircleSelectionAttributesComponent', () => {
-    let component: CircleselectionAttributesComponent;
-    let fixture: ComponentFixture<CircleselectionAttributesComponent>;
+    let component: CircleSelectionAttributesComponent;
+    let fixture: ComponentFixture<CircleSelectionAttributesComponent>;
     let circleSelectionServiceSpy: jasmine.SpyObj<CircleSelectionService>;
 
     beforeEach(async(() => {
@@ -13,13 +13,13 @@ describe('CircleSelectionAttributesComponent', () => {
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [CircleselectionAttributesComponent],
+            declarations: [CircleSelectionAttributesComponent],
             providers: [{ provide: CircleSelectionService, useValue: circleSelectionServiceSpy }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CircleselectionAttributesComponent);
+        fixture = TestBed.createComponent(CircleSelectionAttributesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

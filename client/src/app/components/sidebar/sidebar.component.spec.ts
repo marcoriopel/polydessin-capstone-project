@@ -30,7 +30,8 @@ describe('SidebarComponent', () => {
         obs = new Subject<string>();
         obsUndoButton = new Subject<boolean>();
         obsRedoButton = new Subject<boolean>();
-        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll']);
+        toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll', 'getCurrentTool']);
+        toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['getKey']);
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
