@@ -114,6 +114,6 @@ export class DrawingService {
         const usingSrc = this.canvas.toDataURL();
         localStorage.clear();
         localStorage.setItem('theDesign', usingSrc);
-        // console.log(localStorage.getItem('theDesign'));
+        console.log(localStorage.getItem('theDesign'));
     }
 }
