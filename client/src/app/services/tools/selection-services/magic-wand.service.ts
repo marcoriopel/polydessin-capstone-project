@@ -108,10 +108,12 @@ export class MagicWandService extends SelectionService {
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
     }
+
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
     }
+
     onMouseMove(event: MouseEvent): void {
         if (this.transormation === 'move') {
             if (this.isMagnetism) {
@@ -123,6 +125,7 @@ export class MagicWandService extends SelectionService {
             }
         }
     }
+
     adjustCornerSelectionValues(values: Map<string, number>, value: Vec2): Map<string, number> {
         if (value.x < (values.get('minX') as number)) {
             values.set('minX', value.x);
@@ -136,6 +139,7 @@ export class MagicWandService extends SelectionService {
         }
         return values;
     }
+
     contiguousWand(): void {
         this.pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.stack = [this.mouseDownCoord];
@@ -179,6 +183,7 @@ export class MagicWandService extends SelectionService {
 
         this.setSelectionData(this.selection);
     }
+
     nextContiguousPixels(currentPixel: Vec2, canvasData: ImageData, index: number): void {
         if (currentPixel.y - 1 >= 0) {
             index = (currentPixel.x + (currentPixel.y - 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
@@ -213,12 +218,14 @@ export class MagicWandService extends SelectionService {
             }
         }
     }
+
     addPixelToSelection(index: number, canvasData: ImageData): void {
         this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
         this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
         this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
         this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
     }
+
     addSecondaryTolerance(pixelData: Uint8ClampedArray, index: number, canvasData: ImageData, currentPixel: Vec2): void {
         if (!this.isSameColor(pixelData, canvasData, index, this.secondaryTolerance)) return;
         this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
@@ -227,6 +234,7 @@ export class MagicWandService extends SelectionService {
         this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
         this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
     }
+
     setSelectionData(selection: SelectionBox): void {
         this.selectionImage.width = selection.width;
         this.selectionImage.height = selection.height;
@@ -235,6 +243,7 @@ export class MagicWandService extends SelectionService {
         this.rotateService.initialize(this.selection, this.selectionImage);
         this.drawingService.updateStack(this.selectionData);
     }
+
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
@@ -249,6 +258,7 @@ export class MagicWandService extends SelectionService {
             this.drawingService.previewCtx.restore();
         }
     }
+
     setContourPattern(): CanvasPattern {
         const patternCanvas = document.createElement('canvas');
         patternCanvas.width = MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -259,6 +269,7 @@ export class MagicWandService extends SelectionService {
         pctx.fillRect(2, 2, 2, 2);
         return pctx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
     }
+
     setContourCanvas(): void {
         const contourThickness = 2;
         this.contourCanvas.width = this.selectionImage.width + MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -282,6 +293,7 @@ export class MagicWandService extends SelectionService {
             this.selection.startingPoint.y - MAGIC_WAND_BORDER_ONE_SIDE,
         );
     }
+
     wand(): void {
         const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.cornerSelectionValues = new Map([
