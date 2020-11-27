@@ -8,9 +8,11 @@ import { Observable, Subject } from 'rxjs';
 })
 export class HotkeyService {
     toolName: Subject<string> = new Subject<string>();
+    eventKey: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
     toolNames: ToolNames = TOOL_NAMES;
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     isHotkeyEnabled: boolean = true;
+    isTextTool: boolean = false;
     keyMapping: Map<string, string> = new Map([
         ['c', this.toolNames.PENCIL_TOOL_NAME],
         ['p', this.toolNames.PEN_TOOL_NAME],
@@ -25,6 +27,7 @@ export class HotkeyService {
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
+        ['t', this.toolNames.TEXT_TOOL_NAME],
         ['g', GRID_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
@@ -38,8 +41,12 @@ export class HotkeyService {
     keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
     onKeyDown(event: KeyboardEvent): void {
-        if (event.shiftKey || event.ctrlKey) event.preventDefault();
+        if (this.isTextTool) {
+            this.eventKey.next(event);
+            return;
+        }
         if (!this.isHotkeyEnabled) return;
+        if (event.shiftKey || event.ctrlKey) event.preventDefault();
         let keyName: string | undefined;
 
         if (event.shiftKey && event.ctrlKey) {
@@ -55,5 +62,9 @@ export class HotkeyService {
     }
     getKey(): Observable<string> {
         return this.toolName.asObservable();
+    }
+
+    getEventKey(): Observable<KeyboardEvent> {
+        return this.eventKey.asObservable();
     }
 }

@@ -26,8 +26,9 @@ export class EditorComponent implements AfterViewInit {
     canvasSize: Vec2 = { x: MINIMUM_CANVAS_WIDTH, y: MINIMUM_CANVAS_HEIGHT };
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
+    isTextTool: boolean = false;
 
-    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z'];
+    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z', 't'];
 
     constructor(
         public hotkeyService: HotkeyService,
@@ -61,7 +62,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.shortcutsArray.includes(event.key.toString())) {
+        if (this.shortcutsArray.includes(event.key.toString()) && !this.isTextTool) {
             this.hotkeyService.onKeyDown(event);
         } else if (event.key.toString() === '+' || event.key.toString() === '-') {
             this.toolSelectionService.currentToolKeyDown(event);

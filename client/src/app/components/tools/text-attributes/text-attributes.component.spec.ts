@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TextComponent } from './text.component';
+import { TextComponent } from './text-attributes.component';
 
 describe('TexteComponent', () => {
     let component: TextComponent;

@@ -25,13 +25,13 @@
 
     <div>
         <label>Filtre</label>
-        <div class="radioContainer" >
+        <div class="radioContainer">
             <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
             <label>Aucun filtre</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.BLACK_AND_WHITE" (change)="this.changeFilter($event)" />
             <label>Noir et blanc</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.SEPHIA" (change)="this.changeFilter($event)" />
-            <label>Sephia</label>
+            <label>Sepia</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.SATURATE" (change)="this.changeFilter($event)" />
             <label>Saturer</label>
             <input type="radio" name="typeOfFilter" [value]="filterStyles.INVERT" (change)="this.changeFilter($event)" />
@@ -43,14 +43,14 @@
 
     <label>Format d'exportation</label>
     <div class="radioContainer">
-        <select name="extension" (change)="this.getImageUrl($event)" [value]='0' >
-            <option [value]='0'> PNG </option>
-            <option [value]='1'> JPEG </option>
+        <select name="extension" (change)="this.getImageUrl($event)" [value]="0">
+            <option [value]="0">PNG</option>
+            <option [value]="1">JPEG</option>
         </select>
     </div>
     <div>
-        <label> email</label><br>
-        <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]= "this.emailAddress">
+        <label> email</label><br />
+        <input type="email" placeholder="votre_email@polymtl.ca" [(ngModel)]="this.emailAddress" />
     </div>
     <button mat-button id="export" (click)="exportLocally()">Exporter sur ordinateur</button>
     <button mat-button id="sendMail" (click)="sendMail()">Envoyer par email</button>

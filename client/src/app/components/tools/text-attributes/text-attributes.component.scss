@@ -1,0 +1,32 @@
+#textAttributes {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #cfcfcf;
+    width: 100%;
+    margin: 0;
+}
+
+.toolName {
+    margin: 5px;
+}
+
+mat-checkbox {
+    align-items: flex-start;
+}
+
+mat-form-field {
+    width: 120px;
+}
+
+label {
+    align-self: start;
+    font-size: 15px;
+    margin: 4px;
+}
