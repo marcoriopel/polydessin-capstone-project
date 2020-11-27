@@ -11,7 +11,6 @@ export class RotateService {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
-    constructor(public drawingService: DrawingService) {}
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     selectionImageCtx: CanvasRenderingContext2D;
     angle: number = 0;
@@ -20,6 +19,8 @@ export class RotateService {
     mouseWheel: boolean = false;
     deltaRotation: number = ROTATION_STEP;
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+
+    constructor(public drawingService: DrawingService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;

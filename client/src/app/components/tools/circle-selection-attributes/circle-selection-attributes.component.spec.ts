@@ -5,12 +5,12 @@ import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variable
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { Subject } from 'rxjs';
-import { CircleselectionAttributesComponent } from './circle-selection-attributes.component';
+import { CircleSelectionAttributesComponent } from './circle-selection-attributes.component';
 import SpyObj = jasmine.SpyObj;
 
 describe('CircleSelectionAttributesComponent', () => {
-    let component: CircleselectionAttributesComponent;
-    let fixture: ComponentFixture<CircleselectionAttributesComponent>;
+    let component: CircleSelectionAttributesComponent;
+    let fixture: ComponentFixture<CircleSelectionAttributesComponent>;
     let circleSelectionServiceSpy: jasmine.SpyObj<CircleSelectionService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
@@ -23,7 +23,7 @@ describe('CircleSelectionAttributesComponent', () => {
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [CircleselectionAttributesComponent],
+            declarations: [CircleSelectionAttributesComponent],
             providers: [
                 { provide: CircleSelectionService, useValue: circleSelectionServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
@@ -32,7 +32,7 @@ describe('CircleSelectionAttributesComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CircleselectionAttributesComponent);
+        fixture = TestBed.createComponent(CircleSelectionAttributesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -5,12 +5,12 @@ import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variable
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { Subject } from 'rxjs';
-import { SquareselectionAttributesComponent } from './square-selection-attributes.component';
+import { SquareSelectionAttributesComponent } from './square-selection-attributes.component';
 import SpyObj = jasmine.SpyObj;
 
-describe('SqareselectionAttributesComponent', () => {
-    let component: SquareselectionAttributesComponent;
-    let fixture: ComponentFixture<SquareselectionAttributesComponent>;
+describe('SqareSelectionAttributesComponent', () => {
+    let component: SquareSelectionAttributesComponent;
+    let fixture: ComponentFixture<SquareSelectionAttributesComponent>;
     let squareSelectionServiceSpy: jasmine.SpyObj<SquareSelectionService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
@@ -23,7 +23,7 @@ describe('SqareselectionAttributesComponent', () => {
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [SquareselectionAttributesComponent],
+            declarations: [SquareSelectionAttributesComponent],
             providers: [
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
@@ -32,7 +32,7 @@ describe('SqareselectionAttributesComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(SquareselectionAttributesComponent);
+        fixture = TestBed.createComponent(SquareSelectionAttributesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -25,10 +25,7 @@ export class MoveService {
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.initialSelection.startingPoint.x = selection.startingPoint.x;
-        this.initialSelection.startingPoint.y = selection.startingPoint.y;
-        this.initialSelection.height = selection.height;
-        this.initialSelection.width = selection.width;
+        this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }
@@ -210,5 +207,12 @@ export class MoveService {
             }
         }
         return false;
+    }
+
+    setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 }

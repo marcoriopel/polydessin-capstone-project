@@ -56,7 +56,6 @@ describe('CircleSelectionService', () => {
     it('should call drawImage with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(ctx, 'drawImage');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         const startingPointX = 0;
@@ -64,6 +63,7 @@ describe('CircleSelectionService', () => {
         service.selection.height = height;
         service.selection.width = width;
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
+        service.setSelectionData();
         expect(drawImageSpy).toHaveBeenCalledWith(
             drawingService.canvas,
             startingPointX,
@@ -81,11 +81,11 @@ describe('CircleSelectionService', () => {
     it('should call ellipse with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const ellipseSpy = spyOn(ctx, 'ellipse');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         service.selection.height = height;
         service.selection.width = width;
+        service.setSelectionData();
         expect(ellipseSpy).toHaveBeenCalledWith(width / 2, height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
     });
