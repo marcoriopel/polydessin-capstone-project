@@ -2,12 +2,13 @@ import { Component } from '@angular/core';
 import {
     DEFAULT_GRID_OPACITY,
     DEFAULT_GRID_SIZE,
+    GRID_STEP,
     MAX_GRID_OPACITY,
     MAX_GRID_SQUARE_SIZE,
     MIN_GRID_OPACITY,
     MIN_GRID_SQUARE_SIZE,
 } from '@app/ressources/global-variables/global-variables';
-import { GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
@@ -38,9 +39,27 @@ export class GridComponent {
         this.squareSelectionService.setGridSpacing(this.currentSquareSize);
         this.drawingService.opacity = this.currentOpacity;
         this.hotkeyService.getKey().subscribe((toolName) => {
-            if (toolName === GRID_NAME) {
-                if (this.isEnabled) this.changeGridView(false);
-                else this.changeGridView(true);
+            switch (toolName) {
+                case GRID_NAME: {
+                    if (this.isEnabled) this.changeGridView(false);
+                    else this.changeGridView(true);
+                    break;
+                }
+                case GRID_INCREASE_NAME: {
+                    if (this.currentSquareSize + GRID_STEP <= this.maxSquareSize) {
+                        this.currentSquareSize = this.currentSquareSize + GRID_STEP;
+                        this.changeGridSize(this.currentSquareSize);
+                    }
+
+                    break;
+                }
+                case GRID_DECREASE_NAME: {
+                    if (this.currentSquareSize - GRID_STEP >= this.minSquareSize) {
+                        this.currentSquareSize = this.currentSquareSize - GRID_STEP;
+                        this.changeGridSize(this.currentSquareSize);
+                    }
+                    break;
+                }
             }
         });
     }
@@ -53,6 +72,7 @@ export class GridComponent {
     }
 
     changeGridSize(newSize: number): void {
+        console.log(newSize);
         this.drawingService.gridSpacing = newSize;
         this.currentSquareSize = newSize;
         this.circleSelectionService.setGridSpacing(this.currentSquareSize);

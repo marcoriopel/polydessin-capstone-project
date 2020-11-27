@@ -19,3 +19,5 @@ export const SIDEBAR_ELEMENTS: SidebarElements = {
 };
 
 export const GRID_NAME = 'Grid';
+export const GRID_INCREASE_NAME = 'Grid Increase';
+export const GRID_DECREASE_NAME = 'Grid Decrease';

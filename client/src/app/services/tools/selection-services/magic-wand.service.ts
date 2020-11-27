@@ -24,9 +24,16 @@ export class MagicWandService extends SelectionService {
     transormation: string = '';
     isNewSelection: boolean = false;
     tolerance: number = 15;
+    secondaryTolerance: number = 30;
     selectionImageData: ImageData;
     contourCanvas: HTMLCanvasElement = document.createElement('canvas');
     contourCtx: CanvasRenderingContext2D = this.contourCanvas.getContext('2d') as CanvasRenderingContext2D;
+    cornerSelectionValues: Map<string, number> = new Map([
+        ['minX', 0],
+        ['maxX', 0],
+        ['minY', 0],
+        ['maxY', 0],
+    ]);
 
     constructor(
         drawingService: DrawingService,
@@ -132,7 +139,7 @@ export class MagicWandService extends SelectionService {
         const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         const stack: Vec2[] = [this.mouseDownCoord];
         const selectedPixels: Map<string, boolean> = new Map();
-        let cornerSelectionValues: Map<string, number> = new Map([
+        this.cornerSelectionValues = new Map([
             ['minX', this.mouseDownCoord.x],
             ['maxX', this.mouseDownCoord.x],
             ['minY', this.mouseDownCoord.y],
@@ -143,37 +150,80 @@ export class MagicWandService extends SelectionService {
 
         while (stack.length) {
             const currentPixel = stack.pop() as Vec2;
-            const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+            let index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (selectedPixels.has(this.Vec2ToString(currentPixel))) {
                 continue;
-            } else if (this.isSameColor(pixelData, canvasData, index)) {
-                this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
-                this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
-                this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
-                this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
-                cornerSelectionValues = this.adjustCornerSelectionValues(cornerSelectionValues, currentPixel);
+            } else if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                this.addPixelToSelection(index, canvasData);
+                this.cornerSelectionValues = this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
                 selectedPixels.set(this.Vec2ToString(currentPixel), true);
                 if (currentPixel.y - 1 >= 0) {
-                    stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
+                    index = (currentPixel.x + (currentPixel.y - 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    const index2 = (currentPixel.x + (currentPixel.y - 2) * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                        stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
+                    } else {
+                        this.addSecondaryTolerance(pixelData, index, canvasData, { x: currentPixel.x, y: currentPixel.y - 1 });
+                        this.addSecondaryTolerance(pixelData, index2, canvasData, { x: currentPixel.x, y: currentPixel.y - 2 });
+                    }
                 }
                 if (currentPixel.y + 1 < this.drawingService.canvas.height) {
-                    stack.push({ x: currentPixel.x, y: currentPixel.y + 1 });
+                    index = (currentPixel.x + (currentPixel.y + 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    const index2 = (currentPixel.x + (currentPixel.y + 2) * this.drawingService.canvas.width) * RGBA_LENGTH;
+
+                    if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                        stack.push({ x: currentPixel.x, y: currentPixel.y + 1 });
+                    } else {
+                        this.addSecondaryTolerance(pixelData, index, canvasData, { x: currentPixel.x, y: currentPixel.y + 1 });
+                        this.addSecondaryTolerance(pixelData, index2, canvasData, { x: currentPixel.x, y: currentPixel.y + 2 });
+                    }
                 }
                 if (currentPixel.x + 1 < this.drawingService.canvas.width) {
-                    stack.push({ x: currentPixel.x + 1, y: currentPixel.y });
+                    index = (currentPixel.x + 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    const index2 = (currentPixel.x + 2 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+
+                    if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                        stack.push({ x: currentPixel.x + 1, y: currentPixel.y });
+                    } else {
+                        this.addSecondaryTolerance(pixelData, index, canvasData, { x: currentPixel.x + 1, y: currentPixel.y });
+                        this.addSecondaryTolerance(pixelData, index2, canvasData, { x: currentPixel.x + 2, y: currentPixel.y });
+                    }
                 }
                 if (currentPixel.x - 1 >= 0) {
-                    stack.push({ x: currentPixel.x - 1, y: currentPixel.y });
+                    index = (currentPixel.x - 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    const index2 = (currentPixel.x - 2 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+                    if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                        stack.push({ x: currentPixel.x - 1, y: currentPixel.y });
+                    } else {
+                        this.addSecondaryTolerance(pixelData, index, canvasData, { x: currentPixel.x - 1, y: currentPixel.y });
+                        this.addSecondaryTolerance(pixelData, index2, canvasData, { x: currentPixel.x - 2, y: currentPixel.y });
+                    }
                 }
             }
         }
         this.selection = {
-            startingPoint: { x: cornerSelectionValues.get('minX') as number, y: cornerSelectionValues.get('minY') as number },
-            height: (cornerSelectionValues.get('maxY') as number) - (cornerSelectionValues.get('minY') as number) + 1,
-            width: (cornerSelectionValues.get('maxX') as number) - (cornerSelectionValues.get('minX') as number) + 1,
+            startingPoint: { x: this.cornerSelectionValues.get('minX') as number, y: this.cornerSelectionValues.get('minY') as number },
+            height: (this.cornerSelectionValues.get('maxY') as number) - (this.cornerSelectionValues.get('minY') as number) + 1,
+            width: (this.cornerSelectionValues.get('maxX') as number) - (this.cornerSelectionValues.get('minX') as number) + 1,
         };
 
         this.setSelectionData(this.selection);
+    }
+
+    addPixelToSelection(index: number, canvasData: ImageData): void {
+        this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
+        this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
+        this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
+        this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
+    }
+
+    addSecondaryTolerance(pixelData: Uint8ClampedArray, index: number, canvasData: ImageData, currentPixel: Vec2): void {
+        if (!this.isSameColor(pixelData, canvasData, index, this.secondaryTolerance)) return;
+        this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
+        this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
+        this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
+        this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
+        this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
     }
 
     setSelectionData(selection: SelectionBox): void {
@@ -251,15 +301,12 @@ export class MagicWandService extends SelectionService {
         ]);
         const canvasData: ImageData = this.drawingService.getCanvasData();
         this.selectionImageData = new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height);
-        for (let i = 0; i < canvasData.data.length; i += RGBA_LENGTH) {
-            if (this.isSameColor(pixelData, canvasData, i)) {
-                this.selectionImageData.data[i + RGBA_INDEXER.RED] = canvasData.data[i + RGBA_INDEXER.RED];
-                this.selectionImageData.data[i + RGBA_INDEXER.GREEN] = canvasData.data[i + RGBA_INDEXER.GREEN];
-                this.selectionImageData.data[i + RGBA_INDEXER.BLUE] = canvasData.data[i + RGBA_INDEXER.BLUE];
-                this.selectionImageData.data[i + RGBA_INDEXER.ALPHA] = canvasData.data[i + RGBA_INDEXER.ALPHA];
+        for (let index = 0; index < canvasData.data.length; index += RGBA_LENGTH) {
+            if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+                this.addPixelToSelection(index, canvasData);
                 const currentPixel: Vec2 = {
-                    x: (i / RGBA_LENGTH) % this.drawingService.canvas.width,
-                    y: Math.floor(i / RGBA_LENGTH / this.drawingService.canvas.width),
+                    x: (index / RGBA_LENGTH) % this.drawingService.canvas.width,
+                    y: Math.floor(index / RGBA_LENGTH / this.drawingService.canvas.width),
                 };
                 cornerSelectionValues = this.adjustCornerSelectionValues(cornerSelectionValues, currentPixel);
             }
@@ -273,7 +320,7 @@ export class MagicWandService extends SelectionService {
         this.setSelectionData(this.selection);
     }
 
-    isSameColor(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number): boolean {
+    isSameColor(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number, tolerance: number): boolean {
         const diffRed: number = Math.abs(pixelData[RGBA_INDEXER.RED] - canvasData.data[index + RGBA_INDEXER.RED]);
         const diffGreen: number = Math.abs(pixelData[RGBA_INDEXER.GREEN] - canvasData.data[index + RGBA_INDEXER.GREEN]);
         const diffBlue: number = Math.abs(pixelData[RGBA_INDEXER.BLUE] - canvasData.data[index + RGBA_INDEXER.BLUE]);
@@ -282,7 +329,7 @@ export class MagicWandService extends SelectionService {
         // After which you can just find the average color difference in percentage.
         const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (RGBA_LENGTH * MAXIMUM_RGBA_VALUE)) * MAX_PERCENTAGE;
 
-        if (diffPercentage > this.tolerance) {
+        if (diffPercentage > tolerance) {
             return false;
         } else {
             return true;

@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
-import { GRID_NAME, SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
+import {
+    GRID_DECREASE_NAME,
+    GRID_INCREASE_NAME,
+    GRID_NAME,
+    SidebarElements,
+    SIDEBAR_ELEMENTS,
+} from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
 
@@ -27,6 +33,9 @@ export class HotkeyService {
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
         ['d', this.toolNames.STAMP_TOOL_NAME],
+        ['v', this.toolNames.MAGIC_WAND_TOOL_NAME],
+        ['-', GRID_DECREASE_NAME],
+        ['+', GRID_INCREASE_NAME],
         ['g', GRID_NAME],
         ['m', MAGNETISM_NAME],
     ]);
