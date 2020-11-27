@@ -29,7 +29,6 @@ export class EmailService {
                     ...formHeaders,
                 },
             };
-            console.log(buffer);
             return (
                 axios
                     .post(MAIL_API_URL, formData, config)
