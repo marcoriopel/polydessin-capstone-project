@@ -34,6 +34,9 @@ export const MIN_GRID_OPACITY = 10;
 export const MAX_GRID_OPACITY = 100;
 export const DEFAULT_GRID_SIZE = 5;
 export const GRID_STEP = 5;
+export const MAGIC_WAND_BORDER_ONE_SIDE = 2;
+export const MAGIC_WAND_BORDER_BOTH_SIDES = 4;
+export const OFFSET = -1;
 
 export const DEFAULT_GRID_OPACITY = 100;
 export const TWO_DECIMAL_MULTIPLIER = 100;
