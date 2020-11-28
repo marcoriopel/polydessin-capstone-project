@@ -36,8 +36,8 @@ export class MagicWandService extends SelectionService {
     tolerance: number = 15;
     secondaryTolerance: number = 50;
     selectionImageData: ImageData;
-    contourCanvas: HTMLCanvasElement = document.createElement('canvas');
-    contourCtx: CanvasRenderingContext2D = this.contourCanvas.getContext('2d') as CanvasRenderingContext2D;
+    borderCanvas: HTMLCanvasElement = document.createElement('canvas');
+    borderCanvasCtx: CanvasRenderingContext2D = this.borderCanvas.getContext('2d') as CanvasRenderingContext2D;
     cornerSelectionValues: Map<string, number> = new Map([
         ['minX', 0],
         ['maxX', 0],
@@ -126,18 +126,17 @@ export class MagicWandService extends SelectionService {
         }
     }
 
-    adjustCornerSelectionValues(values: Map<string, number>, value: Vec2): Map<string, number> {
-        if (value.x < (values.get('minX') as number)) {
-            values.set('minX', value.x);
-        } else if (value.x > (values.get('maxX') as number)) {
-            values.set('maxX', value.x);
+    adjustCornerSelectionValues(value: Vec2): void {
+        if (value.x < (this.cornerSelectionValues.get('minX') as number)) {
+            this.cornerSelectionValues.set('minX', value.x);
+        } else if (value.x > (this.cornerSelectionValues.get('maxX') as number)) {
+            this.cornerSelectionValues.set('maxX', value.x);
         }
-        if (value.y < (values.get('minY') as number)) {
-            values.set('minY', value.y);
-        } else if (value.y > (values.get('maxY') as number)) {
-            values.set('maxY', value.y);
+        if (value.y < (this.cornerSelectionValues.get('minY') as number)) {
+            this.cornerSelectionValues.set('minY', value.y);
+        } else if (value.y > (this.cornerSelectionValues.get('maxY') as number)) {
+            this.cornerSelectionValues.set('maxY', value.y);
         }
-        return values;
     }
 
     contiguousWand(): void {
@@ -161,9 +160,9 @@ export class MagicWandService extends SelectionService {
             }
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.addPixelToSelection(index, canvasData);
-                this.cornerSelectionValues = this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
+                this.adjustCornerSelectionValues(currentPixel);
                 selectedPixels.set(this.Vec2ToString(currentPixel), true);
-                this.nextContiguousPixels(currentPixel, canvasData, index);
+                this.nextContiguousPixels(currentPixel, canvasData);
             }
         }
         this.selection = {
@@ -184,9 +183,9 @@ export class MagicWandService extends SelectionService {
         this.setSelectionData(this.selection);
     }
 
-    nextContiguousPixels(currentPixel: Vec2, canvasData: ImageData, index: number): void {
+    nextContiguousPixels(currentPixel: Vec2, canvasData: ImageData): void {
         if (currentPixel.y - 1 >= 0) {
-            index = (currentPixel.x + (currentPixel.y - 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
+            const index = (currentPixel.x + (currentPixel.y - 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
             } else {
@@ -194,7 +193,7 @@ export class MagicWandService extends SelectionService {
             }
         }
         if (currentPixel.y + 1 < this.drawingService.canvas.height) {
-            index = (currentPixel.x + (currentPixel.y + 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
+            const index = (currentPixel.x + (currentPixel.y + 1) * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.stack.push({ x: currentPixel.x, y: currentPixel.y + 1 });
             } else {
@@ -202,7 +201,7 @@ export class MagicWandService extends SelectionService {
             }
         }
         if (currentPixel.x + 1 < this.drawingService.canvas.width) {
-            index = (currentPixel.x + 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+            const index = (currentPixel.x + 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.stack.push({ x: currentPixel.x + 1, y: currentPixel.y });
             } else {
@@ -210,7 +209,7 @@ export class MagicWandService extends SelectionService {
             }
         }
         if (currentPixel.x - 1 >= 0) {
-            index = (currentPixel.x - 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
+            const index = (currentPixel.x - 1 + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.stack.push({ x: currentPixel.x - 1, y: currentPixel.y });
             } else {
@@ -228,7 +227,7 @@ export class MagicWandService extends SelectionService {
 
     addSecondaryTolerance(pixelData: Uint8ClampedArray, index: number, canvasData: ImageData, currentPixel: Vec2): void {
         if (!this.isSameColor(pixelData, canvasData, index, this.secondaryTolerance)) return;
-        this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
+        this.adjustCornerSelectionValues(currentPixel);
         this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
         this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
         this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
@@ -248,7 +247,7 @@ export class MagicWandService extends SelectionService {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
             this.rotateService.rotatePreviewCanvas();
-            this.setContourCanvas();
+            this.setBorderCanvas();
             this.drawingService.previewCtx.strokeRect(
                 this.selection.startingPoint.x,
                 this.selection.startingPoint.y,
@@ -259,43 +258,42 @@ export class MagicWandService extends SelectionService {
         }
     }
 
-    setContourPattern(): CanvasPattern {
+    setBorderPattern(): CanvasPattern {
         const patternCanvas = document.createElement('canvas');
         patternCanvas.width = MAGIC_WAND_BORDER_BOTH_SIDES;
         patternCanvas.height = MAGIC_WAND_BORDER_BOTH_SIDES;
-        const pctx = patternCanvas.getContext('2d') as CanvasRenderingContext2D;
-        pctx.fillStyle = 'rgb(0, 0, 0)';
-        pctx.fillRect(0, 0, 2, 2);
-        pctx.fillRect(2, 2, 2, 2);
-        return pctx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
+        const patternCtx = patternCanvas.getContext('2d') as CanvasRenderingContext2D;
+        patternCtx.fillStyle = 'rgb(0, 0, 0)';
+        patternCtx.fillRect(0, 0, 2, 2);
+        patternCtx.fillRect(2, 2, 2, 2);
+        return patternCtx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
     }
 
-    setContourCanvas(): void {
-        const contourThickness = 2;
-        this.contourCanvas.width = this.selectionImage.width + MAGIC_WAND_BORDER_BOTH_SIDES;
-        this.contourCanvas.height = this.selectionImage.height + MAGIC_WAND_BORDER_BOTH_SIDES;
+    setBorderCanvas(): void {
+        this.borderCanvas.width = this.selectionImage.width + MAGIC_WAND_BORDER_BOTH_SIDES;
+        this.borderCanvas.height = this.selectionImage.height + MAGIC_WAND_BORDER_BOTH_SIDES;
         const dArr = [OFFSET, OFFSET, 0, OFFSET, 1, OFFSET, OFFSET, 0, 1, 0, OFFSET, 1, 0, 1, 1, 1];
 
         for (let i = 0; i < dArr.length; i += 2)
-            this.contourCtx.drawImage(
+            this.borderCanvasCtx.drawImage(
                 this.selectionImage,
-                contourThickness + dArr[i] * contourThickness,
-                contourThickness + dArr[i + 1] * contourThickness,
+                MAGIC_WAND_BORDER_ONE_SIDE + dArr[i] * MAGIC_WAND_BORDER_ONE_SIDE,
+                MAGIC_WAND_BORDER_ONE_SIDE + dArr[i + 1] * MAGIC_WAND_BORDER_ONE_SIDE,
             );
-        this.contourCtx.globalCompositeOperation = 'source-in';
-        this.contourCtx.fillStyle = this.setContourPattern();
-        this.contourCtx.fillRect(0, 0, this.contourCanvas.width, this.contourCanvas.height);
-        this.contourCtx.globalCompositeOperation = 'source-over';
-        this.contourCtx.drawImage(this.selectionImage, contourThickness, contourThickness);
+        this.borderCanvasCtx.globalCompositeOperation = 'source-in';
+        this.borderCanvasCtx.fillStyle = this.setBorderPattern();
+        this.borderCanvasCtx.fillRect(0, 0, this.borderCanvas.width, this.borderCanvas.height);
+        this.borderCanvasCtx.globalCompositeOperation = 'source-over';
+        this.borderCanvasCtx.drawImage(this.selectionImage, MAGIC_WAND_BORDER_ONE_SIDE, MAGIC_WAND_BORDER_ONE_SIDE);
         this.drawingService.previewCtx.drawImage(
-            this.contourCanvas,
+            this.borderCanvas,
             this.selection.startingPoint.x - MAGIC_WAND_BORDER_ONE_SIDE,
             this.selection.startingPoint.y - MAGIC_WAND_BORDER_ONE_SIDE,
         );
     }
 
     wand(): void {
-        const pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
+        this.pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.cornerSelectionValues = new Map([
             ['minX', this.mouseDownCoord.x],
             ['maxX', this.mouseDownCoord.x],
@@ -305,13 +303,13 @@ export class MagicWandService extends SelectionService {
         const canvasData: ImageData = this.drawingService.getCanvasData();
         this.selectionImageData = new ImageData(this.drawingService.canvas.width, this.drawingService.canvas.height);
         for (let index = 0; index < canvasData.data.length; index += RGBA_LENGTH) {
-            if (this.isSameColor(pixelData, canvasData, index, this.tolerance)) {
+            if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.addPixelToSelection(index, canvasData);
                 const currentPixel: Vec2 = {
                     x: (index / RGBA_LENGTH) % this.drawingService.canvas.width,
                     y: Math.floor(index / RGBA_LENGTH / this.drawingService.canvas.width),
                 };
-                this.cornerSelectionValues = this.adjustCornerSelectionValues(this.cornerSelectionValues, currentPixel);
+                this.adjustCornerSelectionValues(currentPixel);
             }
         }
         this.selection = {
