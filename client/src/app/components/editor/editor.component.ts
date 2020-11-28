@@ -61,7 +61,6 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        console.log(event.key.toString());
         if (this.shortcutsArray.includes(event.key.toString())) {
             this.hotkeyService.onKeyDown(event);
         } else {

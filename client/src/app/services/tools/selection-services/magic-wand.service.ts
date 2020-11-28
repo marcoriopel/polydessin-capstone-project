@@ -27,6 +27,7 @@ export class MagicWandService extends SelectionService {
     name: string = TOOL_NAMES.MAGIC_WAND_TOOL_NAME;
     mouseDownCoord: Vec2;
     stack: Vec2[];
+    isShiftKeyDown: boolean = false;
     selectionData: Selection;
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImageCtx: CanvasRenderingContext2D = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
@@ -62,6 +63,9 @@ export class MagicWandService extends SelectionService {
     }
     setCursor(): void {
         this.drawingService.gridCanvas.style.cursor = 'crosshair';
+    }
+    setMagnetismAlignment(alignment: string): void {
+        this.currentAlignment = alignment;
     }
     onMouseDown(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
@@ -242,7 +246,6 @@ export class MagicWandService extends SelectionService {
         this.rotateService.initialize(this.selection, this.selectionImage);
         this.drawingService.updateStack(this.selectionData);
     }
-
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
@@ -257,7 +260,6 @@ export class MagicWandService extends SelectionService {
             this.drawingService.previewCtx.restore();
         }
     }
-
     setBorderPattern(): CanvasPattern {
         const patternCanvas = document.createElement('canvas');
         patternCanvas.width = MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -268,7 +270,6 @@ export class MagicWandService extends SelectionService {
         patternCtx.fillRect(2, 2, 2, 2);
         return patternCtx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
     }
-
     setBorderCanvas(): void {
         this.borderCanvas.width = this.selectionImage.width + MAGIC_WAND_BORDER_BOTH_SIDES;
         this.borderCanvas.height = this.selectionImage.height + MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -291,7 +292,6 @@ export class MagicWandService extends SelectionService {
             this.selection.startingPoint.y - MAGIC_WAND_BORDER_ONE_SIDE,
         );
     }
-
     wand(): void {
         this.pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.cornerSelectionValues = new Map([

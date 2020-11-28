@@ -12,6 +12,7 @@ import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressourc
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 
 @Component({
@@ -33,9 +34,11 @@ export class GridComponent {
         public hotkeyService: HotkeyService,
         public circleSelectionService: CircleSelectionService,
         public squareSelectionService: SquareSelectionService,
+        public magicWandService: MagicWandService,
     ) {
         this.drawingService.gridSpacing = this.currentSquareSize;
         this.circleSelectionService.setGridSpacing(this.currentSquareSize);
+        this.magicWandService.setGridSpacing(this.currentSquareSize);
         this.squareSelectionService.setGridSpacing(this.currentSquareSize);
         this.drawingService.opacity = this.currentOpacity;
         this.hotkeyService.getKey().subscribe((toolName) => {
@@ -72,10 +75,10 @@ export class GridComponent {
     }
 
     changeGridSize(newSize: number): void {
-        console.log(newSize);
         this.drawingService.gridSpacing = newSize;
         this.currentSquareSize = newSize;
         this.circleSelectionService.setGridSpacing(this.currentSquareSize);
+        this.magicWandService.setGridSpacing(this.currentSquareSize);
         this.squareSelectionService.setGridSpacing(this.currentSquareSize);
         if (this.isEnabled) {
             this.drawingService.setGrid();

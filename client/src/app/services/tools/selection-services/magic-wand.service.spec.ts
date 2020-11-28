@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { Vec2 } from '@app/classes/vec2';
+import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -389,7 +390,6 @@ describe('MagicWandService', () => {
         canvasData.data[2] = 253;
         canvasData.data[3] = 15;
         service.addPixelToSelection(0, canvasData);
-        console.log(service.selectionImageData.data[3]);
         expect(service.selectionImageData.data[0]).toEqual(253);
         expect(service.selectionImageData.data[1]).toEqual(253);
         expect(service.selectionImageData.data[2]).toEqual(253);
@@ -536,6 +536,12 @@ describe('MagicWandService', () => {
         expect(addPixelToSelectionSpy).not.toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).not.toHaveBeenCalled();
         expect(setSelectionDataSpy).toHaveBeenCalled();
+    });
+
+    it('should setMagnetismAlignment', () => {
+        service.currentAlignment = ALIGNMENT_NAMES.ALIGN_BOTTOM_CENTER_NAME;
+        service.setMagnetismAlignment(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
+        expect(service.currentAlignment).toEqual(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
     });
 
     // tslint:disable-next-line: max-file-line-count
