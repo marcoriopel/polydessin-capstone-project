@@ -23,32 +23,37 @@ export class TextComponent implements OnDestroy, AfterViewInit {
     }
 
     changeFont(font: MatSelectChange): void {
-        this.textService.setFont(font.value);
+        this.textService.font = font.value;
+        this.textService.applyFont();
     }
 
     changeSize(size: number): void {
         this.textSize = size;
-        this.textService.setSize(size);
+        this.textService.size = size;
+        this.textService.applyFont();
     }
 
     changeItalic(style: boolean): void {
         if (style) {
-            this.textService.setStyle('italic');
+            this.textService.style = 'italic';
         } else {
-            this.textService.setStyle('normal');
+            this.textService.style = 'normal';
         }
+        this.textService.applyFont();
     }
 
     changeBoldText(bold: boolean): void {
         if (bold) {
-            this.textService.setBoldText('bold');
+            this.textService.boldText = 'bolt';
         } else {
-            this.textService.setBoldText('normal');
+            this.textService.boldText = 'normal';
         }
+        this.textService.applyFont();
     }
 
     changeAlignment(align: string): void {
-        this.textService.setAlignment(align as CanvasTextAlign);
+        this.textService.align = align as CanvasTextAlign;
+        this.textService.applyFont();
     }
 
     ngOnDestroy(): void {

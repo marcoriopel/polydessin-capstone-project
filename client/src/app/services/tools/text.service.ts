@@ -27,9 +27,9 @@ export class TextService extends Tool {
     boldText: string = 'normal';
     align: CanvasTextAlign = 'start';
     height: number;
-    width: number = 0;
     isDelete: boolean = false;
-    isShiftKeyPress: boolean = false;
+    maxLine: string;
+    numberLine: number = 0;
 
     constructor(drawingService: DrawingService, public hotkeyService: HotkeyService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -39,11 +39,10 @@ export class TextService extends Tool {
         this.hotkeyService.isTextTool = true;
         this.color = this.colorSelectionService.primaryColor;
         this.text = [];
-        this.text.push('|');
         this.isNewText = true;
+        this.text.push('|');
         this.applyFont();
     }
-
     destroy(): void {
         this.text = [];
         this.isNewText = false;
@@ -53,40 +52,22 @@ export class TextService extends Tool {
     onMouseDown(event: MouseEvent): void {
         if (this.isInText(this.getPositionFromMouse(event))) return;
         if (!this.isNewText) {
-            this.initializeNewText();
             const mousePosition = this.getPositionFromMouse(event);
             this.textStartingPoint = { x: mousePosition.x, y: mousePosition.y };
+            this.initializeNewText();
         } else {
             this.createText();
-            this.destroy();
         }
     }
 
     onMouseLeave(): void {
         this.createText();
-        this.destroy();
     }
 
     isInText(mousePosition: Vec2): boolean {
         if (this.text === undefined) return false;
-        let maxLine = [];
-        let line = [];
-        let numberOfLine = 1;
-        for (const char of this.text) {
-            if (char === 'enter') {
-                numberOfLine++;
-                if (maxLine.length < line.length) {
-                    maxLine = line;
-                }
-                line = [];
-                length = 0;
-            } else {
-                line.push(char);
-            }
-        }
-        if (numberOfLine === 1) maxLine = line;
-        const selectionWidth = this.width * maxLine.length + this.textStartingPoint.x;
-        const selectionHeight = this.height * numberOfLine + this.textStartingPoint.y;
+        const selectionWidth = this.calculateWidth(this.maxLine, this.textStartingPoint.x);
+        const selectionHeight = this.height * this.numberLine + this.textStartingPoint.y;
         if (
             mousePosition.x >= this.textStartingPoint.x &&
             mousePosition.x <= selectionWidth &&
@@ -103,6 +84,7 @@ export class TextService extends Tool {
         this.removeIndicator();
         this.printText();
         this.drawingService.applyPreview();
+        this.destroy();
     }
 
     onMouseEnter(): void {
@@ -110,15 +92,14 @@ export class TextService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        this.insertLetter(event);
-
         switch (event.key) {
             case 'Backspace':
                 this.deleteLetter(this.indexText - 1);
+                this.indexText--;
                 break;
             case 'Delete':
                 this.isDelete = true;
-                this.deleteLetter(this.indexText - 1);
+                this.deleteLetter(this.indexText + 1);
                 break;
             case ARROW_KEYS.LEFT:
                 if (this.indexText > 0) {
@@ -142,18 +123,19 @@ export class TextService extends Tool {
                 break;
             case 'Escape':
                 this.createText();
-                this.destroy();
                 break;
             case 'Alt':
                 event.preventDefault();
+                break;
+            default:
+                this.insertLetter(event.key);
+                this.indexText++;
+                break;
         }
     }
 
     onKeyUp(event: KeyboardEvent): void {
         this.printText();
-        if (event.key === 'Shift') {
-            this.isShiftKeyPress = false;
-        }
     }
 
     moveIndicatorUpAndDown(mouvement: string): void {
@@ -179,7 +161,6 @@ export class TextService extends Tool {
             }
         }
         lines.push(line);
-
         if (mouvement === 'UP') {
             if (lines[numberLine - 1].length < indexInLine - 1) {
                 this.indexText -= indexInLine;
@@ -197,7 +178,7 @@ export class TextService extends Tool {
             }
         }
         this.removeIndicator();
-        this.insertText(this.indexText, '|');
+        this.insertLetter('|');
     }
 
     isInFirstLine(): boolean {
@@ -211,7 +192,6 @@ export class TextService extends Tool {
 
     isInLastLine(): boolean {
         const indexEnter = this.text.lastIndexOf('Enter');
-        console.log(indexEnter);
         if (indexEnter < this.indexText || indexEnter < 0) {
             return true;
         } else {
@@ -219,26 +199,27 @@ export class TextService extends Tool {
         }
     }
 
-    insertLetter(event: KeyboardEvent): void {
-        if (!this.isNumberAndLetter(event)) return;
-        if (event.key === 'Shift') return;
-        if (this.indexText === this.text.length - 1) {
-            this.text.pop();
-            this.text.push(event.key);
+    insertLetter(item: string): void {
+        console.log('hi');
+        if (!this.isNumberAndLetter(item)) return;
+        if (item === 'Shift') return;
+        if (item === '|' && this.indexText >= this.text.length) {
             this.text.push('|');
-            ++this.indexText;
+        } else if (this.indexText >= this.text.length) {
+            this.text.pop();
+            this.text.push(item);
+            this.text.push('|');
         } else {
             const newText = [];
             let i = 0;
             for (const char of this.text) {
                 if (i === this.indexText) {
-                    newText.push(event.key);
+                    newText.push(item);
                 }
                 newText.push(char);
                 i++;
             }
             this.text = newText;
-            this.indexText++;
         }
     }
 
@@ -257,7 +238,6 @@ export class TextService extends Tool {
             i++;
         }
         this.text = newText;
-        this.indexText--;
     }
 
     removeIndicator(): void {
@@ -271,44 +251,80 @@ export class TextService extends Tool {
     }
 
     printText(): void {
+        let numberLine = 1;
+        let maxLine = '';
         if (this.text === undefined) return;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         let line = '';
         let lineHeight = this.textStartingPoint.y + this.height;
+        let lineWidth = this.textStartingPoint.x;
         for (const char of this.text) {
             if (char === 'Enter') {
-                this.drawingService.previewCtx.fillText(line, this.textStartingPoint.x, lineHeight);
+                numberLine++;
+                this.drawingService.previewCtx.fillText(line, lineWidth, lineHeight);
                 lineHeight += this.height + MARGIN;
+                if (line.length > maxLine.length) maxLine = line;
                 line = '';
+                lineWidth = this.textStartingPoint.x;
+            } else if (char === '|' && this.align === 'start') {
+                this.drawingService.previewCtx.fillText(line, this.textStartingPoint.x, lineHeight);
+                lineWidth = this.calculateWidth(line, lineWidth);
+                line = '';
+                this.printCursor(lineWidth, lineHeight);
+                lineWidth = this.calculateWidth('|', lineWidth);
             } else {
                 line += char;
             }
         }
-        this.drawingService.previewCtx.fillText(line, this.textStartingPoint.x, lineHeight);
+        if (maxLine.length === 0) maxLine = line;
+        this.drawingService.previewCtx.fillText(line, lineWidth, lineHeight);
+        this.maxLine = maxLine;
+        this.numberLine = numberLine;
+    }
+
+    printCursorLine(line: string, lineAfterCursor: string, lineBefore: string, lineHeight: number): void {
+        let lineWidth = 0;
+        if (this.align === 'center') {
+            lineWidth =
+                this.textStartingPoint.x -
+                this.drawingService.previewCtx.measureText(line).actualBoundingBoxLeft +
+                this.drawingService.previewCtx.measureText(lineBefore).width / 2;
+            this.drawingService.previewCtx.fillText(lineBefore, lineWidth, lineHeight);
+            this.printCursor(lineWidth + this.drawingService.previewCtx.measureText(lineBefore).width / 2, lineHeight);
+            lineWidth += this.drawingService.previewCtx.measureText(lineAfterCursor).width / 2;
+        } else if (this.align === 'end') {
+            lineWidth =
+                this.textStartingPoint.x -
+                this.drawingService.previewCtx.measureText(line).actualBoundingBoxLeft +
+                this.drawingService.previewCtx.measureText(lineBefore).width;
+            this.drawingService.previewCtx.fillText(lineBefore, lineWidth, lineHeight);
+            this.printCursor(lineWidth + this.drawingService.previewCtx.measureText('|').width, lineHeight);
+            lineWidth = this.textStartingPoint.x;
+        } else {
+            lineWidth = this.textStartingPoint.x;
+            this.drawingService.previewCtx.fillText(lineBefore, lineWidth, lineHeight);
+            lineWidth += this.drawingService.previewCtx.measureText(lineBefore).width;
+            this.printCursor(lineWidth, lineHeight);
+            lineWidth += this.drawingService.previewCtx.measureText('|').width;
+        }
+        this.drawingService.previewCtx.fillText(lineAfterCursor, lineWidth, lineHeight);
+    }
+
+    printCursor(lineWidth: number, lineHeight: number): void {
+        const fillStyle = this.drawingService.previewCtx.fillStyle;
+        this.drawingService.previewCtx.fillStyle = '#000000';
+        this.drawingService.previewCtx.fillText('|', lineWidth, lineHeight);
+        this.drawingService.previewCtx.fillStyle = fillStyle;
+    }
+
+    calculateWidth(text: string, lineWidth: number): number {
+        return lineWidth + this.drawingService.previewCtx.measureText(text).width;
     }
 
     moveIndicator(interval: number): void {
         this.removeIndicator();
         this.indexText = this.indexText + interval;
-
-        this.insertText(this.indexText, '|');
-    }
-
-    insertText(index: number, item: string): void {
-        if (this.indexText >= this.text.length) {
-            this.text.push('|');
-            return;
-        }
-        const newText = [];
-        let j = 0;
-        for (const char of this.text) {
-            if (j === index) {
-                newText.push(item);
-            }
-            newText.push(char);
-            j++;
-        }
-        this.text = newText;
+        this.insertLetter('|');
     }
 
     applyFont(): void {
@@ -318,44 +334,15 @@ export class TextService extends Tool {
         this.drawingService.previewCtx.textAlign = this.align;
         const metrics = this.drawingService.previewCtx.measureText(textTest);
         this.height = metrics.actualBoundingBoxAscent;
-        this.width = metrics.width / textTest.length;
+        this.printText();
     }
 
-    isNumberAndLetter(event: KeyboardEvent): boolean {
-        const isLetter = event.key >= 'a' && event.key <= 'z';
-        const isNumber = event.key >= '0' && event.key <= '9';
+    isNumberAndLetter(key: string): boolean {
+        const isLetter = key >= 'a' && key <= 'z';
+        const isNumber = key >= '0' && key <= '9';
         if (isLetter || isNumber) return true;
-        else if (AUTHORIZED_KEY.includes(event.key)) return true;
-        else if (event.key === 'Enter' || event.key === ' ') return true;
+        else if (AUTHORIZED_KEY.includes(key)) return true;
+        else if (key === 'Enter' || key === ' ') return true;
         else return false;
-    }
-
-    setFont(font: string): void {
-        this.font = font;
-        this.applyFont();
-        this.printText();
-    }
-    setSize(size: number): void {
-        this.size = size;
-        this.applyFont();
-        this.printText();
-    }
-
-    setStyle(style: string): void {
-        this.style = style;
-        this.applyFont();
-        this.printText();
-    }
-
-    setBoldText(bold: string): void {
-        this.boldText = bold;
-        this.applyFont();
-        this.printText();
-    }
-
-    setAlignment(align: CanvasTextAlign): void {
-        this.align = align;
-        this.applyFont();
-        this.printText();
     }
 }
