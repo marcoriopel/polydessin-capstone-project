@@ -33,7 +33,7 @@ describe('SquareService', () => {
         drawCanvas.height = HEIGHT;
         gridCanvasStub = canvas as HTMLCanvasElement;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -115,6 +115,7 @@ describe('SquareService', () => {
 
     it('onMouseUp should call drawShape if mouse was already down', () => {
         drawShapeSpy = spyOn<any>(service, 'drawShape');
+
         const mouseEventLClick = {
             offsetX: 20,
             offsetY: 20,

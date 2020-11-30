@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
-import { ContinueDesignService } from '@app/services/continue-design/continue-design.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -29,7 +28,6 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
         public dialog: MatDialog,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
-        public continueDesign: ContinueDesignService,
     ) {}
     destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
@@ -53,7 +51,7 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
     ngAfterViewInit(): void {
         //
-        this.continueDesign.continueDesign();
+        //  this.continueDesign.continueDesign();
     }
 
     ngOnInit(): void {

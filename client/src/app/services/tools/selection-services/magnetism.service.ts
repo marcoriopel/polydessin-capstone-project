@@ -73,6 +73,5 @@ export class MagnetismService {
 
     onMouseMoveMagnetism(changeX: number, changeY: number): void {
         this.moveService.onMouseMove(changeX, changeY);
-        this.drawingService.autoSave();
     }
 }

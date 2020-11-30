@@ -13,6 +13,7 @@ import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-string-literal
 // tslint:disable: max-file-line-count
 // tslint:disable: no-magic-numbers
+// tslint:disable: no-any
 
 describe('SelectionService', () => {
     let service: SelectionService;
@@ -31,7 +32,14 @@ describe('SelectionService', () => {
             'onMouseMoveMagnetism',
             'magnetismCoordinateReference',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'getCanvasData',
+            'updateStack',
+            'setIsToolInUse',
+            'applyPreview',
+            'autoSave',
+        ]);
         moveServiceSpy = jasmine.createSpyObj('MoveService', [
             'printSelectionOnPreview',
             'onMouseDown',
@@ -224,6 +232,7 @@ describe('SelectionService', () => {
     it('onMouseUp should call strokeSelection and setSelectionPoint', () => {
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+
         service.isNewSelection = false;
 
         service.onMouseUp({} as MouseEvent);

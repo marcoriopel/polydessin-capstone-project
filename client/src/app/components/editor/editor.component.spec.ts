@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -15,6 +14,7 @@ describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingServiceSpy: SpyObj<ResizeDrawingService>;
+    let drawingServiceSpy: SpyObj<DrawingService>;
     let style: CSSStyleDeclaration;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
@@ -33,7 +33,7 @@ describe('EditorComponent', () => {
             'currentToolMouseLeave',
         ]);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
-
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         obs = new Subject<string>();
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
@@ -41,11 +41,12 @@ describe('EditorComponent', () => {
         TestBed.configureTestingModule({
             imports: [MatDialogModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [EditorComponent, DrawingComponent, SidebarComponent],
+            declarations: [EditorComponent],
             providers: [
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
+                { provide: DrawingService, useValue: drawingServiceSpy },
             ],
         }).compileComponents();
     }));
@@ -53,6 +54,7 @@ describe('EditorComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
+        console.log(' control ', component);
         fixture.detectChanges();
 
         style = {

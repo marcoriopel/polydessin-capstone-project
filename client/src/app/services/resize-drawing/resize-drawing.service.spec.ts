@@ -55,6 +55,7 @@ class DrawingServiceMock {
     }
     resetStack(): void {}
     applyPreview(): void {}
+    autoSave(): void {}
 }
 
 // tslint:disable: no-magic-numbers
@@ -65,7 +66,7 @@ describe('ResizeDrawingService', () => {
     let drawingService: DrawingService;
 
     beforeEach(() => {
-        drawingService = new DrawingServiceMock() as DrawingService;
+        drawingService = (new DrawingServiceMock() as unknown) as DrawingService;
         drawingService.canvas.width = MINIMUM_CANVAS_WIDTH;
         drawingService.canvas.height = MINIMUM_CANVAS_HEIGHT;
 
