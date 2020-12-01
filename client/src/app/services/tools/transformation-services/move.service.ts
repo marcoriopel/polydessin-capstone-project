@@ -25,10 +25,7 @@ export class MoveService {
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.initialSelection.startingPoint.x = selection.startingPoint.x;
-        this.initialSelection.startingPoint.y = selection.startingPoint.y;
-        this.initialSelection.height = selection.height;
-        this.initialSelection.width = selection.width;
+        this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }
@@ -44,7 +41,6 @@ export class MoveService {
                     changeYLeft = changeYLeft - squareSize;
                 }
                 this.selection.startingPoint.y -= changeYLeft;
-
                 break;
             case ARROW_KEYS.UP:
                 this.selection.startingPoint.y -= baseCoordinates.y % squareSize;
@@ -53,7 +49,6 @@ export class MoveService {
                     changeXUp = changeXUp - squareSize;
                 }
                 this.selection.startingPoint.x -= changeXUp;
-
                 break;
             case ARROW_KEYS.RIGHT:
                 if (baseCoordinates.x % squareSize !== 0) this.selection.startingPoint.x += squareSize - (baseCoordinates.x % squareSize);
@@ -62,7 +57,6 @@ export class MoveService {
                     changeYRight = changeYRight - squareSize;
                 }
                 this.selection.startingPoint.y -= changeYRight;
-
                 break;
             case ARROW_KEYS.DOWN:
                 if (baseCoordinates.y % squareSize !== 0) this.selection.startingPoint.y += squareSize - (baseCoordinates.y % squareSize);
@@ -71,7 +65,6 @@ export class MoveService {
                     changeXDown = changeXDown - squareSize;
                 }
                 this.selection.startingPoint.x -= changeXDown;
-
                 break;
         }
 
@@ -214,5 +207,12 @@ export class MoveService {
             }
         }
         return false;
+    }
+
+    setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 }

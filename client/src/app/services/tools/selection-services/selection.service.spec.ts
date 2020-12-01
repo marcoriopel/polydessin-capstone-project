@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -17,14 +18,28 @@ describe('SelectionService', () => {
     let service: SelectionService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;
+    let magnetismServiceSpy: SpyObj<MagnetismService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
     let rotateService: SpyObj<RotateService>;
 
     beforeEach(() => {
+        magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
+            'magnetismXAxisChange',
+            'magnetismYAxisChange',
+            'onMouseMoveMagnetism',
+            'magnetismCoordinateReference',
+        ]);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
-        moveServiceSpy = jasmine.createSpyObj('MoveService', ['printSelectionOnPreview', 'onMouseDown', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
+        moveServiceSpy = jasmine.createSpyObj('MoveService', [
+            'printSelectionOnPreview',
+            'onMouseDown',
+            'onMouseMove',
+            'onKeyDown',
+            'onKeyUp',
+            'snapOnGrid',
+        ]);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
@@ -37,6 +52,7 @@ describe('SelectionService', () => {
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MoveService, useValue: moveServiceSpy },
                 { provide: RotateService, useValue: rotateService },
+                { provide: MagnetismService, useValue: magnetismServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -181,7 +197,7 @@ describe('SelectionService', () => {
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service.isNewSelection = true;
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
 
         service.onMouseUp({} as MouseEvent);
@@ -282,7 +298,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should call setInitialSelection, setSelectionData and setSelectionPoint', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -298,7 +314,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should set selection to canvas width and canvas height', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -320,7 +336,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should call clear canvas', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -337,7 +353,7 @@ describe('SelectionService', () => {
     });
 
     it('selectAll should set attributes for underlyingService', () => {
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service['drawingService'].canvas = document.createElement('canvas');
@@ -486,7 +502,7 @@ describe('SelectionService', () => {
             height: 10,
         };
 
-        service.setInitialSelection(selection);
+        service.setSelection(service.initialSelection, selection);
 
         expect(service.initialSelection).toEqual(selection);
     });
@@ -570,7 +586,54 @@ describe('SelectionService', () => {
 
     it('setSelectionPoint should not draw blue squares if selection is empty', () => {
         service.setSelectionPoint();
-
         expect(previewCtxSpy.fillRect).not.toHaveBeenCalled();
+    });
+
+    it('should set grid spacing on setGridSpacing call', () => {
+        service.squareSize = 5;
+        service.setGridSpacing(10);
+        expect(service.squareSize).toEqual(10);
+    });
+
+    it('should set magnetism on enableMagnetism call', () => {
+        service.isMagnetism = false;
+        service.enableMagnetism(true);
+        expect(service.isMagnetism).toEqual(true);
+    });
+
+    it('should call onMouseMoveMagnetism if magnetism is enabled and the transformation is move', () => {
+        const mouveMoveMagnetismSpy = spyOn(service, 'onMouseMoveMagnetism');
+        service.isNewSelection = false;
+        service.transormation = 'move';
+        service.isMagnetism = true;
+        service.onMouseMove({} as MouseEvent);
+        expect(mouveMoveMagnetismSpy).toHaveBeenCalled();
+    });
+
+    it('should call the method in magnetismService on onMouseMoveMagnetism call', () => {
+        service.onMouseMoveMagnetism(2, 2);
+        expect(magnetismServiceSpy.magnetismXAxisChange).toHaveBeenCalled();
+        expect(magnetismServiceSpy.magnetismYAxisChange).toHaveBeenCalled();
+        expect(magnetismServiceSpy.onMouseMoveMagnetism).toHaveBeenCalled();
+    });
+
+    it('should return false if coordinates are not on grid', () => {
+        service.squareSize = 3;
+        expect(service.isSnappedOnGrid({ x: 2, y: 2 })).toBeFalsy();
+    });
+
+    it('should return true if coordinates are on grid', () => {
+        service.squareSize = 2;
+        expect(service.isSnappedOnGrid({ x: 4, y: 4 })).toBeTruthy();
+    });
+
+    it('onKeyDown should call snap on grid if it is not snapped', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.isMagnetism = true;
+        const isSnappedOnGridSpy = spyOn(service, 'isSnappedOnGrid').and.returnValue(false);
+        service.onKeyDown({} as KeyboardEvent);
+
+        expect(isSnappedOnGridSpy).toHaveBeenCalled();
+        expect(moveServiceSpy.snapOnGrid).toHaveBeenCalled();
     });
 });
