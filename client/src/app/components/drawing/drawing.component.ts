@@ -45,9 +45,6 @@ export class DrawingComponent implements AfterViewInit {
         this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
         if (this.continueDesignService.loadOldDesign()) {
             this.continueDesignService.continueDesign();
-            //     .then(() => {
-            //     //
-            // });
         }
     }
 

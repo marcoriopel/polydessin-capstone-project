@@ -26,7 +26,7 @@ export class MainPageComponent {
     }
 
     lastDraftActivation(): void {
-        this.continueDesignService.continueDesign();
+        this.continueDesignService.continueDesignAction();
     }
 
     continueDesign(): void {

@@ -71,9 +71,9 @@ export class ContinueDesignService {
             image.addEventListener(
                 'load',
                 () => {
-                    canvas.width = image.width;
-                    canvas.height = image.height;
-                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    // canvas.width = image.width;
+                    // canvas.height = image.height;
+                    context.drawImage(image, 0, 0, image.width, image.height);
                     resolve(context.getImageData(0, 0, canvas.width, canvas.height));
                 },
                 false,
@@ -81,21 +81,4 @@ export class ContinueDesignService {
             image.src = URI;
         });
     }
-    // async drawImageOnCanvas(image: string): Promise<void> {
-    //     return new Promise<void>((resolve) => {
-    //         const drawing = new Image();
-    //         drawing.src = image;
-    //         drawing.onload = () => {
-    //             this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
-    //             this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-    //             this.drawingService.resetStack();
-    //             resolve();
-    //         };
-    //     });
-    // }
-
-    // convertURIToImageData(URI).then(function(imageData) {
-    //   // Here you can use imageData
-    //   console.log(imageData);
-    // });
 }
