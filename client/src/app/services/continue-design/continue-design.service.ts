@@ -17,7 +17,7 @@ export class ContinueDesignService {
     destroy$: Subject<boolean> = new Subject<boolean>();
     filteredMetadata: DBData[] = [];
     currentRoute: string;
-    loadDesign: boolean;
+    checkOldDesign: boolean;
     designPrevious: HTMLImageElement;
     WIDTH: number;
     constructor(
@@ -27,7 +27,7 @@ export class ContinueDesignService {
         public resizeDrawingService: ResizeDrawingService,
         public databaseService: DatabaseService,
     ) {}
-    continueDesign(): void {
+    furtherDesign(): void {
         const findSRC = localStorage.getItem('theDesign') as string;
         this.convertURIToImageData(findSRC);
     }
@@ -36,11 +36,11 @@ export class ContinueDesignService {
         return this.lastDesign;
     }
 
-    continueDesignAction(): void {
+    furtherOldDesign(): void {
         this.lastDesign = localStorage.length > 0;
     }
 
-    continueDesignDesactivated(): void {
+    furtherDesignUnlock(): void {
         this.lastDesign = false;
     }
 
@@ -51,12 +51,10 @@ export class ContinueDesignService {
     newBaseCtx(): boolean {
         return this.drawingService.baseCtx ? true : false;
     }
-    resizeCanvas(width: number = MINIMUM_CANVAS_WIDTH, height: number = MINIMUM_CANVAS_HEIGHT): void {
+    resizingCanvas(width: number = MINIMUM_CANVAS_WIDTH, height: number = MINIMUM_CANVAS_HEIGHT): void {
         this.drawingService.canvas.width = width;
         this.drawingService.canvas.height = height;
-        this.drawingService.canvas.width = width;
-        this.drawingService.canvas.height = height;
-        if (!this.loadDesign) {
+        if (!this.checkOldDesign) {
             this.drawingService.canvas.width = width;
             this.drawingService.canvas.height = height;
         }
@@ -68,17 +66,23 @@ export class ContinueDesignService {
             const canvas = this.drawingService.canvas;
             const context = this.drawingService.baseCtx;
             const image = new Image();
+            image.src = URI;
             image.addEventListener(
                 'load',
                 () => {
                     // canvas.width = image.width;
                     // canvas.height = image.height;
-                    context.drawImage(image, 0, 0, image.width, image.height);
+                    console.log('On y est  !!');
+                    // this.resizeCanvas(image.width, image.height);
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    console.log(image.width);
+                    console.log(image.height);
+                    console.log('saved');
+                    console.log(localStorage.getItem('theDesign'));
                     resolve(context.getImageData(0, 0, canvas.width, canvas.height));
                 },
                 false,
             );
-            image.src = URI;
         });
     }
 }

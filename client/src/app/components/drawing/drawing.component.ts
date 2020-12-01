@@ -44,14 +44,14 @@ export class DrawingComponent implements AfterViewInit {
         this.baseCanvas.nativeElement.height = this.drawingService.canvas.height;
         this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
         if (this.continueDesignService.loadOldDesign()) {
-            this.continueDesignService.continueDesign();
+            this.continueDesignService.furtherDesign();
         }
     }
 
     // tslint:disable-next-line: use-lifecycle-interface
     ngOnInit(): void {
         if (this.continueDesignService.newBaseCtx()) {
-            this.continueDesignService.resizeCanvas();
+            // this.continueDesignService.resizeCanvas();
         }
     }
 

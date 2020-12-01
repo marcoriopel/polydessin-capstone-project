@@ -108,4 +108,11 @@ export class DrawingService {
         this.undoStack = [];
         this.redoStack = [];
     }
+
+    autoSave(): void {
+        if (!this.canvas) return;
+        const usingSrc = this.canvas.toDataURL();
+        localStorage.clear();
+        localStorage.setItem('theDesign', usingSrc);
+    }
 }

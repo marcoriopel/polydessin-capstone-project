@@ -21,15 +21,15 @@ export class MainPageComponent {
         this.dialog.open(CarouselComponent);
     }
 
-    canContinuerUnDessinButtonBeDisplayed(): boolean {
+    oldDesignCheck(): void {
+        this.continueDesignService.furtherOldDesign();
+    }
+
+    furtherDesign(): void {
+        this.continueDesignService.furtherDesignUnlock();
+    }
+
+    printButton(): boolean {
         return localStorage.length > 0;
-    }
-
-    lastDraftActivation(): void {
-        this.continueDesignService.continueDesignAction();
-    }
-
-    continueDesign(): void {
-        this.continueDesignService.continueDesignDesactivated();
     }
 }
