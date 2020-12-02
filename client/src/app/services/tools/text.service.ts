@@ -91,6 +91,7 @@ export class TextService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
+        if (!this.isNewText) return;
         switch (event.key) {
             case 'Backspace':
                 this.isDelete = false;

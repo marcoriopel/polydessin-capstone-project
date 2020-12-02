@@ -41,10 +41,6 @@ export class HotkeyService {
     keysNeedShift: Map<string, string> = new Map([['Z', this.sidebarElements.REDO]]);
 
     onKeyDown(event: KeyboardEvent): void {
-        if (this.isTextTool) {
-            this.eventKey.next(event);
-            return;
-        }
         if (!this.isHotkeyEnabled) return;
         if (event.shiftKey || event.ctrlKey) event.preventDefault();
         let keyName: string | undefined;
@@ -62,9 +58,5 @@ export class HotkeyService {
     }
     getKey(): Observable<string> {
         return this.toolName.asObservable();
-    }
-
-    getEventKey(): Observable<KeyboardEvent> {
-        return this.eventKey.asObservable();
     }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FONT, Font } from '@app/ressources/global-variables/text';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -8,7 +8,7 @@ import { TextService } from '@app/services/tools/text.service';
     templateUrl: './text-attributes.component.html',
     styleUrls: ['./text-attributes.component.scss'],
 })
-export class TextComponent implements OnDestroy, AfterViewInit {
+export class TextComponent implements OnDestroy {
     textSize: number;
     fontStyle: Font = {
         GEORGIA: FONT.GEORGIA,
@@ -58,13 +58,5 @@ export class TextComponent implements OnDestroy, AfterViewInit {
 
     ngOnDestroy(): void {
         this.textService.createText();
-    }
-
-    ngAfterViewInit(): void {
-        this.hotkeyService.getEventKey().subscribe((event) => {
-            if (this.hotkeyService.isTextTool) {
-                this.textService.onKeyDown(event);
-            }
-        });
     }
 }
