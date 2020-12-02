@@ -15,6 +15,8 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 
+// this tool was inpired by the code found on http://perfectionkills.com/exploring-canvas-drawing-techniques/
+
 @Injectable({
     providedIn: 'root',
 })
