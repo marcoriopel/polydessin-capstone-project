@@ -7,7 +7,6 @@ import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawin
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
-// import { takeUntil } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -30,6 +29,33 @@ export class ContinueDesignService {
     furtherDesign(): void {
         const findSRC = localStorage.getItem('theDesign') as string;
         this.convertURIToImageData(findSRC);
+    }
+
+    // tslint:disable-next-line: no-any
+    async convertURIToImageData(URI: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            if (URI == null) return reject();
+            const canvas = this.drawingService.canvas;
+            const context = this.drawingService.baseCtx;
+            const image = new Image();
+            image.src = URI;
+            image.addEventListener(
+                'load',
+                () => {
+                    // canvas.width = image.width;
+                    // canvas.height = image.height;
+                    console.log('On y est  !!');
+                    // this.resizeCanvas(image.width, image.height);
+                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    console.log(image.width);
+                    console.log(image.height);
+                    console.log('saved');
+                    console.log(localStorage.getItem('theDesign'));
+                    resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+                },
+                false,
+            );
+        });
     }
 
     loadOldDesign(): boolean {
@@ -58,31 +84,5 @@ export class ContinueDesignService {
             this.drawingService.canvas.width = width;
             this.drawingService.canvas.height = height;
         }
-    }
-    // tslint:disable-next-line: no-any
-    async convertURIToImageData(URI: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            if (URI == null) return reject();
-            const canvas = this.drawingService.canvas;
-            const context = this.drawingService.baseCtx;
-            const image = new Image();
-            image.src = URI;
-            image.addEventListener(
-                'load',
-                () => {
-                    // canvas.width = image.width;
-                    // canvas.height = image.height;
-                    console.log('On y est  !!');
-                    // this.resizeCanvas(image.width, image.height);
-                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    console.log(image.width);
-                    console.log(image.height);
-                    console.log('saved');
-                    console.log(localStorage.getItem('theDesign'));
-                    resolve(context.getImageData(0, 0, canvas.width, canvas.height));
-                },
-                false,
-            );
-        });
     }
 }

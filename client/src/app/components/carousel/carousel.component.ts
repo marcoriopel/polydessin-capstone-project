@@ -53,7 +53,7 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
     ngAfterViewInit(): void {
         //
-        this.continueDesign.continueDesign();
+        this.continueDesign.furtherDesign();
     }
 
     ngOnInit(): void {
