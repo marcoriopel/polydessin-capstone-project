@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RotateService } from './rotate.service';
 import SpyObj = jasmine.SpyObj;
 
+// tslint:disable: no-magic-numbers
 describe('RotateSelectionService', () => {
     let service: RotateService;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
