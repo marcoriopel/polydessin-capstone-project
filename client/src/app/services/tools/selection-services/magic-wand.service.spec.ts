@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { SelectionBox } from '@app/classes/selection-box';
 import { Vec2 } from '@app/classes/vec2';
 import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -15,7 +14,6 @@ import SpyObj = jasmine.SpyObj;
 describe('MagicWandService', () => {
     let service: MagicWandService;
     let drawingService: DrawingService;
-    let selectionBox: SelectionBox;
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let gridCanvasStub: HTMLCanvasElement;
@@ -45,11 +43,6 @@ describe('MagicWandService', () => {
         ]);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'clearCanvas', 'getPixelData', 'getCanvasData', 'updateStack']);
 
-        selectionBox = {
-            startingPoint: { x: 0, y: 0 },
-            width: 10,
-            height: 10,
-        };
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseDown', 'printSelectionOnPreview', 'onKeyUp', 'onMouseMove', 'initialize']);
         rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyUp', 'initialize', 'rotatePreviewCanvas']);
         TestBed.configureTestingModule({
@@ -166,12 +159,12 @@ describe('MagicWandService', () => {
         expect(contiguousWandSpy).toHaveBeenCalled();
     });
 
-    it('should call setInitialSelection on mouseup if it is a new selection', () => {
+    it('should call setSelection on mouseup if it is a new selection', () => {
         service.isNewSelection = true;
         service.transormation = '';
         service.selection = { startingPoint: { x: 0, y: 0 }, width: 5, height: 5 };
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service.onMouseUp(mouseEvent);
         expect(strokeSelectionSpy).toHaveBeenCalled();
@@ -179,12 +172,12 @@ describe('MagicWandService', () => {
         expect(setSelectionPointSpy).toHaveBeenCalled();
     });
 
-    it('should not call setInitialSelection on mouseup if it is a new selection but size of selection is null', () => {
+    it('should not call setSelection on mouseup if it is a new selection but size of selection is null', () => {
         service.isNewSelection = true;
         service.transormation = '';
         service.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
-        const setInitialSelectionSpy = spyOn(service, 'setInitialSelection');
+        const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service.onMouseUp(mouseEvent);
         expect(strokeSelectionSpy).toHaveBeenCalled();
@@ -444,7 +437,7 @@ describe('MagicWandService', () => {
 
     it('should put image data and initialize services when setting the selection data', () => {
         const putImageDataSpy = spyOn(service.selectionImageCtx, 'putImageData');
-        service.setSelectionData(selectionBox);
+        service.setSelectionData();
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
         expect(rotateServiceSpy.initialize).toHaveBeenCalled();
