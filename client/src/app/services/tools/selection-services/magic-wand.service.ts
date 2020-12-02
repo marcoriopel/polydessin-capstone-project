@@ -13,6 +13,7 @@ import {
 } from '@app/ressources/global-variables/global-variables';
 import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
@@ -52,8 +53,9 @@ export class MagicWandService extends SelectionService {
         public rotateService: RotateService,
         public magnetismService: MagnetismService,
         public colorSelectionService: ColorSelectionService,
+        public clipboardService: ClipboardService,
     ) {
-        super(drawingService, moveService, rotateService, magnetismService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
     }
 
     initialize(): void {
@@ -101,7 +103,7 @@ export class MagicWandService extends SelectionService {
         if (this.isNewSelection) {
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionOver = false;
-                this.setInitialSelection(this.selection);
+                this.setSelection(this.initialSelection, this.selection);
             }
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -184,7 +186,7 @@ export class MagicWandService extends SelectionService {
                 MAGIC_WAND_BORDER_BOTH_SIDES,
         };
 
-        this.setSelectionData(this.selection);
+        this.setSelectionData();
     }
 
     nextContiguousPixels(currentPixel: Vec2, canvasData: ImageData): void {
@@ -238,9 +240,9 @@ export class MagicWandService extends SelectionService {
         this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
     }
 
-    setSelectionData(selection: SelectionBox): void {
-        this.selectionImage.width = selection.width;
-        this.selectionImage.height = selection.height;
+    setSelectionData(): void {
+        this.selectionImage.width = this.selection.width;
+        this.selectionImage.height = this.selection.height;
         this.selectionImageCtx.putImageData(this.selectionImageData, -this.selection.startingPoint.x, -this.selection.startingPoint.y);
         this.moveService.initialize(this.selection, this.selectionImage);
         this.rotateService.initialize(this.selection, this.selectionImage);
@@ -327,7 +329,7 @@ export class MagicWandService extends SelectionService {
                 MAGIC_WAND_BORDER_BOTH_SIDES,
         };
 
-        this.setSelectionData(this.selection);
+        this.setSelectionData();
     }
     isSameColor(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number, tolerance: number): boolean {
         const diffRed: number = Math.abs(pixelData[RGBA_INDEXER.RED] - canvasData.data[index + RGBA_INDEXER.RED]);
