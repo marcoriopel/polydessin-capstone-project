@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 import { FONT, Font } from '@app/ressources/global-variables/text';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -22,8 +21,9 @@ export class TextComponent implements OnDestroy, AfterViewInit {
         this.textSize = this.textService.size;
     }
 
-    changeFont(font: MatSelectChange): void {
-        this.textService.font = font.value;
+    changeFont(font: string): void {
+        console.log(font);
+        this.textService.font = font;
         this.textService.applyFont();
     }
 
@@ -44,7 +44,7 @@ export class TextComponent implements OnDestroy, AfterViewInit {
 
     changeBoldText(bold: boolean): void {
         if (bold) {
-            this.textService.boldText = 'bolt';
+            this.textService.boldText = 'bold';
         } else {
             this.textService.boldText = 'normal';
         }
@@ -58,7 +58,6 @@ export class TextComponent implements OnDestroy, AfterViewInit {
 
     ngOnDestroy(): void {
         this.textService.createText();
-        this.textService.destroy();
     }
 
     ngAfterViewInit(): void {

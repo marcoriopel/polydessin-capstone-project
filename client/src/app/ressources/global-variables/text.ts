@@ -64,4 +64,6 @@ export const AUTHORIZED_KEY: string[] = [
     '-',
     '=',
     '|',
+    'Enter',
+    ' ',
 ];

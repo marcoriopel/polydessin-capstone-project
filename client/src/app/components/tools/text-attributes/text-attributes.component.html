@@ -3,7 +3,7 @@
     <hr />
     <label>Police</label>
     <mat-form-field appearance="fill">
-        <mat-select (selectionChange)="this.changeFont($event)" [value]="fontStyle.GEORGIA">
+        <mat-select (selectionChange)="this.changeFont($event.value)" [value]="fontStyle.GEORGIA">
             <mat-option [value]="fontStyle.GEORGIA">Georgia</mat-option>
             <mat-option [value]="fontStyle.ARIAL">Arial</mat-option>
             <mat-option [value]="fontStyle.TIME_NEW_ROMAN">Times New Roman</mat-option>
