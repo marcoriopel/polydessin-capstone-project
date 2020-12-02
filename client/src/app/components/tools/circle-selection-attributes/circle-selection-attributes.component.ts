@@ -5,11 +5,11 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 
 @Component({
-    selector: 'app-circleselection-attributes',
+    selector: 'app-circle-selection-attributes',
     templateUrl: './circle-selection-attributes.component.html',
     styleUrls: ['./circle-selection-attributes.component.scss'],
 })
-export class CircleselectionAttributesComponent {
+export class CircleSelectionAttributesComponent {
     isMagnetismEnabled: boolean = false;
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
     currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;

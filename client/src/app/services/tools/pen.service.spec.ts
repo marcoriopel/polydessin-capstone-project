@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { Vec2 } from '@app/classes/vec2';
 import { DEGREES_180, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -22,7 +21,6 @@ describe('PenService', () => {
     const HEIGHT = 100;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;

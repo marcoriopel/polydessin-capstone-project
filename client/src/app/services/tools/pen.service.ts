@@ -7,6 +7,8 @@ import { ColorSelectionService } from '@app/services/color-selection/color-selec
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable, Subject } from 'rxjs';
 
+// this tool was inpired by the code found on http://perfectionkills.com/exploring-canvas-drawing-techniques/
+
 @Injectable({
     providedIn: 'root',
 })

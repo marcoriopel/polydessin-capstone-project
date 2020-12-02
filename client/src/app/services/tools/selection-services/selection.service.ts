@@ -13,12 +13,14 @@ import {
     SELECTION_POINT_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
 import { GridInfo } from '@app/ressources/global-variables/grid-info';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MagnetismService } from '@app/services/tools/selection-services/magnetism.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { Observable, Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
@@ -37,6 +39,7 @@ export class SelectionService extends Tool {
     canvasData: ImageData;
     isNewSelection: boolean = false;
     isSelectionOver: boolean = true;
+    isSelectionEmptySubject: Subject<boolean> = new Subject<boolean>();
     isMagnetism: boolean = false;
     squareSize: number;
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
@@ -47,15 +50,20 @@ export class SelectionService extends Tool {
         public drawingService: DrawingService,
         public moveService: MoveService,
         public rotateService: RotateService,
+        public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
     ) {
         super(drawingService);
+        this.isSelectionEmptySubject.next(true);
     }
 
     initialize(): void {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
+        if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+            this.clipboardService.isPasteAvailableSubject.next(true);
+        }
     }
 
     setGridSpacing(size: number): void {
@@ -82,6 +90,7 @@ export class SelectionService extends Tool {
             }
             this.isSelectionOver = true;
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.isSelectionEmptySubject.next(true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.underlyingService.onMouseDown(event);
         } else {
@@ -104,9 +113,10 @@ export class SelectionService extends Tool {
             // draw selection
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
+                this.isSelectionEmptySubject.next(false);
                 this.isSelectionOver = false;
-                this.setInitialSelection(this.selection);
-                this.setSelectionData(this.selection);
+                this.setSelection(this.initialSelection, this.selection);
+                this.setSelectionData();
             }
             // reset underlying service to original form
             this.underlyingService.fillStyle = currentFillStyle;
@@ -153,6 +163,9 @@ export class SelectionService extends Tool {
     }
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
+        if (event.ctrlKey) {
+            this.ctrlKeyDown(event);
+        }
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             const axisCoordinates: Vec2 = this.magnetismService.magnetismCoordinateReference(this.currentAlignment, this.selection);
             if (this.isMagnetism && !this.isSnappedOnGrid(axisCoordinates)) {
@@ -176,6 +189,35 @@ export class SelectionService extends Tool {
                 this.underlyingService.isShiftKeyDown = true;
                 break;
             }
+            case 'Delete': {
+                this.drawingService.clearCanvas(this.drawingService.previewCtx);
+                this.moveService.clearSelectionBackground();
+                this.applyPreview();
+                this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+                this.isSelectionEmptySubject.next(true);
+                const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+                selectionImageCtx.clearRect(0, 0, this.selectionImage.width, this.selectionImage.height);
+                this.moveService.initialize(this.selection, this.selectionImage);
+                this.moveService.isTransformationOver = true;
+                break;
+            }
+        }
+    }
+
+    ctrlKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case 'x': {
+                this.cut();
+                break;
+            }
+            case 'c': {
+                this.copy();
+                break;
+            }
+            case 'v': {
+                this.paste();
+                break;
+            }
         }
     }
 
@@ -185,17 +227,22 @@ export class SelectionService extends Tool {
             width: this.drawingService.canvas.width,
             height: this.drawingService.canvas.height,
         };
+        this.isSelectionEmptySubject.next(false);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.underlyingService.firstPoint = { x: 0, y: 0 };
         this.underlyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
         this.underlyingService.fillStyle = FILL_STYLES.DASHED;
         this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
-        this.setInitialSelection(this.selection);
-        this.setSelectionData(this.selection);
+        this.setSelection(this.initialSelection, this.selection);
+        this.setSelectionData();
         this.setSelectionPoint();
     }
 
     onKeyUp(event: KeyboardEvent): void {
+        if (event.key === 'z') {
+            console.log(this.initialSelection.startingPoint);
+            console.log(this.selection.startingPoint);
+        }
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
@@ -247,22 +294,31 @@ export class SelectionService extends Tool {
             this.applyPreview();
         }
         this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+        this.isSelectionEmptySubject.next(true);
         this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
         this.mouseDown = false;
         this.transormation = '';
         this.moveService.isTransformationOver = true;
         this.drawingService.previewCtx.setLineDash([0]);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clipboardService.isPasteAvailableSubject.next(false);
     }
 
-    setInitialSelection(selection: SelectionBox): void {
-        this.initialSelection.startingPoint.x = selection.startingPoint.x;
-        this.initialSelection.startingPoint.y = selection.startingPoint.y;
-        this.initialSelection.width = selection.width;
-        this.initialSelection.height = selection.height;
+    setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 
-    setSelectionData(selection: SelectionBox): void {}
+    setSelectionImage(selectionImage: HTMLCanvasElement): void {
+        this.selectionImage.width = selectionImage.width;
+        this.selectionImage.height = selectionImage.height;
+        const selectionImageCtx = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+        selectionImageCtx.drawImage(selectionImage, 0, 0);
+    }
+
+    setSelectionData(): void {}
 
     strokeSelection(): void {}
 
@@ -311,4 +367,51 @@ export class SelectionService extends Tool {
             this.setSelectionPoint();
         }
     }
+
+    cut(): void {
+        if (this.selection.height !== 0 || this.selection.height !== 0) {
+            this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.moveService.clearSelectionBackground();
+            this.applyPreview();
+            this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.isSelectionEmptySubject.next(true);
+            this.moveService.isTransformationOver = true;
+            this.isSelectionOver = true;
+        }
+    }
+
+    copy(): void {
+        if (this.selection.height !== 0 || this.selection.height !== 0) {
+            this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.moveService.printSelectionOnPreview();
+        }
+    }
+
+    paste(): void {
+        if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+            if (!this.moveService.isTransformationOver || !this.isSelectionOver) {
+                this.moveService.clearSelectionBackground();
+                this.moveService.printSelectionOnPreview();
+                this.applyPreview();
+            }
+            this.setSelection(this.selection, this.clipboardService.selection);
+            this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+            this.rotateService.initialize(this.selection, this.selectionImage);
+            this.isSelectionEmptySubject.next(false);
+            this.rotateService.angle = this.clipboardService.angle;
+            this.rotateService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.isSelectionOver = false;
+            this.moveService.initialize(this.selection, this.selectionImage);
+            this.moveService.initialSelection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+            this.moveService.printSelectionOnPreview();
+            this.moveService.isTransformationOver = false;
+            this.strokeSelection();
+            this.setSelectionPoint();
+        }
+    }
+
+    getIsSelectionEmptySubject(): Observable<boolean> {
+        return this.isSelectionEmptySubject.asObservable();
+    }
+    // tslint:disable-next-line: max-file-line-count
 }

@@ -65,9 +65,9 @@ export class EditorComponent implements AfterViewInit {
             this.hotkeyService.onKeyDown(event);
         } else if (event.key.toString() === '+' || event.key.toString() === '-') {
             this.toolSelectionService.currentToolKeyDown(event);
-        } else {
-            this.toolSelectionService.currentToolKeyDown(event);
         }
+
+        this.toolSelectionService.currentToolKeyDown(event);
     }
 
     onMouseDown(event: MouseEvent): void {

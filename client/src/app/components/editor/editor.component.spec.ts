@@ -22,6 +22,7 @@ describe('EditorComponent', () => {
     let keyboardEvent: KeyboardEvent;
 
     beforeEach(async(() => {
+        obs = new Subject<string>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', [
             'currentToolKeyUp',
             'currentToolKeyDown',
@@ -31,7 +32,9 @@ describe('EditorComponent', () => {
             'currentToolMouseDown',
             'currentToolMouseUp',
             'currentToolMouseLeave',
+            'getCurrentTool',
         ]);
+        toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
