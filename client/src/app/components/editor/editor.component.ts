@@ -66,6 +66,8 @@ export class EditorComponent implements AfterViewInit {
         } else {
             this.toolSelectionService.currentToolKeyDown(event);
         }
+
+        this.toolSelectionService.currentToolKeyDown(event);
     }
 
     onMouseDown(event: MouseEvent): void {

@@ -296,8 +296,38 @@
                 >colorize</mat-icon
             >
         </label>
+        <mat-icon
+            #cutButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.CUT_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="cut()"
+            >content_cut</mat-icon
+        >
+        <mat-icon
+            #copyButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.COPY_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="copy()"
+            >content_copy</mat-icon
+        >
+        <mat-icon
+            #pasteButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.PASTE_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="paste()"
+            >content_paste</mat-icon
+        >
     </div>
-    <div class="sidebarSection">
+    <div class="topDivider sidebarSection">
         <mat-icon
             class="material-icons"
             [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
@@ -335,10 +365,11 @@
             (click)="openUserguide()"
             >help</mat-icon
         >
+
         <mat-icon
             id="undo"
             #undo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
@@ -348,7 +379,7 @@
         <mat-icon
             id="redo"
             #redo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"

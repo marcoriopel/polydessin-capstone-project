@@ -23,6 +23,9 @@ export interface SidebarElementTooltips {
     SELECT_ALL_DESCRIPTION: string;
     SEND_DESCRIPTION: string;
     MAGIC_WAND_DESCRIPTION: string;
+    CUT_DESCRIPTION: string;
+    COPY_DESCRIPTION: string;
+    PASTE_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -50,4 +53,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
     SELECT_ALL_DESCRIPTION: 'Tout sélectionner (Ctrl + A)',
     SEND_DESCRIPTION: 'Envoyer un dessin',
+    CUT_DESCRIPTION: 'Couper la sélection (Ctrl + X)',
+    COPY_DESCRIPTION: 'Copier la sélection (Ctrl + C)',
+    PASTE_DESCRIPTION: 'Coller la sélection (Ctrl + V)',
 };

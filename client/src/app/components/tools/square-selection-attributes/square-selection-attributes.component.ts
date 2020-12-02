@@ -5,11 +5,11 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 
 @Component({
-    selector: 'app-squareselection-attributes',
+    selector: 'app-square-selection-attributes',
     templateUrl: './square-selection-attributes.component.html',
     styleUrls: ['./square-selection-attributes.component.scss'],
 })
-export class SquareselectionAttributesComponent {
+export class SquareSelectionAttributesComponent {
     isMagnetismEnabled: boolean = false;
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
     currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;
