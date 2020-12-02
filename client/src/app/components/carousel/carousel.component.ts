@@ -49,10 +49,8 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
-    ngAfterViewInit(): void {
-        //
-        //  this.continueDesign.continueDesign();
-    }
+    // tslint:disable-next-line: no-empty
+    ngAfterViewInit(): void {}
 
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;

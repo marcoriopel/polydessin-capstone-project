@@ -260,6 +260,7 @@ describe('UndoRedoService', () => {
     });
 
     it('if there is an element in redo stack, it should be added to undo stack when calling redo', () => {
+        obs.next(false);
         drawingService.redoStack = [];
         drawingService.undoStack = [];
         drawingService.redoStack.push(pencilData);

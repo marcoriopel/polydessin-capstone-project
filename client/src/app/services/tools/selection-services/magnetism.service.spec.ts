@@ -4,7 +4,6 @@ import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { GridInfo } from '@app/ressources/global-variables/grid-info';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { MagnetismService } from './magnetism.service';
 
@@ -14,17 +13,11 @@ describe('MagnetismService', () => {
     let service: MagnetismService;
     let selection: SelectionBox;
     let moveServiceSpy: jasmine.SpyObj<MoveService>;
-    // tslint:disable-next-line: prefer-const
-    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
     beforeEach(() => {
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseMove']);
 
         TestBed.configureTestingModule({
-            providers: [
-                { provide: MoveService, useValue: moveServiceSpy },
-                { provide: DrawingService, useValue: drawServiceSpy },
-            ],
+            providers: [{ provide: MoveService, useValue: moveServiceSpy }],
         });
         selection = { startingPoint: { x: 2, y: 2 }, width: 6, height: 6 };
         service = TestBed.inject(MagnetismService);

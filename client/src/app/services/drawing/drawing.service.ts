@@ -112,8 +112,8 @@ export class DrawingService {
 
     autoSave(): void {
         if (!this.canvas) return;
-        const usingSrc = this.canvas.toDataURL();
+        const srcDesign = this.canvas.toDataURL();
         localStorage.clear();
-        localStorage.setItem('theDesign', usingSrc);
+        localStorage.setItem('theKeyDesign', srcDesign);
     }
 }

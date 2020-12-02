@@ -3,7 +3,6 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Vec2 } from '@app/classes/vec2';
 import { AlignmentNames, ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { GridInfo } from '@app/ressources/global-variables/grid-info';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 
 @Injectable({
@@ -12,7 +11,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 export class MagnetismService {
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
 
-    constructor(public moveService: MoveService, public drawingService: DrawingService) {}
+    constructor(public moveService: MoveService) {}
 
     magnetismCoordinateReference(alignement: string, selection: SelectionBox): Vec2 {
         switch (alignement) {

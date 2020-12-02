@@ -54,7 +54,6 @@ describe('EditorComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(EditorComponent);
         component = fixture.componentInstance;
-        console.log(' control ', component);
         fixture.detectChanges();
 
         style = {
