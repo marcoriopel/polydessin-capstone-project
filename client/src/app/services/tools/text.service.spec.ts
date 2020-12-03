@@ -2,12 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
-import { ColorSelectionService } from '../color-selection/color-selection.service';
-import { DrawingService } from '../drawing/drawing.service';
-import { HotkeyService } from '../hotkey/hotkey.service';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from './text.service';
 
-fdescribe('TextService', () => {
+// tslint:disable: no-magic-numbers
+// tslint:disable: max-file-line-count
+describe('TextService', () => {
     let keyboardEvent: KeyboardEvent;
     let service: TextService;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -139,6 +141,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call deleteLetter when key is delete', () => {
+        service.isNewText = true;
         service.indexText = 5;
         const deleteLetterSpy = spyOn(service, 'deleteLetter');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Delete' });
@@ -148,6 +151,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call deleteLetter when key is Backspace', () => {
+        service.isNewText = true;
         service.indexText = 5;
         const deleteLetterSpy = spyOn(service, 'deleteLetter');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Backspace' });
@@ -157,6 +161,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call moveIndicator when key is arrow left', () => {
+        service.isNewText = true;
         service.indexText = 5;
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.LEFT });
@@ -165,6 +170,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call not moveIndicator when key is arrow left', () => {
+        service.isNewText = true;
         service.indexText = 0;
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.LEFT });
@@ -173,6 +179,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call moveIndicator when key is arrow rigth', () => {
+        service.isNewText = true;
         service.indexText = 4;
         service.text = ['a', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
@@ -182,6 +189,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call not moveIndicator when key is arrow rigth', () => {
+        service.isNewText = true;
         service.indexText = 6;
         service.text = ['a', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
@@ -191,6 +199,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call moveIndicatorUpAndDown when key is arrow up', () => {
+        service.isNewText = true;
         service.indexText = 4;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
@@ -200,6 +209,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should not call moveIndicatorUpAndDown when is in first line', () => {
+        service.isNewText = true;
         service.indexText = 1;
         service.text = ['a', 'b', 'c', 'd', 'Enter', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
@@ -209,6 +219,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call moveIndicatorUpAndDown when key is arrow down', () => {
+        service.isNewText = true;
         service.indexText = 1;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
@@ -218,6 +229,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should not call moveIndicatorUpAndDown when is in last line', () => {
+        service.isNewText = true;
         service.indexText = 4;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
@@ -227,6 +239,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call preventDefault when key is Alt', () => {
+        service.isNewText = true;
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Alt' });
         const preventDefaultSpy = spyOn(keyboardEvent, 'preventDefault');
         service.onKeyDown(keyboardEvent);
@@ -234,6 +247,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call createText when key is Escape', () => {
+        service.isNewText = true;
         const createTextSpy = spyOn(service, 'createText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Escape' });
         service.onKeyDown(keyboardEvent);
@@ -241,6 +255,7 @@ fdescribe('TextService', () => {
     });
 
     it('Should call insertLetter when it is a letter', () => {
+        service.isNewText = true;
         const insertLetterSpy = spyOn(service, 'insertLetter');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
         service.onKeyDown(keyboardEvent);
@@ -248,10 +263,19 @@ fdescribe('TextService', () => {
     });
 
     it('Should not call insertLetter when it is not a good key', () => {
+        service.isNewText = true;
         const insertLetterSpy = spyOn(service, 'insertLetter');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Shift' });
         service.onKeyDown(keyboardEvent);
         expect(insertLetterSpy).not.toHaveBeenCalledWith(keyboardEvent.key);
+    });
+
+    it('Should not call insertLetter when it is a good key but not text initialize', () => {
+        service.isNewText = false;
+        const insertLetterSpy = spyOn(service, 'insertLetter');
+        keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
+        service.onKeyDown(keyboardEvent);
+        expect(insertLetterSpy).not.toHaveBeenCalled();
     });
 
     it('onKeyUp should call printText', () => {

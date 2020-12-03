@@ -1,6 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
 import { FONT, Font } from '@app/ressources/global-variables/text';
-import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from '@app/services/tools/text.service';
 
 @Component({
@@ -17,7 +16,7 @@ export class TextComponent implements OnDestroy {
         VERDANA: FONT.VERDANA,
         COURIER_NEW: FONT.COURIER_NEW,
     };
-    constructor(public textService: TextService, public hotkeyService: HotkeyService) {
+    constructor(public textService: TextService) {
         this.textSize = this.textService.size;
     }
 

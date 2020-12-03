@@ -61,9 +61,9 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.shortcutsArray.includes(event.key.toString()) && !this.hotkeyService.isTextTool) {
+        if (this.shortcutsArray.includes(event.key) && !this.hotkeyService.isTextTool) {
             this.hotkeyService.onKeyDown(event);
-        } else if (event.key.toString() === '+' || event.key.toString() === '-') {
+        } else if (event.key === '+' || event.key === '-') {
             this.toolSelectionService.currentToolKeyDown(event);
         } else {
             this.toolSelectionService.currentToolKeyDown(event);

@@ -5,6 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { TextService } from '@app/services/tools/text.service';
 import { ExportComponent } from './export.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -16,12 +18,16 @@ describe('ExportComponent', () => {
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     let httpClientSpy: HttpClient;
+    let hotkeyServiceStub: HotkeyService;
+    let textServiceSpy: SpyObj<TextService>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
+        textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
+        hotkeyServiceStub = new HotkeyService();
         TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -30,6 +36,8 @@ describe('ExportComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceStub },
                 { provide: MatDialogRef, useValue: dialogSpy },
                 { provide: HttpClient, useValue: httpClientSpy },
+                { provide: TextService, useValue: textServiceSpy },
+                { provide: HotkeyService, useValue: hotkeyServiceStub },
             ],
         }).compileComponents();
     }));
@@ -58,6 +66,13 @@ describe('ExportComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should call createText if is the tool text', () => {
+        hotkeyServiceStub.isTextTool = true;
+        component.ngOnInit();
+        expect(textServiceSpy.createText).toHaveBeenCalled();
+    });
+
     it('should change name', () => {
         const name = 'marie';
         component.changeName(name);

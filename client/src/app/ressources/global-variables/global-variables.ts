@@ -40,6 +40,7 @@ export const TWO_DECIMAL_MULTIPLIER = 100;
 export const MARGIN = 5;
 export const MIN_TEXT_TOOL_SIZE = 15;
 export const MAX_TEXT_TOOL_SIZE = 100;
+export const MOVE_DOWN = -1;
 
 // constant for rotation service
 export const ANGLE_HALF_TURN = 180;

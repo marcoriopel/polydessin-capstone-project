@@ -68,6 +68,26 @@ describe('EditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should call hotkeyService.onKeyDown', () => {
+        hotkeyServiceSpy.isTextTool = false;
+        const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
+        component.onKeyDown(keyEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentToolKeyDown even if hotkey', () => {
+        hotkeyServiceSpy.isTextTool = true;
+        const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
+        component.onKeyDown(keyEvent);
+        expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentToolKeyDown if key is +', () => {
+        const keyEvent = new KeyboardEvent('keydown', { key: '+' });
+        component.onKeyDown(keyEvent);
+        expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
+    });
+
     it('should call toolSectionService.currentToolKeyUp', () => {
         const keyEvent = {
             key: 'shift',

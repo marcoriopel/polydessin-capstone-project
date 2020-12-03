@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
-import { MARGIN, MAX_TEXT_TOOL_SIZE, MIN_TEXT_TOOL_SIZE, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MARGIN, MAX_TEXT_TOOL_SIZE, MIN_TEXT_TOOL_SIZE, MouseButton, MOVE_DOWN } from '@app/ressources/global-variables/global-variables';
 import { AUTHORIZED_KEY } from '@app/ressources/global-variables/text';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -104,7 +104,7 @@ export class TextService extends Tool {
                 break;
             case ARROW_KEYS.LEFT:
                 if (this.indexText > 0) {
-                    this.moveIndicator(-1);
+                    this.moveIndicator(MOVE_DOWN);
                 }
                 break;
             case ARROW_KEYS.RIGHT:
