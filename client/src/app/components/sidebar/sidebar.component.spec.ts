@@ -7,9 +7,12 @@ import { ExportComponent } from '@app/components/export/export.component';
 import { SavingComponent } from '@app/components/saving/saving.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
+import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 
@@ -20,8 +23,14 @@ describe('SidebarComponent', () => {
     let matdialogSpy: SpyObj<MatDialog>;
     let newDrawingServiceSpy: SpyObj<NewDrawingService>;
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
+    let squareSelectionServiceSpy: SpyObj<SquareSelectionService>;
+    let circleSelectionServiceSpy: SpyObj<CircleSelectionService>;
+    let clipboardService: SpyObj<ClipboardService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
+    let obsSquareSelection: Subject<boolean>;
+    let obsCircleSelection: Subject<boolean>;
+    let obsClipboard: Subject<boolean>;
     let undoRedoServiceSpy: SpyObj<UndoRedoService>;
     let obsUndoButton: Subject<boolean>;
     let obsRedoButton: Subject<boolean>;
@@ -30,6 +39,9 @@ describe('SidebarComponent', () => {
         obs = new Subject<string>();
         obsUndoButton = new Subject<boolean>();
         obsRedoButton = new Subject<boolean>();
+        obsSquareSelection = new Subject<boolean>();
+        obsCircleSelection = new Subject<boolean>();
+        obsClipboard = new Subject<boolean>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll', 'getCurrentTool']);
         toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
@@ -39,6 +51,12 @@ describe('SidebarComponent', () => {
         undoRedoServiceSpy.getUndoAvailability.and.returnValue(obsUndoButton.asObservable());
         undoRedoServiceSpy.getRedoAvailability.and.returnValue(obsRedoButton.asObservable());
         newDrawingServiceSpy = jasmine.createSpyObj('newDrawingService', ['openWarningModal']);
+        squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['getIsSelectionEmptySubject', 'cut', 'copy', 'paste']);
+        squareSelectionServiceSpy.getIsSelectionEmptySubject.and.returnValue(obsSquareSelection.asObservable());
+        circleSelectionServiceSpy = jasmine.createSpyObj('CircleSelectionService', ['getIsSelectionEmptySubject', 'cut', 'copy', 'paste']);
+        circleSelectionServiceSpy.getIsSelectionEmptySubject.and.returnValue(obsCircleSelection.asObservable());
+        clipboardService = jasmine.createSpyObj('ClipboardService', ['getIsPasteAvailableSubject']);
+        clipboardService.getIsPasteAvailableSubject.and.returnValue(obsClipboard.asObservable());
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
@@ -50,6 +68,9 @@ describe('SidebarComponent', () => {
                 { provide: MatDialog, useValue: matdialogSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: UndoRedoService, useValue: undoRedoServiceSpy },
+                { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
+                { provide: CircleSelectionService, useValue: circleSelectionServiceSpy },
+                { provide: ClipboardService, useValue: clipboardService },
             ],
         }).compileComponents();
     });
@@ -77,6 +98,36 @@ describe('SidebarComponent', () => {
         obsUndoButton.next(true);
         expect(document.getElementById('undo')?.style.cursor).toEqual('pointer');
         expect(document.getElementById('redo')?.style.cursor).toEqual('pointer');
+    });
+
+    it('cursor should be pointer if is not square Selection', () => {
+        obsSquareSelection.next(false);
+        expect(component.cutButton.nativeElement.style.cursor).toEqual('pointer');
+    });
+
+    it('cursor should be not-allowed if is square Selection', () => {
+        obsSquareSelection.next(true);
+        expect(component.cutButton.nativeElement.style.cursor).toEqual('not-allowed');
+    });
+
+    it('cursor should be not-allowed if is circle Selection', () => {
+        obsCircleSelection.next(true);
+        expect(component.cutButton.nativeElement.style.cursor).toEqual('not-allowed');
+    });
+
+    it('cursor should be pointer if is not circle selection', () => {
+        obsCircleSelection.next(false);
+        expect(component.cutButton.nativeElement.style.cursor).toEqual('pointer');
+    });
+
+    it('cursor should be pointer if paste available', () => {
+        obsClipboard.next(true);
+        expect(component.pasteButton.nativeElement.style.cursor).toEqual('pointer');
+    });
+
+    it('cursor should be not allowed if paste is not available', () => {
+        obsClipboard.next(false);
+        expect(component.pasteButton.nativeElement.style.cursor).toEqual('not-allowed');
     });
 
     it('should call toolSelectionService.changeTool', () => {
@@ -149,5 +200,41 @@ describe('SidebarComponent', () => {
     it('should open export component on call', () => {
         component.openExportWindow();
         expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
+    });
+
+    it('should call cut of square selection if it is suqare selection', () => {
+        component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
+        component.cut();
+        expect(squareSelectionServiceSpy.cut).toHaveBeenCalled();
+    });
+
+    it('should call cut of circle selection if it is circle selection', () => {
+        component.selectedTool = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
+        component.cut();
+        expect(circleSelectionServiceSpy.cut).toHaveBeenCalled();
+    });
+
+    it('should call copy of circle selection if it is circle selection', () => {
+        component.selectedTool = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
+        component.copy();
+        expect(circleSelectionServiceSpy.copy).toHaveBeenCalled();
+    });
+
+    it('should call copy of square selection if it is suqare selection', () => {
+        component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
+        component.copy();
+        expect(squareSelectionServiceSpy.copy).toHaveBeenCalled();
+    });
+
+    it('should call paste of square selection if it is suqare selection', () => {
+        component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
+        component.paste();
+        expect(squareSelectionServiceSpy.paste).toHaveBeenCalled();
+    });
+
+    it('should call paste of circle selection if it is circle selection', () => {
+        component.selectedTool = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
+        component.paste();
+        expect(circleSelectionServiceSpy.paste).toHaveBeenCalled();
     });
 });
