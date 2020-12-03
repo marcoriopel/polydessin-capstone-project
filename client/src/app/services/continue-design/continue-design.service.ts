@@ -33,7 +33,7 @@ export class ContinueDesignService {
 
     // tslint:disable-next-line: no-any
     async convertURIToImageData(URI: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             if (URI == null) return reject();
             const canvas = this.drawingService.canvas;
             const context = this.drawingService.baseCtx;
@@ -42,16 +42,8 @@ export class ContinueDesignService {
             image.addEventListener(
                 'load',
                 () => {
-                    // canvas.width = image.width;
-                    // canvas.height = image.height;
-                    console.log('On y est  !!');
-                    // this.resizeCanvas(image.width, image.height);
                     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    console.log(image.width);
-                    console.log(image.height);
-                    console.log('saved');
-                    console.log(localStorage.getItem('theDesign'));
-                    resolve(context.getImageData(0, 0, canvas.width, canvas.height));
+                    resolve();
                 },
                 false,
             );
@@ -70,9 +62,9 @@ export class ContinueDesignService {
         this.lastDesign = false;
     }
 
-    clearCanvas(): void {
-        this.drawingService.clearCanvas(this.drawingService.baseCtx);
-    }
+    // clearCanvas(): void {
+    //     this.drawingService.clearCanvas(this.drawingService.baseCtx);
+    // }
 
     newBaseCtx(): boolean {
         return this.drawingService.baseCtx ? true : false;

@@ -40,19 +40,6 @@ export class DrawingComponent implements AfterViewInit {
         this.drawingService.previewCanvas = this.previewCanvas.nativeElement;
         this.drawingService.gridCanvas = this.gridCanvas.nativeElement;
         this.toolSelectionService.setCurrentToolCursor();
-        // Continuer dessin
-        this.baseCanvas.nativeElement.height = this.drawingService.canvas.height;
-        this.baseCanvas.nativeElement.width = this.drawingService.canvas.width;
-        if (this.continueDesignService.loadOldDesign()) {
-            this.continueDesignService.furtherDesign();
-        }
-    }
-
-    // tslint:disable-next-line: use-lifecycle-interface
-    ngOnInit(): void {
-        if (this.continueDesignService.newBaseCtx()) {
-            // this.continueDesignService.resizeCanvas();
-        }
     }
 
     @HostListener('mousemove', ['$event'])

@@ -54,8 +54,12 @@ export class DrawingService {
 
     initializeBaseCanvas(): void {
         if (this.isGridEnabled) this.setGrid();
-        this.baseCtx.fillStyle = 'white';
-        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.continueDesignService.loadOldDesign()) {
+            this.continueDesignService.furtherDesign();
+        } else {
+            this.baseCtx.fillStyle = 'white';
+            this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
     }
 
     isCanvasBlank(context: CanvasRenderingContext2D): boolean {
