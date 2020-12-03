@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatChipInputEvent, MatChipList } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -19,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
     templateUrl: './carousel.component.html',
     styleUrls: ['./carousel.component.scss'],
 })
-export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CarouselComponent implements OnInit, OnDestroy {
     constructor(
         public router: Router,
         public hotkeyService: HotkeyService,
@@ -49,8 +49,6 @@ export class CarouselComponent implements OnInit, OnDestroy, AfterViewInit {
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
-    // tslint:disable-next-line: no-empty
-    ngAfterViewInit(): void {}
 
     ngOnInit(): void {
         this.hotkeyService.isHotkeyEnabled = false;
