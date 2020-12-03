@@ -70,8 +70,8 @@ export class SprayService extends Tool {
 
     drawSpray(self: SprayService, ctx: CanvasRenderingContext2D): void {
         for (let i = self.density; i--; ) {
-            const angle = self.getRandomFloat(0, Math.PI * 2);
-            const radius = self.getRandomFloat(0, self.width);
+            const angle = self.getRandomNumber(0, Math.PI * 2);
+            const radius = self.getRandomNumber(0, self.width);
             ctx.globalAlpha = Math.random();
             ctx.strokeStyle = self.colorSelectionService.primaryColor;
             ctx.fillStyle = self.colorSelectionService.primaryColor;
@@ -79,7 +79,7 @@ export class SprayService extends Tool {
             ctx.arc(
                 self.mouseCoord.x + radius * Math.cos(angle),
                 self.mouseCoord.y + radius * Math.sin(angle),
-                self.getRandomFloat(1, self.dotWidth / 2),
+                self.getRandomNumber(1, self.dotWidth / 2),
                 0,
                 2 * Math.PI,
             );
@@ -89,7 +89,7 @@ export class SprayService extends Tool {
         self.timeoutId = setTimeout(self.drawSpray, ONE_SECOND / self.sprayFrequency, self, ctx);
     }
 
-    getRandomFloat(min: number, max: number): number {
+    getRandomNumber(min: number, max: number): number {
         return Math.random() * (max - min) + min;
     }
 
