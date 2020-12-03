@@ -122,9 +122,4 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         this.link.click();
         this.dialogRef.close();
     }
-
-    // tslint:disable-next-line: no-any
-    changeEmail(email: any): void {
-        this.emailAddress = email.target.value;
-    }
 }
