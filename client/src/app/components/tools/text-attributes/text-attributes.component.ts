@@ -23,22 +23,22 @@ export class TextComponent implements OnDestroy {
     changeFont(font: string): void {
         console.log(font);
         this.textService.font = font;
-        this.textService.applyFont();
+        this.textService.applyTextStyle();
     }
 
     changeSize(size: number): void {
         this.textSize = size;
         this.textService.size = size;
-        this.textService.applyFont();
+        this.textService.applyTextStyle();
     }
 
     changeItalic(style: boolean): void {
         if (style) {
-            this.textService.style = 'italic';
+            this.textService.italicText = 'italic';
         } else {
-            this.textService.style = 'normal';
+            this.textService.italicText = 'normal';
         }
-        this.textService.applyFont();
+        this.textService.applyTextStyle();
     }
 
     changeBoldText(bold: boolean): void {
@@ -47,12 +47,12 @@ export class TextComponent implements OnDestroy {
         } else {
             this.textService.boldText = 'normal';
         }
-        this.textService.applyFont();
+        this.textService.applyTextStyle();
     }
 
     changeAlignment(align: string): void {
         this.textService.align = align as CanvasTextAlign;
-        this.textService.applyFont();
+        this.textService.applyTextStyle();
     }
 
     ngOnDestroy(): void {

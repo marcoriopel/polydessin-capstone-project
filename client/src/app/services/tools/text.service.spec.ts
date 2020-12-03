@@ -51,7 +51,7 @@ describe('TextService', () => {
     });
 
     it('initializeNewText should initialize as new text', () => {
-        const applyFontSpy = spyOn(service, 'applyFont');
+        const applyTextStyleSpy = spyOn(service, 'applyTextStyle');
         colorPickerStub.primaryColor = '#ffffff';
         const text = ['|'];
         service.initializeNewText();
@@ -59,7 +59,7 @@ describe('TextService', () => {
         expect(service.color).toEqual(colorPickerStub.primaryColor);
         expect(service.text).toEqual(text);
         expect(service.isNewText).toEqual(true);
-        expect(applyFontSpy).toHaveBeenCalled();
+        expect(applyTextStyleSpy).toHaveBeenCalled();
     });
 
     it('destroy should reinitialize text', () => {
@@ -67,7 +67,7 @@ describe('TextService', () => {
         expect(hotkeyServiceStub.isTextTool).toEqual(false);
         expect(service.text).toEqual([]);
         expect(service.isNewText).toEqual(false);
-        expect(service.indexText).toEqual(0);
+        expect(service.indexIndicator).toEqual(0);
     });
 
     it('mouseDown should initializeNewtext when is newSelection', () => {
@@ -92,7 +92,7 @@ describe('TextService', () => {
         service.text = [];
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberLine = 1;
+        service.numberOfLine = 1;
         service.text = [];
         const mouseEvent = {
             offsetX: 1,
@@ -106,19 +106,19 @@ describe('TextService', () => {
     it('Should return true when the mousePosition on the text', () => {
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberLine = 1;
+        service.numberOfLine = 1;
         service.text = ['a', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'];
         const mousePosition: Vec2 = { x: 2, y: 1 };
-        expect(service.isInText(mousePosition)).toEqual(true);
+        expect(service.isMouseOnText(mousePosition)).toEqual(true);
     });
 
     it('Should return false when the mousePosition not on the text', () => {
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberLine = 1;
+        service.numberOfLine = 1;
         service.text = ['a', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'];
         const mousePosition: Vec2 = { x: 2, y: 25 };
-        expect(service.isInText(mousePosition)).toEqual(false);
+        expect(service.isMouseOnText(mousePosition)).toEqual(false);
     });
 
     it('createText should removeIndicator, printText and destroy', () => {
@@ -140,29 +140,29 @@ describe('TextService', () => {
         expect(service.color).toEqual(colorPickerStub.primaryColor);
     });
 
-    it('Should call deleteLetter when key is delete', () => {
+    it('Should call deleteText when key is delete', () => {
         service.isNewText = true;
-        service.indexText = 5;
-        const deleteLetterSpy = spyOn(service, 'deleteLetter');
+        service.indexIndicator = 5;
+        const deleteLetterSpy = spyOn(service, 'deleteText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Delete' });
         service.onKeyDown(keyboardEvent);
-        expect(service.isDelete).toBeTrue();
+        expect(service.isFrontDelete).toBeTrue();
         expect(deleteLetterSpy).toHaveBeenCalledWith(6);
     });
 
-    it('Should call deleteLetter when key is Backspace', () => {
+    it('Should call deleteText when key is Backspace', () => {
         service.isNewText = true;
-        service.indexText = 5;
-        const deleteLetterSpy = spyOn(service, 'deleteLetter');
+        service.indexIndicator = 5;
+        const deleteLetterSpy = spyOn(service, 'deleteText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Backspace' });
         service.onKeyDown(keyboardEvent);
         expect(deleteLetterSpy).toHaveBeenCalledWith(4);
-        expect(service.indexText).toEqual(4);
+        expect(service.indexIndicator).toEqual(4);
     });
 
     it('Should call moveIndicator when key is arrow left', () => {
         service.isNewText = true;
-        service.indexText = 5;
+        service.indexIndicator = 5;
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.LEFT });
         service.onKeyDown(keyboardEvent);
@@ -171,7 +171,7 @@ describe('TextService', () => {
 
     it('Should call not moveIndicator when key is arrow left', () => {
         service.isNewText = true;
-        service.indexText = 0;
+        service.indexIndicator = 0;
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.LEFT });
         service.onKeyDown(keyboardEvent);
@@ -180,7 +180,7 @@ describe('TextService', () => {
 
     it('Should call moveIndicator when key is arrow rigth', () => {
         service.isNewText = true;
-        service.indexText = 4;
+        service.indexIndicator = 4;
         service.text = ['a', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.RIGHT });
@@ -190,7 +190,7 @@ describe('TextService', () => {
 
     it('Should call not moveIndicator when key is arrow rigth', () => {
         service.isNewText = true;
-        service.indexText = 6;
+        service.indexIndicator = 6;
         service.text = ['a', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorSpy = spyOn(service, 'moveIndicator');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.RIGHT });
@@ -200,7 +200,7 @@ describe('TextService', () => {
 
     it('Should call moveIndicatorUpAndDown when key is arrow up', () => {
         service.isNewText = true;
-        service.indexText = 4;
+        service.indexIndicator = 4;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.UP });
@@ -210,7 +210,7 @@ describe('TextService', () => {
 
     it('Should not call moveIndicatorUpAndDown when is in first line', () => {
         service.isNewText = true;
-        service.indexText = 1;
+        service.indexIndicator = 1;
         service.text = ['a', 'b', 'c', 'd', 'Enter', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.UP });
@@ -220,7 +220,7 @@ describe('TextService', () => {
 
     it('Should call moveIndicatorUpAndDown when key is arrow down', () => {
         service.isNewText = true;
-        service.indexText = 1;
+        service.indexIndicator = 1;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.DOWN });
@@ -230,7 +230,7 @@ describe('TextService', () => {
 
     it('Should not call moveIndicatorUpAndDown when is in last line', () => {
         service.isNewText = true;
-        service.indexText = 4;
+        service.indexIndicator = 4;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
         const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.DOWN });
@@ -254,25 +254,25 @@ describe('TextService', () => {
         expect(createTextSpy).toHaveBeenCalled();
     });
 
-    it('Should call insertLetter when it is a letter', () => {
+    it('Should call insertItemInText when it is a letter', () => {
         service.isNewText = true;
-        const insertLetterSpy = spyOn(service, 'insertLetter');
+        const insertItemInTextSpy = spyOn(service, 'insertItemInText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
         service.onKeyDown(keyboardEvent);
-        expect(insertLetterSpy).toHaveBeenCalledWith(keyboardEvent.key);
+        expect(insertItemInTextSpy).toHaveBeenCalledWith(keyboardEvent.key);
     });
 
-    it('Should not call insertLetter when it is not a good key', () => {
+    it('Should not call insertItemInText when it is not a good key', () => {
         service.isNewText = true;
-        const insertLetterSpy = spyOn(service, 'insertLetter');
+        const insertItemInTextSpy = spyOn(service, 'insertItemInText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'Shift' });
         service.onKeyDown(keyboardEvent);
-        expect(insertLetterSpy).not.toHaveBeenCalledWith(keyboardEvent.key);
+        expect(insertItemInTextSpy).not.toHaveBeenCalledWith(keyboardEvent.key);
     });
 
-    it('Should not call insertLetter when it is a good key but not text initialize', () => {
+    it('Should not call insertItemInText when it is a good key but not text initialize', () => {
         service.isNewText = false;
-        const insertLetterSpy = spyOn(service, 'insertLetter');
+        const insertLetterSpy = spyOn(service, 'insertItemInText');
         keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
         service.onKeyDown(keyboardEvent);
         expect(insertLetterSpy).not.toHaveBeenCalled();
@@ -286,100 +286,100 @@ describe('TextService', () => {
 
     it('moveIndicatorUpAndDown should move up when movement is UP', () => {
         service.text = ['a', 'b', 'Enter', 'c', 'd', 'e', '|'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         service.moveIndicatorUpAndDown('UP');
-        expect(service.indexText).toEqual(2);
+        expect(service.indexIndicator).toEqual(2);
     });
 
     it('moveIndicatorUpAndDown should move up when movement is UP', () => {
         service.text = ['a', 'b', 'c', 'd', 'Enter', '|', 'e'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         service.moveIndicatorUpAndDown('UP');
-        expect(service.indexText).toEqual(0);
+        expect(service.indexIndicator).toEqual(0);
     });
 
     it('moveIndicatorUpAndDown should move down when movement is DOWN', () => {
         service.text = ['|', 'a', 'b', 'c', 'Enter', 'd', 'e'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         service.moveIndicatorUpAndDown('DOWN');
-        expect(service.indexText).toEqual(4);
+        expect(service.indexIndicator).toEqual(4);
     });
 
     it('moveIndicatorUpAndDown should move down when movement is DOWN', () => {
         service.text = ['a', 'b', 'c', '|', 'Enter', 'd'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         service.moveIndicatorUpAndDown('DOWN');
-        expect(service.indexText).toEqual(5);
+        expect(service.indexIndicator).toEqual(5);
     });
 
     it('isInFirstLine should return true if the cursor is in the first line', () => {
         service.text = ['|', 'a', 'b', 'c', 'Enter', 'd', 'e'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         expect(service.isInFirstLine()).toBeTrue();
     });
 
     it('isInFirstLine should return true if there is no enter', () => {
         service.text = ['|', 'a', 'b', 'c'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         expect(service.isInFirstLine()).toBeTrue();
     });
 
     it('isInFirstLine should return false if after enter', () => {
         service.text = ['a', 'b', 'c', 'Enter', '|'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         expect(service.isInFirstLine()).toBeFalse();
     });
 
     it('isInLastLine should return true when after enter', () => {
         service.text = ['a', 'b', 'c', 'Enter', '|'];
-        service.indexText = service.text.indexOf('|');
+        service.indexIndicator = service.text.indexOf('|');
         expect(service.isInLastLine()).toBeTrue();
     });
 
-    it('insertLetter should push when item is | ', () => {
+    it('insertItemInText should push when item is | ', () => {
         service.text = ['a', 'b'];
         const text = ['a', 'b', '|'];
-        service.indexText = 3;
-        service.insertLetter('|');
+        service.indexIndicator = 3;
+        service.insertItemInText('|');
         expect(service.text).toEqual(text);
     });
 
-    it('insertLetter should put item at the end', () => {
+    it('insertItemInText should put item at the end', () => {
         service.text = ['a', 'b', '|'];
         const text = ['a', 'b', 'c', '|'];
-        service.indexText = 4;
-        service.insertLetter('c');
+        service.indexIndicator = 4;
+        service.insertItemInText('c');
         expect(service.text).toEqual(text);
     });
 
-    it('insertLetter should put item inside text', () => {
+    it('insertItemInText should put item inside text', () => {
         service.text = ['a', 'b', '|'];
         const text = ['a', 'b', 'c', '|'];
-        service.indexText = 2;
-        service.insertLetter('c');
+        service.indexIndicator = 2;
+        service.insertItemInText('c');
         expect(service.text).toEqual(text);
     });
 
-    it('deleteLetter should delete the item at the index', () => {
+    it('deleteText should delete the item at the index', () => {
         service.text = ['a', 'b', 'c', 'd'];
         const text = ['a', 'c', 'd'];
-        service.deleteLetter(1);
+        service.deleteText(1);
         expect(service.text).toEqual(text);
     });
 
-    it('deleteLetter should not delete the item if index is 0', () => {
-        service.isDelete = true;
+    it('deleteText should not delete the item if index is 0', () => {
+        service.isFrontDelete = true;
         service.text = ['a', 'b', 'c', 'd'];
         const text = ['a', 'b', 'c', 'd'];
-        service.deleteLetter(-1);
+        service.deleteText(-1);
         expect(service.text).toEqual(text);
     });
 
-    it('deleteLetter should not delete the item if index is 0', () => {
-        service.isDelete = false;
+    it('deleteText should not delete the item if index is 0', () => {
+        service.isFrontDelete = false;
         service.text = ['a', 'b', 'c', 'd'];
         const text = ['a', 'b', 'c', 'd'];
-        service.deleteLetter(5);
+        service.deleteText(5);
         expect(service.text).toEqual(text);
     });
 
@@ -409,14 +409,14 @@ describe('TextService', () => {
         service.printText();
         expect(fillTextSpy).toHaveBeenCalled();
         expect(service.maxLine).toEqual(maxLine);
-        expect(service.numberLine).toEqual(2);
+        expect(service.numberOfLine).toEqual(2);
     });
 
     it('printText should call printCursor when the cursor is in the line', () => {
-        const printCursorLineSpy = spyOn(service, 'printCursorLine');
+        const printIndicatorLineSpy = spyOn(service, 'printIndicatorLine');
         service.text = ['a', 'b', '|', 'Enter', 'c', 'd'];
         service.printText();
-        expect(printCursorLineSpy).toHaveBeenCalled();
+        expect(printIndicatorLineSpy).toHaveBeenCalled();
     });
 
     it('printText should have the right maxLine when there is a lot of line', () => {
@@ -424,22 +424,22 @@ describe('TextService', () => {
         const maxLine = 'efg';
         service.printText();
         expect(service.maxLine).toEqual(maxLine);
-        expect(service.numberLine).toEqual(3);
+        expect(service.numberOfLine).toEqual(3);
     });
 
     it('printText should call fillText and calculateWidth when align is start', () => {
         service.align = 'start';
         const fillTextSpy = spyOn(previewCtxStub, 'fillText');
-        const printCursorSpy = spyOn(service, 'printCursor');
+        const printIndicatorSpy = spyOn(service, 'printIndicator');
         service.text = ['a', 'b', 'c', 'Enter', '|'];
         service.printText();
         expect(fillTextSpy).toHaveBeenCalled();
-        expect(printCursorSpy).toHaveBeenCalled();
+        expect(printIndicatorSpy).toHaveBeenCalled();
     });
 
-    it('printCursor should call fillText', () => {
+    it('printIndicator should call fillText', () => {
         const fillTextSpy = spyOn(previewCtxStub, 'fillText');
-        service.printCursor(2, 2);
+        service.printIndicator(2, 2);
         expect(fillTextSpy).toHaveBeenCalled();
     });
 
@@ -448,7 +448,7 @@ describe('TextService', () => {
         const lineWidth = service.textStartingPoint.x - previewCtxStub.measureText('abcd').width / 2;
         service.align = 'center';
         const line = ['a', 'b', 'c', 'd'];
-        expect(service.setStratingPoint(line)).toEqual(lineWidth);
+        expect(service.setStratingPointX(line)).toEqual(lineWidth);
     });
 
     it('setCursor should change lineWidth when align is end', () => {
@@ -456,27 +456,27 @@ describe('TextService', () => {
         const lineWidth = service.textStartingPoint.x - previewCtxStub.measureText('abcd').width;
         service.align = 'end';
         const line = ['a', 'b', 'c', 'd'];
-        expect(service.setStratingPoint(line)).toEqual(lineWidth);
+        expect(service.setStratingPointX(line)).toEqual(lineWidth);
     });
 
-    it('printCursorLine should call setStartingPoint and printCursor', () => {
-        const setStartingPointSpy = spyOn(service, 'setStratingPoint');
-        const printCursorSpy = spyOn(service, 'printCursor');
+    it('printIndicatorLine should call setStartingPoint and printCursor', () => {
+        const setStartingPointXSpy = spyOn(service, 'setStratingPointX');
+        const printIndicatorSpy = spyOn(service, 'printIndicator');
         const line = ['a', 'b', 'c', 'd'];
         const lineHeigth = 1;
-        service.printCursorLine(line, lineHeigth);
-        expect(setStartingPointSpy).toHaveBeenCalled();
-        expect(printCursorSpy).toHaveBeenCalled();
+        service.printIndicatorLine(line, lineHeigth);
+        expect(setStartingPointXSpy).toHaveBeenCalled();
+        expect(printIndicatorSpy).toHaveBeenCalled();
     });
 
-    it('moveIndicator should call removeIndicator and insertLetter', () => {
-        service.indexText = 1;
+    it('moveIndicator should call removeIndicator and insertItemInText', () => {
+        service.indexIndicator = 1;
         const removeIndicatorSpy = spyOn(service, 'removeIndicator');
-        const insertLetterSpy = spyOn(service, 'insertLetter');
+        const insertLetterSpy = spyOn(service, 'insertItemInText');
         service.moveIndicator(1);
         expect(removeIndicatorSpy).toHaveBeenCalled();
         expect(insertLetterSpy).toHaveBeenCalled();
-        expect(service.indexText).toEqual(2);
+        expect(service.indexIndicator).toEqual(2);
     });
 
     it('applyFont should change attribute of previewCtx and call printText', () => {
@@ -484,22 +484,22 @@ describe('TextService', () => {
         service.align = 'center';
         service.font = 'Arial';
         service.size = 40;
-        service.style = 'italic';
+        service.italicText = 'italic';
         service.boldText = 'normal';
         const font = 'italic 40px Arial';
         const printTextSpy = spyOn(service, 'printText');
-        service.applyFont();
+        service.applyTextStyle();
         expect(previewCtxStub.font).toEqual(font);
         expect(previewCtxStub.fillStyle).toEqual('#ffffff');
         expect(previewCtxStub.textAlign).toEqual('center');
         expect(printTextSpy).toHaveBeenCalled();
     });
 
-    it('isNumberAndLetter should return true if key is Enter', () => {
-        expect(service.isNumberAndLetter('Enter')).toEqual(true);
+    it('isCorrectKey should return true if key is Enter', () => {
+        expect(service.isCorrectKey('Enter')).toEqual(true);
     });
 
-    it('isNumberAndLetter should return false if key is not correct', () => {
-        expect(service.isNumberAndLetter('Alt')).toEqual(false);
+    it('isCorrectKey should return false if key is not correct', () => {
+        expect(service.isCorrectKey('Alt')).toEqual(false);
     });
 });

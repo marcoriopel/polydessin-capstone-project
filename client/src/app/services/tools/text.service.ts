@@ -17,19 +17,19 @@ export class TextService extends Tool {
     maxSize: number = MAX_TEXT_TOOL_SIZE;
     name: string = TOOL_NAMES.TEXT_TOOL_NAME;
     text: string[];
-    indexText: number = 0;
+    indexIndicator: number = 0;
     color: string;
     textStartingPoint: Vec2 = { x: 0, y: 0 };
     isNewText: boolean = false;
     font: string = 'Georgia';
     size: number = 30;
-    style: string = 'normal';
+    italicText: string = 'normal';
     boldText: string = 'normal';
     align: CanvasTextAlign = 'start';
     height: number;
-    isDelete: boolean = false;
+    isFrontDelete: boolean = false;
     maxLine: string;
-    numberLine: number = 0;
+    numberOfLine: number = 0;
 
     constructor(drawingService: DrawingService, public hotkeyService: HotkeyService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -41,16 +41,16 @@ export class TextService extends Tool {
         this.text = [];
         this.isNewText = true;
         this.text.push('|');
-        this.applyFont();
+        this.applyTextStyle();
     }
     destroy(): void {
         this.text = [];
         this.isNewText = false;
-        this.indexText = 0;
+        this.indexIndicator = 0;
         this.hotkeyService.isTextTool = false;
     }
     onMouseDown(event: MouseEvent): void {
-        if (this.isInText(this.getPositionFromMouse(event)) || event.button === MouseButton.RIGHT) {
+        if (this.isMouseOnText(this.getPositionFromMouse(event)) || event.button === MouseButton.RIGHT) {
             return;
         }
         if (!this.isNewText) {
@@ -62,10 +62,10 @@ export class TextService extends Tool {
         }
     }
 
-    isInText(mousePosition: Vec2): boolean {
+    isMouseOnText(mousePosition: Vec2): boolean {
         if (this.text === undefined) return false;
         const selectionWidth = this.textStartingPoint.x + this.drawingService.previewCtx.measureText(this.maxLine).width;
-        const selectionHeight = this.height * this.numberLine + this.textStartingPoint.y;
+        const selectionHeight = this.height * this.numberOfLine + this.textStartingPoint.y;
         if (
             mousePosition.x >= this.textStartingPoint.x &&
             mousePosition.x <= selectionWidth &&
@@ -87,28 +87,28 @@ export class TextService extends Tool {
 
     onMouseEnter(): void {
         this.color = this.colorSelectionService.primaryColor;
-        this.applyFont();
+        this.applyTextStyle();
     }
 
     onKeyDown(event: KeyboardEvent): void {
         if (!this.isNewText) return;
         switch (event.key) {
             case 'Backspace':
-                this.isDelete = false;
-                this.deleteLetter(this.indexText - 1);
-                this.indexText--;
+                this.isFrontDelete = false;
+                this.deleteText(this.indexIndicator - 1);
+                this.indexIndicator--;
                 break;
             case 'Delete':
-                this.isDelete = true;
-                this.deleteLetter(this.indexText + 1);
+                this.isFrontDelete = true;
+                this.deleteText(this.indexIndicator + 1);
                 break;
             case ARROW_KEYS.LEFT:
-                if (this.indexText > 0) {
+                if (this.indexIndicator > 0) {
                     this.moveIndicator(MOVE_DOWN);
                 }
                 break;
             case ARROW_KEYS.RIGHT:
-                if (this.indexText + 1 < this.text.length) {
+                if (this.indexIndicator + 1 < this.text.length) {
                     this.moveIndicator(1);
                 }
                 break;
@@ -129,9 +129,9 @@ export class TextService extends Tool {
                 event.preventDefault();
                 break;
             default:
-                if (this.isNumberAndLetter(event.key)) {
-                    this.insertLetter(event.key);
-                    this.indexText++;
+                if (this.isCorrectKey(event.key)) {
+                    this.insertItemInText(event.key);
+                    this.indexIndicator++;
                 }
                 break;
         }
@@ -166,27 +166,27 @@ export class TextService extends Tool {
         lines.push(line);
         if (mouvement === 'UP') {
             if (lines[numberLine - 1].length < indexInLine - 1) {
-                this.indexText -= indexInLine;
+                this.indexIndicator -= indexInLine;
             } else {
-                this.indexText -= indexInLine + 1;
-                this.indexText -= lines[numberLine - 1].length - indexInLine;
+                this.indexIndicator -= indexInLine + 1;
+                this.indexIndicator -= lines[numberLine - 1].length - indexInLine;
             }
         } else {
             if (lines[numberLine + 1].length < indexInLine - 1) {
-                this.indexText += lines[numberLine].length - indexInLine;
-                this.indexText += lines[numberLine + 1].length + 1;
+                this.indexIndicator += lines[numberLine].length - indexInLine;
+                this.indexIndicator += lines[numberLine + 1].length + 1;
             } else {
-                this.indexText += lines[numberLine].length - indexInLine;
-                this.indexText += indexInLine;
+                this.indexIndicator += lines[numberLine].length - indexInLine;
+                this.indexIndicator += indexInLine;
             }
         }
         this.removeIndicator();
-        this.insertLetter('|');
+        this.insertItemInText('|');
     }
 
     isInFirstLine(): boolean {
         const indexEnter = this.text.indexOf('Enter');
-        if (indexEnter > this.indexText || indexEnter < 0) {
+        if (indexEnter > this.indexIndicator || indexEnter < 0) {
             return true;
         } else {
             return false;
@@ -195,17 +195,17 @@ export class TextService extends Tool {
 
     isInLastLine(): boolean {
         const indexEnter = this.text.lastIndexOf('Enter');
-        if (indexEnter < this.indexText || indexEnter < 0) {
+        if (indexEnter < this.indexIndicator || indexEnter < 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    insertLetter(item: string): void {
-        if (item === '|' && this.indexText >= this.text.length) {
+    insertItemInText(item: string): void {
+        if (item === '|' && this.indexIndicator >= this.text.length) {
             this.text.push('|');
-        } else if (this.indexText >= this.text.length) {
+        } else if (this.indexIndicator >= this.text.length) {
             // est ce que je peux l'enlever?
             this.text.pop();
             this.text.push(item);
@@ -214,7 +214,7 @@ export class TextService extends Tool {
             const newText = [];
             let i = 0;
             for (const char of this.text) {
-                if (i === this.indexText) {
+                if (i === this.indexIndicator) {
                     newText.push(item);
                 }
                 newText.push(char);
@@ -224,9 +224,9 @@ export class TextService extends Tool {
         }
     }
 
-    deleteLetter(index: number): void {
-        if (index < 0 && this.isDelete) return;
-        if (index >= this.text.length && !this.isDelete) {
+    deleteText(index: number): void {
+        if (index < 0 && this.isFrontDelete) return;
+        if (index >= this.text.length && !this.isFrontDelete) {
             return;
         }
         const beforeItem = this.text.slice(0, index);
@@ -245,7 +245,7 @@ export class TextService extends Tool {
     }
 
     printText(): void {
-        let numberLine = 1;
+        let numberOfLine = 1;
         let maxLine = '';
         if (this.text === undefined) return;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -255,11 +255,11 @@ export class TextService extends Tool {
         for (const char of this.text) {
             if (char === 'Enter') {
                 if (line.indexOf('|') >= 0) {
-                    this.printCursorLine(line, lineHeight);
+                    this.printIndicatorLine(line, lineHeight);
                 } else {
                     this.drawingService.previewCtx.fillText(line.join(''), lineWidth, lineHeight);
                 }
-                numberLine++;
+                numberOfLine++;
                 lineHeight += this.height + MARGIN;
                 if (line.length > maxLine.length) maxLine = line.join('');
                 line = [];
@@ -269,16 +269,16 @@ export class TextService extends Tool {
             }
         }
         if (line.indexOf('|') >= 0) {
-            this.printCursorLine(line, lineHeight);
+            this.printIndicatorLine(line, lineHeight);
         } else {
             this.drawingService.previewCtx.fillText(line.join(''), lineWidth, lineHeight);
         }
         if (line.length > maxLine.length) maxLine = line.join('');
         this.maxLine = maxLine;
-        this.numberLine = numberLine;
+        this.numberOfLine = numberOfLine;
     }
 
-    setStratingPoint(line: string[]): number {
+    setStratingPointX(line: string[]): number {
         let lineWidth = this.textStartingPoint.x;
         if (this.align === 'center') {
             lineWidth -= this.drawingService.previewCtx.measureText(line.join('')).width / 2;
@@ -288,20 +288,20 @@ export class TextService extends Tool {
         return lineWidth;
     }
 
-    printCursorLine(line: string[], lineHeight: number): void {
-        const afterCursor: string[] = line.slice(line.indexOf('|') + 1);
-        const beforeCursor = line.slice(0, line.indexOf('|'));
-        let lineWidth = this.setStratingPoint(line);
+    printIndicatorLine(line: string[], lineHeight: number): void {
+        const afterIndicator: string[] = line.slice(line.indexOf('|') + 1);
+        const beforeIndicator = line.slice(0, line.indexOf('|'));
+        let lineWidth = this.setStratingPointX(line);
         this.drawingService.previewCtx.textAlign = 'start';
-        this.drawingService.previewCtx.fillText(beforeCursor.join(''), lineWidth, lineHeight);
-        lineWidth += this.drawingService.previewCtx.measureText(beforeCursor.join('')).width;
-        this.printCursor(lineWidth, lineHeight);
+        this.drawingService.previewCtx.fillText(beforeIndicator.join(''), lineWidth, lineHeight);
+        lineWidth += this.drawingService.previewCtx.measureText(beforeIndicator.join('')).width;
+        this.printIndicator(lineWidth, lineHeight);
         lineWidth += this.drawingService.previewCtx.measureText('|').width;
-        this.drawingService.previewCtx.fillText(afterCursor.join(''), lineWidth, lineHeight);
+        this.drawingService.previewCtx.fillText(afterIndicator.join(''), lineWidth, lineHeight);
         this.drawingService.previewCtx.textAlign = this.align;
     }
 
-    printCursor(lineWidth: number, lineHeight: number): void {
+    printIndicator(lineWidth: number, lineHeight: number): void {
         const fillStyle = this.drawingService.previewCtx.fillStyle;
         this.drawingService.previewCtx.fillStyle = '#000000';
         this.drawingService.previewCtx.fillText('|', lineWidth, lineHeight);
@@ -310,21 +310,21 @@ export class TextService extends Tool {
 
     moveIndicator(interval: number): void {
         this.removeIndicator();
-        this.indexText = this.indexText + interval;
-        this.insertLetter('|');
+        this.indexIndicator = this.indexIndicator + interval;
+        this.insertItemInText('|');
     }
 
-    applyFont(): void {
+    applyTextStyle(): void {
         const textTest = 'wWmML';
         this.drawingService.previewCtx.fillStyle = this.color;
-        this.drawingService.previewCtx.font = this.style + ' ' + this.boldText + ' ' + this.size.toString() + 'px ' + this.font;
+        this.drawingService.previewCtx.font = this.italicText + ' ' + this.boldText + ' ' + this.size.toString() + 'px ' + this.font;
         this.drawingService.previewCtx.textAlign = this.align;
         const metrics = this.drawingService.previewCtx.measureText(textTest);
         this.height = metrics.actualBoundingBoxAscent;
         this.printText();
     }
 
-    isNumberAndLetter(key: string): boolean {
+    isCorrectKey(key: string): boolean {
         const isLetter = key >= 'a' && key <= 'z';
         const isNumber = key >= '0' && key <= '9';
         if (isLetter || isNumber || AUTHORIZED_KEY.includes(key)) return true;

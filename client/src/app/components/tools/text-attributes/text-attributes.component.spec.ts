@@ -9,7 +9,7 @@ describe('TexteComponent', () => {
     let fixture: ComponentFixture<TextComponent>;
     let textServiceSpy: jasmine.SpyObj<TextService>;
     beforeEach(async(() => {
-        textServiceSpy = jasmine.createSpyObj('TextService', ['applyFont', 'createText', 'onKeyDown']);
+        textServiceSpy = jasmine.createSpyObj('TextService', ['applyTextStyle', 'createText', 'onKeyDown']);
         TestBed.configureTestingModule({
             declarations: [TextComponent],
             imports: [MatButtonToggleModule],
@@ -27,51 +27,51 @@ describe('TexteComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('changeFont should change font and call applyFont', () => {
+    it('changeFont should change font and call applyTextStyle', () => {
         component.changeFont('Arial');
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.font).toEqual('Arial');
     });
 
-    it('changeSize should change size and call applyFont', () => {
+    it('changeSize should change size and call applyTextStyle', () => {
         component.changeSize(45);
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.size).toEqual(45);
     });
 
-    it('changeItalic should change style to italic when true and call applyFont', () => {
+    it('changeItalic should change style to italic when true and call applyTextStyle', () => {
         component.changeItalic(true);
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
-        expect(textServiceSpy.style).toEqual('italic');
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
+        expect(textServiceSpy.italicText).toEqual('italic');
     });
 
-    it('changeItalic should change style to normal when false and call applyFont', () => {
+    it('changeItalic should change style to normal when false and call applyTextStyle', () => {
         component.changeItalic(false);
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
-        expect(textServiceSpy.style).toEqual('normal');
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
+        expect(textServiceSpy.italicText).toEqual('normal');
     });
 
-    it('changeBoldText should change boldText to normal when false and call applyFont', () => {
+    it('changeBoldText should change boldText to normal when false and call applyTextStyle', () => {
         component.changeBoldText(false);
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.boldText).toEqual('normal');
     });
 
-    it('changeBoldText should change boldText to bold when true and call applyFont', () => {
+    it('changeBoldText should change boldText to bold when true and call applyTextStyle', () => {
         component.changeBoldText(true);
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.boldText).toEqual('bold');
     });
 
-    it('changeAlignment should change align and call applyFont', () => {
+    it('changeAlignment should change align and call applyTextStyle', () => {
         component.changeAlignment('center');
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.align).toEqual('center');
     });
 
-    it('changeAlignment should change align and call applyFont', () => {
+    it('changeAlignment should change align and call applyTextStyle', () => {
         component.changeAlignment('center');
-        expect(textServiceSpy.applyFont).toHaveBeenCalledWith();
+        expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.align).toEqual('center');
     });
 });
