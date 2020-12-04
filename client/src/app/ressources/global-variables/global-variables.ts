@@ -5,7 +5,7 @@ export const MINIMUM_WORKSPACE_WIDTH = 500;
 export const MINIMUM_WORKSPACE_HEIGHT = 500;
 export const ZOOM_RADIUS = 75;
 export const HALF_RATIO = 0.5;
-export const TOOLTIP_DELAY = 1000;
+export const TOOLTIP_DELAY = 500;
 export const MAXIMUM_DISTANCE_LINE_CONNECTION = 20;
 export const DEGREES_180 = 180;
 export const MAXIMUM_NUMBER_OF_COLORS = 10;
@@ -46,6 +46,9 @@ export const MOVE_DOWN = -1;
 export const ANGLE_HALF_TURN = 180;
 export const MAX_ANGLE = 360;
 export const ROTATION_STEP_ALT = 1;
+
+// constants for circle selection and square selection
+export const MAGNETISM_NAME = 'Magnétisme';
 
 // constants for spray service
 export const SPRAY_DENSITY = 40;

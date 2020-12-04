@@ -13,7 +13,7 @@ export interface SidebarElementTooltips {
     POLYGONE_TOOL_DESCRIPTION: string;
     CIRCLE_SELECTION_TOOL_NAME: string;
     SQUARE_SELECTION_TOOL_NAME: string;
-    TEXT_TOOL_NAME: string;
+    STAMP_TOOL_DESCRIPTION: string;
     HELP_DESCRIPTION: string;
     UNDO_DESCRIPTION: string;
     REDO_DESCRIPTION: string;
@@ -23,6 +23,9 @@ export interface SidebarElementTooltips {
     SELECT_ALL_DESCRIPTION: string;
     SEND_DESCRIPTION: string;
     TEXT_TOOL_DESCRIPTION: string;
+    CUT_DESCRIPTION: string;
+    COPY_DESCRIPTION: string;
+    PASTE_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
@@ -40,9 +43,9 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     TEXT_TOOL_DESCRIPTION: 'Texte (T)',
     PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
     POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
+    STAMP_TOOL_DESCRIPTION: 'Étampe (D)',
     CIRCLE_SELECTION_TOOL_NAME: 'Sélection par ellipse (S)',
     SQUARE_SELECTION_TOOL_NAME: 'Sélection par rectangle (R)',
-    TEXT_TOOL_NAME: 'Texte (T)',
     HELP_DESCRIPTION: "Guide d'utilisation",
     UNDO_DESCRIPTION: 'Annuler (Ctrl + Z)',
     REDO_DESCRIPTION: 'Refaire (Ctrl + Shift + Z)',
@@ -50,4 +53,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     EXPORT_DRAWING_DESCRIPTION: 'Exporter dessin (Ctrl + E)',
     SELECT_ALL_DESCRIPTION: 'Tout sélectionner (Ctrl + A)',
     SEND_DESCRIPTION: 'Envoyer un dessin',
+    CUT_DESCRIPTION: 'Couper la sélection (Ctrl + X)',
+    COPY_DESCRIPTION: 'Copier la sélection (Ctrl + C)',
+    PASTE_DESCRIPTION: 'Coller la sélection (Ctrl + V)',
 };

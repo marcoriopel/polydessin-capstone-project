@@ -22,9 +22,11 @@ import { CircleSelectionService } from '@app/services/tools/selection-services/c
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { StampService } from '@app/services/tools/stamp.service';
 import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 import { takeUntil } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
@@ -34,6 +36,7 @@ export class ToolSelectionService {
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     private tools: Map<string, Tool>;
     currentTool: Tool;
+    currentToolName: Subject<string> = new Subject<string>();
 
     constructor(
         public dialog: MatDialog,
@@ -55,6 +58,7 @@ export class ToolSelectionService {
         public newDrawingService: NewDrawingService,
         public undoRedoService: UndoRedoService,
         public textService: TextService,
+        public stampService: StampService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
@@ -71,6 +75,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
             [TOOL_NAMES.TEXT_TOOL_NAME, textService],
+            [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService
@@ -93,6 +98,7 @@ export class ToolSelectionService {
             this.currentTool.initialize();
             this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.currentToolName.next(toolName);
         }
     }
 
@@ -173,5 +179,9 @@ export class ToolSelectionService {
 
     currentToolWheelEvent(event: WheelEvent): void {
         this.currentTool.onWheelEvent(event);
+    }
+
+    getCurrentTool(): Observable<string> {
+        return this.currentToolName.asObservable();
     }
 }

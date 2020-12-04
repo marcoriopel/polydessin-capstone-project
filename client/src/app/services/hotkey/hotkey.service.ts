@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
 import { GRID_NAME, SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
@@ -28,7 +29,9 @@ export class HotkeyService {
         ['s', this.toolNames.CIRCLE_SELECTION_TOOL_NAME],
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
         ['t', this.toolNames.TEXT_TOOL_NAME],
+        ['d', this.toolNames.STAMP_TOOL_NAME],
         ['g', GRID_NAME],
+        ['m', MAGNETISM_NAME],
     ]);
     keysNeedCtrl: Map<string, string> = new Map([
         ['o', this.sidebarElements.NEW_DRAWING_NAME],
@@ -44,7 +47,6 @@ export class HotkeyService {
         if (!this.isHotkeyEnabled) return;
         if (event.shiftKey || event.ctrlKey) event.preventDefault();
         let keyName: string | undefined;
-
         if (event.shiftKey && event.ctrlKey) {
             keyName = this.keysNeedShift.get(event.key.toString());
         } else if (event.ctrlKey) {

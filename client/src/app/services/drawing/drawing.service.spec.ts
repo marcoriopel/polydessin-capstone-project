@@ -3,6 +3,7 @@ import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { DrawingService } from './drawing.service';
 
+// tslint:disable: no-magic-numbers
 describe('DrawingService', () => {
     let service: DrawingService;
     const WIDTH = 100;
@@ -22,6 +23,7 @@ describe('DrawingService', () => {
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.gridCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should be created', () => {
@@ -56,7 +58,6 @@ describe('DrawingService', () => {
 
     it('should get pixelData from baseCtx', () => {
         const pixel: Vec2 = { x: 1, y: 1 };
-        // tslint:disable-next-line: no-magic-numbers
         const expectedResult: Uint8ClampedArray = new Uint8ClampedArray([255, 0, 0, 255]);
 
         service.initializeBaseCanvas();
@@ -67,7 +68,6 @@ describe('DrawingService', () => {
     });
 
     it('should get ImageData from baseCtx', () => {
-        // tslint:disable-next-line: no-magic-numbers
         const pixels: Uint8ClampedArray = new Uint8ClampedArray([255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]);
         const expectedCanvasData: ImageData = { data: pixels, height: 2, width: 2 };
 
@@ -124,5 +124,38 @@ describe('DrawingService', () => {
         const setSpy = spyOn(service.isToolInUse, 'next');
         service.setIsToolInUse(true);
         expect(setSpy).toHaveBeenCalled();
+    });
+
+    it('should draw grid on setgrid', () => {
+        service.canvas.width = 10;
+        service.canvas.height = 10;
+        service.gridSpacing = 5;
+        const moveToSpy = spyOn(service.gridCtx, 'moveTo');
+        const lineToSpy = spyOn(service.gridCtx, 'lineTo');
+        service.setGrid();
+        expect(moveToSpy).toHaveBeenCalledTimes(6);
+        expect(lineToSpy).toHaveBeenCalledTimes(6);
+    });
+
+    it('should drawimage on basectx on applyPreview call', () => {
+        const baseCtxSpy = spyOn(service.baseCtx, 'drawImage');
+        const clearCanvasSpy = spyOn(service, 'clearCanvas');
+        service.applyPreview();
+        expect(baseCtxSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalled();
+    });
+
+    it('should not call setGrid on initializeBaseCanvas if grid is disabled', () => {
+        service.isGridEnabled = false;
+        const setGridSpy = spyOn(service, 'setGrid');
+        service.initializeBaseCanvas();
+        expect(setGridSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call setGrid on initializeBaseCanvas if grid is enabled', () => {
+        service.isGridEnabled = true;
+        const setGridSpy = spyOn(service, 'setGrid');
+        service.initializeBaseCanvas();
+        expect(setGridSpy).toHaveBeenCalled();
     });
 });

@@ -11,7 +11,6 @@ export class RotateService {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
-    constructor(public drawingService: DrawingService) {}
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     selectionImageCtx: CanvasRenderingContext2D;
     angle: number = 0;
@@ -20,6 +19,8 @@ export class RotateService {
     mouseWheel: boolean = false;
     deltaRotation: number = ROTATION_STEP;
     intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+
+    constructor(public drawingService: DrawingService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.initialSelection.startingPoint.x = selection.startingPoint.x;
@@ -41,9 +42,6 @@ export class RotateService {
         const centerX = this.calculateCenter().x;
         const centerY = this.calculateCenter().y;
         this.setAngleRotation(event);
-
-        this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.clearSelectionBackground();
         this.drawOnPreviewCanvas();
         this.rotateSelectedCanvas(this.selectionImageCtx, centerX, centerY);
     }
@@ -78,6 +76,8 @@ export class RotateService {
     }
 
     drawOnPreviewCanvas(): void {
+        this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.clearSelectionBackground();
         this.drawingService.previewCtx.save();
         this.rotatePreviewCanvas();
         this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
@@ -103,6 +103,7 @@ export class RotateService {
     }
 
     restoreSelection(): void {
+        this.drawOnPreviewCanvas();
         this.isRotationOver = true;
         this.angle = 0;
     }

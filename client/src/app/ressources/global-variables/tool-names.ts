@@ -13,6 +13,7 @@ export interface ToolNames {
     PIPETTE_TOOL_NAME: string;
     POLYGONE_TOOL_NAME: string;
     TEXT_TOOL_NAME: string;
+    STAMP_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
@@ -30,6 +31,7 @@ export const TOOL_NAMES: ToolNames = {
     PIPETTE_TOOL_NAME: 'Pipette',
     POLYGONE_TOOL_NAME: 'Polygone',
     TEXT_TOOL_NAME: 'Texte',
+    STAMP_TOOL_NAME: 'Étampe',
 };
 
 export const TOOL_NAMES_ARRAY: string[] = [
@@ -47,4 +49,5 @@ export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME,
     TOOL_NAMES.POLYGONE_TOOL_NAME,
     TOOL_NAMES.TEXT_TOOL_NAME,
+    TOOL_NAMES.STAMP_TOOL_NAME,
 ];

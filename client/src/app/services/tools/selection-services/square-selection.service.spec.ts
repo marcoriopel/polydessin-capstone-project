@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
+import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
@@ -54,7 +55,6 @@ describe('SquareSelectionService', () => {
     it('should call drawImage with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(ctx, 'drawImage');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         const startingPointX = 0;
@@ -62,6 +62,7 @@ describe('SquareSelectionService', () => {
         service.selection.height = height;
         service.selection.width = width;
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
+        service.setSelectionData();
         expect(drawImageSpy).toHaveBeenCalledWith(
             drawingService.canvas,
             startingPointX,
@@ -95,5 +96,11 @@ describe('SquareSelectionService', () => {
         const strokeRectSpy = spyOn(drawingService.previewCtx, 'strokeRect');
         service.strokeSelection();
         expect(strokeRectSpy).not.toHaveBeenCalled();
+    });
+
+    it('should setMagnetismAlignment', () => {
+        service.currentAlignment = ALIGNMENT_NAMES.ALIGN_BOTTOM_CENTER_NAME;
+        service.setMagnetismAlignment(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
+        expect(service.currentAlignment).toEqual(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
     });
 });
