@@ -321,5 +321,24 @@ describe('PolygoneService', () => {
         service.drawPolygone(previewCtxStub, service.polygoneData);
         expect(strokeSpy).toHaveBeenCalled();
     });
+
+    it('should call not fill when fill style is not border', () => {
+        const fillCtxSpy = spyOn(previewCtxStub, 'fill');
+        service.fillStyle = FILL_STYLES.BORDER;
+        service.polygoneData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: FILL_STYLES.BORDER,
+            lineWidth: 1,
+            circleHeight: 10,
+            circleWidth: 10,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygone(previewCtxStub, service.polygoneData);
+        expect(fillCtxSpy).not.toHaveBeenCalled();
+    });
     // tslint:disable-next-line: max-file-line-count
 });

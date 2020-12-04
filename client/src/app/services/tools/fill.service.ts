@@ -25,10 +25,6 @@ export class FillService extends Tool {
         super(drawingService);
     }
 
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
-
     changeTolerance(newTolerance: number): void {
         this.tolerance = newTolerance;
     }

@@ -273,6 +273,25 @@ describe('LineService', () => {
         expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
     });
 
+    it('should not replace last point with initial point', () => {
+        const click1: Vec2 = { x: 20, y: 20 };
+        const click2: Vec2 = { x: 50, y: 50 };
+        const newMouseEvent = {
+            offsetX: 50,
+            offsetY: 50,
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
+        service.storedLines.push(line);
+        service.mouseClicks.push(click1);
+        service.mouseClicks.push(click2);
+
+        service.onMouseUp(newMouseEvent);
+        service.onMouseUp(newMouseEvent);
+
+        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
+    });
+
     it('should call drawFullLine on mouse up', () => {
         const drawFullLineSpy = spyOn<any>(service, 'drawFullLine');
         const click1: Vec2 = { x: 20, y: 20 };
