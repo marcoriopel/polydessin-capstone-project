@@ -8,7 +8,7 @@ import {
     MIN_GRID_OPACITY,
     MIN_GRID_SQUARE_SIZE,
 } from '@app/ressources/global-variables/global-variables';
-import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
@@ -50,7 +50,7 @@ export class GridComponent {
                 }
                 case GRID_INCREASE_NAME: {
                     if (this.currentSquareSize + GRID_STEP <= this.maxSquareSize) {
-                        this.currentSquareSize = this.currentSquareSize + GRID_STEP;
+                        this.currentSquareSize += GRID_STEP;
                         this.changeGridSize(this.currentSquareSize);
                     }
 
@@ -58,7 +58,7 @@ export class GridComponent {
                 }
                 case GRID_DECREASE_NAME: {
                     if (this.currentSquareSize - GRID_STEP >= this.minSquareSize) {
-                        this.currentSquareSize = this.currentSquareSize - GRID_STEP;
+                        this.currentSquareSize -= GRID_STEP;
                         this.changeGridSize(this.currentSquareSize);
                     }
                     break;

@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GRID_STEP, MAX_GRID_SQUARE_SIZE, MIN_GRID_SQUARE_SIZE } from '@app/ressources/global-variables/global-variables';
-import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';

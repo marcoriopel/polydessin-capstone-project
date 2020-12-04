@@ -40,7 +40,7 @@ describe('MagicWandAttributesComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should should enable magnetism on valid hotkey if it was not enabled', () => {
+    it('should enable magnetism on valid hotkey if it was not enabled', () => {
         component.isMagnetismEnabled = false;
         const enableGridMagnetismSpy = spyOn(component, 'enableGridMagnetism');
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
@@ -48,7 +48,7 @@ describe('MagicWandAttributesComponent', () => {
         expect(enableGridMagnetismSpy).toHaveBeenCalledWith(true);
     });
 
-    it('should should disable magnetism on valid hotkey if it was enabled', () => {
+    it('should disable magnetism on valid hotkey if it was enabled', () => {
         component.isMagnetismEnabled = true;
         const enableGridMagnetismSpy = spyOn(component, 'enableGridMagnetism');
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());

@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
-import {
-    GRID_DECREASE_NAME,
-    GRID_INCREASE_NAME,
-    GRID_NAME,
-    SidebarElements,
-    SIDEBAR_ELEMENTS,
-} from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
+import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
 

@@ -63,12 +63,11 @@ export class MagicWandService extends SelectionService {
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
     }
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
+
     setMagnetismAlignment(alignment: string): void {
         this.currentAlignment = alignment;
     }
+
     onMouseDown(event: MouseEvent): void {
         this.mouseDownCoord = this.getPositionFromMouse(event);
         if (!this.isInSelection(event)) {
@@ -85,9 +84,9 @@ export class MagicWandService extends SelectionService {
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             if (event.button === MouseButton.LEFT && this.isSelectionOver) {
-                this.contiguousWand();
+                this.setContiguousWand();
             } else if (event.button === MouseButton.RIGHT && this.isSelectionOver) {
-                this.wand();
+                this.setWand();
             }
             this.isSelectionOver = true;
         } else {
@@ -99,6 +98,7 @@ export class MagicWandService extends SelectionService {
         }
         this.drawingService.setIsToolInUse(true);
     }
+
     onMouseUp(event: MouseEvent): void {
         if (this.isNewSelection) {
             if (this.selection.height !== 0 && this.selection.width !== 0) {
@@ -118,6 +118,8 @@ export class MagicWandService extends SelectionService {
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
+        this.strokeSelection();
+        this.setSelectionPoint();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -145,7 +147,7 @@ export class MagicWandService extends SelectionService {
         }
     }
 
-    contiguousWand(): void {
+    setContiguousWand(): void {
         this.pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.stack = [this.mouseDownCoord];
         const selectedPixels: Map<string, boolean> = new Map();
@@ -171,6 +173,12 @@ export class MagicWandService extends SelectionService {
                 this.nextContiguousPixels(currentPixel, canvasData);
             }
         }
+        this.setSelectionWithCorners();
+
+        this.setSelectionData();
+    }
+
+    setSelectionWithCorners(): void {
         this.selection = {
             startingPoint: {
                 x: (this.cornerSelectionValues.get('minX') as number) - MAGIC_WAND_BORDER_ONE_SIDE,
@@ -185,8 +193,6 @@ export class MagicWandService extends SelectionService {
                 (this.cornerSelectionValues.get('minX') as number) +
                 MAGIC_WAND_BORDER_BOTH_SIDES,
         };
-
-        this.setSelectionData();
     }
 
     nextContiguousPixels(currentPixel: Vec2, canvasData: ImageData): void {
@@ -234,10 +240,7 @@ export class MagicWandService extends SelectionService {
     addSecondaryTolerance(pixelData: Uint8ClampedArray, index: number, canvasData: ImageData, currentPixel: Vec2): void {
         if (!this.isSameColor(pixelData, canvasData, index, this.secondaryTolerance)) return;
         this.adjustCornerSelectionValues(currentPixel);
-        this.selectionImageData.data[index + RGBA_INDEXER.RED] = canvasData.data[index + RGBA_INDEXER.RED];
-        this.selectionImageData.data[index + RGBA_INDEXER.GREEN] = canvasData.data[index + RGBA_INDEXER.GREEN];
-        this.selectionImageData.data[index + RGBA_INDEXER.BLUE] = canvasData.data[index + RGBA_INDEXER.BLUE];
-        this.selectionImageData.data[index + RGBA_INDEXER.ALPHA] = canvasData.data[index + RGBA_INDEXER.ALPHA];
+        this.addPixelToSelection(index, canvasData);
     }
 
     setSelectionData(): void {
@@ -248,6 +251,7 @@ export class MagicWandService extends SelectionService {
         this.rotateService.initialize(this.selection, this.selectionImage);
         this.drawingService.updateStack(this.selectionData);
     }
+
     strokeSelection(): void {
         if (this.selection.height !== 0 && this.selection.width !== 0) {
             this.drawingService.previewCtx.save();
@@ -262,6 +266,7 @@ export class MagicWandService extends SelectionService {
             this.drawingService.previewCtx.restore();
         }
     }
+
     setBorderPattern(): CanvasPattern {
         const patternCanvas = document.createElement('canvas');
         patternCanvas.width = MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -272,6 +277,7 @@ export class MagicWandService extends SelectionService {
         patternCtx.fillRect(2, 2, 2, 2);
         return patternCtx.createPattern(patternCanvas, 'repeat') as CanvasPattern;
     }
+
     setBorderCanvas(): void {
         this.borderCanvas.width = this.selectionImage.width + MAGIC_WAND_BORDER_BOTH_SIDES;
         this.borderCanvas.height = this.selectionImage.height + MAGIC_WAND_BORDER_BOTH_SIDES;
@@ -294,7 +300,8 @@ export class MagicWandService extends SelectionService {
             this.selection.startingPoint.y - MAGIC_WAND_BORDER_ONE_SIDE,
         );
     }
-    wand(): void {
+
+    setWand(): void {
         this.pixelData = this.drawingService.getPixelData(this.mouseDownCoord);
         this.cornerSelectionValues = new Map([
             ['minX', this.mouseDownCoord.x],
@@ -314,23 +321,10 @@ export class MagicWandService extends SelectionService {
                 this.adjustCornerSelectionValues(currentPixel);
             }
         }
-        this.selection = {
-            startingPoint: {
-                x: (this.cornerSelectionValues.get('minX') as number) - MAGIC_WAND_BORDER_ONE_SIDE,
-                y: (this.cornerSelectionValues.get('minY') as number) - MAGIC_WAND_BORDER_ONE_SIDE,
-            },
-            height:
-                (this.cornerSelectionValues.get('maxY') as number) -
-                (this.cornerSelectionValues.get('minY') as number) +
-                MAGIC_WAND_BORDER_BOTH_SIDES,
-            width:
-                (this.cornerSelectionValues.get('maxX') as number) -
-                (this.cornerSelectionValues.get('minX') as number) +
-                MAGIC_WAND_BORDER_BOTH_SIDES,
-        };
-
+        this.setSelectionWithCorners();
         this.setSelectionData();
     }
+
     isSameColor(pixelData: Uint8ClampedArray, canvasData: ImageData, index: number, tolerance: number): boolean {
         const diffRed: number = Math.abs(pixelData[RGBA_INDEXER.RED] - canvasData.data[index + RGBA_INDEXER.RED]);
         const diffGreen: number = Math.abs(pixelData[RGBA_INDEXER.GREEN] - canvasData.data[index + RGBA_INDEXER.GREEN]);
@@ -343,6 +337,7 @@ export class MagicWandService extends SelectionService {
             return true;
         }
     }
+
     Vec2ToString(pixel: Vec2): string {
         return pixel.x.toString() + ',' + pixel.y.toString();
     }

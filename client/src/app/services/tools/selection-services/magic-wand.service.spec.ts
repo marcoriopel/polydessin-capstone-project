@@ -110,10 +110,10 @@ describe('MagicWandService', () => {
         moveServiceSpy.isTransformationOver = true;
         rotateServiceSpy.isRotationOver = true;
         const isInSelectionSpy = spyOn(service, 'isInSelection').and.returnValue(false);
-        const contiguousWandSpy = spyOn(service, 'contiguousWand');
+        const setContiguousWandSpy = spyOn(service, 'setContiguousWand');
         service.onMouseDown(mouseEvent);
         expect(isInSelectionSpy).toHaveBeenCalled();
-        expect(contiguousWandSpy).toHaveBeenCalled();
+        expect(setContiguousWandSpy).toHaveBeenCalled();
     });
 
     it('should not call the wand function on right click if it is not in selection but selection is not over', () => {
@@ -126,10 +126,10 @@ describe('MagicWandService', () => {
         moveServiceSpy.isTransformationOver = true;
         rotateServiceSpy.isRotationOver = true;
         const isInSelectionSpy = spyOn(service, 'isInSelection').and.returnValue(false);
-        const wandSpy = spyOn(service, 'wand');
+        const setWandSpy = spyOn(service, 'setWand');
         service.onMouseDown(mouseEventRight);
         expect(isInSelectionSpy).toHaveBeenCalled();
-        expect(wandSpy).not.toHaveBeenCalled();
+        expect(setWandSpy).not.toHaveBeenCalled();
     });
 
     it('should call the wand function on right click if it is not in selection', () => {
@@ -141,10 +141,10 @@ describe('MagicWandService', () => {
         moveServiceSpy.isTransformationOver = true;
         rotateServiceSpy.isRotationOver = true;
         const isInSelectionSpy = spyOn(service, 'isInSelection').and.returnValue(false);
-        const wandSpy = spyOn(service, 'wand');
+        const setWandSpy = spyOn(service, 'setWand');
         service.onMouseDown(mouseEventRight);
         expect(isInSelectionSpy).toHaveBeenCalled();
-        expect(wandSpy).toHaveBeenCalled();
+        expect(setWandSpy).toHaveBeenCalled();
     });
 
     it('should call the contiguous function on left click if it is not in selection and transformation and rotation are not over', () => {
@@ -152,11 +152,11 @@ describe('MagicWandService', () => {
         rotateServiceSpy.isRotationOver = false;
         const isInSelectionSpy = spyOn(service, 'isInSelection').and.returnValue(false);
         const applyPreviewSpy = spyOn(service, 'applyPreview');
-        const contiguousWandSpy = spyOn(service, 'contiguousWand');
+        const setContiguousWandSpy = spyOn(service, 'setContiguousWand');
         service.onMouseDown(mouseEvent);
         expect(isInSelectionSpy).toHaveBeenCalled();
         expect(applyPreviewSpy).toHaveBeenCalled();
-        expect(contiguousWandSpy).toHaveBeenCalled();
+        expect(setContiguousWandSpy).toHaveBeenCalled();
     });
 
     it('should call setSelection on mouseup if it is a new selection', () => {
@@ -289,7 +289,7 @@ describe('MagicWandService', () => {
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const nextContiguousPixelsSpy = spyOn(service, 'nextContiguousPixels');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
-        service.contiguousWand();
+        service.setContiguousWand();
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addPixelToSelectionSpy).toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).toHaveBeenCalled();
@@ -306,7 +306,7 @@ describe('MagicWandService', () => {
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const nextContiguousPixelsSpy = spyOn(service, 'nextContiguousPixels');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
-        service.contiguousWand();
+        service.setContiguousWand();
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addPixelToSelectionSpy).not.toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).not.toHaveBeenCalled();
@@ -314,7 +314,7 @@ describe('MagicWandService', () => {
         expect(setSelectionDataSpy).toHaveBeenCalled();
     });
 
-    it('should skip if pixel was already checked', () => {
+    it('should skip pixel if pixel was already checked', () => {
         service.mouseDownCoord = { x: 5, y: 5 };
         drawingServiceSpy.canvas.width = 5;
         drawingServiceSpy.canvas.height = 5;
@@ -324,11 +324,11 @@ describe('MagicWandService', () => {
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const nextContiguousPixelsSpy = spyOn(service, 'nextContiguousPixels').and.callThrough();
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
-        service.contiguousWand();
+        service.setContiguousWand();
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(vec2ToStringSpy).toHaveBeenCalled();
         expect(addPixelToSelectionSpy).toHaveBeenCalled();
-        expect(adjustCornerSelectionValuesSpy).toHaveBeenCalled();
+        expect(adjustCornerSelectionValuesSpy).toHaveBeenCalledTimes(1);
         expect(nextContiguousPixelsSpy).toHaveBeenCalled();
         expect(setSelectionDataSpy).toHaveBeenCalled();
     });
@@ -507,7 +507,7 @@ describe('MagicWandService', () => {
         const addPixelToSelectionSpy = spyOn(service, 'addPixelToSelection');
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
-        service.wand();
+        service.setWand();
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addPixelToSelectionSpy).toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).toHaveBeenCalled();
@@ -524,7 +524,7 @@ describe('MagicWandService', () => {
         const addPixelToSelectionSpy = spyOn(service, 'addPixelToSelection');
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
-        service.wand();
+        service.setWand();
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addPixelToSelectionSpy).not.toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).not.toHaveBeenCalled();

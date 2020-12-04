@@ -75,8 +75,7 @@ export class PencilService extends Tool {
         ctx.lineCap = 'round';
         ctx.beginPath();
         for (const point of pencil.path) {
-            // tslint:disable-next-line: no-magic-numbers
-            ctx.lineTo(point.x + 0.5, point.y + 0.5);
+            ctx.lineTo(point.x, point.y);
         }
         ctx.stroke();
     }
