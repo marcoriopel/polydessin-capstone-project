@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -14,7 +13,6 @@ describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
     let resizeDrawingServiceSpy: SpyObj<ResizeDrawingService>;
-    let drawingServiceSpy: SpyObj<DrawingService>;
     let style: CSSStyleDeclaration;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
@@ -36,7 +34,6 @@ describe('EditorComponent', () => {
         ]);
         toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave', 'getIsToolInUse']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         obs = new Subject<string>();
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
