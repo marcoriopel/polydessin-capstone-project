@@ -19,7 +19,6 @@ export class DrawingService {
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
-    isSaveAuto: boolean;
 
     setGrid(): void {
         this.clearCanvas(this.gridCtx);

@@ -20,7 +20,6 @@ export class DrawingComponent implements AfterViewInit {
     private baseCtx: CanvasRenderingContext2D;
     private previewCtx: CanvasRenderingContext2D;
     private gridCtx: CanvasRenderingContext2D;
-    isSaveAuto: boolean = true;
 
     constructor(
         private drawingService: DrawingService,

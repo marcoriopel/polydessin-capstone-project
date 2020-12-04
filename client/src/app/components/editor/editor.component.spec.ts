@@ -49,7 +49,6 @@ describe('EditorComponent', () => {
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
-                { provide: DrawingService, useValue: drawingServiceSpy },
             ],
         }).compileComponents();
     }));
