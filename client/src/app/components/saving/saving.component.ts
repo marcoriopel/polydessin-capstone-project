@@ -41,7 +41,7 @@ export class SavingComponent implements OnInit, OnDestroy {
     @ViewChild('tag') tagInput: ElementRef;
 
     ngOnInit(): void {
-        if (this.hotkeyService.isTextTool) {
+        if (this.textService.isNewText) {
             this.textService.createText();
         }
         this.hotkeyService.isHotkeyEnabled = false;

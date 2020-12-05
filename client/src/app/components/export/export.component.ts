@@ -44,7 +44,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
-        if (this.hotkeyService.isTextTool) {
+        if (this.textService.isNewText) {
             this.textService.createText();
         }
 

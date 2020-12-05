@@ -33,7 +33,7 @@ describe('SavingComponent', () => {
         baseCanvas = document.createElement('canvas');
         baseCtx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['saveConfirmSnackBar', 'saveErrorSnackBar']);
-        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', []);
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['addDrawing']);
@@ -68,7 +68,7 @@ describe('SavingComponent', () => {
     });
 
     it('should call createText if is the tool text', () => {
-        hotkeyServiceSpy.isTextTool = true;
+        textServiceSpy.isNewText = true;
         component.ngOnInit();
         expect(textServiceSpy.createText).toHaveBeenCalled();
     });

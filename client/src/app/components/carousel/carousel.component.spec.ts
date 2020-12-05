@@ -39,7 +39,7 @@ describe('CarouselComponent', () => {
     beforeEach(async(() => {
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
-        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', []);
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng', 'deleteDrawing']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'resetStack']);
@@ -80,7 +80,7 @@ describe('CarouselComponent', () => {
     });
 
     it('should call createText if is the tool text', () => {
-        hotkeyServiceSpy.isTextTool = true;
+        textServiceSpy.isNewText = true;
         component.ngOnInit();
         expect(textServiceSpy.createText).toHaveBeenCalled();
     });

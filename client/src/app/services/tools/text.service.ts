@@ -36,7 +36,7 @@ export class TextService extends Tool {
     }
 
     initializeNewText(): void {
-        this.hotkeyService.isTextTool = true;
+        this.hotkeyService.isHotkeyEnabled = false;
         this.color = this.colorSelectionService.primaryColor;
         this.text = [];
         this.isNewText = true;
@@ -47,7 +47,7 @@ export class TextService extends Tool {
         this.text = [];
         this.isNewText = false;
         this.indexIndicator = 0;
-        this.hotkeyService.isTextTool = false;
+        this.hotkeyService.isHotkeyEnabled = true;
     }
     onMouseDown(event: MouseEvent): void {
         if (this.isMouseOnText(this.getPositionFromMouse(event)) || event.button === MouseButton.RIGHT) {

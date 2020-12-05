@@ -72,16 +72,15 @@ describe('EditorComponent', () => {
     });
 
     it('should call hotkeyService.onKeyDown', () => {
-        hotkeyServiceSpy.isTextTool = false;
         const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
         component.onKeyDown(keyEvent);
         expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
     });
 
-    it('should call toolSectionService.currentToolKeyDown even if hotkey', () => {
-        hotkeyServiceSpy.isTextTool = true;
+    it('should call toolSectionService.currentToolKeyDown', () => {
         const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
         component.onKeyDown(keyEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
         expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
     });
 

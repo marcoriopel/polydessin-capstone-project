@@ -23,12 +23,14 @@ export interface SidebarElementTooltips {
     SELECT_ALL_DESCRIPTION: string;
     SEND_DESCRIPTION: string;
     TEXT_TOOL_DESCRIPTION: string;
+    MAGIC_WAND_DESCRIPTION: string;
     CUT_DESCRIPTION: string;
     COPY_DESCRIPTION: string;
     PASTE_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
+    MAGIC_WAND_DESCRIPTION: 'Baguette magique (V)',
     CAROUSEL_DESCRIPTION: 'Carroussel de dessin (Ctrl + G)',
     NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl + O)',
     PENCIL_TOOL_DESCRIPTION: 'Crayon (C)',

@@ -41,6 +41,7 @@ import { CircleSelectionAttributesComponent } from './components/tools/circle-se
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
+import { MagicWandAttributesComponent } from './components/tools/magic-wand-attributes/magic-wand-attributes.component';
 import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
@@ -60,6 +61,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         GridComponent,
         EditorComponent,
         SidebarComponent,
+        MagicWandAttributesComponent,
         DrawingComponent,
         MainPageComponent,
         UserGuideComponent,

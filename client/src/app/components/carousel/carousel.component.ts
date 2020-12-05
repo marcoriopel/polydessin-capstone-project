@@ -54,7 +54,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
 
     ngOnInit(): void {
-        if (this.hotkeyService.isTextTool) {
+        if (this.textService.isNewText) {
             this.textService.createText();
         }
         this.hotkeyService.isHotkeyEnabled = false;

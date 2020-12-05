@@ -55,7 +55,6 @@ describe('TextService', () => {
         colorPickerStub.primaryColor = '#ffffff';
         const text = ['|'];
         service.initializeNewText();
-        expect(hotkeyServiceStub.isTextTool).toEqual(true);
         expect(service.color).toEqual(colorPickerStub.primaryColor);
         expect(service.text).toEqual(text);
         expect(service.isNewText).toEqual(true);
@@ -64,7 +63,6 @@ describe('TextService', () => {
 
     it('destroy should reinitialize text', () => {
         service.destroy();
-        expect(hotkeyServiceStub.isTextTool).toEqual(false);
         expect(service.text).toEqual([]);
         expect(service.isNewText).toEqual(false);
         expect(service.indexIndicator).toEqual(0);

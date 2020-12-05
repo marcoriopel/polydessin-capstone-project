@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
-import { GRID_NAME, SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
+import { SidebarElements, SIDEBAR_ELEMENTS } from '@app/ressources/global-variables/sidebar-elements';
 import { ToolNames, TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { Observable, Subject } from 'rxjs';
 
@@ -13,7 +14,7 @@ export class HotkeyService {
     toolNames: ToolNames = TOOL_NAMES;
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     isHotkeyEnabled: boolean = true;
-    isTextTool: boolean = false;
+
     keyMapping: Map<string, string> = new Map([
         ['c', this.toolNames.PENCIL_TOOL_NAME],
         ['p', this.toolNames.PEN_TOOL_NAME],
@@ -30,6 +31,9 @@ export class HotkeyService {
         ['i', this.toolNames.PIPETTE_TOOL_NAME],
         ['t', this.toolNames.TEXT_TOOL_NAME],
         ['d', this.toolNames.STAMP_TOOL_NAME],
+        ['v', this.toolNames.MAGIC_WAND_TOOL_NAME],
+        ['-', GRID_DECREASE_NAME],
+        ['+', GRID_INCREASE_NAME],
         ['g', GRID_NAME],
         ['m', MAGNETISM_NAME],
     ]);

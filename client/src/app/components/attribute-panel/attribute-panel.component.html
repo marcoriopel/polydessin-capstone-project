@@ -18,6 +18,7 @@
         <app-square-selection-attributes
             *ngIf="toolSelectionService.currentTool.name === this.toolNames.SQUARE_SELECTION_TOOL_NAME"
         ></app-square-selection-attributes>
+        <app-magic-wand-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.MAGIC_WAND_TOOL_NAME"> </app-magic-wand-attributes>
         <app-pipette-attributes *ngIf="toolSelectionService.currentTool.name === this.toolNames.PIPETTE_TOOL_NAME"> </app-pipette-attributes>
     </div>
     <div id="modifiers">
