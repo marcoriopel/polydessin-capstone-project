@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
@@ -11,24 +10,22 @@ import { Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
-export class ContinueDesignService {
-    private lastDesign: boolean = false;
+export class ContinueDrawingService {
+    isLastDrawing: boolean = false;
     destroy$: Subject<boolean> = new Subject<boolean>();
     filteredMetadata: DBData[] = [];
     currentRoute: string;
-    checkOldDesign: boolean;
-    designPrevious: HTMLImageElement;
+    checkOldDrawing: boolean;
     WIDTH: number;
     constructor(
         public drawingService: DrawingService,
         public router: Router,
         public serverResponseService: ServerResponseService,
-        public resizeDrawingService: ResizeDrawingService,
         public databaseService: DatabaseService,
     ) {}
-    furtherDesign(): void {
-        const findSRC = localStorage.getItem('theDesign') as string;
-        this.convertURIToImageData(findSRC);
+    furtherDrawing(): void {
+        const sourceDrawingURL = localStorage.getItem('drawingKey') as string;
+        this.convertURIToImageData(sourceDrawingURL);
     }
 
     // tslint:disable-next-line: no-any
@@ -50,29 +47,31 @@ export class ContinueDesignService {
         });
     }
 
-    loadOldDesign(): boolean {
-        return this.lastDesign;
+    loadOldDrawing(): boolean {
+        this.drawingService.isLastDrawing = localStorage.length > 0;
+        return this.isLastDrawing;
     }
 
-    furtherOldDesign(): void {
-        this.lastDesign = localStorage.length > 0;
+    stateDrawing(): boolean {
+        return this.isLastDrawing;
     }
 
-    furtherDesignUnlock(): void {
-        this.lastDesign = false;
+    furtherOldDrawing(): void {
+        this.drawingService.isLastDrawing = localStorage.length > 0;
     }
 
-    // clearCanvas(): void {
-    //     this.drawingService.clearCanvas(this.drawingService.baseCtx);
-    // }
-
-    newBaseCtx(): boolean {
-        return this.drawingService.baseCtx ? true : false;
+    furtherDrawingUnlock(): void {
+        this.drawingService.isLastDrawing = false;
     }
+
+    clearCanvas(): void {
+        this.drawingService.clearCanvas(this.drawingService.baseCtx);
+    }
+
     resizingCanvas(width: number = MINIMUM_CANVAS_WIDTH, height: number = MINIMUM_CANVAS_HEIGHT): void {
         this.drawingService.canvas.width = width;
         this.drawingService.canvas.height = height;
-        if (!this.checkOldDesign) {
+        if (!this.checkOldDrawing) {
             this.drawingService.canvas.width = width;
             this.drawingService.canvas.height = height;
         }

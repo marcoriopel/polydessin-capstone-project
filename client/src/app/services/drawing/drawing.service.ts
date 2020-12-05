@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { Observable, Subject } from 'rxjs';
@@ -19,7 +19,9 @@ export class DrawingService {
     undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
+    isLastDrawing: boolean;
 
+    constructor(private injector: Injector) {}
     setGrid(): void {
         this.clearCanvas(this.gridCtx);
         const canvasWidth = this.canvas.width;
@@ -52,10 +54,16 @@ export class DrawingService {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    checkedDrawing(): boolean {
+        return this.isLastDrawing;
+    }
+
     initializeBaseCanvas(): void {
         if (this.isGridEnabled) this.setGrid();
-        if (this.continueDesignService.loadOldDesign()) {
-            this.continueDesignService.furtherDesign();
+        // tslint:disable-next-line: deprecation
+        const continueDrawingService = this.injector.get('ContinueDrawingService');
+        if (this.isLastDrawing) {
+            continueDrawingService.furtherDrawing();
         } else {
             this.baseCtx.fillStyle = 'white';
             this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -117,6 +125,6 @@ export class DrawingService {
         if (!this.canvas) return;
         const usingSrc = this.canvas.toDataURL();
         localStorage.clear();
-        localStorage.setItem('theDesign', usingSrc);
+        localStorage.setItem('drawingKey', usingSrc);
     }
 }

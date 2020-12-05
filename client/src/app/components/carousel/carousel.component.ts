@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
-import { ContinueDesignService } from '@app/services/continue-design/continue-design.service';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -29,7 +29,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
-        public continueDesign: ContinueDesignService,
+        public continueDrawingService: ContinueDrawingService,
     ) {}
     destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];

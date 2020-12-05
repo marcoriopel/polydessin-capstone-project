@@ -17,6 +17,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './components/app/app.component';
 import { AttributePanelComponent } from './components/attribute-panel/attribute-panel.component';
@@ -112,7 +113,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatInputModule,
     ],
     entryComponents: [UserGuideComponent, MainPageComponent],
-    providers: [],
+    providers: [{ provide: 'ContinueDrawingService', useClass: ContinueDrawingService }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
