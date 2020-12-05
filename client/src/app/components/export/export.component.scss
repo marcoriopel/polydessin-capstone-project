@@ -7,6 +7,14 @@ img {
 
 .imageContainer {
     align-self: center;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.Section {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .exporting {
@@ -22,6 +30,16 @@ mat-form-field {
 h1 {
     text-align: center;
 }
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #cfcfcf;
+    width: 100%;
+    margin: 0;
+}
+
 .export {
     display: flex;
 }
