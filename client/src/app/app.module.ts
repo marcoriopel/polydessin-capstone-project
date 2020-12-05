@@ -44,6 +44,7 @@ import { PenAttributesComponent } from './components/tools/pen-attributes/pen-at
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
 import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
+import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
@@ -51,7 +52,6 @@ import { SquareAttributesComponent } from './components/tools/square-attributes/
 import { SquareSelectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
-import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 
 @NgModule({
     declarations: [

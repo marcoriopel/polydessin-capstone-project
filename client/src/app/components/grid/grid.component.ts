@@ -96,7 +96,7 @@ export class GridComponent {
         newOpacity = Math.round((newOpacity + Number.EPSILON) * TWO_DECIMAL_MULTIPLIER) / TWO_DECIMAL_MULTIPLIER;
 
         if (isNaN(newOpacity) || newOpacity < MIN_GRID_OPACITY || newOpacity > MAX_GRID_OPACITY || newOpacity.toString() === '') {
-            alert("L'opacité doit être un nombre entre 0 et 100.");
+            alert("L'opacité doit être un nombre entre 10 et 100.");
         } else {
             this.drawingService.opacity = newOpacity;
             this.currentOpacity = newOpacity;
