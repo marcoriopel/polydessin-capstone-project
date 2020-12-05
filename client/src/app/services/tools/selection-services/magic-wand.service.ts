@@ -3,8 +3,6 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import {
-    DASH_LENGTH,
-    DASH_SPACE_LENGTH,
     MAGIC_WAND_BORDER_BOTH_SIDES,
     MAGIC_WAND_BORDER_ONE_SIDE,
     MAX_PERCENTAGE,
@@ -56,12 +54,6 @@ export class MagicWandService extends SelectionService {
         public clipboardService: ClipboardService,
     ) {
         super(drawingService, moveService, rotateService, clipboardService, magnetismService);
-    }
-
-    initialize(): void {
-        this.drawingService.previewCtx.lineWidth = 1;
-        this.drawingService.previewCtx.strokeStyle = 'black';
-        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
     }
 
     setMagnetismAlignment(alignment: string): void {
