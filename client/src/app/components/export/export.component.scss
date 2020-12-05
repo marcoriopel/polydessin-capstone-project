@@ -4,9 +4,17 @@ img {
     position: relative;
     border: 2px solid #555;
 }
-.exporting {
-    overflow: auto;
+
+.imageContainer {
+    align-self: center;
 }
+
+.exporting {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+}
+
 mat-form-field {
     margin-right: 10px;
 }

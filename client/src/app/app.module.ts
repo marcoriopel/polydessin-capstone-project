@@ -50,6 +50,7 @@ import { SquareAttributesComponent } from './components/tools/square-attributes/
 import { SquareSelectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
+import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 
 @NgModule({
     declarations: [
@@ -86,6 +87,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         PenAttributesComponent,
         SprayAttributesComponent,
         StampAttributesComponent,
+        MagnetismComponent,
     ],
     imports: [
         BrowserModule,

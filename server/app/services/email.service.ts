@@ -6,9 +6,6 @@ import { EmailData } from '../controllers/emaildata';
 
 @injectable()
 export class EmailService {
-    // tslint:disable-next-line:no-empty
-    constructor() {}
-
     async sendByEmail(data: EmailData): Promise<void | string> {
         if (this.validateData(data.to)) {
             const MAIL_API_208_TEAM_KEY = '6f6adecb-dfa5-4471-951a-63b60a7f7b3c';
@@ -39,8 +36,6 @@ export class EmailService {
                         throw error;
                     })
             );
-            // tslint:disable-next-line: no-empty
-        } else {
         }
     }
 

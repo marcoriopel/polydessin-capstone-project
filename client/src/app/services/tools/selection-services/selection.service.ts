@@ -412,5 +412,7 @@ export class SelectionService extends Tool {
     getIsSelectionEmptySubject(): Observable<boolean> {
         return this.isSelectionEmptySubject.asObservable();
     }
+
+    setMagnetismAlignment(currentAlignment: string): void {}
     // tslint:disable-next-line: max-file-line-count
 }

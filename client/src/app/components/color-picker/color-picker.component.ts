@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY } from '@app/ressources/global-variables/global-variables';
 import { MAXIMUM_RGBA_VALUE } from '@app/ressources/global-variables/rgba';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
 @Component({
     selector: 'app-color-picker',
@@ -19,7 +20,7 @@ export class ColorPickerComponent implements AfterViewInit {
     primaryOpacity: number = MAX_OPACITY;
     secondaryOpacity: number = MAX_OPACITY;
 
-    constructor(public colorSelectionService: ColorSelectionService, public pipetteService: PipetteService) {
+    constructor(public colorSelectionService: ColorSelectionService, public hotkeyService: HotkeyService, public pipetteService: PipetteService) {
         // Initial values for the colors on application opening
         this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
         this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
@@ -147,5 +148,13 @@ export class ColorPickerComponent implements AfterViewInit {
             const secondary = this.secondaryColorElement.nativeElement;
             secondary.value = data[0];
         });
+    }
+
+    onFocus(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
+    }
+
+    onFocusOut(): void {
+        this.hotkeyService.isHotkeyEnabled = true;
     }
 }

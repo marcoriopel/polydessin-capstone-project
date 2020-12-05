@@ -1,24 +1,47 @@
 <div class="grid">
-    <div>
-        <h3>Grid Settings</h3>
-    </div>
+    <hr class="finalBorder" />
+    <h4>Grille</h4>
+
     <mat-checkbox (change)="changeGridView($event.checked)" [checked]="isEnabled">Afficher grille</mat-checkbox>
     <hr />
-    <app-slider
-        title="Grosseur Carrés"
-        [min]="minSquareSize"
-        [max]="maxSquareSize"
-        [step]="5"
-        [value]="currentSquareSize"
-        (valueChange)="changeGridSize($event)"
-    ></app-slider>
-    <app-slider
-        title="Opacité des lignes"
-        [min]="minOpacity"
-        [max]="maxOpacity"
-        [step]="0.1"
-        [value]="currentOpacity"
-        (valueChange)="changeOpacity($event)"
-    ></app-slider>
+
+    <div id="section">
+        <p>Grosseur Carrés</p>
+        <div class="attributeContainer">
+            <input
+                type="text"
+                [(value)]="currentSquareSize"
+                (change)="changeGridSize($event.target.value)"
+                [min]="minSquareSize"
+                [max]="maxSquareSize"
+                (focus)="onFocus()"
+                (focusout)="onFocusOut()"
+            />
+            <div>
+                <button (click)="changeGridSize(currentSquareSize - 5)">-</button>
+                <button (click)="changeGridSize(currentSquareSize + 5)">+</button>
+            </div>
+        </div>
+        <hr class="bottomBorder" />
+    </div>
+
+    <div id="section">
+        <p>Opacité des lignes</p>
+        <div class="attributeContainer">
+            <input
+                type="text"
+                [(value)]="currentOpacity"
+                (change)="changeOpacity($event.target.value)"
+                [min]="minOpacity"
+                [max]="maxOpacity"
+                (focus)="onFocus()"
+                (focusout)="onFocusOut()"
+            />
+            <div>
+                <button (click)="changeOpacity(currentOpacity - 0.1)">-</button>
+                <button (click)="changeOpacity(currentOpacity + 0.1)">+</button>
+            </div>
+        </div>
+        <hr class="bottomBorder finalBorder" />
+    </div>
 </div>
-<hr />
