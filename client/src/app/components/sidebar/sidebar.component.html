@@ -214,6 +214,22 @@
         </label>
         <input
             type="radio"
+            [id]="this.toolNames.MAGIC_WAND_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.MAGIC_WAND_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.MAGIC_WAND_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.MAGIC_WAND_TOOL_NAME">
+            <mat-icon
+                class="fas fa-magic"
+                [matTooltip]="elementDescriptions.MAGIC_WAND_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+        <input
+            type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.FILL_TOOL_NAME"

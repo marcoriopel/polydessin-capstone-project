@@ -17,5 +17,3 @@ export const SIDEBAR_ELEMENTS: SidebarElements = {
     UNDO: 'Annuler',
     REDO: 'Refaire',
 };
-
-export const GRID_NAME = 'Grid';
