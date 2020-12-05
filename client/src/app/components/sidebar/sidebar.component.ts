@@ -51,7 +51,6 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((tool) => {
                 if (TOOL_NAMES_ARRAY.includes(tool)) {
-                    console.log('hi');
                     this.selectedTool = tool;
                 }
             });

@@ -18,7 +18,7 @@ describe('ExportComponent', () => {
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     let httpClientSpy: HttpClient;
-    let hotkeyServiceStub: HotkeyService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let textServiceSpy: SpyObj<TextService>;
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -27,7 +27,7 @@ describe('ExportComponent', () => {
         drawingServiceStub = {} as DrawingService;
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
-        hotkeyServiceStub = new HotkeyService();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', []);
         TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -37,7 +37,7 @@ describe('ExportComponent', () => {
                 { provide: MatDialogRef, useValue: dialogSpy },
                 { provide: HttpClient, useValue: httpClientSpy },
                 { provide: TextService, useValue: textServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceStub },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
             ],
         }).compileComponents();
     }));
@@ -68,7 +68,7 @@ describe('ExportComponent', () => {
     });
 
     it('should call createText if is the tool text', () => {
-        hotkeyServiceStub.isTextTool = true;
+        hotkeyServiceSpy.isTextTool = true;
         component.ngOnInit();
         expect(textServiceSpy.createText).toHaveBeenCalled();
     });

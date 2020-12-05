@@ -21,7 +21,7 @@ describe('SavingComponent', () => {
     let fixture: ComponentFixture<SavingComponent>;
     let databaseServiceSpy: SpyObj<DatabaseService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    let hotkeyServiceStub: HotkeyService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let imageObservable: Subject<void>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
@@ -33,7 +33,7 @@ describe('SavingComponent', () => {
         baseCanvas = document.createElement('canvas');
         baseCtx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['saveConfirmSnackBar', 'saveErrorSnackBar']);
-        hotkeyServiceStub = new HotkeyService();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', []);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['addDrawing']);
@@ -48,7 +48,7 @@ describe('SavingComponent', () => {
             imports: [HttpClientModule, MatSnackBarModule, MatDialogModule, MatChipsModule, FormsModule, ReactiveFormsModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceStub },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },
                 { provide: DrawingService, useValue: drawingServiceSpy },
@@ -68,7 +68,7 @@ describe('SavingComponent', () => {
     });
 
     it('should call createText if is the tool text', () => {
-        hotkeyServiceStub.isTextTool = true;
+        hotkeyServiceSpy.isTextTool = true;
         component.ngOnInit();
         expect(textServiceSpy.createText).toHaveBeenCalled();
     });

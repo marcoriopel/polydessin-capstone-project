@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FONT, Font } from '@app/ressources/global-variables/text';
+import { SIZE_STEP } from '@app/ressources/global-variables/global-variables';
+import { FONTS, Fonts } from '@app/ressources/global-variables/text';
 import { TextService } from '@app/services/tools/text.service';
 
 @Component({
@@ -9,21 +10,32 @@ import { TextService } from '@app/services/tools/text.service';
 })
 export class TextComponent implements OnDestroy {
     textSize: number;
-    fontStyle: Font = {
-        GEORGIA: FONT.GEORGIA,
-        ARIAL: FONT.ARIAL,
-        TIME_NEW_ROMAN: FONT.TIME_NEW_ROMAN,
-        VERDANA: FONT.VERDANA,
-        COURIER_NEW: FONT.COURIER_NEW,
+    fontStyle: Fonts = {
+        GEORGIA: FONTS.GEORGIA,
+        ARIAL: FONTS.ARIAL,
+        TIME_NEW_ROMAN: FONTS.TIME_NEW_ROMAN,
+        VERDANA: FONTS.VERDANA,
+        COURIER_NEW: FONTS.COURIER_NEW,
     };
     constructor(public textService: TextService) {
         this.textSize = this.textService.size;
     }
 
     changeFont(font: string): void {
-        console.log(font);
         this.textService.font = font;
         this.textService.applyTextStyle();
+    }
+
+    decrementSize(): void {
+        if (this.textSize > this.textService.minSize) {
+            this.changeSize(this.textSize - SIZE_STEP);
+        }
+    }
+
+    incrementSize(): void {
+        if (this.textSize < this.textService.maxSize) {
+            this.changeSize(this.textSize + SIZE_STEP);
+        }
     }
 
     changeSize(size: number): void {

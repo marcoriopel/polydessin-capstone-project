@@ -11,17 +11,18 @@
             <mat-option [value]="fontStyle.COURIER_NEW">Courier New</mat-option>
         </mat-select>
     </mat-form-field>
-    <app-slider
-        title="Taille"
-        [min]="textService.minSize"
-        [max]="textService.maxSize"
-        [step]="5"
-        [value]="textSize"
-        (valueChange)="changeSize($event)"
-    >
-    </app-slider>
-    <mat-checkbox #italic (change)="this.changeItalic(italic.checked)">Italique</mat-checkbox>
-    <mat-checkbox #gras (change)="this.changeBoldText(gras.checked)">Gras</mat-checkbox>
+
+    <div id="sliderDetails">
+        <input type="text" [(value)]="textSize" readonly />
+        <div>
+            <button (click)="decrementSize()">-</button>
+            <button (click)="incrementSize()">+</button>
+        </div>
+    </div>
+    <div id="style">
+        <mat-checkbox #italic (change)="this.changeItalic(italic.checked)">Italique</mat-checkbox>
+        <mat-checkbox #gras (change)="this.changeBoldText(gras.checked)">Gras</mat-checkbox>
+    </div>
 
     <mat-button-toggle-group #group="matButtonToggleGroup">
         <mat-button-toggle value="start" (change)="this.changeAlignment($event.value)" checked>

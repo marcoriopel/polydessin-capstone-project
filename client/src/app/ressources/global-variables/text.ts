@@ -1,4 +1,4 @@
-export interface Font {
+export interface Fonts {
     GEORGIA: string;
     ARIAL: string;
     TIME_NEW_ROMAN: string;
@@ -6,7 +6,7 @@ export interface Font {
     COURIER_NEW: string;
 }
 
-export const FONT: Font = {
+export const FONTS: Fonts = {
     GEORGIA: 'Georgia',
     ARIAL: 'Arial',
     TIME_NEW_ROMAN: 'Time New Roman',

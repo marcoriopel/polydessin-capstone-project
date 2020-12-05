@@ -38,6 +38,7 @@ export const TWO_DECIMAL_MULTIPLIER = 100;
 
 // constant for text service
 export const MARGIN = 5;
+export const SIZE_STEP = 5;
 export const MIN_TEXT_TOOL_SIZE = 15;
 export const MAX_TEXT_TOOL_SIZE = 100;
 export const MOVE_DOWN = -1;

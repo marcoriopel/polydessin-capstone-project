@@ -17,7 +17,9 @@ hr {
     margin: 5px;
 }
 
-mat-checkbox {
+#style mat-checkbox {
+    display: flex;
+    flex-flow: column;
     align-items: flex-start;
 }
 
@@ -29,4 +31,25 @@ label {
     align-self: start;
     font-size: 15px;
     margin: 4px;
+}
+
+#sliderDetails {
+    padding-bottom: 10px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: 80%;
+    justify-content: space-between;
+}
+
+#sliderDetails input {
+    width: 30%;
+    line-height: 20px;
+}
+
+#sliderDetails button {
+    width: 26px;
+    line-height: 20px;
+    margin-left: 5px;
+    cursor: pointer;
 }

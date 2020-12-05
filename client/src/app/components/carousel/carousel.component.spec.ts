@@ -26,7 +26,7 @@ describe('CarouselComponent', () => {
     let resizeDrawingServiceSpy: SpyObj<ResizeDrawingService>;
     let databaseServiceSpy: SpyObj<DatabaseService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    let hotkeyServiceStub: HotkeyService;
+    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let dBDataObservable: Subject<DBData[]>;
     let keyboardEvent: KeyboardEvent;
@@ -39,7 +39,7 @@ describe('CarouselComponent', () => {
     beforeEach(async(() => {
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
-        hotkeyServiceStub = new HotkeyService();
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', []);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng', 'deleteDrawing']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'resetStack']);
@@ -58,7 +58,7 @@ describe('CarouselComponent', () => {
             imports: [HttpClientModule, MatDialogModule, RouterTestingModule, MatChipsModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceStub },
+                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },
@@ -80,7 +80,7 @@ describe('CarouselComponent', () => {
     });
 
     it('should call createText if is the tool text', () => {
-        hotkeyServiceStub.isTextTool = true;
+        hotkeyServiceSpy.isTextTool = true;
         component.ngOnInit();
         expect(textServiceSpy.createText).toHaveBeenCalled();
     });
