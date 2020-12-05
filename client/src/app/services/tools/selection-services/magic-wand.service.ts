@@ -19,6 +19,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { MagnetismService } from './magnetism.service';
+import { SelectionResizeService } from './selection-resize.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -54,8 +55,9 @@ export class MagicWandService extends SelectionService {
         public magnetismService: MagnetismService,
         public colorSelectionService: ColorSelectionService,
         public clipboardService: ClipboardService,
+        public selectionResizeService: SelectionResizeService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService);
     }
 
     initialize(): void {

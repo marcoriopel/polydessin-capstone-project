@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
+import { SelectionPoints, SELECTION_POINTS_NAMES } from '@app/classes/selection-points';
 import { Tool } from '@app/classes/tool';
 import { Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -17,6 +18,7 @@ import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MagnetismService } from '@app/services/tools/selection-services/magnetism.service';
+import { SelectionResizeService } from '@app/services/tools/selection-services/selection-resize.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
@@ -45,6 +47,16 @@ export class SelectionService extends Tool {
     alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
     currentAlignment: string = this.alignmentNames.ALIGN_TOP_LEFT_NAME;
     mouseDownCoord: Vec2 = { x: 0, y: 0 };
+    selectionPoints: SelectionPoints = {
+        TOP_Y: 0,
+        MIDDLE_Y: 0,
+        BOTTOM_Y: 0,
+        LEFT_X: 0,
+        MIDDLE_X: 0,
+        RIGHT_X: 0,
+    };
+    currentPoint: number = 0;
+    isResizing: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -52,6 +64,7 @@ export class SelectionService extends Tool {
         public rotateService: RotateService,
         public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
+        public selectionResizeService: SelectionResizeService,
     ) {
         super(drawingService);
         this.isSelectionEmptySubject.next(true);
@@ -75,6 +88,14 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.currentPoint = this.checkIfCursorIsOnSelectionPoint(this.getPositionFromMouse(event));
+        if (this.currentPoint) {
+            this.isResizing = true;
+            return;
+        } else {
+            this.isResizing = false;
+        }
+
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
@@ -104,6 +125,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
+        this.isResizing = false;
         if (this.isNewSelection) {
             // setUp underlying service
 
@@ -131,6 +153,16 @@ export class SelectionService extends Tool {
     }
 
     onMouseMove(event: MouseEvent): void {
+        const selectionPoint = this.checkIfCursorIsOnSelectionPoint(this.getPositionFromMouse(event));
+        if (selectionPoint) {
+            this.drawingService.gridCanvas.style.cursor = 'pointer';
+        } else {
+            this.setCursor();
+        }
+        if (this.isResizing) {
+            this.selectionResizeService.resizeSelection(this.currentPoint);
+        }
+
         if (this.isNewSelection) {
             const currentFillStyle = this.underlyingService.fillStyle;
             this.underlyingService.fillStyle = FILL_STYLES.BORDER;
@@ -336,27 +368,69 @@ export class SelectionService extends Tool {
     }
 
     setSelectionPoint(): void {
-        if (this.selection.height !== 0 && this.selection.width !== 0) {
-            const topY: number = this.selection.startingPoint.y - SELECTION_POINT_WIDTH / 2;
-            const middleY: number = this.selection.startingPoint.y + this.selection.height / 2 - SELECTION_POINT_WIDTH / 2;
-            const bottomY: number = this.selection.startingPoint.y + this.selection.height - SELECTION_POINT_WIDTH / 2;
-            const leftX: number = this.selection.startingPoint.x - SELECTION_POINT_WIDTH / 2;
-            const middleX: number = this.selection.startingPoint.x + this.selection.width / 2 - SELECTION_POINT_WIDTH / 2;
-            const rightX: number = this.selection.startingPoint.x + this.selection.width - SELECTION_POINT_WIDTH / 2;
-
-            this.drawingService.previewCtx.save();
-            this.rotateService.rotatePreviewCanvas();
-            this.drawingService.previewCtx.fillStyle = '#09acd9';
-            this.drawingService.previewCtx.fillRect(leftX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(middleX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(rightX, topY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(leftX, middleY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(rightX, middleY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(leftX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(middleX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.fillRect(rightX, bottomY, SELECTION_POINT_WIDTH, SELECTION_POINT_WIDTH);
-            this.drawingService.previewCtx.restore();
+        if (this.selection.height === 0 || this.selection.width === 0) {
+            return;
         }
+        const radius = Math.sqrt(this.selection.width * this.selection.width + this.selection.height * this.selection.height);
+        const selectionCenterX = this.selection.startingPoint.x + this.selection.width / 2;
+        const selectionCenterY = this.selection.startingPoint.y + this.selection.height / 2;
+        const selectionCenter: Vec2 = { x: selectionCenterX, y: selectionCenterY };
+        this.selectionPoints.TOP_Y = selectionCenter.y - radius / 2 - SELECTION_POINT_WIDTH / 2;
+        this.selectionPoints.MIDDLE_Y = selectionCenter.y - SELECTION_POINT_WIDTH / 2;
+        this.selectionPoints.BOTTOM_Y = selectionCenter.y + radius / 2 - SELECTION_POINT_WIDTH / 2;
+        this.selectionPoints.LEFT_X = selectionCenter.x - radius / 2 - SELECTION_POINT_WIDTH / 2;
+        this.selectionPoints.MIDDLE_X = selectionCenter.x - SELECTION_POINT_WIDTH / 2;
+        this.selectionPoints.RIGHT_X = selectionCenter.x + radius / 2 - SELECTION_POINT_WIDTH / 2;
+        this.drawingService.previewCtx.fillStyle = '#09acd9';
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.LEFT_X,
+            this.selectionPoints.TOP_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.MIDDLE_X,
+            this.selectionPoints.TOP_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.RIGHT_X,
+            this.selectionPoints.TOP_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.LEFT_X,
+            this.selectionPoints.MIDDLE_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.RIGHT_X,
+            this.selectionPoints.MIDDLE_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.LEFT_X,
+            this.selectionPoints.BOTTOM_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.MIDDLE_X,
+            this.selectionPoints.BOTTOM_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.fillRect(
+            this.selectionPoints.RIGHT_X,
+            this.selectionPoints.BOTTOM_Y,
+            SELECTION_POINT_WIDTH,
+            SELECTION_POINT_WIDTH,
+        );
+        this.drawingService.previewCtx.restore();
     }
 
     onWheelEvent(event: WheelEvent): void {
@@ -406,6 +480,62 @@ export class SelectionService extends Tool {
             this.moveService.isTransformationOver = false;
             this.strokeSelection();
             this.setSelectionPoint();
+        }
+    }
+
+    // tslint:disable-next-line: cyclomatic-complexity
+    checkIfCursorIsOnSelectionPoint(mouseCoordinates: Vec2): number {
+        if (this.selectionPoints.LEFT_X - 1 <= mouseCoordinates.x && mouseCoordinates.x <= this.selectionPoints.LEFT_X + SELECTION_POINT_WIDTH) {
+            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+                return SELECTION_POINTS_NAMES.TOP_LEFT;
+            } else if (
+                this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
+                mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
+            ) {
+                return SELECTION_POINTS_NAMES.MIDDLE_LEFT;
+            } else if (
+                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+            ) {
+                return SELECTION_POINTS_NAMES.BOTTOM_LEFT;
+            } else {
+                return SELECTION_POINTS_NAMES.NO_POINTS;
+            }
+        } else if (
+            this.selectionPoints.MIDDLE_X - 1 <= mouseCoordinates.x &&
+            mouseCoordinates.x <= this.selectionPoints.MIDDLE_X + SELECTION_POINT_WIDTH
+        ) {
+            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+                return SELECTION_POINTS_NAMES.TOP_MIDDLE;
+            } else if (
+                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+            ) {
+                return SELECTION_POINTS_NAMES.BOTTOM_MIDDLE;
+            } else {
+                return SELECTION_POINTS_NAMES.NO_POINTS;
+            }
+        } else if (
+            this.selectionPoints.RIGHT_X - 1 <= mouseCoordinates.x &&
+            mouseCoordinates.x <= this.selectionPoints.RIGHT_X + SELECTION_POINT_WIDTH
+        ) {
+            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+                return SELECTION_POINTS_NAMES.TOP_RIGHT;
+            } else if (
+                this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
+                mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
+            ) {
+                return SELECTION_POINTS_NAMES.MIDDLE_RIGHT;
+            } else if (
+                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+            ) {
+                return SELECTION_POINTS_NAMES.BOTTOM_RIGHT;
+            } else {
+                return SELECTION_POINTS_NAMES.NO_POINTS;
+            }
+        } else {
+            return SELECTION_POINTS_NAMES.NO_POINTS;
         }
     }
 

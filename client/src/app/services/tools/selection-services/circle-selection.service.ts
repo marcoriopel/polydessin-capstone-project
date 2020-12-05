@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -6,6 +7,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { MagnetismService } from './magnetism.service';
+import { SelectionResizeService } from './selection-resize.service';
 import { SelectionService } from './selection.service';
 
 @Injectable({
@@ -20,8 +22,9 @@ export class CircleSelectionService extends SelectionService {
         public rotateService: RotateService,
         public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
+        public selectionResizeService: SelectionResizeService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService);
         super.underlyingService = circleService;
     }
 
@@ -83,6 +86,17 @@ export class CircleSelectionService extends SelectionService {
                 this.selection.height,
             );
             this.drawingService.previewCtx.restore();
+            this.drawingService.previewCtx.stroke();
+
+            const radius = Math.sqrt(this.selection.width * this.selection.width + this.selection.height * this.selection.height);
+            const selectionCenterX = this.selection.startingPoint.x + this.selection.width / 2;
+            const selectionCenterY = this.selection.startingPoint.y + this.selection.height / 2;
+            const selectionCenter: Vec2 = { x: selectionCenterX, y: selectionCenterY };
+
+            // BOITE ENGLOBANTE ICI!
+            this.drawingService.previewCtx.strokeRect(selectionCenter.x - radius / 2, selectionCenter.y - radius / 2, radius, radius);
+            this.drawingService.previewCtx.beginPath();
+            this.drawingService.previewCtx.arc(selectionCenter.x, selectionCenter.y, radius / 2, 0, 2 * Math.PI);
             this.drawingService.previewCtx.stroke();
         }
     }
