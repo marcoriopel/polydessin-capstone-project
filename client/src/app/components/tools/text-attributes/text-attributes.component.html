@@ -1,7 +1,7 @@
 <div id="textAttributes">
     <h2 class="toolName">{{ textService.name }}</h2>
     <hr />
-    <label>Police</label>
+    <p>Police</p>
     <mat-form-field appearance="fill">
         <mat-select (selectionChange)="this.changeFont($event.value)" [value]="fontStyle.GEORGIA">
             <mat-option [value]="fontStyle.GEORGIA">Georgia</mat-option>
@@ -12,22 +12,32 @@
         </mat-select>
     </mat-form-field>
     <hr />
-    <label>Taille</label>
+    <p>Taille</p>
     <div id="sizeDetail">
-        <input type="text" [(value)]="textSize" readonly />
+        <input
+            #textSizeInput
+            type="text"
+            [(value)]="textSize"
+            (change)="changeSize($event.target.value)"
+            [min]="textService.minSize"
+            [max]="textService.maxSize"
+            (keydown)="onKeyDown($event)"
+            (focus)="onFocus()"
+            (focusout)="onFocusOut()"
+        />
         <div>
             <button (click)="decrementSize()">-</button>
             <button (click)="incrementSize()">+</button>
         </div>
     </div>
     <hr />
-    <label>Style</label>
+    <p>Style</p>
     <div id="style">
         <mat-checkbox #italic (change)="this.changeItalic(italic.checked)">Italique</mat-checkbox>
         <mat-checkbox #gras (change)="this.changeBoldText(gras.checked)">Gras</mat-checkbox>
     </div>
     <hr />
-    <label>Alignement</label>
+    <p>Alignement</p>
     <mat-button-toggle-group #group="matButtonToggleGroup">
         <mat-button-toggle value="start" (change)="this.changeAlignment($event.value)" checked>
             <mat-icon>format_align_left</mat-icon>

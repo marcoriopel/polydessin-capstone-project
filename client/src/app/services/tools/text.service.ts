@@ -30,6 +30,7 @@ export class TextService extends Tool {
     isFrontDelete: boolean = false;
     maxLine: string;
     numberOfLine: number = 0;
+    isWritingEnable: boolean = true;
 
     constructor(drawingService: DrawingService, public hotkeyService: HotkeyService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -91,7 +92,7 @@ export class TextService extends Tool {
     }
 
     onKeyDown(event: KeyboardEvent): void {
-        if (!this.isNewText) return;
+        if (!this.isNewText || !this.isWritingEnable) return;
         switch (event.key) {
             case 'Backspace':
                 this.isFrontDelete = false;
@@ -103,14 +104,11 @@ export class TextService extends Tool {
                 this.deleteText(this.indexIndicator + 1);
                 break;
             case ARROW_KEYS.LEFT:
-                if (this.indexIndicator > 0) {
-                    this.moveIndicator(MOVE_DOWN);
-                }
+                this.moveIndicator(MOVE_DOWN);
                 break;
             case ARROW_KEYS.RIGHT:
-                if (this.indexIndicator + 1 < this.text.length) {
-                    this.moveIndicator(1);
-                }
+                this.moveIndicator(1);
+
                 break;
             case ARROW_KEYS.UP:
                 if (!this.isInFirstLine()) {
@@ -309,6 +307,8 @@ export class TextService extends Tool {
     }
 
     moveIndicator(interval: number): void {
+        if (interval < 0 && this.indexIndicator <= 0) return;
+        else if (interval > 0 && this.indexIndicator + 1 >= this.text.length) return;
         this.removeIndicator();
         this.indexIndicator = this.indexIndicator + interval;
         this.insertItemInText('|');

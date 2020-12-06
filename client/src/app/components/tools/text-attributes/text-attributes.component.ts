@@ -1,6 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { SIZE_STEP } from '@app/ressources/global-variables/global-variables';
 import { FONTS, Fonts } from '@app/ressources/global-variables/text';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from '@app/services/tools/text.service';
 
 @Component({
@@ -9,6 +10,7 @@ import { TextService } from '@app/services/tools/text.service';
     styleUrls: ['./text-attributes.component.scss'],
 })
 export class TextComponent implements OnDestroy {
+    @ViewChild('textSizeInput', { read: ElementRef }) textSizeInput: ElementRef;
     textSize: number;
     fontStyle: Fonts = {
         GEORGIA: FONTS.GEORGIA,
@@ -17,7 +19,7 @@ export class TextComponent implements OnDestroy {
         VERDANA: FONTS.VERDANA,
         COURIER_NEW: FONTS.COURIER_NEW,
     };
-    constructor(public textService: TextService) {
+    constructor(public textService: TextService, public hotkeyService: HotkeyService) {
         this.textSize = this.textService.size;
     }
 
@@ -39,6 +41,7 @@ export class TextComponent implements OnDestroy {
     }
 
     changeSize(size: number): void {
+        size = Number(size);
         this.textSize = size;
         this.textService.size = size;
         this.textService.applyTextStyle();
@@ -69,5 +72,21 @@ export class TextComponent implements OnDestroy {
 
     ngOnDestroy(): void {
         this.textService.createText();
+    }
+
+    onFocus(): void {
+        this.hotkeyService.isHotkeyEnabled = false;
+        this.textService.isWritingEnable = false;
+    }
+
+    onFocusOut(): void {
+        this.textService.isWritingEnable = true;
+    }
+
+    onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter') {
+            this.textSizeInput.nativeElement.blur();
+            event.stopPropagation();
+        }
     }
 }
