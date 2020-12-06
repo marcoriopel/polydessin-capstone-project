@@ -26,7 +26,13 @@ export const GENERALS_FEATURE: Feature[] = [
     {
         name: 'Exportation',
         description:
-            "Cette fonctionnalité permet d'exporter localement le dessin en format PNG ou JPG. Elle permet aussi d'appliquer un filtre sur l'image avant de l'exporter. Il faut nommer l'image pour pouvoir l'exporter ",
+            "Cette fonctionnalité permet d'exporter le dessin localement ou par courriel en format PNG ou JPG. Elle permet aussi d'appliquer un filtre sur l'image avant de l'exporter. Il faut nommer l'image pour pouvoir l'exporter ",
+        picture: './../../../assets/img/exporter.PNG',
+    },
+    {
+        name: 'Sauvegarde autom',
+        description:
+            "Cette fonctionnalité permet de sauvegarder le dessin automatiquement pendant son édition. La sauvegarde est déclenchée après la création d'un dessin, le chargement d'un dessin ou lors d'une modification sur la surface de dessin.",
         picture: './../../../assets/img/exporter.PNG',
     },
 ];

@@ -11,6 +11,17 @@ export const OTHER_FEATURES: Feature[] = [
             'Cet outil permet de définir la couleur de tous les outils. Vous pouvez définir deux couleurs : principale et secondaire. Ces deux couleurs peuvent intéragir entre eux. Vous pouvez choisir la couleur avec le panneau de couleur contenant toutes les couleurs. En changeant de couleur, l ancienne couleur est enregistré pour vous permettre de la récupérer au besoin. ',
         picture: './../../../assets/img/couleur.PNG',
     },
+    {
+        name: 'Magnétisme',
+        description: 'Cette option permet ',
+        picture: './../../../assets/img/couleur.PNG',
+    },
+    {
+        name: 'Grille',
+        description:
+            "Cette fonctionnalité permet d'afficher une grille sur la surface de dessin. Il est possible d'activer et de désactiver la grille, de lui assigner une valeur d'opacité et d'indiquer la taille des carrées. Il est possible de modifier la taille des carrées avec les touches + et -",
+        picture: './../../../assets/img/couleur.PNG',
+    },
 ];
 
 export const UNDO_REDO: Feature[] = [
