@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
-import { DEGREES_180, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
+import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Subject } from 'rxjs';
 import { PenService } from './pen.service';
@@ -305,7 +305,7 @@ describe('PenService', () => {
         } as WheelEvent;
         service.altKeyPressed = false;
         service.angle = 0;
-        const newAngle = service.angle + ROTATION_STEP;
+        const newAngle = service.angle - ROTATION_STEP;
 
         service.onWheelEvent(wheelEvent);
 
@@ -319,7 +319,7 @@ describe('PenService', () => {
         } as WheelEvent;
         service.altKeyPressed = true;
         service.angle = 0;
-        const newAngle = service.angle + 1;
+        const newAngle = service.angle - 1;
 
         service.onWheelEvent(wheelEvent);
 
@@ -402,7 +402,7 @@ describe('PenService', () => {
 
     it(' toRadians should return radian value of angle', () => {
         const angle = 15;
-        const angleRad = angle * (Math.PI / DEGREES_180);
+        const angleRad = angle * (Math.PI / ANGLE_HALF_TURN);
 
         expect(service.toRadians(angle)).toEqual(angleRad);
     });
