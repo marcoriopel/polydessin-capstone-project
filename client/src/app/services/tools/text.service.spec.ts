@@ -167,15 +167,6 @@ describe('TextService', () => {
         expect(moveIndicatorSpy).toHaveBeenCalledWith(-1);
     });
 
-    it('Should call not moveIndicator when key is arrow left', () => {
-        service.isNewText = true;
-        service.indexIndicator = 0;
-        const moveIndicatorSpy = spyOn(service, 'moveIndicator');
-        keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.LEFT });
-        service.onKeyDown(keyboardEvent);
-        expect(moveIndicatorSpy).not.toHaveBeenCalledWith(-1);
-    });
-
     it('Should call moveIndicator when key is arrow rigth', () => {
         service.isNewText = true;
         service.indexIndicator = 4;
@@ -184,16 +175,6 @@ describe('TextService', () => {
         keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.RIGHT });
         service.onKeyDown(keyboardEvent);
         expect(moveIndicatorSpy).toHaveBeenCalledWith(1);
-    });
-
-    it('Should call not moveIndicator when key is arrow rigth', () => {
-        service.isNewText = true;
-        service.indexIndicator = 6;
-        service.text = ['a', 'b', 'c', 'd', 'e', 'f'];
-        const moveIndicatorSpy = spyOn(service, 'moveIndicator');
-        keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.RIGHT });
-        service.onKeyDown(keyboardEvent);
-        expect(moveIndicatorSpy).not.toHaveBeenCalledWith(1);
     });
 
     it('Should call moveIndicatorUpAndDown when key is arrow up', () => {
@@ -468,6 +449,7 @@ describe('TextService', () => {
     });
 
     it('moveIndicator should call removeIndicator and insertItemInText', () => {
+        service.text = ['a', 'b', 'c'];
         service.indexIndicator = 1;
         const removeIndicatorSpy = spyOn(service, 'removeIndicator');
         const insertLetterSpy = spyOn(service, 'insertItemInText');
@@ -475,6 +457,21 @@ describe('TextService', () => {
         expect(removeIndicatorSpy).toHaveBeenCalled();
         expect(insertLetterSpy).toHaveBeenCalled();
         expect(service.indexIndicator).toEqual(2);
+    });
+
+    it('moveIndicator should call removeIndicator and insertItemInText', () => {
+        service.text = ['a', 'b', 'c'];
+        service.indexIndicator = 3;
+        const removeIndicatorSpy = spyOn(service, 'removeIndicator');
+        service.moveIndicator(1);
+        expect(removeIndicatorSpy).not.toHaveBeenCalled();
+    });
+
+    it('moveIndicator should call removeIndicator and insertItemInText', () => {
+        service.indexIndicator = 0;
+        const removeIndicatorSpy = spyOn(service, 'removeIndicator');
+        service.moveIndicator(-1);
+        expect(removeIndicatorSpy).not.toHaveBeenCalled();
     });
 
     it('applyFont should change attribute of previewCtx and call printText', () => {
