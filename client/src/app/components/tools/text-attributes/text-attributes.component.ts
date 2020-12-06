@@ -19,6 +19,8 @@ export class TextComponent implements OnDestroy {
         VERDANA: FONTS.VERDANA,
         COURIER_NEW: FONTS.COURIER_NEW,
     };
+    maxTextSize: number = MAX_TEXT_TOOL_SIZE;
+    minTextSize: number = MIN_TEXT_TOOL_SIZE;
 
     constructor(public textService: TextService, public hotkeyService: HotkeyService) {
         this.textSize = this.textService.textSize;
