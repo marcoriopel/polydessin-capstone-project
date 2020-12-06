@@ -48,7 +48,7 @@ describe('Service: Hotkey', () => {
     });
 
     it('should  not change toolName on a keyboard event if the key is not part of the shortcut keys', () => {
-        keyboardEvent = new KeyboardEvent('keydown', { key: 'v' });
+        keyboardEvent = new KeyboardEvent('keydown', { key: '.' });
         const eventSpy = spyOn(service.toolName, 'next');
         service.onKeyDown(keyboardEvent);
         expect(eventSpy).not.toHaveBeenCalled();

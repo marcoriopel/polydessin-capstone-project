@@ -1,5 +1,5 @@
-<div id="squareselectionAttributes">
-    <h2 class="toolName">{{ squareSelectionService.name }}</h2>
+<div id="magicWand">
+    <h2 class="toolName">{{ magicWandService.name }}</h2>
     <hr />
 </div>
 <mat-checkbox (change)="enableGridMagnetism($event.checked)" [checked]="isMagnetismEnabled">Magnétisme activé</mat-checkbox>
@@ -61,14 +61,14 @@
         />
         <input
             type="radio"
-            class="alignment"
+            class="alignment btn btn-default col-md-4"
             [value]="this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME"
             [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_BOTTOM_CENTER_NAME)"
             (change)="onAlignmentChange($event)"
         />
         <input
             type="radio"
-            class="alignment"
+            class="alignment btn btn-default col-md-4"
             [value]="this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME"
             [checked]="currentAlignment.includes(this.alignmentNames.ALIGN_BOTTOM_RIGHT_NAME)"
             (change)="onAlignmentChange($event)"

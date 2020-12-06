@@ -8,12 +8,12 @@ import { SprayService } from '@app/services/tools/spray.service';
 })
 export class SprayAttributesComponent {
     toolWidth: number;
-    dropWidth: number;
+    dotWidth: number;
     sprayFrequency: number;
 
     constructor(public sprayService: SprayService) {
         this.toolWidth = sprayService.width;
-        this.dropWidth = sprayService.dotWidth;
+        this.dotWidth = sprayService.dotWidth;
         this.sprayFrequency = sprayService.sprayFrequency;
     }
 
@@ -23,8 +23,8 @@ export class SprayAttributesComponent {
     }
 
     changeDotWidth(newWidth: number): void {
-        this.dropWidth = newWidth;
-        this.sprayService.changeDotWidth(this.dropWidth);
+        this.dotWidth = newWidth;
+        this.sprayService.changeDotWidth(this.dotWidth);
     }
 
     changeSprayFrequency(newSprayFrequency: number): void {
