@@ -55,7 +55,6 @@ describe('TextService', () => {
         colorPickerStub.primaryColor = '#ffffff';
         const text = ['|'];
         service.initializeNewText();
-        expect(service.color).toEqual(colorPickerStub.primaryColor);
         expect(service.text).toEqual(text);
         expect(service.isNewText).toEqual(true);
         expect(applyTextStyleSpy).toHaveBeenCalled();
@@ -90,7 +89,6 @@ describe('TextService', () => {
         service.text = [];
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberOfLine = 1;
         service.text = [];
         const mouseEvent = {
             offsetX: 1,
@@ -104,7 +102,6 @@ describe('TextService', () => {
     it('Should return true when the mousePosition on the text', () => {
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberOfLine = 1;
         service.text = ['a', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'];
         const mousePosition: Vec2 = { x: 2, y: 1 };
         expect(service.isMouseOnText(mousePosition)).toEqual(true);
@@ -113,7 +110,6 @@ describe('TextService', () => {
     it('Should return false when the mousePosition not on the text', () => {
         service.maxLine = 'allo World';
         service.height = 2;
-        service.numberOfLine = 1;
         service.text = ['a', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'];
         const mousePosition: Vec2 = { x: 2, y: 25 };
         expect(service.isMouseOnText(mousePosition)).toEqual(false);
@@ -132,10 +128,9 @@ describe('TextService', () => {
     });
 
     it('onMouseEnter should change color', () => {
-        service.color = '#000000';
-        colorPickerStub.primaryColor = '#ffffff';
+        const applyTextStyleSpy = spyOn(service, 'applyTextStyle');
         service.onMouseEnter();
-        expect(service.color).toEqual(colorPickerStub.primaryColor);
+        expect(applyTextStyleSpy).toHaveBeenCalled();
     });
 
     it('Should call deleteText when key is delete', () => {
@@ -187,14 +182,11 @@ describe('TextService', () => {
         expect(moveIndicatorUpAndDownSpy).toHaveBeenCalledWith('UP');
     });
 
-    it('Should not call moveIndicatorUpAndDown when is in first line', () => {
-        service.isNewText = true;
+    it('Should not move indexIndicator if moveIndicatorUpAndDown is called with UP and isInFirstLine is true', () => {
         service.indexIndicator = 1;
         service.text = ['a', 'b', 'c', 'd', 'Enter', 'e', 'f'];
-        const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
-        keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.UP });
-        service.onKeyDown(keyboardEvent);
-        expect(moveIndicatorUpAndDownSpy).not.toHaveBeenCalledWith('UP');
+        service.moveIndicatorUpAndDown('UP');
+        expect(service.indexIndicator).toEqual(1);
     });
 
     it('Should call moveIndicatorUpAndDown when key is arrow down', () => {
@@ -207,14 +199,12 @@ describe('TextService', () => {
         expect(moveIndicatorUpAndDownSpy).toHaveBeenCalledWith('DOWN');
     });
 
-    it('Should not call moveIndicatorUpAndDown when is in last line', () => {
+    it('Should not move indexIndicator if moveIndicatorUpAndDown is called with DOWN and isInLastLine is true', () => {
         service.isNewText = true;
         service.indexIndicator = 4;
         service.text = ['a', 'Enter', 'b', 'c', 'd', 'e', 'f'];
-        const moveIndicatorUpAndDownSpy = spyOn(service, 'moveIndicatorUpAndDown');
-        keyboardEvent = new KeyboardEvent('keydown', { key: ARROW_KEYS.DOWN });
-        service.onKeyDown(keyboardEvent);
-        expect(moveIndicatorUpAndDownSpy).not.toHaveBeenCalledWith('DOWN');
+        service.moveIndicatorUpAndDown('DOWN');
+        expect(service.indexIndicator).toEqual(4);
     });
 
     it('Should call preventDefault when key is Alt', () => {
@@ -388,7 +378,6 @@ describe('TextService', () => {
         service.printText();
         expect(fillTextSpy).toHaveBeenCalled();
         expect(service.maxLine).toEqual(maxLine);
-        expect(service.numberOfLine).toEqual(2);
     });
 
     it('printText should call printCursor when the cursor is in the line', () => {
@@ -403,7 +392,6 @@ describe('TextService', () => {
         const maxLine = 'efg';
         service.printText();
         expect(service.maxLine).toEqual(maxLine);
-        expect(service.numberOfLine).toEqual(3);
     });
 
     it('printText should call fillText and calculateWidth when align is start', () => {
@@ -474,11 +462,11 @@ describe('TextService', () => {
         expect(removeIndicatorSpy).not.toHaveBeenCalled();
     });
 
-    it('applyFont should change attribute of previewCtx and call printText', () => {
-        service.color = '#ffffff';
+    it('applyTextStyle should change attribute of previewCtx and call printText', () => {
+        service.colorSelectionService.primaryColor = '#ffffff';
         service.align = 'center';
         service.font = 'Arial';
-        service.size = 40;
+        service.textSize = 40;
         service.italicText = 'italic';
         service.boldText = 'normal';
         const font = 'italic 40px Arial';

@@ -36,7 +36,7 @@ describe('TexteComponent', () => {
     it('changeSize should change size and call applyTextStyle', () => {
         component.changeSize(45);
         expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
-        expect(textServiceSpy.size).toEqual(45);
+        expect(textServiceSpy.textSize).toEqual(45);
     });
 
     it('changeItalic should change style to italic when true and call applyTextStyle', () => {
