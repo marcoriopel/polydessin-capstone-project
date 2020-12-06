@@ -131,5 +131,6 @@ export class FillService extends Tool {
             type: 'fill',
             imageData: this.canvasData,
         };
+        this.drawingService.autoSave();
     }
 }

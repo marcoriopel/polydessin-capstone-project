@@ -14,7 +14,6 @@ export class MainPageComponent {
     isContinueDrawingEnable: boolean = this.printButton();
 
     constructor(public dialog: MatDialog, public continueDrawingService: ContinueDrawingService) {}
-
     openUserguide(): void {
         this.dialog.open(UserGuideComponent);
     }

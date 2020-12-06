@@ -55,6 +55,7 @@ export class BrushService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        this.drawingService.autoSave();
     }
 
     onMouseLeave(): void {

@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { ExportComponent } from './export.component';
 
 import SpyObj = jasmine.SpyObj;
@@ -16,11 +17,15 @@ describe('ExportComponent', () => {
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     let httpClientSpy: HttpClient;
+    let serverResponseServiceSpy: SpyObj<ServerResponseService>;
+    let matDialogSpy: SpyObj<MatDialog>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
+        serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['sendMailConfirmSnackBar', 'sendMailErrorSnackBar']);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule],
@@ -30,6 +35,8 @@ describe('ExportComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceStub },
                 { provide: MatDialogRef, useValue: dialogSpy },
                 { provide: HttpClient, useValue: httpClientSpy },
+                { provide: ServerResponseService, useValue: serverResponseServiceSpy },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));

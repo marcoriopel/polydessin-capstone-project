@@ -21,16 +21,6 @@ import { takeUntil } from 'rxjs/operators';
     styleUrls: ['./carousel.component.scss'],
 })
 export class CarouselComponent implements OnInit, OnDestroy {
-    constructor(
-        public router: Router,
-        public hotkeyService: HotkeyService,
-        public serverResponseService: ServerResponseService,
-        public databaseService: DatabaseService,
-        public dialog: MatDialog,
-        public drawingService: DrawingService,
-        public resizeDrawingService: ResizeDrawingService,
-        public continueDrawingService: ContinueDrawingService,
-    ) {}
     destroy$: Subject<boolean> = new Subject<boolean>();
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
@@ -49,6 +39,16 @@ export class CarouselComponent implements OnInit, OnDestroy {
     tags: string[] = [];
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
+    constructor(
+        public router: Router,
+        public hotkeyService: HotkeyService,
+        public serverResponseService: ServerResponseService,
+        public databaseService: DatabaseService,
+        public dialog: MatDialog,
+        public drawingService: DrawingService,
+        public resizeDrawingService: ResizeDrawingService,
+        public continueDrawingService: ContinueDrawingService,
+    ) {}
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
 

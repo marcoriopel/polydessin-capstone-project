@@ -35,7 +35,6 @@ class DrawingServiceMock {
     initializeBaseCanvas(): void {}
     clearCanvas(): void {}
     drawFill(): void {}
-    autoSave(): void {}
     checkedDrawing(): boolean {
         return false;
     }
@@ -65,6 +64,7 @@ class DrawingServiceMock {
     }
     resetStack(): void {}
     applyPreview(): void {}
+    autoSave(): void {}
 }
 
 // tslint:disable: no-magic-numbers
@@ -90,6 +90,7 @@ describe('ResizeDrawingService', () => {
             'initializeBaseCanvas',
             'getPreviewData',
             'getCanvasData',
+            'autoSave',
         ]);
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;

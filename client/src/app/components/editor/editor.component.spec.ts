@@ -1,8 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -37,7 +35,6 @@ describe('EditorComponent', () => {
         ]);
         toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
-
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         obs = new Subject<string>();
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
@@ -45,7 +42,7 @@ describe('EditorComponent', () => {
         TestBed.configureTestingModule({
             imports: [MatDialogModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [EditorComponent, DrawingComponent, SidebarComponent],
+            declarations: [EditorComponent],
             providers: [
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },

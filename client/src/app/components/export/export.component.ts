@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 
 @Component({
     selector: 'app-export',
@@ -25,21 +26,24 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
-    emailAdress: string = '';
     imagesrc: string = '';
     urlImage: string = '';
     urlExtension: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
-    emailAddress: string;
+    emailAddress: string = '';
     userForm: FormGroup;
+    isSendMailButtonDisabled: boolean = false;
+    isExportButtonDisabled: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
         public hotkeyService: HotkeyService,
         private dialogRef: MatDialogRef<ExportComponent>,
         private httpClient: HttpClient,
+        public serverResponseService: ServerResponseService,
+        public dialog: MatDialog,
     ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
@@ -87,9 +91,11 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     exportLocally(): void {
+        this.isExportButtonDisabled = true;
         if (this.name !== '' && this.name.length <= MAX_NAME_LENGTH) {
             this.link.href = this.urlImage;
             this.link.setAttribute('download', this.name);
+            this.isExportButtonDisabled = false;
             this.link.click();
             this.dialogRef.close();
         }
@@ -104,8 +110,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
-        console.log("voici l'email ");
-        console.log(this.emailAddress);
+        this.isSendMailButtonDisabled = true;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
@@ -118,16 +123,18 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             .post(url, body)
             .toPromise()
             // tslint:disable-next-line: no-empty
-            .then(() => {})
-            .catch((E: Error) => {
-                throw E;
+            .then(() => {
+                this.isSendMailButtonDisabled = false;
+                this.serverResponseService.sendMailConfirmSnackBar();
+                this.dialog.closeAll();
+            })
+            .catch((error) => {
+                this.isSendMailButtonDisabled = false;
+                this.serverResponseService.sendMailErrorSnackBar(error.error);
+                this.dialog.closeAll();
+                throw error;
             });
         this.link.click();
         this.dialogRef.close();
-    }
-
-    // tslint:disable-next-line: no-any
-    changeEmail(email: any): void {
-        this.emailAddress = email.target.value;
     }
 }

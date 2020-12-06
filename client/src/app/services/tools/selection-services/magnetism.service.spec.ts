@@ -8,11 +8,11 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
 import { MagnetismService } from './magnetism.service';
 
 // tslint:disable: no-magic-numbers
+
 describe('MagnetismService', () => {
     let service: MagnetismService;
     let selection: SelectionBox;
     let moveServiceSpy: jasmine.SpyObj<MoveService>;
-
     beforeEach(() => {
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseMove']);
 

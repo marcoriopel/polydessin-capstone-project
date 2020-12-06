@@ -31,7 +31,7 @@ describe('DrawingComponent', () => {
             'currentToolMouseLeave',
             'currentToolMouseEnter',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey', 'autoSave']);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],

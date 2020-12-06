@@ -75,6 +75,7 @@ export class SquareService extends Tool {
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
             this.drawingService.setIsToolInUse(false);
+            this.drawingService.autoSave();
         }
     }
 
