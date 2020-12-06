@@ -95,3 +95,9 @@ export enum MouseButton {
     BACK = 3,
     FORWARD = 4,
 }
+
+export enum SelectionType {
+    SQUARE = 0,
+    CIRCLE = 1,
+    WAND = 2,
+}
