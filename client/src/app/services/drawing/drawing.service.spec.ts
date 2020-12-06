@@ -1,3 +1,4 @@
+import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -9,6 +10,8 @@ describe('DrawingService', () => {
     let service: DrawingService;
     const WIDTH = 100;
     const HEIGHT = 100;
+    let injector: jasmine.SpyObj<Injector>;
+    let continueDrawingServiceSpy: jasmine.SpyObj<ContinueDrawingService>;
 
     beforeEach(() => {
         const canvas = document.createElement('canvas');
@@ -19,12 +22,16 @@ describe('DrawingService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        const drawServiceSpy = jasmine.createSpyObj('DrawingService', ['initializeBaseCanvas']);
-
+        continueDrawingServiceSpy = jasmine.createSpyObj('ContinueDrawingService', ['furtherDrawing']);
+        injector = jasmine.createSpyObj('injector', ['get']);
+        // tslint:disable-next-line: deprecation
+        injector.get.and.returnValue(continueDrawingServiceSpy);
         TestBed.configureTestingModule({
-            providers: [{ provide: ContinueDrawingService, useValue: {} }],
+            providers: [],
         });
         service = TestBed.inject(DrawingService);
+        // tslint:disable-next-line: no-string-literal
+        service['injector'] = injector;
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;

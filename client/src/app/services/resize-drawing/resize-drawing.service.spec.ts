@@ -249,6 +249,8 @@ describe('ResizeDrawingService', () => {
         } as unknown) as MouseEvent;
         service.mouseDown = true;
         service.mouseDownCoord = { x: 400, y: 400 };
+        // tslint:disable-next-line: no-any
+        spyOn(service as any, 'horizontalResize').and.stub();
         service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
@@ -307,7 +309,13 @@ describe('ResizeDrawingService', () => {
 
     it('should restore canvas', () => {
         const imageDataSpy = spyOn(drawingService.baseCtx, 'putImageData');
-        const expectedData = { type: {} as string, canvasSize: { x: 500, y: 500 }, imageData: {} as ImageData };
+        // tslint:disable-next-line: no-string-literal
+        service['drawingService'] = drawingService;
+        const expectedData: Resize = {
+            type: 'bocar',
+            canvasSize: { x: 500, y: 500 },
+            imageData: drawingService.baseCtx.getImageData(0, 0, 200, 300),
+        };
         service.restoreCanvas(expectedData);
         expect(service.previewSize).toEqual(expectedData.canvasSize);
         expect(imageDataSpy).toHaveBeenCalled();
