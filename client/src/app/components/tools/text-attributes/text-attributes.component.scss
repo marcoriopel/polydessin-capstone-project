@@ -17,10 +17,16 @@ hr {
     margin: 5px;
 }
 
+#style {
+    margin: 5px;
+}
+
 #style mat-checkbox {
     display: flex;
     flex-flow: column;
     align-items: flex-start;
+    margin: 2px;
+    font-size: medium;
 }
 
 mat-form-field {
@@ -28,12 +34,14 @@ mat-form-field {
 }
 
 label {
-    align-self: start;
+    align-self: center;
     font-size: 15px;
-    margin: 4px;
+    margin: 6px;
+    font-weight: 400;
+    text-decoration: underline;
 }
 
-#sliderDetails {
+#sizeDetail {
     padding-bottom: 10px;
     display: flex;
     flex-flow: row nowrap;
@@ -42,14 +50,27 @@ label {
     justify-content: space-between;
 }
 
-#sliderDetails input {
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #cfcfcf;
+    width: 90%;
+    margin: 0;
+}
+
+#sizeDetail input {
     width: 30%;
     line-height: 20px;
 }
 
-#sliderDetails button {
+#sizeDetail button {
     width: 26px;
     line-height: 20px;
     margin-left: 5px;
     cursor: pointer;
+}
+
+mat-button-toggle-group {
+    margin: 10px;
 }
