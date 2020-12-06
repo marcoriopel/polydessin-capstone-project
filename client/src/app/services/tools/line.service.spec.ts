@@ -31,7 +31,7 @@ describe('LineService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -296,7 +296,6 @@ describe('LineService', () => {
         service.mouseClicks.push(click1);
 
         service.onMouseUp(mouseEvent);
-
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
@@ -311,6 +310,7 @@ describe('LineService', () => {
 
         expect(drawDotsSpy).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should set isShiftDoubleClick to true when double clicking with shift down', () => {
@@ -343,6 +343,7 @@ describe('LineService', () => {
 
         expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.storedLines[0].endingPoint);
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should change mouse event attribute', () => {

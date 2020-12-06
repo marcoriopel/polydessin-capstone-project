@@ -39,7 +39,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
     tags: string[] = [];
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
-
     constructor(
         public router: Router,
         public hotkeyService: HotkeyService,

@@ -2,10 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
 import { ExportComponent } from './export.component';
 
@@ -20,11 +21,15 @@ describe('ExportComponent', () => {
     let httpClientSpy: HttpClient;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let textServiceSpy: SpyObj<TextService>;
+    let serverResponseServiceSpy: SpyObj<ServerResponseService>;
+    let matDialogSpy: SpyObj<MatDialog>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
+        serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['sendMailConfirmSnackBar', 'sendMailErrorSnackBar']);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
@@ -38,6 +43,8 @@ describe('ExportComponent', () => {
                 { provide: HttpClient, useValue: httpClientSpy },
                 { provide: TextService, useValue: textServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: ServerResponseService, useValue: serverResponseServiceSpy },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
     }));
