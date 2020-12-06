@@ -59,6 +59,7 @@ export class SprayService extends Tool {
             this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {

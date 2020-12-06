@@ -26,7 +26,7 @@ describe('PenService', () => {
         canvas.height = HEIGHT;
 
         angleObservableSpy = jasmine.createSpyObj('Subject<number>', ['next']);
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas', 'autoSave']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
         previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -164,6 +164,7 @@ describe('PenService', () => {
         service.onMouseUp({} as MouseEvent);
 
         expect(service.mouseDown).toBe(false);
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' mouseUp should call applyPreview if mouseDown is true', () => {
@@ -171,6 +172,7 @@ describe('PenService', () => {
         service.onMouseUp({} as MouseEvent);
 
         expect(service['drawingService'].applyPreview).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' mouseUp should call clearCanvas if mouseDown is true', () => {
@@ -178,6 +180,7 @@ describe('PenService', () => {
         service.onMouseUp({} as MouseEvent);
 
         expect(service['drawingService'].clearCanvas).toHaveBeenCalledWith(service['drawingService'].previewCtx);
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' mouseUp should call setIsToolInUse if mouseDown is true', () => {
@@ -185,6 +188,7 @@ describe('PenService', () => {
         service.onMouseUp({} as MouseEvent);
 
         expect(service['drawingService'].setIsToolInUse).toHaveBeenCalledWith(false);
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' mouseUp should not call setIsToolInUse if mouseDown is false', () => {
@@ -194,6 +198,7 @@ describe('PenService', () => {
         expect(service['drawingService'].applyPreview).not.toHaveBeenCalled();
         expect(service['drawingService'].clearCanvas).not.toHaveBeenCalled();
         expect(service['drawingService'].setIsToolInUse).not.toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' mouseMove should not call drawPenStroke if mouseDown is false', () => {

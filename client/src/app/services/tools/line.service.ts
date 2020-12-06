@@ -106,6 +106,7 @@ export class LineService extends Tool {
             return;
         }
         this.drawSegment();
+        this.drawingService.autoSave();
     }
 
     drawSegment(): void {

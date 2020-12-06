@@ -8,6 +8,7 @@ import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
 import { MetaData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -34,11 +35,15 @@ export class SavingComponent implements OnInit, OnDestroy {
         public databaseService: DatabaseService,
         public drawingService: DrawingService,
         public dialog: MatDialog,
+        public textService: TextService,
     ) {}
     @ViewChild('chipList') chipList: MatChipList;
     @ViewChild('tag') tagInput: ElementRef;
 
     ngOnInit(): void {
+        if (this.textService.isNewText) {
+            this.textService.createText();
+        }
         this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),

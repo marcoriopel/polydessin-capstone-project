@@ -102,6 +102,7 @@ export class PolygoneService extends Tool {
             this.circleWidth = 0;
             this.circleHeight = 0;
         }
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
