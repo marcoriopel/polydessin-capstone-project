@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { SIZE_STEP } from '@app/ressources/global-variables/global-variables';
+import { MAX_TEXT_TOOL_SIZE, MIN_TEXT_TOOL_SIZE } from '@app/ressources/global-variables/global-variables';
 import { FONTS, Fonts } from '@app/ressources/global-variables/text';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -19,8 +19,9 @@ export class TextComponent implements OnDestroy {
         VERDANA: FONTS.VERDANA,
         COURIER_NEW: FONTS.COURIER_NEW,
     };
+
     constructor(public textService: TextService, public hotkeyService: HotkeyService) {
-        this.textSize = this.textService.size;
+        this.textSize = this.textService.textSize;
     }
 
     changeFont(font: string): void {
@@ -28,23 +29,15 @@ export class TextComponent implements OnDestroy {
         this.textService.applyTextStyle();
     }
 
-    decrementSize(): void {
-        if (this.textSize > this.textService.minSize) {
-            this.changeSize(this.textSize - SIZE_STEP);
-        }
-    }
-
-    incrementSize(): void {
-        if (this.textSize < this.textService.maxSize) {
-            this.changeSize(this.textSize + SIZE_STEP);
-        }
-    }
-
     changeSize(size: number): void {
         size = Number(size);
-        this.textSize = size;
-        this.textService.size = size;
-        this.textService.applyTextStyle();
+        if (isNaN(size) || size < MIN_TEXT_TOOL_SIZE || size > MAX_TEXT_TOOL_SIZE || size.toString() === '') {
+            alert('La taille du texte doit être un nombre entre 10 et 100.');
+        } else {
+            this.textSize = size;
+            this.textService.textSize = size;
+            this.textService.applyTextStyle();
+        }
     }
 
     changeItalic(style: boolean): void {

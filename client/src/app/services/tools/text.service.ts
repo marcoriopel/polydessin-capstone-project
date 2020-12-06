@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
-import { MARGIN, MAX_TEXT_TOOL_SIZE, MIN_TEXT_TOOL_SIZE, MouseButton, MOVE_DOWN } from '@app/ressources/global-variables/global-variables';
+import { MARGIN, MouseButton, MOVE_DOWN } from '@app/ressources/global-variables/global-variables';
 import { AUTHORIZED_KEY } from '@app/ressources/global-variables/text';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -13,23 +13,19 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
     providedIn: 'root',
 })
 export class TextService extends Tool {
-    minSize: number = MIN_TEXT_TOOL_SIZE;
-    maxSize: number = MAX_TEXT_TOOL_SIZE;
     name: string = TOOL_NAMES.TEXT_TOOL_NAME;
     text: string[];
     indexIndicator: number = 0;
-    color: string;
     textStartingPoint: Vec2 = { x: 0, y: 0 };
     isNewText: boolean = false;
     font: string = 'Georgia';
-    size: number = 30;
+    textSize: number = 30;
     italicText: string = 'normal';
     boldText: string = 'normal';
     align: CanvasTextAlign = 'start';
     height: number;
     isFrontDelete: boolean = false;
     maxLine: string;
-    numberOfLine: number = 0;
     isWritingEnable: boolean = true;
 
     constructor(drawingService: DrawingService, public hotkeyService: HotkeyService, public colorSelectionService: ColorSelectionService) {
@@ -38,7 +34,6 @@ export class TextService extends Tool {
 
     initializeNewText(): void {
         this.hotkeyService.isHotkeyEnabled = false;
-        this.color = this.colorSelectionService.primaryColor;
         this.text = [];
         this.isNewText = true;
         this.text.push('|');
@@ -66,7 +61,7 @@ export class TextService extends Tool {
     isMouseOnText(mousePosition: Vec2): boolean {
         if (this.text === undefined) return false;
         const selectionWidth = this.textStartingPoint.x + this.drawingService.previewCtx.measureText(this.maxLine).width;
-        const selectionHeight = this.height * this.numberOfLine + this.textStartingPoint.y;
+        const selectionHeight = this.height * this.text.join('').split('Enter').length + this.textStartingPoint.y;
         if (
             mousePosition.x >= this.textStartingPoint.x &&
             mousePosition.x <= selectionWidth &&
@@ -87,7 +82,6 @@ export class TextService extends Tool {
     }
 
     onMouseEnter(): void {
-        this.color = this.colorSelectionService.primaryColor;
         this.applyTextStyle();
     }
 
@@ -108,17 +102,12 @@ export class TextService extends Tool {
                 break;
             case ARROW_KEYS.RIGHT:
                 this.moveIndicator(1);
-
                 break;
             case ARROW_KEYS.UP:
-                if (!this.isInFirstLine()) {
-                    this.moveIndicatorUpAndDown('UP');
-                }
+                this.moveIndicatorUpAndDown('UP');
                 break;
             case ARROW_KEYS.DOWN:
-                if (!this.isInLastLine()) {
-                    this.moveIndicatorUpAndDown('DOWN');
-                }
+                this.moveIndicatorUpAndDown('DOWN');
                 break;
             case 'Escape':
                 this.createText();
@@ -139,43 +128,36 @@ export class TextService extends Tool {
         this.printText();
     }
 
-    moveIndicatorUpAndDown(mouvement: string): void {
-        const lines = [];
-        let line = '';
-        let numberLine = 0;
-        let indexInLine = 0;
+    getIndicatorLineAndIndex(lines: string[]): Vec2 {
         let i = 0;
-        let j = 0;
-        for (const letter of this.text) {
-            if (letter === 'Enter') {
-                lines.push(line);
-                line = '';
-                j = 0;
-                i++;
-            } else {
-                line += letter;
-                j++;
+        for (const line of lines) {
+            const indicatorIndex = line.indexOf('|');
+            if (indicatorIndex >= 0) {
+                return { x: indicatorIndex, y: i };
             }
-            if (letter === '|') {
-                numberLine = i;
-                indexInLine = j;
-            }
+            i++;
         }
-        lines.push(line);
-        if (mouvement === 'UP') {
-            if (lines[numberLine - 1].length < indexInLine - 1) {
-                this.indexIndicator -= indexInLine;
+        return { x: -1, y: -1 };
+    }
+
+    moveIndicatorUpAndDown(mouvement: string): void {
+        const lines = this.text.join('').split('Enter');
+        const indicatorPosition: Vec2 = this.getIndicatorLineAndIndex(lines);
+
+        if (mouvement === 'UP' && !this.isInFirstLine()) {
+            if (lines[indicatorPosition.y - 1].length < indicatorPosition.x) {
+                this.indexIndicator -= indicatorPosition.x + 1;
             } else {
-                this.indexIndicator -= indexInLine + 1;
-                this.indexIndicator -= lines[numberLine - 1].length - indexInLine;
+                this.indexIndicator -= indicatorPosition.x + 1;
+                this.indexIndicator -= lines[indicatorPosition.y - 1].length - indicatorPosition.x;
             }
-        } else {
-            if (lines[numberLine + 1].length < indexInLine - 1) {
-                this.indexIndicator += lines[numberLine].length - indexInLine;
-                this.indexIndicator += lines[numberLine + 1].length + 1;
+        } else if (mouvement === 'DOWN' && !this.isInLastLine()) {
+            if (lines[indicatorPosition.y + 1].length < indicatorPosition.x) {
+                this.indexIndicator += lines[indicatorPosition.y].length - indicatorPosition.x;
+                this.indexIndicator += lines[indicatorPosition.y + 1].length;
             } else {
-                this.indexIndicator += lines[numberLine].length - indexInLine;
-                this.indexIndicator += indexInLine;
+                this.indexIndicator += lines[indicatorPosition.y].length - indicatorPosition.x;
+                this.indexIndicator += indicatorPosition.x;
             }
         }
         this.removeIndicator();
@@ -204,7 +186,6 @@ export class TextService extends Tool {
         if (item === '|' && this.indexIndicator >= this.text.length) {
             this.text.push('|');
         } else if (this.indexIndicator >= this.text.length) {
-            // est ce que je peux l'enlever?
             this.text.pop();
             this.text.push(item);
             this.text.push('|');
@@ -243,8 +224,7 @@ export class TextService extends Tool {
     }
 
     printText(): void {
-        let numberOfLine = 1;
-        let maxLine = '';
+        this.maxLine = '';
         if (this.text === undefined) return;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         let line: string[] = [];
@@ -257,9 +237,8 @@ export class TextService extends Tool {
                 } else {
                     this.drawingService.previewCtx.fillText(line.join(''), lineWidth, lineHeight);
                 }
-                numberOfLine++;
                 lineHeight += this.height + MARGIN;
-                if (line.length > maxLine.length) maxLine = line.join('');
+                if (line.length > this.maxLine.length) this.maxLine = line.join('');
                 line = [];
                 lineWidth = this.textStartingPoint.x;
             } else {
@@ -271,9 +250,7 @@ export class TextService extends Tool {
         } else {
             this.drawingService.previewCtx.fillText(line.join(''), lineWidth, lineHeight);
         }
-        if (line.length > maxLine.length) maxLine = line.join('');
-        this.maxLine = maxLine;
-        this.numberOfLine = numberOfLine;
+        if (line.length > this.maxLine.length) this.maxLine = line.join('');
     }
 
     setStratingPointX(line: string[]): number {
@@ -316,8 +293,8 @@ export class TextService extends Tool {
 
     applyTextStyle(): void {
         const textTest = 'wWmML';
-        this.drawingService.previewCtx.fillStyle = this.color;
-        this.drawingService.previewCtx.font = this.italicText + ' ' + this.boldText + ' ' + this.size.toString() + 'px ' + this.font;
+        this.drawingService.previewCtx.fillStyle = this.colorSelectionService.primaryColor;
+        this.drawingService.previewCtx.font = this.italicText + ' ' + this.boldText + ' ' + this.textSize.toString() + 'px ' + this.font;
         this.drawingService.previewCtx.textAlign = this.align;
         const metrics = this.drawingService.previewCtx.measureText(textTest);
         this.height = metrics.actualBoundingBoxAscent;

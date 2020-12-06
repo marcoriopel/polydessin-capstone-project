@@ -26,8 +26,8 @@
             (focusout)="onFocusOut()"
         />
         <div>
-            <button (click)="decrementSize()">-</button>
-            <button (click)="incrementSize()">+</button>
+            <button (click)="changeSize(textSize - 1)">-</button>
+            <button (click)="changeSize(textSize + 1)">+</button>
         </div>
     </div>
     <hr />
