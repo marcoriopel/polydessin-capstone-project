@@ -6,7 +6,9 @@ describe('ContinueDrawingService', () => {
     let service: ContinueDrawingService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: ContinueDrawingService, useValue: {} }],
+        });
         service = TestBed.inject(ContinueDrawingService);
     });
 

@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from './drawing.service';
 
 // tslint:disable: no-magic-numbers
@@ -18,7 +19,11 @@ describe('DrawingService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        TestBed.configureTestingModule({});
+        const drawServiceSpy = jasmine.createSpyObj('DrawingService', ['initializeBaseCanvas']);
+
+        TestBed.configureTestingModule({
+            providers: [{ provide: ContinueDrawingService, useValue: {} }],
+        });
         service = TestBed.inject(DrawingService);
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -77,7 +82,6 @@ describe('DrawingService', () => {
         service.initializeBaseCanvas();
         service.baseCtx.fillStyle = 'red';
         service.baseCtx.fillRect(0, 0, 1, 1);
-
         const canvasData = service.getCanvasData();
         expect(canvasData.data).toEqual(expectedCanvasData.data);
         expect(canvasData.width).toEqual(expectedCanvasData.width);

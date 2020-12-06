@@ -15,7 +15,7 @@ describe('NewDrawingService', () => {
 
     beforeEach(async(() => {
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'clearCanvas']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'clearCanvas', 'autoSave']);
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [

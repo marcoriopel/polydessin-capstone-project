@@ -3,6 +3,7 @@ import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable, Subject } from 'rxjs';
 import { ResizeDrawingService } from './resize-drawing.service';
@@ -22,6 +23,7 @@ class DrawingServiceMock {
     isToolInUse: Subject<boolean> = new Subject<boolean>();
     imageData: ImageData;
     pixelData: Uint8ClampedArray;
+    isLastDrawing: boolean;
     constructor() {
         this.canvas.height = MINIMUM_CANVAS_HEIGHT;
         this.canvas.width = MINIMUM_CANVAS_WIDTH;
@@ -33,6 +35,14 @@ class DrawingServiceMock {
     initializeBaseCanvas(): void {}
     clearCanvas(): void {}
     drawFill(): void {}
+    autoSave(): void {}
+    checkedDrawing(): boolean {
+        return false;
+    }
+    // isLastDrawing(): boolean {
+    //     return false;
+    // }
+    injector(): void {}
     isCanvasBlank(): boolean {
         return false;
     }
@@ -62,17 +72,40 @@ describe('ResizeDrawingService', () => {
     let service: ResizeDrawingService;
     let mouseEvent: MouseEvent;
     let target: HTMLElement;
+    // tslint:disable-next-line: prefer-const
     let drawingService: DrawingService;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
-        drawingService = new DrawingServiceMock() as DrawingService;
+        drawingService = (new DrawingServiceMock() as unknown) as DrawingService;
         drawingService.canvas.width = MINIMUM_CANVAS_WIDTH;
         drawingService.canvas.height = MINIMUM_CANVAS_HEIGHT;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'updateStack',
+            'setIsToolInUse',
+            'checkDrawing',
+            'initializeBaseCanvas',
+            'getPreviewData',
+            'getCanvasData',
+        ]);
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawingService }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
+            ],
         });
         service = TestBed.inject(ResizeDrawingService);
+        service.drawingService.canvas = canvas;
+        service.drawingService.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        service.drawingService.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        service.drawingService.gridCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         target = {
             id: CANVAS_RESIZING_POINTS.VERTICAL,
