@@ -24,6 +24,7 @@ import { SquareSelectionService } from '@app/services/tools/selection-services/s
 import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
@@ -58,6 +59,7 @@ export class ToolSelectionService {
         public newDrawingService: NewDrawingService,
         public magicWandService: MagicWandService,
         public undoRedoService: UndoRedoService,
+        public textService: TextService,
         public stampService: StampService,
     ) {
         this.tools = new Map<string, Tool>([
@@ -74,6 +76,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.TEXT_TOOL_NAME, textService],
             [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
             [TOOL_NAMES.MAGIC_WAND_TOOL_NAME, magicWandService],
         ]);

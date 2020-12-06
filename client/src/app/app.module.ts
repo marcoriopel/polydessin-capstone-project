@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -11,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -50,6 +52,7 @@ import { SprayAttributesComponent } from './components/tools/spray-attributes/sp
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareSelectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
+import { TextComponent } from './components/tools/text-attributes/text-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
@@ -87,6 +90,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         CircleSelectionAttributesComponent,
         PenAttributesComponent,
         SprayAttributesComponent,
+        TextComponent,
         StampAttributesComponent,
     ],
     imports: [
@@ -106,8 +110,10 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatRadioModule,
         MatTooltipModule,
         MatIconModule,
+        MatButtonToggleModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
+        MatSelectModule,
         FormsModule,
         ReactiveFormsModule,
         MatCheckboxModule,
