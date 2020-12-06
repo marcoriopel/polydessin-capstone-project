@@ -75,6 +75,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
@@ -360,6 +361,7 @@ export class SelectionService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (!this.isSelectionOver) {
             this.rotateService.onWheelEvent(event);
             this.strokeSelection();
