@@ -220,7 +220,7 @@ describe('ToolSelectionService', () => {
 
     it('should call current tool onMouseEnter on onMouseEnter event', () => {
         const mouseEnterSpy = spyOn(service.currentTool, 'onMouseEnter');
-        service.currentToolMouseEnter();
+        service.currentToolMouseEnter({} as MouseEvent);
         expect(mouseEnterSpy).toHaveBeenCalled();
     });
 
