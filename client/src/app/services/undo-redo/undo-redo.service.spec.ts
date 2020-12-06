@@ -56,6 +56,7 @@ describe('UndoRedoService', () => {
             'drawFill',
             'restoreSelection',
             'setIsToolInUse',
+            'autoSave',
         ]);
         drawingServiceSpy.getIsToolInUse.and.returnValue(obs.asObservable());
         resizeDrawingSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize', 'restoreCanvas']);

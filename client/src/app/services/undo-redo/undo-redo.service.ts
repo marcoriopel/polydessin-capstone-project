@@ -89,6 +89,7 @@ export class UndoRedoService extends Tool {
         });
         this.changeUndoAvailability();
         this.changeRedoAvailability();
+        this.drawingService.autoSave();
     }
 
     redo(): void {
@@ -109,6 +110,7 @@ export class UndoRedoService extends Tool {
         }
         this.changeUndoAvailability();
         this.changeRedoAvailability();
+        this.drawingService.autoSave();
     }
 
     changeUndoAvailability(): void {

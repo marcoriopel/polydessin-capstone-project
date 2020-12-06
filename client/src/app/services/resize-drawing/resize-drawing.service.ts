@@ -91,6 +91,7 @@ export class ResizeDrawingService {
             });
         }
         this.mouseDown = false;
+        this.drawingService.autoSave();
     }
 
     getPositionFromMouse(event: MouseEvent): Vec2 {

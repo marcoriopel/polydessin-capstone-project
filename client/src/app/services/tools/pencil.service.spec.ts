@@ -27,7 +27,7 @@ describe('PencilService', () => {
         drawCanvas.height = HEIGHT;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         previewCanvasStub = canvas as HTMLCanvasElement;
         gridCanvasStub = canvas as HTMLCanvasElement;
         TestBed.configureTestingModule({
@@ -97,7 +97,6 @@ describe('PencilService', () => {
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
-
         service.onMouseUp(mouseEvent);
         expect(drawPencilStrokeSpy).not.toHaveBeenCalled();
     });
@@ -131,7 +130,6 @@ describe('PencilService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-
         // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
@@ -139,6 +137,7 @@ describe('PencilService', () => {
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' should get position from mouse', () => {
