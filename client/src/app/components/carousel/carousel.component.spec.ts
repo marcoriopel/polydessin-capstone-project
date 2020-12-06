@@ -11,7 +11,6 @@ import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
@@ -26,7 +25,6 @@ describe('CarouselComponent', () => {
     let resizeDrawingServiceSpy: SpyObj<ResizeDrawingService>;
     let databaseServiceSpy: SpyObj<DatabaseService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let dBDataObservable: Subject<DBData[]>;
     let keyboardEvent: KeyboardEvent;
@@ -39,7 +37,6 @@ describe('CarouselComponent', () => {
     beforeEach(async(() => {
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['deleteErrorSnackBar', 'loadErrorSnackBar']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
-        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['getAllDBData', 'getDrawingPng', 'deleteDrawing']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['isCanvasBlank', 'resetStack']);
@@ -58,7 +55,6 @@ describe('CarouselComponent', () => {
             imports: [HttpClientModule, MatDialogModule, RouterTestingModule, MatChipsModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },

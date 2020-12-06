@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
 import { ExportComponent } from './export.component';
@@ -19,7 +18,6 @@ describe('ExportComponent', () => {
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
     let httpClientSpy: HttpClient;
-    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let textServiceSpy: SpyObj<TextService>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     let matDialogSpy: SpyObj<MatDialog>;
@@ -32,7 +30,6 @@ describe('ExportComponent', () => {
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
-        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
         TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -42,7 +39,6 @@ describe('ExportComponent', () => {
                 { provide: MatDialogRef, useValue: dialogSpy },
                 { provide: HttpClient, useValue: httpClientSpy },
                 { provide: TextService, useValue: textServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },
             ],
