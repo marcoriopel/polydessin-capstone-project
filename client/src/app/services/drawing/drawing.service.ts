@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -34,7 +35,7 @@ export class DrawingService {
             this.gridCtx.moveTo(0, x);
             this.gridCtx.lineTo(canvasWidth, x);
         }
-        this.gridCtx.globalAlpha = this.opacity;
+        this.gridCtx.globalAlpha = this.opacity / MAX_PERCENTAGE;
         this.gridCtx.strokeStyle = 'black';
         this.gridCtx.closePath();
         this.gridCtx.stroke();

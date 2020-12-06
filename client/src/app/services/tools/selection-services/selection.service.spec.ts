@@ -23,7 +23,7 @@ describe('SelectionService', () => {
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
-    let rotateService: SpyObj<RotateService>;
+    let rotateServiceSpy: SpyObj<RotateService>;
 
     beforeEach(() => {
         magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
@@ -51,7 +51,7 @@ describe('SelectionService', () => {
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
-        rotateService = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
 
@@ -59,7 +59,7 @@ describe('SelectionService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MoveService, useValue: moveServiceSpy },
-                { provide: RotateService, useValue: rotateService },
+                { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
             ],
         });

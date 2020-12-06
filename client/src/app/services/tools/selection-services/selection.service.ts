@@ -186,7 +186,7 @@ export class SelectionService extends Tool {
             }
             case 'Shift': {
                 this.isShiftKeyDown = true;
-                this.underlyingService.isShiftKeyDown = true;
+                if (this.underlyingService) this.underlyingService.isShiftKeyDown = true;
                 break;
             }
             case 'Delete': {
