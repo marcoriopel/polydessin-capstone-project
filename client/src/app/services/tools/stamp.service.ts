@@ -95,7 +95,7 @@ export class StampService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
-        let rotationStep = ROTATION_STEP * 2;
+        let rotationStep = ROTATION_STEP;
         if (this.isAltKeyDown) {
             rotationStep = 1;
         }
@@ -124,10 +124,9 @@ export class StampService extends Tool {
     }
 
     changeAngle(newAngle: number): void {
-        if (newAngle < -MAX_ANGLE) {
-            newAngle = newAngle + MAX_ANGLE;
-        } else if (newAngle > MAX_ANGLE) {
-            newAngle = newAngle - MAX_ANGLE;
+        newAngle %= MAX_ANGLE;
+        if (newAngle < 0) {
+            newAngle += MAX_ANGLE;
         }
         this.angle = newAngle;
         this.angleObservable.next(this.angle);

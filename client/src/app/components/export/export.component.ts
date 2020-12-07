@@ -7,6 +7,7 @@ import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variabl
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
 
 @Component({
     selector: 'app-export',
@@ -42,11 +43,16 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         public hotkeyService: HotkeyService,
         private dialogRef: MatDialogRef<ExportComponent>,
         private httpClient: HttpClient,
+        public textService: TextService,
         public serverResponseService: ServerResponseService,
         public dialog: MatDialog,
     ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
+        if (this.textService.isNewText) {
+            this.textService.createText();
+        }
+
         this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),

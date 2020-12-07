@@ -68,6 +68,22 @@ export class SprayService extends Tool {
         }
     }
 
+    onMouseLeave(): void {
+        if (this.mouseDown) {
+            clearTimeout(this.timeoutId);
+            this.drawingService.applyPreview();
+            this.drawingService.setIsToolInUse(false);
+        }
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseCoord = this.getPositionFromMouse(event);
+            this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
+            this.drawingService.setIsToolInUse(true);
+        }
+    }
+
     drawSpray(self: SprayService, ctx: CanvasRenderingContext2D): void {
         for (let i = self.density; i--; ) {
             const angle = self.getRandomNumber(0, Math.PI * 2);

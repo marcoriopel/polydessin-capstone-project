@@ -2,6 +2,11 @@
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    padding: 0 5px 0 5px;
+}
+
+app-magnetism {
+    width: 100%;
 }
 
 hr {
@@ -15,15 +20,4 @@ hr {
 
 .toolName {
     margin: 5px;
-}
-
-.alignment {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    margin: 2px;
-}
-
-.alignmentTitle {
-    margin-top: 10px;
 }

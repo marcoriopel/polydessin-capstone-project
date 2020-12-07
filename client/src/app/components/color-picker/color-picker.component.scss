@@ -3,6 +3,7 @@
     flex-flow: column;
     align-items: flex-start;
     font-size: 12px;
+    padding: 0 5px 0 5px;
 }
 
 .color-selection-container {
@@ -25,9 +26,16 @@ hr {
     clear: both;
     display: block;
     width: 96%;
-    background-color: #3b3737;
+    background-color: #cfcfcf;
     height: 1px;
     margin-top: 10px;
+}
+
+h4 {
+    margin: 5px 5px 0px 5px;
+    color: black;
+    align-self: center;
+    font-weight: bold;
 }
 
 .opacity-input {
