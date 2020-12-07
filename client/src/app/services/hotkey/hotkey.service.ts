@@ -10,7 +10,6 @@ import { Observable, Subject } from 'rxjs';
 })
 export class HotkeyService {
     toolName: Subject<string> = new Subject<string>();
-    eventKey: Subject<KeyboardEvent> = new Subject<KeyboardEvent>();
     toolNames: ToolNames = TOOL_NAMES;
     sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     isHotkeyEnabled: boolean = true;

@@ -36,6 +36,8 @@ export const DEFAULT_GRID_SIZE = 5;
 export const GRID_STEP = 5;
 export const MAGIC_WAND_BORDER_ONE_SIDE = 2;
 export const MAGIC_WAND_BORDER_BOTH_SIDES = 4;
+export const MAGIC_WAND_TOLERANCE = 10;
+export const MAGIC_WAND_SECONDARY_TOLERANCE = 50;
 export const OFFSET = -1;
 
 export const DEFAULT_GRID_OPACITY = 100;
