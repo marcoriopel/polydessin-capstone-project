@@ -62,5 +62,6 @@ export class SquareSelectionService extends SelectionService {
             );
             this.drawingService.previewCtx.restore();
         }
+        this.drawingService.autoSave();
     }
 }

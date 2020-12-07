@@ -59,11 +59,28 @@ export class SprayService extends Tool {
             this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             this.mouseCoord = this.getPositionFromMouse(event);
+        }
+    }
+
+    onMouseLeave(): void {
+        if (this.mouseDown) {
+            clearTimeout(this.timeoutId);
+            this.drawingService.applyPreview();
+            this.drawingService.setIsToolInUse(false);
+        }
+    }
+
+    onMouseEnter(event: MouseEvent): void {
+        if (this.mouseDown) {
+            this.mouseCoord = this.getPositionFromMouse(event);
+            this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
+            this.drawingService.setIsToolInUse(true);
         }
     }
 

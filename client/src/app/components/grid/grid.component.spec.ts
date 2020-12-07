@@ -130,19 +130,19 @@ describe('GridComponent', () => {
         expect(drawingServiceSpy.setGrid).not.toHaveBeenCalled();
     });
 
-    it('should should change opacity on changeOpacity call and set grid if grid is enabled', () => {
+    it('should change opacity on changeOpacity call and set grid if grid is enabled', () => {
         component.isEnabled = true;
-        component.currentOpacity = 1;
-        component.changeOpacity(0.5);
+        component.currentOpacity = 100;
+        component.changeOpacity(50);
         expect(drawingServiceSpy.setGrid).toHaveBeenCalled();
-        expect(component.currentOpacity).toEqual(0.5);
+        expect(component.currentOpacity).toEqual(50);
     });
 
-    it('should should change opacity on changeOpacity call and not set grid if grid is disabled', () => {
+    it('should change opacity on changeOpacity call and not set grid if grid is disabled', () => {
         component.isEnabled = false;
-        component.currentOpacity = 1;
-        component.changeOpacity(0.5);
+        component.currentOpacity = 100;
+        component.changeOpacity(50);
         expect(drawingServiceSpy.setGrid).not.toHaveBeenCalled();
-        expect(component.currentOpacity).toEqual(0.5);
+        expect(component.currentOpacity).toEqual(50);
     });
 });

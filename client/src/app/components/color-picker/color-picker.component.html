@@ -1,4 +1,5 @@
 <div class="color-picker">
+    <h4>Couleur</h4>
     <div class="color-selection-container">
         <div>
             <p>Couleur principale</p>
@@ -21,6 +22,8 @@
                         type="text"
                         [min]="0"
                         [max]="100"
+                        (focus)="onFocus()"
+                        (focusout)="onFocusOut()"
                     />
                     <button class="grid-element" (click)="incrementPrimaryOpacity()">+</button>
                 </div>
@@ -46,6 +49,8 @@
                         type="text"
                         [min]="0"
                         max="100"
+                        (focus)="onFocus()"
+                        (focusout)="onFocusOut()"
                     />
                     <button class="grid-element" (click)="incrementSecondaryOpacity()">+</button>
                 </div>

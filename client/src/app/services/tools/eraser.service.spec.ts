@@ -30,7 +30,7 @@ describe('EraserService', () => {
 
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
@@ -91,6 +91,7 @@ describe('EraserService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawEraserStrokeSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
