@@ -12,6 +12,7 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
@@ -25,12 +26,14 @@ describe('SidebarComponent', () => {
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
     let squareSelectionServiceSpy: SpyObj<SquareSelectionService>;
     let circleSelectionServiceSpy: SpyObj<CircleSelectionService>;
+    let magicWanderSpy: SpyObj<MagicWandService>;
     let clipboardService: SpyObj<ClipboardService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
     let obsSquareSelection: Subject<boolean>;
     let obsCircleSelection: Subject<boolean>;
     let obsClipboard: Subject<boolean>;
+    let obsMagicWand: Subject<boolean>;
     let undoRedoServiceSpy: SpyObj<UndoRedoService>;
     let obsUndoButton: Subject<boolean>;
     let obsRedoButton: Subject<boolean>;
@@ -42,6 +45,7 @@ describe('SidebarComponent', () => {
         obsSquareSelection = new Subject<boolean>();
         obsCircleSelection = new Subject<boolean>();
         obsClipboard = new Subject<boolean>();
+        obsMagicWand = new Subject<boolean>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', ['changeTool', 'selectAll', 'getCurrentTool']);
         toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         matdialogSpy = jasmine.createSpyObj('dialog', ['open']);
@@ -57,6 +61,8 @@ describe('SidebarComponent', () => {
         circleSelectionServiceSpy.getIsSelectionEmptySubject.and.returnValue(obsCircleSelection.asObservable());
         clipboardService = jasmine.createSpyObj('ClipboardService', ['getIsPasteAvailableSubject']);
         clipboardService.getIsPasteAvailableSubject.and.returnValue(obsClipboard.asObservable());
+        magicWanderSpy = jasmine.createSpyObj('MagicWandService', ['getIsSelectionEmptySubject', 'cut', 'copy', 'paste']);
+        magicWanderSpy.getIsSelectionEmptySubject.and.returnValue(obsMagicWand.asObservable());
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
@@ -71,6 +77,7 @@ describe('SidebarComponent', () => {
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: circleSelectionServiceSpy },
                 { provide: ClipboardService, useValue: clipboardService },
+                { provide: MagicWandService, useValue: magicWanderSpy },
             ],
         }).compileComponents();
     });
@@ -86,48 +93,42 @@ describe('SidebarComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('cursor should be not-allowed if undo and redo are not available', () => {
+    it('should call setButtonAvailability if undo and redo are not available', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
         obsRedoButton.next(false);
         obsUndoButton.next(false);
-        expect(document.getElementById('undo')?.style.cursor).toEqual('not-allowed');
-        expect(document.getElementById('redo')?.style.cursor).toEqual('not-allowed');
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
-    it('cursor should be pointer if undo and redo are available', () => {
+    it('should call setButtonAvailability if undo and redo are available', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
         obsRedoButton.next(true);
         obsUndoButton.next(true);
-        expect(document.getElementById('undo')?.style.cursor).toEqual('pointer');
-        expect(document.getElementById('redo')?.style.cursor).toEqual('pointer');
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
-    it('cursor should be pointer if is not square Selection', () => {
+    it('should call setButtonAvailability if is not square Selection', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
         obsSquareSelection.next(false);
-        expect(component.cutButton.nativeElement.style.cursor).toEqual('pointer');
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
-    it('cursor should be not-allowed if is square Selection', () => {
-        obsSquareSelection.next(true);
-        expect(component.cutButton.nativeElement.style.cursor).toEqual('not-allowed');
-    });
-
-    it('cursor should be not-allowed if is circle Selection', () => {
+    it('should call setButtonAvailability if is circle Selection', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
         obsCircleSelection.next(true);
-        expect(component.cutButton.nativeElement.style.cursor).toEqual('not-allowed');
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
-    it('cursor should be pointer if is not circle selection', () => {
-        obsCircleSelection.next(false);
-        expect(component.cutButton.nativeElement.style.cursor).toEqual('pointer');
-    });
-
-    it('cursor should be pointer if paste available', () => {
+    it(' should call setButtonAvailability if paste available', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
         obsClipboard.next(true);
-        expect(component.pasteButton.nativeElement.style.cursor).toEqual('pointer');
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
-    it('cursor should be not allowed if paste is not available', () => {
-        obsClipboard.next(false);
-        expect(component.pasteButton.nativeElement.style.cursor).toEqual('not-allowed');
+    it(' should call setButtonAvailability if selection is empty', () => {
+        const buttonAvailableSpy = spyOn(component, 'setButtonAvailability');
+        obsMagicWand.next(true);
+        expect(buttonAvailableSpy).toHaveBeenCalled();
     });
 
     it('should call toolSelectionService.changeTool', () => {
@@ -236,5 +237,33 @@ describe('SidebarComponent', () => {
         component.selectedTool = TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME;
         component.paste();
         expect(circleSelectionServiceSpy.paste).toHaveBeenCalled();
+    });
+
+    it('cursor should be pointer if value is true', () => {
+        component.setButtonAvailability(true, component.pasteButton);
+        expect(component.pasteButton.nativeElement.style.cursor).toEqual('pointer');
+    });
+
+    it('cursor should be not-allowed if value is false', () => {
+        component.setButtonAvailability(false, component.pasteButton);
+        expect(component.pasteButton.nativeElement.style.cursor).toEqual('not-allowed');
+    });
+
+    it('should call magicWandService cut if the selection tool is magic wand', () => {
+        component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
+        component.cut();
+        expect(magicWanderSpy.cut).toHaveBeenCalled();
+    });
+
+    it('should call magicWandService copy if the selection tool is magic wand', () => {
+        component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
+        component.copy();
+        expect(magicWanderSpy.copy).toHaveBeenCalled();
+    });
+
+    it('should call magicWandService paste if the selection tool is magic wand', () => {
+        component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
+        component.paste();
+        expect(magicWanderSpy.paste).toHaveBeenCalled();
     });
 });

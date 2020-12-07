@@ -158,4 +158,11 @@ describe('DrawingService', () => {
         service.initializeBaseCanvas();
         expect(setGridSpy).toHaveBeenCalled();
     });
+
+    it('should not call clear of localStorage if canvas is undefined', () => {
+        const clearSpy = spyOn(localStorage, 'clear');
+        service.canvas = (undefined as unknown) as HTMLCanvasElement;
+        service.autoSave();
+        expect(clearSpy).not.toHaveBeenCalled();
+    });
 });

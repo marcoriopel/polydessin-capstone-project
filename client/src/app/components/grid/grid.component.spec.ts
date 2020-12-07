@@ -145,4 +145,26 @@ describe('GridComponent', () => {
         expect(drawingServiceSpy.setGrid).not.toHaveBeenCalled();
         expect(component.currentOpacity).toEqual(50);
     });
+
+    it('should not change grid size if size is lower then minSize', () => {
+        component.currentSquareSize = 10;
+        component.changeGridSize(0);
+        expect(component.currentSquareSize).toEqual(10);
+    });
+
+    it('should not change opcacity if opcacity is lower then minOpcacity', () => {
+        component.currentOpacity = 10;
+        component.changeOpacity(0);
+        expect(component.currentOpacity).toEqual(10);
+    });
+
+    it('onFocus should set isHotkeyEnabled at false', () => {
+        component.onFocus();
+        expect(hotkeyServiceSpy.isHotkeyEnabled).toEqual(false);
+    });
+
+    it('onFocusOut should set isHotkeyEnabled at true', () => {
+        component.onFocusOut();
+        expect(hotkeyServiceSpy.isHotkeyEnabled).toEqual(true);
+    });
 });
