@@ -11,6 +11,7 @@ import {
     DASH_LENGTH,
     DASH_SPACE_LENGTH,
     DEGREES_180,
+    MAX_ANGLE,
     MouseButton,
     SELECTION_POINT_WIDTH,
 } from '@app/ressources/global-variables/global-variables';
@@ -147,8 +148,7 @@ export class SelectionService extends Tool {
                 this.isSelectionOver = false;
                 this.setSelection(this.initialSelection, this.selection);
                 this.setSelectionData();
-                this.setInitialSelectionCorners();
-                console.log(this.initialSelectionCorners);
+                this.setSelectionCorners();
             }
             // reset underlying service to original form
             this.underlyingService.fillStyle = currentFillStyle;
@@ -157,12 +157,13 @@ export class SelectionService extends Tool {
         } else if (this.transormation === 'move') {
             this.transormation = '';
         }
+        this.updateSelectionCorners();
         this.strokeSelection();
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
     }
 
-    setInitialSelectionCorners(): void {
+    setSelectionCorners(): void {
         const width = this.initialSelection.width;
         const height = this.initialSelection.height;
         const hypothenuse = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
@@ -180,24 +181,24 @@ export class SelectionService extends Tool {
                 x: this.initialSelection.startingPoint.x,
                 y: this.initialSelection.startingPoint.y,
             },
-            currentAngle: 180 - topRightCornerAngle,
-            initialAngle: 180 - topRightCornerAngle,
+            currentAngle: DEGREES_180 - topRightCornerAngle,
+            initialAngle: DEGREES_180 - topRightCornerAngle,
         };
         this.initialSelectionCorners.bottomLeft = {
             coordinates: {
                 x: this.initialSelection.startingPoint.x,
                 y: this.initialSelection.startingPoint.y + this.initialSelection.height,
             },
-            currentAngle: 180 + topRightCornerAngle,
-            initialAngle: 180 + topRightCornerAngle,
+            currentAngle: DEGREES_180 + topRightCornerAngle,
+            initialAngle: DEGREES_180 + topRightCornerAngle,
         };
         this.initialSelectionCorners.bottomRight = {
             coordinates: {
                 x: this.initialSelection.startingPoint.x + this.initialSelection.width,
                 y: this.initialSelection.startingPoint.y + this.initialSelection.height,
             },
-            currentAngle: 360 - topRightCornerAngle,
-            initialAngle: 360 - topRightCornerAngle,
+            currentAngle: MAX_ANGLE - topRightCornerAngle,
+            initialAngle: -topRightCornerAngle,
         };
     }
 
@@ -220,33 +221,32 @@ export class SelectionService extends Tool {
         const selectionCenterY = this.selection.startingPoint.y + this.selection.height / 2;
         const selectionCenter: Vec2 = { x: selectionCenterX, y: selectionCenterY };
 
-        // PROBLEM IS HERE
         this.initialSelectionCorners.topRight.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.x + Math.cos(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
         this.initialSelectionCorners.topRight.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.y - Math.sin(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
         this.initialSelectionCorners.topLeft.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.x + Math.cos(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
         this.initialSelectionCorners.topLeft.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.y - Math.sin(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
         this.initialSelectionCorners.bottomRight.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
         this.initialSelectionCorners.bottomRight.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
         this.initialSelectionCorners.bottomLeft.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
         this.initialSelectionCorners.bottomLeft.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / 180)) * radius;
+            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
     }
 
     updateAngle(newAngle: number): number {
-        if (newAngle > 360) {
-            return 0 + newAngle - 360;
+        if (newAngle > MAX_ANGLE) {
+            return 0 + newAngle - MAX_ANGLE;
         } else if (newAngle < 0) {
-            return 360 + newAngle;
+            return MAX_ANGLE + newAngle;
         } else {
             return newAngle;
         }
@@ -370,12 +370,11 @@ export class SelectionService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.key === 'z') {
-        }
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
             this.underlyingService.onKeyUp(event);
+            this.updateSelectionCorners();
             this.strokeSelection();
         }
         if (event.key === 'Shift') {

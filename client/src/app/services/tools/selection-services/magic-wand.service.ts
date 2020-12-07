@@ -106,13 +106,17 @@ export class MagicWandService extends SelectionService {
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionOver = false;
                 this.setSelection(this.initialSelection, this.selection);
-                this.setInitialSelectionCorners();
+                this.updateSelectionCorners();
+                this.setSelectionCorners();
             }
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else if (this.transormation === 'move') {
             this.transormation = '';
+            this.updateSelectionCorners();
+            this.setSelectionCorners();
         }
+        this.updateSelectionCorners();
         this.strokeSelection();
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
@@ -121,6 +125,9 @@ export class MagicWandService extends SelectionService {
     onKeyUp(event: KeyboardEvent): void {
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
+        this.updateSelectionCorners();
+        this.strokeSelection();
+        this.setSelectionPoint();
     }
 
     onMouseMove(event: MouseEvent): void {
