@@ -1,29 +1,31 @@
 <div #exportModal class="exporting">
-    <h1>Exportation du dessin</h1>
-    <p><img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" /></p>
-    <div>
-        <form class="export" autocomplete="off" [formGroup]="ownerForm">
-            <label>Fichier: </label>
-            <mat-form-field appearance="fill">
-                <mat-label>Nom du dessin</mat-label>
-                <input
-                    matInput
-                    #name
-                    type="text"
-                    id="name"
-                    [required]="true"
-                    formControlName="name"
-                    (keyup)="this.changeName(name.value)"
-                    placeholder="Ex: Forêt Boréal"
-                />
-                <mat-hint class="mat-hint">Max 15 charactères</mat-hint>
-                <mat-error *ngIf="hasNameError('name', 'required')">Nom est requis</mat-error>
-                <mat-error *ngIf="hasNameError('name', 'maxlength')">Nom est trop long. (max. 15 charactères)</mat-error>
-            </mat-form-field>
-        </form>
+    <div class="imageContainer">
+        <h1>Exportation du dessin</h1>
+        <img id="image" [src]="imagesrc" height="200px" width="300px" *ngIf="imagesrc !== ''" />
+        <div>
+            <form class="export" autocomplete="off" [formGroup]="ownerForm">
+                <label>Fichier: </label>
+                <mat-form-field appearance="fill">
+                    <mat-label>Nom du dessin</mat-label>
+                    <input
+                        matInput
+                        #name
+                        type="text"
+                        id="name"
+                        [required]="true"
+                        formControlName="name"
+                        (keyup)="this.changeName(name.value)"
+                        placeholder="Ex: Forêt Boréal"
+                    />
+                    <mat-hint class="mat-hint">Max 15 charactères</mat-hint>
+                    <mat-error *ngIf="hasNameError('name', 'required')">Nom est requis</mat-error>
+                    <mat-error *ngIf="hasNameError('name', 'maxlength')">Nom est trop long. (max. 15 charactères)</mat-error>
+                </mat-form-field>
+            </form>
+        </div>
     </div>
 
-    <div>
+    <div class="Section">
         <label>Filtre</label>
         <div class="radioContainer">
             <input type="radio" name="typeOfFilter" [value]="filterStyles.NONE" (change)="this.changeFilter($event)" checked />
@@ -41,17 +43,22 @@
         </div>
     </div>
 
-    <label>Format d'exportation</label>
-    <div class="radioContainer">
-        <select name="extension" (change)="this.getImageUrl($event)" [value]="0">
-            <option [value]="0">PNG</option>
-            <option [value]="1">JPEG</option>
-        </select>
+    <hr />
+
+    <div class="Section">
+        <label>Format d'exportation</label>
+        <div class="radioContainer">
+            <select name="extension" (change)="this.getImageUrl($event)" [value]="0">
+                <option [value]="0">PNG</option>
+                <option [value]="1">JPEG</option>
+            </select>
+        </div>
     </div>
-    <div>
-        <!--  Réference : https://stackoverflow.com/questions/55752234/how-to-validate-email-address-from-a-mat-inputangular-material -->
-        <!--  Tiré de stackOverFlow  -->
-        <!--  Jun 10 at 9:13  -->
+
+    <hr />
+
+    <div class="Section">
+        <!--  this code was inspired by code found on : https://stackoverflow.com/questions/55752234/how-to-validate-email-address-from-a-mat-inputangular-material -->
         <label> email</label><br />
         <form [formGroup]="userForm" #formDirective="ngForm">
             <div class="form-control">
@@ -73,13 +80,14 @@
             </div>
         </form>
     </div>
+
+    <hr />
+
     <div mat-dialog-actions>
-        <button mat-stroked-button [disabled]="!ownerForm.valid || isExportButtonDisabled" id="export" (click)="exportLocally()">
+        <button mat-button [disabled]="!ownerForm.valid || isExportButtonDisabled" id="export" (click)="exportLocally()">
             Exporter sur ordinateur
         </button>
-        <button mat-stroked-button [disabled]="!userForm.valid || isSendMailButtonDisabled" id="sendMail" (click)="sendMail()">
-            Envoyer par email
-        </button>
-        <button mat-stroked-button mat-dialog-close>Fermer</button>
+        <button mat-button [disabled]="!userForm.valid || isSendMailButtonDisabled" id="sendMail" (click)="sendMail()">Envoyer par email</button>
+        <button mat-button color="warn" mat-dialog-close>Fermer</button>
     </div>
 </div>
