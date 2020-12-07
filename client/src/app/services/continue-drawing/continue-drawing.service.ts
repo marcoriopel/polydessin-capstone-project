@@ -16,26 +16,26 @@ export class ContinueDrawingService {
     filteredMetadata: DBData[] = [];
     currentRoute: string;
     checkOldDrawing: boolean;
-    WIDTH: number;
+    width: number;
     constructor(
         public drawingService: DrawingService,
         public router: Router,
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
     ) {}
-    furtherDrawing(): void {
+    continueDrawing(): void {
         const sourceDrawingURL = localStorage.getItem('drawingKey') as string;
         this.convertURIToImageData(sourceDrawingURL);
     }
 
     // tslint:disable-next-line: no-any
-    async convertURIToImageData(URI: string): Promise<any> {
+    async convertURIToImageData(uri: string): Promise<any> {
         return new Promise<void>((resolve, reject) => {
-            if (URI == null) return reject();
+            if (uri == null) return reject();
             const canvas = this.drawingService.canvas;
             const context = this.drawingService.baseCtx;
             const image = new Image();
-            image.src = URI;
+            image.src = uri;
             image.addEventListener(
                 'load',
                 () => {
@@ -52,15 +52,11 @@ export class ContinueDrawingService {
         return this.isLastDrawing;
     }
 
-    stateDrawing(): boolean {
-        return this.isLastDrawing;
-    }
-
-    furtherOldDrawing(): void {
+    setLastDrawing(): void {
         this.drawingService.isLastDrawing = localStorage.length > 0;
     }
 
-    furtherDrawingUnlock(): void {
+    unlockContinueDrawing(): void {
         this.drawingService.isLastDrawing = false;
     }
 

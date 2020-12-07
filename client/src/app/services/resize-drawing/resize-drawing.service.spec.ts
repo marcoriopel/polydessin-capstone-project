@@ -38,9 +38,6 @@ class DrawingServiceMock {
     checkedDrawing(): boolean {
         return false;
     }
-    // isLastDrawing(): boolean {
-    //     return false;
-    // }
     injector(): void {}
     isCanvasBlank(): boolean {
         return false;

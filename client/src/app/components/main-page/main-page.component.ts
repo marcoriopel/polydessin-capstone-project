@@ -26,8 +26,8 @@ export class MainPageComponent {
         this.continueDrawingService.loadOldDrawing();
     }
 
-    furtherDrawing(): void {
-        this.continueDrawingService.furtherDrawingUnlock();
+    continueDrawing(): void {
+        this.continueDrawingService.unlockContinueDrawing();
     }
     printButton(): boolean {
         return localStorage.getItem('drawingKey') ? true : false;
