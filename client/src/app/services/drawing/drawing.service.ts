@@ -76,7 +76,8 @@ export class DrawingService {
     }
 
     updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
-        this.undoStack.push(modification);
+        const copiedTool = Object.assign({}, modification);
+        this.undoStack.push(copiedTool);
         if (this.redoStack.length) {
             this.redoStack = [];
         }

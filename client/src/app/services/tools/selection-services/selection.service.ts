@@ -245,8 +245,6 @@ export class SelectionService extends Tool {
 
     onKeyUp(event: KeyboardEvent): void {
         if (event.key === 'z') {
-            console.log(this.initialSelection.startingPoint);
-            console.log(this.selection.startingPoint);
         }
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
