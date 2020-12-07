@@ -69,6 +69,7 @@ export class StampService extends Tool {
         this.printStamp(this.drawingService.baseCtx, this.stampData);
         this.drawingService.updateStack(this.stampData);
         this.drawingService.setIsToolInUse(false);
+        this.drawingService.autoSave();
     }
 
     printStamp(ctx: CanvasRenderingContext2D, stampData: Stamp): void {

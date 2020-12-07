@@ -129,6 +129,7 @@ export class SelectionService extends Tool {
         this.strokeSelection();
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {

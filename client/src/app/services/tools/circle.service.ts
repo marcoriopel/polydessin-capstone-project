@@ -89,6 +89,7 @@ export class CircleService extends Tool {
             this.mouseDown = false;
             this.drawingService.setIsToolInUse(false);
         }
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
