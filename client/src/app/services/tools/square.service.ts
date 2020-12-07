@@ -38,10 +38,6 @@ export class SquareService extends Tool {
         this.drawingService.baseCtx.lineJoin = 'miter';
     }
 
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
-
     setRectangleWidth(): void {
         this.rectangleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }

@@ -39,10 +39,6 @@ export class CircleService extends Tool {
         this.mouseDown = false;
     }
 
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
-
     changeWidth(newWidth: number): void {
         this.width = newWidth;
     }

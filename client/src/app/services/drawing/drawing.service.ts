@@ -12,7 +12,7 @@ export class DrawingService {
     gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     gridSpacing: number;
-    opacity: number;
+    gridOpacity: number;
     isGridEnabled: boolean;
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
@@ -35,7 +35,7 @@ export class DrawingService {
             this.gridCtx.moveTo(0, x);
             this.gridCtx.lineTo(canvasWidth, x);
         }
-        this.gridCtx.globalAlpha = this.opacity / MAX_PERCENTAGE;
+        this.gridCtx.globalAlpha = this.gridOpacity / MAX_PERCENTAGE;
         this.gridCtx.strokeStyle = 'black';
         this.gridCtx.closePath();
         this.gridCtx.stroke();

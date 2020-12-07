@@ -34,10 +34,6 @@ export class LineService extends Tool {
         super(drawingService);
     }
 
-    setCursor(): void {
-        this.drawingService.gridCanvas.style.cursor = 'crosshair';
-    }
-
     changeLineWidth(newWidth: number): void {
         this.lineWidth = newWidth;
     }
