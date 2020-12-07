@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PolygoneService } from '@app/services/tools/polygone.service';
-import { PolygoneAttributesComponent } from './polygone-attributes.component';
+import { PolygonService } from '@app/services/tools/polygon.service';
+import { PolygonAttributesComponent } from './polygon-attributes.component';
 
-describe('PolygoneAttributesComponent', () => {
-    let component: PolygoneAttributesComponent;
-    let fixture: ComponentFixture<PolygoneAttributesComponent>;
-    let polygoneServiceSpy: jasmine.SpyObj<PolygoneService>;
+describe('PolygonAttributesComponent', () => {
+    let component: PolygonAttributesComponent;
+    let fixture: ComponentFixture<PolygonAttributesComponent>;
+    let polygoneServiceSpy: jasmine.SpyObj<PolygonService>;
     const initialToolWidth = 1;
     const finalToolWidth = 5;
     const initialsides = 5;
@@ -17,13 +17,13 @@ describe('PolygoneAttributesComponent', () => {
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [PolygoneAttributesComponent],
-            providers: [{ provide: PolygoneService, useValue: polygoneServiceSpy }],
+            declarations: [PolygonAttributesComponent],
+            providers: [{ provide: PolygonService, useValue: polygoneServiceSpy }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(PolygoneAttributesComponent);
+        fixture = TestBed.createComponent(PolygonAttributesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -2,11 +2,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FillStyles, FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 
 @Component({
-    selector: 'app-type-of-fill-selection',
-    templateUrl: './type-of-fill-selection.component.html',
-    styleUrls: ['./type-of-fill-selection.component.scss'],
+    selector: 'app-fill-types-selection',
+    templateUrl: './fill-types-selection.component.html',
+    styleUrls: ['./fill-types-selection.component.scss'],
 })
-export class TypeOfFillSelectionComponent {
+export class FillTypesSelectionComponent {
     @Input() currentFillStyle: number;
     @Output() valueChange: EventEmitter<number> = new EventEmitter();
 

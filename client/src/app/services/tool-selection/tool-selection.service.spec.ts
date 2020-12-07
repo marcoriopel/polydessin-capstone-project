@@ -17,7 +17,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -73,7 +73,7 @@ describe('ToolSelectionService', () => {
                 { provide: FillService, useValue: new MockTool(TOOL_NAMES.FILL_TOOL_NAME) },
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
-                { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
+                { provide: PolygonService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
                 { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],

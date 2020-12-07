@@ -8,13 +8,13 @@ import { MouseButton, Quadrant } from '@app/ressources/global-variables/global-v
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from './circle.service';
-import { PolygoneService } from './polygone.service';
+import { PolygonService } from './polygon.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
 // tslint:disable:no-string-literal
-describe('PolygoneService', () => {
-    let service: PolygoneService;
+describe('PolygonService', () => {
+    let service: PolygonService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let circleServiceSpy: jasmine.SpyObj<CircleService>;
@@ -49,7 +49,7 @@ describe('PolygoneService', () => {
                 { provide: CircleService, useValue: circleServiceSpy },
             ],
         });
-        service = TestBed.inject(PolygoneService);
+        service = TestBed.inject(PolygonService);
         // tslint:disable:no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;

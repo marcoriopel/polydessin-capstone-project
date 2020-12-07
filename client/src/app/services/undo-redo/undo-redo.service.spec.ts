@@ -8,7 +8,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
@@ -30,7 +30,7 @@ describe('UndoRedoService', () => {
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let squareServiceSpy: jasmine.SpyObj<SquareService>;
     let circleServiceSpy: jasmine.SpyObj<CircleService>;
-    let polygoneServiceSpy: jasmine.SpyObj<PolygoneService>;
+    let polygoneServiceSpy: jasmine.SpyObj<PolygonService>;
 
     let obs: Subject<boolean>;
 
@@ -80,7 +80,7 @@ describe('UndoRedoService', () => {
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: SquareService, useValue: squareServiceSpy },
                 { provide: CircleService, useValue: circleServiceSpy },
-                { provide: PolygoneService, useValue: polygoneServiceSpy },
+                { provide: PolygonService, useValue: polygoneServiceSpy },
             ],
         });
         service = TestBed.inject(UndoRedoService);

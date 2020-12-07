@@ -21,7 +21,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 @Injectable({
     providedIn: 'root',
 })
-export class PolygoneService extends Tool {
+export class PolygonService extends Tool {
     name: string = TOOL_NAMES.POLYGONE_TOOL_NAME;
     lastPoint: Vec2;
     firstPoint: Vec2;

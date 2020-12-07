@@ -8,7 +8,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
@@ -35,7 +35,7 @@ export class UndoRedoService extends Tool {
         public eraserService: EraserService,
         public lineService: LineService,
         public brushService: BrushService,
-        public polygoneService: PolygoneService,
+        public polygoneService: PolygonService,
         public selectionService: SelectionService,
         public stampService: StampService,
     ) {
