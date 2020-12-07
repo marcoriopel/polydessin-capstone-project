@@ -15,8 +15,6 @@ export class ColorPickerComponent implements AfterViewInit {
     primaryColor: string = '#000000';
     secondaryColor: string = '#000000';
     colors: string[] = ['#000000'];
-    minOpacity: number = 0;
-    maxOpacity: number = MAX_OPACITY;
     primaryOpacity: number = MAX_OPACITY;
     secondaryOpacity: number = MAX_OPACITY;
 
@@ -60,28 +58,28 @@ export class ColorPickerComponent implements AfterViewInit {
     }
 
     decrementPrimaryOpacity(): void {
-        if (this.primaryOpacity > this.minOpacity) {
+        if (this.primaryOpacity > 0) {
             --this.primaryOpacity;
         }
         this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
     }
 
     incrementPrimaryOpacity(): void {
-        if (this.primaryOpacity < this.maxOpacity) {
+        if (this.primaryOpacity < MAX_OPACITY) {
             ++this.primaryOpacity;
         }
         this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
     }
 
     decrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity > this.minOpacity) {
+        if (this.secondaryOpacity > 0) {
             --this.secondaryOpacity;
         }
         this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
     }
 
     incrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity < this.maxOpacity) {
+        if (this.secondaryOpacity < MAX_OPACITY) {
             ++this.secondaryOpacity;
         }
         this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
