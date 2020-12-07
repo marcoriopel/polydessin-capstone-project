@@ -19,7 +19,7 @@ export class PencilService extends Tool {
             type: 'pencil',
             path: [],
             lineWidth: 1,
-            primaryColor: 'black',
+            primaryColor: this.colorSelectionService.primaryColor,
         };
     }
 
