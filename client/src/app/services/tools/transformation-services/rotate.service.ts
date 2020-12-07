@@ -80,7 +80,13 @@ export class RotateService {
         this.clearSelectionBackground();
         this.drawingService.previewCtx.save();
         this.rotatePreviewCanvas();
-        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        this.drawingService.previewCtx.drawImage(
+            this.selectionImage,
+            this.selection.startingPoint.x,
+            this.selection.startingPoint.y,
+            this.selection.width,
+            this.selection.height,
+        );
         this.drawingService.previewCtx.restore();
     }
 

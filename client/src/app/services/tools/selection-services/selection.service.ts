@@ -35,7 +35,7 @@ export class SelectionService extends Tool {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    initialSelectionCorners: SelectionCorners = {
+    selectionCorners: SelectionCorners = {
         topLeft: { coordinates: { x: 0, y: 0 }, currentAngle: 0, initialAngle: 0 },
         topRight: { coordinates: { x: 0, y: 0 }, currentAngle: 0, initialAngle: 0 },
         bottomLeft: { coordinates: { x: 0, y: 0 }, currentAngle: 0, initialAngle: 0 },
@@ -135,7 +135,17 @@ export class SelectionService extends Tool {
     }
 
     onMouseUp(event: MouseEvent): void {
-        this.isResizing = false;
+        if (this.isResizing) {
+            // this.selectionResizeService.printSelectionOnBaseCtx();
+            this.moveService.initialize(this.selection, this.selectionImage);
+            this.setSelectionCorners();
+            this.strokeSelection();
+            this.updateSelectionCorners();
+            this.setSelectionPoint();
+            this.isResizing = false;
+            return;
+        }
+        this.currentPoint = SELECTION_POINTS_NAMES.NO_POINTS;
         if (this.isNewSelection) {
             // setUp underlying service
 
@@ -147,9 +157,11 @@ export class SelectionService extends Tool {
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionEmptySubject.next(false);
                 this.isSelectionOver = false;
-                this.setSelection(this.initialSelection, this.selection);
+                // this.setSelection(this.initialSelection, this.selection);
                 this.setSelectionData();
                 this.setSelectionCorners();
+                this.setSelectionPoint();
+                this.initialize();
             }
             // reset underlying service to original form
             this.underlyingService.fillStyle = currentFillStyle;
@@ -166,38 +178,38 @@ export class SelectionService extends Tool {
     }
 
     setSelectionCorners(): void {
-        const width = this.initialSelection.width;
-        const height = this.initialSelection.height;
+        const width = this.selection.width;
+        const height = this.selection.height;
         const hypothenuse = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
         const topRightCornerAngle = Math.round(Math.asin(height / hypothenuse) * (DEGREES_180 / Math.PI));
-        this.initialSelectionCorners.topRight = {
+        this.selectionCorners.topRight = {
             coordinates: {
-                x: this.initialSelection.startingPoint.x + this.initialSelection.width,
-                y: this.initialSelection.startingPoint.y,
+                x: this.selection.startingPoint.x + this.selection.width,
+                y: this.selection.startingPoint.y,
             },
             currentAngle: topRightCornerAngle,
             initialAngle: topRightCornerAngle,
         };
-        this.initialSelectionCorners.topLeft = {
+        this.selectionCorners.topLeft = {
             coordinates: {
-                x: this.initialSelection.startingPoint.x,
-                y: this.initialSelection.startingPoint.y,
+                x: this.selection.startingPoint.x,
+                y: this.selection.startingPoint.y,
             },
             currentAngle: DEGREES_180 - topRightCornerAngle,
             initialAngle: DEGREES_180 - topRightCornerAngle,
         };
-        this.initialSelectionCorners.bottomLeft = {
+        this.selectionCorners.bottomLeft = {
             coordinates: {
-                x: this.initialSelection.startingPoint.x,
-                y: this.initialSelection.startingPoint.y + this.initialSelection.height,
+                x: this.selection.startingPoint.x,
+                y: this.selection.startingPoint.y + this.selection.height,
             },
             currentAngle: DEGREES_180 + topRightCornerAngle,
             initialAngle: DEGREES_180 + topRightCornerAngle,
         };
-        this.initialSelectionCorners.bottomRight = {
+        this.selectionCorners.bottomRight = {
             coordinates: {
-                x: this.initialSelection.startingPoint.x + this.initialSelection.width,
-                y: this.initialSelection.startingPoint.y + this.initialSelection.height,
+                x: this.selection.startingPoint.x + this.selection.width,
+                y: this.selection.startingPoint.y + this.selection.height,
             },
             currentAngle: MAX_ANGLE - topRightCornerAngle,
             initialAngle: -topRightCornerAngle,
@@ -205,43 +217,35 @@ export class SelectionService extends Tool {
     }
 
     updateSelectionCorners(): void {
-        const radius = Math.sqrt(Math.pow(this.initialSelection.width, 2) + Math.pow(this.initialSelection.height, 2)) / 2;
+        const radius = Math.sqrt(Math.pow(this.selection.width, 2) + Math.pow(this.selection.height, 2)) / 2;
 
-        this.initialSelectionCorners.topRight.currentAngle = this.updateAngle(
-            this.initialSelectionCorners.topRight.initialAngle - this.rotateService.angle,
-        );
-        this.initialSelectionCorners.topLeft.currentAngle = this.updateAngle(
-            this.initialSelectionCorners.topLeft.initialAngle - this.rotateService.angle,
-        );
-        this.initialSelectionCorners.bottomRight.currentAngle = this.updateAngle(
-            this.initialSelectionCorners.bottomRight.initialAngle - this.rotateService.angle,
-        );
-        this.initialSelectionCorners.bottomLeft.currentAngle = this.updateAngle(
-            this.initialSelectionCorners.bottomLeft.initialAngle - this.rotateService.angle,
-        );
+        this.selectionCorners.topRight.currentAngle = this.updateAngle(this.selectionCorners.topRight.initialAngle - this.rotateService.angle);
+        this.selectionCorners.topLeft.currentAngle = this.updateAngle(this.selectionCorners.topLeft.initialAngle - this.rotateService.angle);
+        this.selectionCorners.bottomRight.currentAngle = this.updateAngle(this.selectionCorners.bottomRight.initialAngle - this.rotateService.angle);
+        this.selectionCorners.bottomLeft.currentAngle = this.updateAngle(this.selectionCorners.bottomLeft.initialAngle - this.rotateService.angle);
         const selectionCenterX = this.selection.startingPoint.x + this.selection.width / 2;
         const selectionCenterY = this.selection.startingPoint.y + this.selection.height / 2;
         const selectionCenter: Vec2 = { x: selectionCenterX, y: selectionCenterY };
 
-        this.initialSelectionCorners.topRight.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
-        this.initialSelectionCorners.topRight.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.topRight.coordinates.x =
+            selectionCenter.x + Math.cos(this.selectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.topRight.coordinates.y =
+            selectionCenter.y - Math.sin(this.selectionCorners.topRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
-        this.initialSelectionCorners.topLeft.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
-        this.initialSelectionCorners.topLeft.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.topLeft.coordinates.x =
+            selectionCenter.x + Math.cos(this.selectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.topLeft.coordinates.y =
+            selectionCenter.y - Math.sin(this.selectionCorners.topLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
-        this.initialSelectionCorners.bottomRight.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
-        this.initialSelectionCorners.bottomRight.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.bottomRight.coordinates.x =
+            selectionCenter.x + Math.cos(this.selectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.bottomRight.coordinates.y =
+            selectionCenter.y - Math.sin(this.selectionCorners.bottomRight.currentAngle * (Math.PI / DEGREES_180)) * radius;
 
-        this.initialSelectionCorners.bottomLeft.coordinates.x =
-            selectionCenter.x + Math.cos(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
-        this.initialSelectionCorners.bottomLeft.coordinates.y =
-            selectionCenter.y - Math.sin(this.initialSelectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.bottomLeft.coordinates.x =
+            selectionCenter.x + Math.cos(this.selectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
+        this.selectionCorners.bottomLeft.coordinates.y =
+            selectionCenter.y - Math.sin(this.selectionCorners.bottomLeft.currentAngle * (Math.PI / DEGREES_180)) * radius;
     }
 
     updateAngle(newAngle: number): number {
@@ -262,7 +266,10 @@ export class SelectionService extends Tool {
             this.setCursor();
         }
         if (this.isResizing) {
-            this.selectionResizeService.resizeSelection(this.currentPoint);
+            const coordinates = this.getPositionFromMouse(event);
+            this.selectionResizeService.initialize(this.selection, this.selectionImage);
+            const newSelection = this.selectionResizeService.resizeSelection(coordinates, this.currentPoint);
+            this.setSelection(this.selection, newSelection);
         }
 
         if (this.isNewSelection) {
@@ -534,16 +541,9 @@ export class SelectionService extends Tool {
         if (!this.isSelectionOver) {
             this.rotateService.onWheelEvent(event);
             this.updateSelectionCorners();
-            this.resizeSelectionBox();
             this.strokeSelection();
             this.setSelectionPoint();
         }
-    }
-
-    resizeSelectionBox(): void {
-        // const radius = Math.sqrt(Math.pow(this.selection.width / 2, 2) + Math.pow(this.selection.height / 2, 2));
-        // Do math stuff here
-        // console.log(this.initialSelectionCorners);
     }
 
     cut(): void {

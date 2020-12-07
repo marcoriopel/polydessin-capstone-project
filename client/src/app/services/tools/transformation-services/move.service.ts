@@ -25,7 +25,7 @@ export class MoveService {
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.setSelection(this.initialSelection, selection);
+        // this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }
@@ -174,7 +174,13 @@ export class MoveService {
         this.clearSelectionBackground();
         this.drawingService.previewCtx.save();
         this.rotateService.rotatePreviewCanvas();
-        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        this.drawingService.previewCtx.drawImage(
+            this.selectionImage,
+            this.selection.startingPoint.x,
+            this.selection.startingPoint.y,
+            this.selection.width,
+            this.selection.height,
+        );
         this.drawingService.previewCtx.restore();
     }
 

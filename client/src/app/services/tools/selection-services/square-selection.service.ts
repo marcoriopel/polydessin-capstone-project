@@ -44,7 +44,6 @@ export class SquareSelectionService extends SelectionService {
         );
         this.moveService.initialize(this.selection, this.selectionImage);
         this.rotateService.initialize(this.selection, this.selectionImage);
-        this.selectionResizeService.initialize(this.selection, this.selectionImage);
     }
 
     setMagnetismAlignment(alignment: string): void {
@@ -67,18 +66,18 @@ export class SquareSelectionService extends SelectionService {
 
             // BOITE ENGLOBANTE ICI!
             const highestVerticalSelectionPoint = Math.max(
-                this.initialSelectionCorners.topRight.coordinates.y,
-                this.initialSelectionCorners.bottomRight.coordinates.y,
-                this.initialSelectionCorners.topLeft.coordinates.y,
-                this.initialSelectionCorners.bottomLeft.coordinates.y,
+                this.selectionCorners.topRight.coordinates.y,
+                this.selectionCorners.bottomRight.coordinates.y,
+                this.selectionCorners.topLeft.coordinates.y,
+                this.selectionCorners.bottomLeft.coordinates.y,
             );
             this.selectionContour.height = (highestVerticalSelectionPoint - center.y) * 2;
 
             const highestHorizontalSelectionPoint = Math.max(
-                this.initialSelectionCorners.topRight.coordinates.x,
-                this.initialSelectionCorners.bottomRight.coordinates.x,
-                this.initialSelectionCorners.topLeft.coordinates.x,
-                this.initialSelectionCorners.bottomLeft.coordinates.x,
+                this.selectionCorners.topRight.coordinates.x,
+                this.selectionCorners.bottomRight.coordinates.x,
+                this.selectionCorners.topLeft.coordinates.x,
+                this.selectionCorners.bottomLeft.coordinates.x,
             );
             this.selectionContour.width = (highestHorizontalSelectionPoint - center.x) * 2;
 
