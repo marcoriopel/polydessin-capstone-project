@@ -116,5 +116,6 @@ export class CircleSelectionService extends SelectionService {
             );
             this.setSelectionPoint();
         }
+        this.drawingService.autoSave();
     }
 }

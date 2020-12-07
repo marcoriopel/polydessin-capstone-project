@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GRID_STEP, MAX_GRID_SQUARE_SIZE, MIN_GRID_SQUARE_SIZE } from '@app/ressources/global-variables/global-variables';
-import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/sidebar-elements';
+import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
@@ -130,19 +130,19 @@ describe('GridComponent', () => {
         expect(drawingServiceSpy.setGrid).not.toHaveBeenCalled();
     });
 
-    it('should should change opacity on changeOpacity call and set grid if grid is enabled', () => {
+    it('should change opacity on changeOpacity call and set grid if grid is enabled', () => {
         component.isEnabled = true;
-        component.currentOpacity = 1;
-        component.changeOpacity(0.5);
+        component.currentOpacity = 100;
+        component.changeOpacity(50);
         expect(drawingServiceSpy.setGrid).toHaveBeenCalled();
-        expect(component.currentOpacity).toEqual(0.5);
+        expect(component.currentOpacity).toEqual(50);
     });
 
-    it('should should change opacity on changeOpacity call and not set grid if grid is disabled', () => {
+    it('should change opacity on changeOpacity call and not set grid if grid is disabled', () => {
         component.isEnabled = false;
-        component.currentOpacity = 1;
-        component.changeOpacity(0.5);
+        component.currentOpacity = 100;
+        component.changeOpacity(50);
         expect(drawingServiceSpy.setGrid).not.toHaveBeenCalled();
-        expect(component.currentOpacity).toEqual(0.5);
+        expect(component.currentOpacity).toEqual(50);
     });
 });

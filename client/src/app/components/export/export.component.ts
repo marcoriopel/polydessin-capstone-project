@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
 
 @Component({
     selector: 'app-export',
@@ -25,26 +27,38 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
-    emailAdress: string = '';
     imagesrc: string = '';
     urlImage: string = '';
     urlExtension: string = '';
     filterCanvas: HTMLCanvasElement = document.createElement('canvas');
     link: HTMLAnchorElement = document.createElement('a');
     ownerForm: FormGroup;
-    emailAddress: string;
+    emailAddress: string = '';
+    userForm: FormGroup;
+    isSendMailButtonDisabled: boolean = false;
+    isExportButtonDisabled: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
         public hotkeyService: HotkeyService,
         private dialogRef: MatDialogRef<ExportComponent>,
         private httpClient: HttpClient,
+        public textService: TextService,
+        public serverResponseService: ServerResponseService,
+        public dialog: MatDialog,
     ) {}
     @ViewChild('exportModal') exportModal: ElementRef<HTMLButtonElement>;
     ngOnInit(): void {
+        if (this.textService.isNewText) {
+            this.textService.createText();
+        }
+
         this.hotkeyService.isHotkeyEnabled = false;
         this.ownerForm = new FormGroup({
             name: new FormControl(this.name, [Validators.required, Validators.maxLength(MAX_NAME_LENGTH)]),
+        });
+        this.userForm = new FormGroup({
+            email: new FormControl('', [Validators.required, Validators.email]),
         });
     }
     ngAfterViewInit(): void {
@@ -83,9 +97,11 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     exportLocally(): void {
+        this.isExportButtonDisabled = true;
         if (this.name !== '' && this.name.length <= MAX_NAME_LENGTH) {
             this.link.href = this.urlImage;
             this.link.setAttribute('download', this.name);
+            this.isExportButtonDisabled = false;
             this.link.click();
             this.dialogRef.close();
         }
@@ -100,6 +116,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     sendMail(): void {
+        this.isSendMailButtonDisabled = true;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
         const body = {
@@ -112,9 +129,18 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
             .post(url, body)
             .toPromise()
             // tslint:disable-next-line: no-empty
-            .then(() => {})
-            .catch((E: Error) => {
-                throw E;
+            .then(() => {
+                this.isSendMailButtonDisabled = false;
+                this.serverResponseService.sendMailConfirmSnackBar();
+                this.dialog.closeAll();
+            })
+            .catch((error) => {
+                this.isSendMailButtonDisabled = false;
+                this.serverResponseService.sendMailErrorSnackBar(error.error);
+                this.dialog.closeAll();
+                throw error;
             });
+        this.link.click();
+        this.dialogRef.close();
     }
 }

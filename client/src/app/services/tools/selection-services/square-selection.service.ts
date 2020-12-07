@@ -93,5 +93,6 @@ export class SquareSelectionService extends SelectionService {
             );
             this.setSelectionPoint();
         }
+        this.drawingService.autoSave();
     }
 }
