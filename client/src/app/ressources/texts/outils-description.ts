@@ -15,13 +15,13 @@ export const OTHER_FEATURES: Feature[] = [
         name: 'Magnétisme',
         description:
             "Cette option deplacera une boite englobant sur la ligne de la grille la plus proche lorsque vous la déplacez avec la sourie. Ceci ce fait en y et x. Il suffit d'activer cette outil pour l'utiliser. Il aussi possible de faire le déplacement avec les touches directionnelles",
-        picture: './../../../assets/img/couleur.PNG',
+        picture: './../../../assets/img/magnétisme.PNG',
     },
     {
         name: 'Grille',
         description:
             "Cette fonctionnalité permet d'afficher une grille sur la surface de dessin. Il est possible d'activer et de désactiver la grille, de lui assigner une valeur d'opacité et d'indiquer la taille des carrées. Il est possible de modifier la taille des carrées avec les touches + et -",
-        picture: './../../../assets/img/couleur.PNG',
+        picture: './../../../assets/img/grille.PNG',
     },
 ];
 
@@ -30,15 +30,7 @@ export const UNDO_REDO: Feature[] = [
         name: 'Annuler-refaire',
         description:
             "Cet outil permet d'annuler et de refaire vos dernières modifications sur la surface du dessin. IL est possible d'utiliser le raccourci CTRL + Z pour annuler une action et le raccourci CTRL + SHIFT + Z pour refaire une action.",
-        picture: './../../../assets/img/Annuler.PNG',
-    },
-];
-
-export const COPIE_PASTE: Feature[] = [
-    {
-        name: 'Copier-Coller',
-        description: 'Cet outil permet de copier une sélection et de la coller sur la surface de dessin.',
-        picture: './../../../assets/img/Annuler.PNG',
+        picture: './../../../assets/img/annuler.PNG',
     },
 ];
 
@@ -59,19 +51,19 @@ export const BASIC_TOOLS: Feature[] = [
         name: 'Texte',
         description:
             "Cet outil permet d'écrire du texte sur la surface de dessin. Un indicateur est présent dans le texte pour vous permettre de savoir où vous êtes rendu. Il est possible de bouger cette indicateur avec les touches directionnelles. Il est possible de changer la taille, la police, le style et l'alignement du texte.",
-        picture: './../../../assets/video/ligne.mp4',
+        picture: './../../../assets/video/texte.mp4',
     },
     {
         name: 'Étampe',
         description:
             "Cet outil permet d'apposer de petites images sur le dessin. Pour l'afficher sur la surface de dessin, il suffit de faire un clic gauche à l'endroit où on désire la mettre. Il est possible faire pivoter l'étampe sur elle-même avec la roulette de la sourie.",
-        picture: './../../../assets/video/ligne.mp4',
+        picture: './../../../assets/video/etampe.mp4',
     },
     {
         name: 'Pipette',
         description:
             "Cet outil permet de sélectionner la couleur sous la souris. Un cercle de prévisualisation qui représente les pixels sous la souris surdimensionnés et qui entoure le pixel qui sera sélectionné est présenté dans la barre d'attribut. Un clic gauche change la couleur principal et un clic gauche la couleur secondaire",
-        picture: './../../../assets/video/brush.mp4',
+        picture: './../../../assets/video/pipette.mp4',
     },
 ];
 
@@ -92,13 +84,13 @@ export const DRAWING_TOOLS: Feature[] = [
         name: 'Plume',
         description:
             "La plume permet de faire tracer un trait très mince comme une ligne. Vous pouvez changer l'angle du trait à l'aide la roulette de la sourie.",
-        picture: './../../../assets/video/brush.mp4',
+        picture: './../../../assets/video/plume.mp4',
     },
     {
         name: 'Aérosol',
         description:
             "L'aérosol simule un effet de peinture en aérosol. Dès que le bouton est enfoncé, un jet de peinture est vaporisé sous le pointeur de la sourie.",
-        picture: './../../../assets/video/brush.mp4',
+        picture: './../../../assets/video/aerosol.mp4',
     },
 ];
 
@@ -136,18 +128,18 @@ export const TRANSFORMATIONS: Feature[] = [
         name: 'Déplacement par rectangle',
         description:
             "Cette fonctionnalité permet de sélection une section en forme de rectangle de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
-        picture: './../../../assets/video/selection_par_rectangle.mp4',
+        picture: './../../../assets/video/selection_rectangle.mp4',
     },
     {
         name: 'Déplacement par ellipse',
         description:
             "Cette fonctionnalité permet de sélection une section en forme d'ellipse de la surface de dessin et de déplacer cette sélection avec la souris à l'aide d'un glisser-déposer avec le bouton gauche de la souris. ",
-        picture: './../../../assets/video/selection_par_ellipse.mp4',
+        picture: './../../../assets/video/selection_ellipse.mp4',
     },
     {
         name: "Rotation d'une sélection",
         description: 'Cette fonctionnalité permet de pivoter une sélection sur son centre avec le roulette de la sourie.',
-        picture: './../../../assets/video/selection_par_ellipse.mp4',
+        picture: './../../../assets/video/rotation_selection.mp4',
     },
     {
         name: "Redimensionnement d'une sélection",
@@ -164,6 +156,12 @@ export const TRANSFORMATIONS: Feature[] = [
     {
         name: 'Baguette magique',
         description: 'Cette fonctionnalité permet de sélectionner avec un clic gauche une région spécifique sur la surface de dessin.',
-        picture: './../../../assets/video/redimensionnement.mp4',
+        picture: './../../../assets/video/baguette_magique.mp4',
+    },
+    {
+        name: 'Copier Coller Couper',
+        description:
+            'Cet outil permet de copier une sélection et de la coller sur la surface de dessin. On peut aussi faire une sélection et la couper',
+        picture: './../../../assets/video/copier-coller-couper.mp4',
     },
 ];

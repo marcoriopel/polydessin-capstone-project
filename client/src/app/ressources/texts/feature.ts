@@ -15,7 +15,7 @@ export const GENERALS_FEATURE: Feature[] = [
         name: 'Carrousel de dessin',
         description:
             "Le carrousel de dessin permet d'ouvrir un dessin déjà créé et sauvegardé sur le serveur. Les dessins sauvegardés sont sous la forme d'un carrousel. Il est possible de voir trois dessins en même temps. Il est possible d'entrer des étiquettes pour pouvoir filtrer les dessins. Il est possible de charger le dessin en cliquant dessus.",
-        picture: './../../../assets/img/carrousel_de_dessin.PNG',
+        picture: './../../../assets/img/carroussel.PNG',
     },
     {
         name: 'Sauvegarde',
@@ -30,7 +30,7 @@ export const GENERALS_FEATURE: Feature[] = [
         picture: './../../../assets/img/exporter.PNG',
     },
     {
-        name: 'Sauvegarde autom',
+        name: 'Sauvegarde automatique',
         description:
             "Cette fonctionnalité permet de sauvegarder le dessin automatiquement pendant son édition. La sauvegarde est déclenchée après la création d'un dessin, le chargement d'un dessin ou lors d'une modification sur la surface de dessin.",
         picture: './../../../assets/img/exporter.PNG',
