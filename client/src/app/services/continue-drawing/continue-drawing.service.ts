@@ -24,8 +24,8 @@ export class ContinueDrawingService {
         public databaseService: DatabaseService,
     ) {}
     continueDrawing(): void {
-        const sourceDrawingURL = localStorage.getItem('drawingKey') as string;
-        this.convertURIToImageData(sourceDrawingURL);
+        const sourceDrawingURI = localStorage.getItem('drawingKey') as string;
+        this.convertURIToImageData(sourceDrawingURI);
     }
 
     async convertURIToImageData(URI: string): Promise<void> {
