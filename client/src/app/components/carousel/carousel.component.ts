@@ -10,6 +10,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -38,7 +39,6 @@ export class CarouselComponent implements OnInit, OnDestroy {
     tags: string[] = [];
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
-
     constructor(
         public router: Router,
         public hotkeyService: HotkeyService,
@@ -47,11 +47,15 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
+        public textService: TextService,
     ) {}
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
 
     ngOnInit(): void {
+        if (this.textService.isNewText) {
+            this.textService.createText();
+        }
         this.hotkeyService.isHotkeyEnabled = false;
         this.loadDBData();
         this.currentRoute = this.router.url;

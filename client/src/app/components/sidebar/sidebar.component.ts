@@ -12,6 +12,7 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { NewDrawingService } from '@app/services/new-drawing/new-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
@@ -42,6 +43,7 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
         public hotkeyService: HotkeyService,
         public squareSelectionService: SquareSelectionService,
         public circleSelectionService: CircleSelectionService,
+        public magicWandService: MagicWandService,
         public clipboardService: ClipboardService,
     ) {}
 
@@ -58,61 +60,30 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.undoRedoService.getUndoAvailability().subscribe((value) => {
-            if (value) {
-                this.undoButton.nativeElement.style.cursor = 'pointer';
-                this.undoButton.nativeElement.style.opacity = '1';
-            } else {
-                this.undoButton.nativeElement.style.cursor = 'not-allowed';
-                this.undoButton.nativeElement.style.opacity = '0.5';
-            }
+            this.setButtonAvailability(value, this.undoButton);
         });
 
         this.undoRedoService.getRedoAvailability().subscribe((value) => {
-            if (value) {
-                this.redoButton.nativeElement.style.cursor = 'pointer';
-                this.redoButton.nativeElement.style.opacity = '1';
-            } else {
-                this.redoButton.nativeElement.style.cursor = 'not-allowed';
-                this.redoButton.nativeElement.style.opacity = '0.5';
-            }
+            this.setButtonAvailability(value, this.redoButton);
         });
 
         this.squareSelectionService.getIsSelectionEmptySubject().subscribe((value) => {
-            if (!value) {
-                this.cutButton.nativeElement.style.cursor = 'pointer';
-                this.cutButton.nativeElement.style.opacity = '1';
-                this.copyButton.nativeElement.style.cursor = 'pointer';
-                this.copyButton.nativeElement.style.opacity = '1';
-            } else {
-                this.cutButton.nativeElement.style.cursor = 'not-allowed';
-                this.cutButton.nativeElement.style.opacity = '0.5';
-                this.copyButton.nativeElement.style.cursor = 'not-allowed';
-                this.copyButton.nativeElement.style.opacity = '0.5';
-            }
+            this.setButtonAvailability(!value, this.cutButton);
+            this.setButtonAvailability(!value, this.copyButton);
         });
 
         this.circleSelectionService.getIsSelectionEmptySubject().subscribe((value) => {
-            if (!value) {
-                this.cutButton.nativeElement.style.cursor = 'pointer';
-                this.cutButton.nativeElement.style.opacity = '1';
-                this.copyButton.nativeElement.style.cursor = 'pointer';
-                this.copyButton.nativeElement.style.opacity = '1';
-            } else {
-                this.cutButton.nativeElement.style.cursor = 'not-allowed';
-                this.cutButton.nativeElement.style.opacity = '0.5';
-                this.copyButton.nativeElement.style.cursor = 'not-allowed';
-                this.copyButton.nativeElement.style.opacity = '0.5';
-            }
+            this.setButtonAvailability(!value, this.cutButton);
+            this.setButtonAvailability(!value, this.copyButton);
+        });
+
+        this.magicWandService.getIsSelectionEmptySubject().subscribe((value) => {
+            this.setButtonAvailability(!value, this.cutButton);
+            this.setButtonAvailability(!value, this.copyButton);
         });
 
         this.clipboardService.getIsPasteAvailableSubject().subscribe((value) => {
-            if (value) {
-                this.pasteButton.nativeElement.style.cursor = 'pointer';
-                this.pasteButton.nativeElement.style.opacity = '1';
-            } else {
-                this.pasteButton.nativeElement.style.cursor = 'not-allowed';
-                this.pasteButton.nativeElement.style.opacity = '0.5';
-            }
+            this.setButtonAvailability(value, this.pasteButton);
         });
     }
 
@@ -151,6 +122,16 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
         this.destroy$.unsubscribe();
     }
 
+    setButtonAvailability(value: boolean, buttonRef: ElementRef): void {
+        if (value) {
+            buttonRef.nativeElement.style.cursor = 'pointer';
+            buttonRef.nativeElement.style.opacity = '1';
+        } else {
+            buttonRef.nativeElement.style.cursor = 'not-allowed';
+            buttonRef.nativeElement.style.opacity = '0.5';
+        }
+    }
+
     cut(): void {
         switch (this.selectedTool) {
             case this.toolNames.SQUARE_SELECTION_TOOL_NAME: {
@@ -159,6 +140,10 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
             }
             case this.toolNames.CIRCLE_SELECTION_TOOL_NAME: {
                 this.circleSelectionService.cut();
+                break;
+            }
+            case this.toolNames.MAGIC_WAND_TOOL_NAME: {
+                this.magicWandService.cut();
                 break;
             }
         }
@@ -174,6 +159,10 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.circleSelectionService.copy();
                 break;
             }
+            case this.toolNames.MAGIC_WAND_TOOL_NAME: {
+                this.magicWandService.copy();
+                break;
+            }
         }
     }
 
@@ -185,6 +174,10 @@ export class SidebarComponent implements OnInit, OnDestroy, AfterViewInit {
             }
             case this.toolNames.CIRCLE_SELECTION_TOOL_NAME: {
                 this.circleSelectionService.paste();
+                break;
+            }
+            case this.toolNames.MAGIC_WAND_TOOL_NAME: {
+                this.magicWandService.paste();
                 break;
             }
         }

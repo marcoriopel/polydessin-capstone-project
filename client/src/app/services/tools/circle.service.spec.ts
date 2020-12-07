@@ -34,7 +34,7 @@ describe('CircleService', () => {
         drawCanvas.height = HEIGHT;
         gridCanvasStub = canvas as HTMLCanvasElement;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -302,6 +302,7 @@ describe('CircleService', () => {
         service.mouseDown = false;
         service.onMouseUp(mouseEvent);
         expect(drawShapeSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should not draw anything on detection of mouse move if it was not down', () => {
@@ -392,6 +393,7 @@ describe('CircleService', () => {
         service.onMouseDown(mouseEvent);
         service.onMouseUp(mouseEventLClick);
         expect(ctxFillSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('drawCircle should not call fill if the fill style is set to border', () => {

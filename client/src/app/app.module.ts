@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
@@ -11,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -39,16 +41,19 @@ import { CircleSelectionAttributesComponent } from './components/tools/circle-se
 import { EraserAttributesComponent } from './components/tools/eraser-attributes/eraser-attributes.component';
 import { FillAttributesComponent } from './components/tools/fill-attributes/fill-attributes.component';
 import { LineAttributesComponent } from './components/tools/line-attributes/line-attributes.component';
+import { MagicWandAttributesComponent } from './components/tools/magic-wand-attributes/magic-wand-attributes.component';
 import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
 import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
+import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
 import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareSelectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
 import { StampAttributesComponent } from './components/tools/stamp-attributes/stamp-attributes.component';
+import { TextComponent } from './components/tools/text-attributes/text-attributes.component';
 import { UserGuideComponent } from './components/userguide/user-guide.component';
 
 @NgModule({
@@ -57,6 +62,7 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         GridComponent,
         EditorComponent,
         SidebarComponent,
+        MagicWandAttributesComponent,
         DrawingComponent,
         MainPageComponent,
         UserGuideComponent,
@@ -85,7 +91,9 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         CircleSelectionAttributesComponent,
         PenAttributesComponent,
         SprayAttributesComponent,
+        TextComponent,
         StampAttributesComponent,
+        MagnetismComponent,
     ],
     imports: [
         BrowserModule,
@@ -104,8 +112,10 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         MatRadioModule,
         MatTooltipModule,
         MatIconModule,
+        MatButtonToggleModule,
         MatProgressSpinnerModule,
         MatExpansionModule,
+        MatSelectModule,
         FormsModule,
         ReactiveFormsModule,
         MatCheckboxModule,

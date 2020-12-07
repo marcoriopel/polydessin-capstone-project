@@ -19,10 +19,12 @@ import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
 import { PolygoneService } from '@app/services/tools/polygone.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
@@ -55,7 +57,9 @@ export class ToolSelectionService {
         public pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
+        public magicWandService: MagicWandService,
         public undoRedoService: UndoRedoService,
+        public textService: TextService,
         public stampService: StampService,
     ) {
         this.tools = new Map<string, Tool>([
@@ -72,7 +76,9 @@ export class ToolSelectionService {
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
             [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.TEXT_TOOL_NAME, textService],
             [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
+            [TOOL_NAMES.MAGIC_WAND_TOOL_NAME, magicWandService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService
@@ -170,8 +176,8 @@ export class ToolSelectionService {
         this.currentTool.onMouseLeave();
     }
 
-    currentToolMouseEnter(): void {
-        this.currentTool.onMouseEnter();
+    currentToolMouseEnter(event: MouseEvent): void {
+        this.currentTool.onMouseEnter(event);
     }
 
     currentToolWheelEvent(event: WheelEvent): void {

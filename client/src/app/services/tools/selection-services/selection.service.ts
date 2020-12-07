@@ -32,6 +32,7 @@ export class SelectionService extends Tool {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     transormation: string = '';
+    selectionType: number;
     underlyingService: SquareService | CircleService;
     isEscapeKeyPressed: boolean;
     isShiftKeyDown: boolean;
@@ -61,7 +62,10 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.lineWidth = 1;
         this.drawingService.previewCtx.strokeStyle = 'black';
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
-        if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+        if (
+            (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) &&
+            this.selectionType === this.clipboardService.selectionType
+        ) {
             this.clipboardService.isPasteAvailableSubject.next(true);
         }
     }
@@ -75,6 +79,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
@@ -128,6 +133,7 @@ export class SelectionService extends Tool {
         this.strokeSelection();
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -185,7 +191,7 @@ export class SelectionService extends Tool {
             }
             case 'Shift': {
                 this.isShiftKeyDown = true;
-                this.underlyingService.isShiftKeyDown = true;
+                if (this.underlyingService) this.underlyingService.isShiftKeyDown = true;
                 break;
             }
             case 'Delete': {
@@ -360,6 +366,7 @@ export class SelectionService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (!this.isSelectionOver) {
             this.rotateService.onWheelEvent(event);
             this.strokeSelection();
@@ -370,6 +377,7 @@ export class SelectionService extends Tool {
     cut(): void {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.clipboardService.selectionType = this.selectionType;
             this.moveService.clearSelectionBackground();
             this.applyPreview();
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -382,12 +390,16 @@ export class SelectionService extends Tool {
     copy(): void {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.clipboardService.selectionType = this.selectionType;
             this.moveService.printSelectionOnPreview();
         }
     }
 
     paste(): void {
-        if (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) {
+        if (
+            (this.clipboardService.selection.height !== 0 || this.clipboardService.selection.height !== 0) &&
+            this.selectionType === this.clipboardService.selectionType
+        ) {
             if (!this.moveService.isTransformationOver || !this.isSelectionOver) {
                 this.moveService.clearSelectionBackground();
                 this.moveService.printSelectionOnPreview();
@@ -412,5 +424,7 @@ export class SelectionService extends Tool {
     getIsSelectionEmptySubject(): Observable<boolean> {
         return this.isSelectionEmptySubject.asObservable();
     }
+
+    setMagnetismAlignment(currentAlignment: string): void {}
     // tslint:disable-next-line: max-file-line-count
 }

@@ -13,6 +13,7 @@ import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-string-literal
 // tslint:disable: max-file-line-count
 // tslint:disable: no-magic-numbers
+// tslint:disable: no-any
 
 describe('SelectionService', () => {
     let service: SelectionService;
@@ -22,7 +23,7 @@ describe('SelectionService', () => {
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
-    let rotateService: SpyObj<RotateService>;
+    let rotateServiceSpy: SpyObj<RotateService>;
 
     beforeEach(() => {
         magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
@@ -31,7 +32,14 @@ describe('SelectionService', () => {
             'onMouseMoveMagnetism',
             'magnetismCoordinateReference',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'applyPreview']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'getCanvasData',
+            'updateStack',
+            'setIsToolInUse',
+            'applyPreview',
+            'autoSave',
+        ]);
         moveServiceSpy = jasmine.createSpyObj('MoveService', [
             'printSelectionOnPreview',
             'onMouseDown',
@@ -43,7 +51,7 @@ describe('SelectionService', () => {
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', ['onMouseDown', 'drawShape', 'onMouseMove', 'onKeyDown', 'onKeyUp']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
-        rotateService = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
 
@@ -51,7 +59,7 @@ describe('SelectionService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: MoveService, useValue: moveServiceSpy },
-                { provide: RotateService, useValue: rotateService },
+                { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
             ],
         });
@@ -224,6 +232,7 @@ describe('SelectionService', () => {
     it('onMouseUp should call strokeSelection and setSelectionPoint', () => {
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+
         service.isNewSelection = false;
 
         service.onMouseUp({} as MouseEvent);

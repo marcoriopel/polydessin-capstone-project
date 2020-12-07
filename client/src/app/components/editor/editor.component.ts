@@ -27,7 +27,7 @@ export class EditorComponent implements AfterViewInit {
     canvasResizingPoints: CanvasResizingPoints = CANVAS_RESIZING_POINTS;
     previewDiv: HTMLDivElement;
 
-    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z', 'd', 'm'];
+    shortcutsArray: string[] = ['c', 'p', 'w', '1', '2', '3', 'l', 'b', 'e', 'i', 'o', 'g', 's', 'r', 'a', 'z', 'Z', 'd', 'm', 't', '+', '-', 'v'];
 
     constructor(
         public hotkeyService: HotkeyService,
@@ -61,12 +61,9 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener('document:keydown', ['$event'])
     onKeyDown(event: KeyboardEvent): void {
-        if (this.shortcutsArray.includes(event.key.toString())) {
+        if (this.shortcutsArray.includes(event.key)) {
             this.hotkeyService.onKeyDown(event);
-        } else if (event.key.toString() === '+' || event.key.toString() === '-') {
-            this.toolSelectionService.currentToolKeyDown(event);
         }
-
         this.toolSelectionService.currentToolKeyDown(event);
     }
 

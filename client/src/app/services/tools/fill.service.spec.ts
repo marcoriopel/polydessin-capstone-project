@@ -16,7 +16,7 @@ describe('FillService', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData', 'updateStack', 'setIsToolInUse']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getPixelData', 'getCanvasData', 'updateStack', 'setIsToolInUse', 'autoSave']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['putImageData']);
         baseCtxSpy.filter = 'none';
         drawingServiceSpy.baseCtx = baseCtxSpy;
@@ -187,6 +187,7 @@ describe('FillService', () => {
         const expectedImageData: ImageData = baseCtxCompare.getImageData(0, 0, canvasCompare.width, canvasCompare.height);
 
         expect(currentImageData).toEqual(expectedImageData);
+        expect(drawingServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('contiguousFill should only fill inside canvas', () => {

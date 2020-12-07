@@ -8,8 +8,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
 import { Subject } from 'rxjs';
 import { SavingComponent } from './saving.component';
 
@@ -20,18 +20,18 @@ describe('SavingComponent', () => {
     let fixture: ComponentFixture<SavingComponent>;
     let databaseServiceSpy: SpyObj<DatabaseService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let imageObservable: Subject<void>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     let baseCanvas: HTMLCanvasElement;
     let baseCtx: CanvasRenderingContext2D;
+    let textServiceSpy: SpyObj<TextService>;
 
     beforeEach(async(() => {
         baseCanvas = document.createElement('canvas');
         baseCtx = baseCanvas.getContext('2d') as CanvasRenderingContext2D;
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['saveConfirmSnackBar', 'saveErrorSnackBar']);
-        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
+        textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         databaseServiceSpy = jasmine.createSpyObj('DatabaseService', ['addDrawing']);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas']);
@@ -45,10 +45,10 @@ describe('SavingComponent', () => {
             imports: [HttpClientModule, MatSnackBarModule, MatDialogModule, MatChipsModule, FormsModule, ReactiveFormsModule],
             providers: [
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
-                { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: DatabaseService, useValue: databaseServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },
                 { provide: DrawingService, useValue: drawingServiceSpy },
+                { provide: TextService, useValue: textServiceSpy },
             ],
         }).compileComponents();
     }));
@@ -61,6 +61,12 @@ describe('SavingComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should call createText if is the tool text', () => {
+        textServiceSpy.isNewText = true;
+        component.ngOnInit();
+        expect(textServiceSpy.createText).toHaveBeenCalled();
     });
 
     it('should set errorState to true if tag length is max', () => {

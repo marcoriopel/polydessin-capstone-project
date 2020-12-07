@@ -22,6 +22,11 @@ export class BrushService extends Tool {
         this.clearPath();
     }
 
+    reset(): void {
+        this.drawingService.baseCtx.filter = 'none';
+        this.drawingService.previewCtx.filter = 'none';
+    }
+
     onMouseDown(event: MouseEvent): void {
         if (event.button !== MouseButton.LEFT) {
             return;
@@ -50,6 +55,7 @@ export class BrushService extends Tool {
         }
         this.mouseDown = false;
         this.clearPath();
+        this.drawingService.autoSave();
     }
 
     onMouseLeave(): void {

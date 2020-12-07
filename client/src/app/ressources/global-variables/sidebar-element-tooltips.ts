@@ -22,12 +22,15 @@ export interface SidebarElementTooltips {
     EXPORT_DRAWING_DESCRIPTION: string;
     SELECT_ALL_DESCRIPTION: string;
     SEND_DESCRIPTION: string;
+    TEXT_TOOL_DESCRIPTION: string;
+    MAGIC_WAND_DESCRIPTION: string;
     CUT_DESCRIPTION: string;
     COPY_DESCRIPTION: string;
     PASTE_DESCRIPTION: string;
 }
 
 export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
+    MAGIC_WAND_DESCRIPTION: 'Baguette magique (V)',
     CAROUSEL_DESCRIPTION: 'Carroussel de dessin (Ctrl + G)',
     NEW_DRAWING_DESCRIPTION: 'Nouveau Dessin (Ctrl + O)',
     PENCIL_TOOL_DESCRIPTION: 'Crayon (C)',
@@ -39,6 +42,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     LINE_TOOL_DESCRIPTION: 'Ligne (L)',
     FILL_TOOL_DESCRIPTION: 'Sceau (B)',
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
+    TEXT_TOOL_DESCRIPTION: 'Texte (T)',
     PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
     POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
     STAMP_TOOL_DESCRIPTION: 'Étampe (D)',

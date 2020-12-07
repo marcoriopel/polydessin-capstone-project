@@ -60,8 +60,8 @@ export class DrawingComponent implements AfterViewInit {
         this.toolSelectionService.currentToolMouseLeave();
     }
     @HostListener('mouseenter', ['$event'])
-    onMouseEnter(): void {
-        this.toolSelectionService.currentToolMouseEnter();
+    onMouseEnter(event: MouseEvent): void {
+        this.toolSelectionService.currentToolMouseEnter(event);
     }
     @HostListener('mousewheel', ['$event'])
     onMouseWheel(event: WheelEvent): void {

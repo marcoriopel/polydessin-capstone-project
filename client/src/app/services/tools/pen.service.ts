@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
-import { DEGREES_180, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
+import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -30,9 +30,9 @@ export class PenService extends Tool {
     }
 
     changeAngle(newAngle: number): void {
-        newAngle %= DEGREES_180;
+        newAngle %= ANGLE_HALF_TURN;
         if (newAngle < 0) {
-            newAngle += DEGREES_180;
+            newAngle += ANGLE_HALF_TURN;
         }
         this.angle = newAngle;
         this.angleObservable.next(this.angle);
@@ -59,6 +59,7 @@ export class PenService extends Tool {
             this.drawingService.setIsToolInUse(false);
         }
         this.mouseDown = false;
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -87,7 +88,7 @@ export class PenService extends Tool {
         if (this.altKeyPressed) {
             rotationStep = 1;
         }
-        const newAngle = this.angle + (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
+        const newAngle = this.angle - (event.deltaY / Math.abs(event.deltaY)) * rotationStep;
         this.changeAngle(newAngle);
     }
 
@@ -112,7 +113,7 @@ export class PenService extends Tool {
     }
 
     toRadians(angle: number): number {
-        return angle * (Math.PI / DEGREES_180);
+        return angle * (Math.PI / ANGLE_HALF_TURN);
     }
 
     getAngle(): Observable<number> {
