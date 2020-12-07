@@ -1,6 +1,8 @@
+import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from './drawing.service';
 
 // tslint:disable: no-magic-numbers
@@ -8,6 +10,8 @@ describe('DrawingService', () => {
     let service: DrawingService;
     const WIDTH = 100;
     const HEIGHT = 100;
+    let injectorSpy: jasmine.SpyObj<Injector>;
+    let continueDrawingServiceSpy: jasmine.SpyObj<ContinueDrawingService>;
 
     beforeEach(() => {
         const canvas = document.createElement('canvas');
@@ -18,8 +22,16 @@ describe('DrawingService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        TestBed.configureTestingModule({});
+        continueDrawingServiceSpy = jasmine.createSpyObj('ContinueDrawingService', ['furtherDrawing']);
+        injectorSpy = jasmine.createSpyObj('injector', ['get']);
+        // tslint:disable-next-line: deprecation
+        injectorSpy.get.and.returnValue(continueDrawingServiceSpy);
+        TestBed.configureTestingModule({
+            providers: [],
+        });
         service = TestBed.inject(DrawingService);
+        // tslint:disable-next-line: no-string-literal
+        service['injector'] = injectorSpy;
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -77,7 +89,6 @@ describe('DrawingService', () => {
         service.initializeBaseCanvas();
         service.baseCtx.fillStyle = 'red';
         service.baseCtx.fillRect(0, 0, 1, 1);
-
         const canvasData = service.getCanvasData();
         expect(canvasData.data).toEqual(expectedCanvasData.data);
         expect(canvasData.width).toEqual(expectedCanvasData.width);

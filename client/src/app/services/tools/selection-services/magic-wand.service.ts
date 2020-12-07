@@ -8,6 +8,7 @@ import {
     MAX_PERCENTAGE,
     MouseButton,
     OFFSET,
+    SelectionType,
 } from '@app/ressources/global-variables/global-variables';
 import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -54,6 +55,7 @@ export class MagicWandService extends SelectionService {
         public clipboardService: ClipboardService,
     ) {
         super(drawingService, moveService, rotateService, clipboardService, magnetismService);
+        this.selectionType = SelectionType.WAND;
     }
 
     setMagnetismAlignment(alignment: string): void {
@@ -99,6 +101,7 @@ export class MagicWandService extends SelectionService {
             }
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.isSelectionEmptySubject.next(false);
         } else if (this.transormation === 'move') {
             this.transormation = '';
         }
