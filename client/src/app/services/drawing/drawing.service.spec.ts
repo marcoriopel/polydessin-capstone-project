@@ -10,7 +10,7 @@ describe('DrawingService', () => {
     let service: DrawingService;
     const WIDTH = 100;
     const HEIGHT = 100;
-    let injector: jasmine.SpyObj<Injector>;
+    let injectorSpy: jasmine.SpyObj<Injector>;
     let continueDrawingServiceSpy: jasmine.SpyObj<ContinueDrawingService>;
 
     beforeEach(() => {
@@ -23,15 +23,15 @@ describe('DrawingService', () => {
         drawCanvas.height = HEIGHT;
 
         continueDrawingServiceSpy = jasmine.createSpyObj('ContinueDrawingService', ['furtherDrawing']);
-        injector = jasmine.createSpyObj('injector', ['get']);
+        injectorSpy = jasmine.createSpyObj('injector', ['get']);
         // tslint:disable-next-line: deprecation
-        injector.get.and.returnValue(continueDrawingServiceSpy);
+        injectorSpy.get.and.returnValue(continueDrawingServiceSpy);
         TestBed.configureTestingModule({
             providers: [],
         });
         service = TestBed.inject(DrawingService);
         // tslint:disable-next-line: no-string-literal
-        service['injector'] = injector;
+        service['injector'] = injectorSpy;
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;

@@ -28,14 +28,13 @@ export class ContinueDrawingService {
         this.convertURIToImageData(sourceDrawingURL);
     }
 
-    // tslint:disable-next-line: no-any
-    async convertURIToImageData(uri: string): Promise<any> {
+    async convertURIToImageData(URI: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            if (uri == null) return reject();
+            if (URI == null) return reject();
             const canvas = this.drawingService.canvas;
             const context = this.drawingService.baseCtx;
             const image = new Image();
-            image.src = uri;
+            image.src = URI;
             image.addEventListener(
                 'load',
                 () => {
