@@ -137,8 +137,8 @@ export class SelectionService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.isResizing) {
             this.moveService.initialize(this.selection, this.selectionImage);
-            this.updateSelectionCorners();
             this.setSelectionCorners();
+            this.updateSelectionCorners();
             this.strokeSelection();
             this.setSelectionPoint();
             this.isResizing = false;
