@@ -22,9 +22,6 @@ export class UndoRedoService extends Tool {
     isUndoAvailableSubject: Subject<boolean> = new Subject<boolean>();
     isRedoAvailable: boolean = false;
     isRedoAvailableSubject: Subject<boolean> = new Subject<boolean>();
-    isShiftDown: boolean = false;
-    isControlDown: boolean = false;
-    isZDown: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
