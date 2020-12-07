@@ -15,7 +15,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
-    fillStyle: number = FILL_STYLES.FILL;
+    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     isShiftKeyDown: boolean = false;
     mouseDown: boolean = false;
     ellipseRadius: Vec2;

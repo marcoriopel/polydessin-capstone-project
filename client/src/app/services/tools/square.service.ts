@@ -23,7 +23,7 @@ export class SquareService extends Tool {
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
-    fillStyle: number = FILL_STYLES.FILL;
+    fillStyle: number = FILL_STYLES.FILL_AND_BORDER;
     rectangleHeight: number;
     rectangleWidth: number;
     trigonometry: Trigonometry = new Trigonometry();
