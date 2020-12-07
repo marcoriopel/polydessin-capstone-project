@@ -39,6 +39,7 @@ export class BrushService extends Tool {
             this.applyPattern(this.brushData.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.brushData.path.push(this.mouseDownCoord);
+            this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.previewCtx, this.brushData);
             this.drawingService.setIsToolInUse(true);
         }
@@ -48,6 +49,7 @@ export class BrushService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.brushData.path.push(mousePosition);
+            this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.baseCtx, this.brushData);
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -61,6 +63,7 @@ export class BrushService extends Tool {
 
     onMouseLeave(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.brushData.primaryColor = this.colorSelectionService.primaryColor;
         this.drawLine(this.drawingService.baseCtx, this.brushData);
         this.clearPath();
     }

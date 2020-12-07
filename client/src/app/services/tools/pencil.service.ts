@@ -39,6 +39,7 @@ export class PencilService extends Tool {
             this.clearPath();
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.pencilData.path.push(this.mouseDownCoord);
+            this.pencilData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
             this.drawingService.setIsToolInUse(true);
         }
@@ -49,6 +50,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pencilData.path.push(mousePosition);
             this.drawingService.updateStack(this.pencilData);
+            this.pencilData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(false);
@@ -63,6 +65,7 @@ export class PencilService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.pencilData.path.push(mousePosition);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.pencilData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
         }
     }
