@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -87,17 +86,35 @@ export class CircleSelectionService extends SelectionService {
             );
             this.drawingService.previewCtx.restore();
             this.drawingService.previewCtx.stroke();
-
-            const radius = Math.sqrt(this.selection.width * this.selection.width + this.selection.height * this.selection.height);
-            const selectionCenterX = this.selection.startingPoint.x + this.selection.width / 2;
-            const selectionCenterY = this.selection.startingPoint.y + this.selection.height / 2;
-            const selectionCenter: Vec2 = { x: selectionCenterX, y: selectionCenterY };
+            const center = this.rotateService.calculateCenter();
 
             // BOITE ENGLOBANTE ICI!
-            this.drawingService.previewCtx.strokeRect(selectionCenter.x - radius / 2, selectionCenter.y - radius / 2, radius, radius);
-            this.drawingService.previewCtx.beginPath();
-            this.drawingService.previewCtx.arc(selectionCenter.x, selectionCenter.y, radius / 2, 0, 2 * Math.PI);
-            this.drawingService.previewCtx.stroke();
+            const highestVerticalSelectionPoint = Math.max(
+                this.initialSelectionCorners.topRight.coordinates.y,
+                this.initialSelectionCorners.bottomRight.coordinates.y,
+                this.initialSelectionCorners.topLeft.coordinates.y,
+                this.initialSelectionCorners.bottomLeft.coordinates.y,
+            );
+            this.selectionContour.height = (highestVerticalSelectionPoint - center.y) * 2;
+
+            const highestHorizontalSelectionPoint = Math.max(
+                this.initialSelectionCorners.topRight.coordinates.x,
+                this.initialSelectionCorners.bottomRight.coordinates.x,
+                this.initialSelectionCorners.topLeft.coordinates.x,
+                this.initialSelectionCorners.bottomLeft.coordinates.x,
+            );
+            this.selectionContour.width = (highestHorizontalSelectionPoint - center.x) * 2;
+
+            this.selectionContour.startingPoint.x = center.x - this.selectionContour.width / 2;
+            this.selectionContour.startingPoint.y = center.y - this.selectionContour.height / 2;
+
+            this.drawingService.previewCtx.strokeRect(
+                this.selectionContour.startingPoint.x,
+                this.selectionContour.startingPoint.y,
+                this.selectionContour.width,
+                this.selectionContour.height,
+            );
+            this.setSelectionPoint();
         }
     }
 }

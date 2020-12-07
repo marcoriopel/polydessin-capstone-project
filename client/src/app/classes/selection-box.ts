@@ -10,3 +10,16 @@ export interface SelectionObject {
     selectionBox: SelectionBox;
     selectionImage: HTMLCanvasElement;
 }
+
+export interface SelectionCorners {
+    topRight: Corner;
+    topLeft: Corner;
+    bottomLeft: Corner;
+    bottomRight: Corner;
+}
+
+export interface Corner {
+    coordinates: Vec2;
+    initialAngle: number;
+    currentAngle: number;
+}

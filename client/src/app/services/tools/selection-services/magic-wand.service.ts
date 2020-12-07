@@ -106,6 +106,7 @@ export class MagicWandService extends SelectionService {
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionOver = false;
                 this.setSelection(this.initialSelection, this.selection);
+                this.setInitialSelectionCorners();
             }
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -262,6 +263,39 @@ export class MagicWandService extends SelectionService {
                 this.selection.height,
             );
             this.drawingService.previewCtx.restore();
+
+            // this.initialSelectionCorners.topLeft.coordinates.x = this.selection.startingPoint.x;
+            // this.initialSelectionCorners.topLeft.coordinates.y = this.selection.startingPoint.y;
+
+            const center = this.rotateService.calculateCenter();
+
+            // BOITE ENGLOBANTE ICI!
+            const highestVerticalSelectionPoint = Math.max(
+                this.initialSelectionCorners.topRight.coordinates.y,
+                this.initialSelectionCorners.bottomRight.coordinates.y,
+                this.initialSelectionCorners.topLeft.coordinates.y,
+                this.initialSelectionCorners.bottomLeft.coordinates.y,
+            );
+            this.selectionContour.height = (highestVerticalSelectionPoint - center.y) * 2;
+
+            const highestHorizontalSelectionPoint = Math.max(
+                this.initialSelectionCorners.topRight.coordinates.x,
+                this.initialSelectionCorners.bottomRight.coordinates.x,
+                this.initialSelectionCorners.topLeft.coordinates.x,
+                this.initialSelectionCorners.bottomLeft.coordinates.x,
+            );
+            this.selectionContour.width = (highestHorizontalSelectionPoint - center.x) * 2;
+
+            this.selectionContour.startingPoint.x = center.x - this.selectionContour.width / 2;
+            this.selectionContour.startingPoint.y = center.y - this.selectionContour.height / 2;
+
+            this.drawingService.previewCtx.strokeRect(
+                this.selectionContour.startingPoint.x,
+                this.selectionContour.startingPoint.y,
+                this.selectionContour.width,
+                this.selectionContour.height,
+            );
+            this.setSelectionPoint();
         }
     }
     setBorderPattern(): CanvasPattern {
