@@ -25,7 +25,6 @@ export class MoveService {
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        // this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }

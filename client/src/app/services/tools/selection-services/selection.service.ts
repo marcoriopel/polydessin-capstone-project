@@ -136,17 +136,17 @@ export class SelectionService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.isResizing) {
-            // this.selectionResizeService.printSelectionOnBaseCtx();
             this.moveService.initialize(this.selection, this.selectionImage);
+            this.updateSelectionCorners();
             this.setSelectionCorners();
             this.strokeSelection();
-            this.updateSelectionCorners();
             this.setSelectionPoint();
             this.isResizing = false;
             return;
         }
         this.currentPoint = SELECTION_POINTS_NAMES.NO_POINTS;
         if (this.isNewSelection) {
+            this.setSelection(this.initialSelection, this.selection);
             // setUp underlying service
 
             this.underlyingService.lastPoint = this.getPositionFromMouse(event);
@@ -158,6 +158,7 @@ export class SelectionService extends Tool {
                 this.isSelectionEmptySubject.next(false);
                 this.isSelectionOver = false;
                 // this.setSelection(this.initialSelection, this.selection);
+                this.setSelection(this.moveService.initialSelection, this.selection);
                 this.setSelectionData();
                 this.setSelectionCorners();
                 this.setSelectionPoint();
