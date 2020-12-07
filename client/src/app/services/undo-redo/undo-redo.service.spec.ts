@@ -159,7 +159,7 @@ describe('UndoRedoService', () => {
             line: { startingPoint: { x: 0, y: 0 }, endingPoint: { x: 1, y: 1 } },
             storedLines: [{ startingPoint: { x: 0, y: 0 }, endingPoint: { x: 1, y: 1 } }],
             isShiftDoubleClick: false,
-            hasLastPointBeenChaged: false,
+            hasLastPointBeenChanged: false,
             dotWidth: 1,
         };
 

@@ -63,7 +63,7 @@ export interface Line {
     line: StraightLine;
     storedLines: StraightLine[];
     isShiftDoubleClick: boolean;
-    hasLastPointBeenChaged: boolean;
+    hasLastPointBeenChanged: boolean;
     dotWidth: number;
 }
 

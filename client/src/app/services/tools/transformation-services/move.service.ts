@@ -25,7 +25,9 @@ export class MoveService implements OnDestroy {
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 
     ngOnDestroy(): void {
-        clearInterval(this.intervalId);
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
     }
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {

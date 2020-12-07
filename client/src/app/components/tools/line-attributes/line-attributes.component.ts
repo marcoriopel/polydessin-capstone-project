@@ -12,9 +12,9 @@ export class LineAttributesComponent {
     isDot: boolean;
 
     constructor(public lineService: LineService) {
-        this.toolWidth = lineService.lineWidth;
-        this.dotWith = lineService.dotWidth;
-        this.isDot = lineService.isDot;
+        this.toolWidth = lineService.lineData.lineWidth;
+        this.dotWith = lineService.lineData.dotWidth;
+        this.isDot = lineService.lineData.isDot;
     }
 
     changeDotWidth(newWidth: number): void {
