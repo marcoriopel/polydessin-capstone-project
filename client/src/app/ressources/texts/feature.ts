@@ -32,7 +32,7 @@ export const GENERALS_FEATURE: Feature[] = [
     {
         name: 'Sauvegarde automatique',
         description:
-            "Cette fonctionnalité permet de sauvegarder le dessin automatiquement pendant son édition. La sauvegarde est déclenchée après la création d'un dessin, le chargement d'un dessin ou lors d'une modification sur la surface de dessin.",
-        picture: './../../../assets/img/exporter.PNG',
+            "Cette fonctionnalité permet de sauvegarder le dessin automatiquement pendant son édition. La sauvegarde est déclenchée après la création d'un dessin, le chargement d'un dessin ou lors d'une modification sur la surface de dessin. Il est possible de récupérer le dessin avec le button Continuer un dessin",
+        picture: './../../../assets/img/continuer.PNG',
     },
 ];
