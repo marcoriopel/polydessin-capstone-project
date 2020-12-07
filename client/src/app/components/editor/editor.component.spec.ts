@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -46,6 +47,7 @@ describe('EditorComponent', () => {
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
             ],
         }).compileComponents();
     }));

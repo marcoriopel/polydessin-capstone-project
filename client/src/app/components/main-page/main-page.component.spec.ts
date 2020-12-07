@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CarouselComponent } from '@app/components/carousel/carousel.component';
 import { MainPageComponent } from '@app/components/main-page/main-page.component';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 
 import SpyObj = jasmine.SpyObj;
 
@@ -18,7 +19,10 @@ describe('MainPageComponent', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
-            providers: [{ provide: MatDialog, useValue: matDialogSpy }],
+            providers: [
+                { provide: MatDialog, useValue: matDialogSpy },
+                { provide: ContinueDrawingService, useValue: {} },
+            ],
         }).compileComponents();
     }));
 
