@@ -249,7 +249,7 @@ describe('ResizeDrawingService', () => {
     it('should restore canvas', () => {
         const imageDataSpy = spyOn(drawServiceSpy.baseCtx, 'putImageData');
         const expectedData: Resize = {
-            type: 'bocar',
+            type: 'imageText',
             canvasSize: { x: 500, y: 500 },
             imageData: drawServiceSpy.baseCtx.getImageData(0, 0, 100, 100),
         };

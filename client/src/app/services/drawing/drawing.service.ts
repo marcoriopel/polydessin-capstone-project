@@ -61,6 +61,8 @@ export class DrawingService {
 
     initializeBaseCanvas(): void {
         if (this.isGridEnabled) this.setGrid();
+        // using an injector with a deprecated version to inject and bypass an observed circular dependency
+        // Retrieves an instance from the injector based on the provided token.
         // tslint:disable-next-line: deprecation
         const continueDrawingService = this.injector.get('ContinueDrawingService');
         if (this.isLastDrawing) {
