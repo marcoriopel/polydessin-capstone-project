@@ -75,6 +75,7 @@ export class SelectionService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
             this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
@@ -128,6 +129,7 @@ export class SelectionService extends Tool {
         this.strokeSelection();
         this.setSelectionPoint();
         this.drawingService.setIsToolInUse(false);
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -360,6 +362,7 @@ export class SelectionService extends Tool {
     }
 
     onWheelEvent(event: WheelEvent): void {
+        this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (!this.isSelectionOver) {
             this.rotateService.onWheelEvent(event);
             this.strokeSelection();
@@ -412,5 +415,7 @@ export class SelectionService extends Tool {
     getIsSelectionEmptySubject(): Observable<boolean> {
         return this.isSelectionEmptySubject.asObservable();
     }
+
+    setMagnetismAlignment(currentAlignment: string): void {}
     // tslint:disable-next-line: max-file-line-count
 }

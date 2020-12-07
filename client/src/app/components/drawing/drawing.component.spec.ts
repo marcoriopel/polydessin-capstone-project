@@ -30,7 +30,7 @@ describe('DrawingComponent', () => {
             'currentToolMouseLeave',
             'currentToolMouseEnter',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey', 'autoSave']);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -81,7 +81,8 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's mouse enter when receiving a mouse enter event", () => {
-        component.onMouseEnter();
+        const event = {} as MouseEvent;
+        component.onMouseEnter(event);
         expect(toolSelectionServiceSpy.currentToolMouseEnter).toHaveBeenCalled();
     });
 

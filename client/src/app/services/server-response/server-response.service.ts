@@ -28,4 +28,15 @@ export class ServerResponseService {
         config.duration = CONFIRM_SAVED_DURATION;
         this.snackBar.open('Le dessin a été sauvegardé', 'Fermer', config);
     }
+
+    sendMailConfirmSnackBar(): void {
+        const config = new MatSnackBarConfig();
+        config.duration = CONFIRM_SAVED_DURATION;
+        this.snackBar.open('Le courriel est bien envoyé', 'Fermer', config);
+    }
+
+    sendMailErrorSnackBar(error: string): void {
+        const config = new MatSnackBarConfig();
+        this.snackBar.open('Erreur dans le transfert du courrie: ' + error, 'Fermer', config);
+    }
 }

@@ -26,7 +26,7 @@ describe('PolygoneService', () => {
     const HEIGHT = 100;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas', 'setIsToolInUse', 'autoSave']);
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle']);
 
         const canvas = document.createElement('canvas');
@@ -290,6 +290,7 @@ describe('PolygoneService', () => {
         service.mouseDown = true;
         service.onMouseUp({} as MouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should not get position from mouse if not mouse down', () => {

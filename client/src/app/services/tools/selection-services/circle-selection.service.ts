@@ -85,5 +85,6 @@ export class CircleSelectionService extends SelectionService {
             this.drawingService.previewCtx.restore();
             this.drawingService.previewCtx.stroke();
         }
+        this.drawingService.autoSave();
     }
 }

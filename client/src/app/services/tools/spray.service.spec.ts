@@ -16,7 +16,7 @@ describe('SprayService', () => {
     let previewCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas', 'autoSave']);
         colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', ['getRgbaPrimaryColor']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke', 'arc', 'fill']);
