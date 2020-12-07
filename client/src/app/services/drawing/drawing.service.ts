@@ -64,7 +64,7 @@ export class DrawingService {
         // tslint:disable-next-line: deprecation
         const continueDrawingService = this.injector.get('ContinueDrawingService');
         if (this.isLastDrawing) {
-            continueDrawingService.furtherDrawing();
+            continueDrawingService.continueDrawing();
         } else {
             this.baseCtx.fillStyle = 'white';
             this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
