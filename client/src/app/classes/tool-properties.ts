@@ -99,7 +99,6 @@ export interface Selection {
 export interface Stamp {
     type: string;
     color: string;
-    opacity: number;
     size: number;
     position: Vec2;
     stamp: StampAttributes;

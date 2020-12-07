@@ -111,7 +111,6 @@ export class StampService extends Tool {
         this.stampData = {
             type: 'stamp',
             color: this.colorSelectionService.primaryColor,
-            opacity: this.colorSelectionService.primaryOpacity,
             size: this.stampSize,
             position: this.getPositionFromMouse(mouseEvent),
             stamp: this.currentStamp,
