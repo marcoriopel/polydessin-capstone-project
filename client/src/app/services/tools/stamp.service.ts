@@ -21,19 +21,38 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class StampService extends Tool {
-    angleObservable: Subject<number> = new Subject<number>();
-    currentStamp: StampAttributes = STAMPS.ANGULAR;
     name: string = TOOL_NAMES.STAMP_TOOL_NAME;
-    stampSize: number = INITIAL_STAMP_SIZE;
-    angle: number = INITIAL_STAMP_ANGLE;
     maxSize: number = MAX_STAMP_SIZE;
     minSize: number = MIN_STAMP_SIZE;
-    currentMouseEvent: MouseEvent;
-    isAltKeyDown: boolean = false;
-    stampData: Stamp;
+    private angleObservable: Subject<number> = new Subject<number>();
+    private currentMouseEvent: MouseEvent;
+    private isAltKeyDown: boolean = false;
+    private stampData: Stamp;
 
     constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
+        this.stampData = {
+            type: 'stamp',
+            color: this.colorSelectionService.primaryColor,
+            size: INITIAL_STAMP_SIZE,
+            position: { x: 0, y: 0 },
+            currentStamp: STAMPS.ANGULAR,
+            angle: INITIAL_STAMP_ANGLE,
+        };
+    }
+
+    setSize(newSize: number): void {
+        this.stampData.size = newSize;
+    }
+    setCurrentStamp(newStamp: StampAttributes): void {
+        this.stampData.currentStamp = newStamp;
+    }
+    setAngle(newAngle: number): void {
+        this.stampData.angle = newAngle;
+    }
+
+    getSize(): number {
+        return this.stampData.size;
     }
 
     setCursor(): void {
@@ -64,7 +83,7 @@ export class StampService extends Tool {
         this.printStamp(this.drawingService.previewCtx, this.stampData);
     }
 
-    onMouseUp(event: MouseEvent): void {
+    onMouseDown(event: MouseEvent): void {
         this.updateStampData(event);
         this.printStamp(this.drawingService.baseCtx, this.stampData);
         this.drawingService.updateStack(this.stampData);
@@ -73,7 +92,7 @@ export class StampService extends Tool {
     }
 
     printStamp(ctx: CanvasRenderingContext2D, stampData: Stamp): void {
-        const path = new Path2D(stampData.stamp.path);
+        const path = new Path2D(stampData.currentStamp.path);
 
         const center: Vec2 = { x: stampData.position.x, y: stampData.position.y };
 
@@ -99,7 +118,7 @@ export class StampService extends Tool {
         if (this.isAltKeyDown) {
             rotationStep = 1;
         }
-        this.changeAngle(this.angle - (event.deltaY / Math.abs(event.deltaY)) * rotationStep);
+        this.changeAngle(this.stampData.angle - (event.deltaY / Math.abs(event.deltaY)) * rotationStep);
         this.onMouseMove(this.currentMouseEvent);
     }
 
@@ -108,15 +127,8 @@ export class StampService extends Tool {
     }
 
     updateStampData(mouseEvent: MouseEvent): void {
-        this.stampData = {
-            type: 'stamp',
-            color: this.colorSelectionService.primaryColor,
-            opacity: this.colorSelectionService.primaryOpacity,
-            size: this.stampSize,
-            position: this.getPositionFromMouse(mouseEvent),
-            stamp: this.currentStamp,
-            angle: this.angle,
-        };
+        this.stampData.color = this.colorSelectionService.primaryColor;
+        this.stampData.position = this.getPositionFromMouse(mouseEvent);
     }
 
     getAngle(): Observable<number> {
@@ -128,7 +140,7 @@ export class StampService extends Tool {
         if (newAngle < 0) {
             newAngle += MAX_ANGLE;
         }
-        this.angle = newAngle;
-        this.angleObservable.next(this.angle);
+        this.stampData.angle = newAngle;
+        this.angleObservable.next(this.stampData.angle);
     }
 }

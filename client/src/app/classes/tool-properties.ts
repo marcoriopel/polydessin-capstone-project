@@ -63,11 +63,11 @@ export interface Line {
     line: StraightLine;
     storedLines: StraightLine[];
     isShiftDoubleClick: boolean;
-    hasLastPointBeenChaged: boolean;
+    hasLastPointBeenChanged: boolean;
     dotWidth: number;
 }
 
-export interface Polygone {
+export interface Polygon {
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -99,9 +99,8 @@ export interface Selection {
 export interface Stamp {
     type: string;
     color: string;
-    opacity: number;
     size: number;
     position: Vec2;
-    stamp: StampAttributes;
+    currentStamp: StampAttributes;
     angle: number;
 }

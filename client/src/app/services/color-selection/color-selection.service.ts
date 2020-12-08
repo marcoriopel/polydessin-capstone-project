@@ -6,25 +6,7 @@ import { MAXIMUM_RGBA_VALUE, Rgba, RGBA_INDEXER } from '@app/ressources/global-v
 })
 export class ColorSelectionService {
     primaryColor: string;
-    primaryOpacity: number;
     secondaryColor: string;
-    secondaryOpacity: number;
-
-    setPrimaryColor(color: string): void {
-        this.primaryColor = color;
-    }
-
-    setSecondaryColor(color: string): void {
-        this.secondaryColor = color;
-    }
-
-    setPrimaryOpacity(opacity: number): void {
-        this.primaryOpacity = opacity;
-    }
-
-    setSecondaryOpacity(opacity: number): void {
-        this.secondaryOpacity = opacity;
-    }
 
     getRgbaPrimaryColor(): Rgba {
         const slicingIndex = this.primaryColor.indexOf('(') + 1;

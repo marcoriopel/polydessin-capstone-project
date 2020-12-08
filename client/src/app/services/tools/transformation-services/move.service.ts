@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
@@ -9,7 +9,7 @@ import { RotateService } from './rotate.service';
 @Injectable({
     providedIn: 'root',
 })
-export class MoveService {
+export class MoveService implements OnDestroy {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
@@ -23,6 +23,12 @@ export class MoveService {
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
+
+    ngOnDestroy(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    }
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
         this.setSelection(this.initialSelection, selection);

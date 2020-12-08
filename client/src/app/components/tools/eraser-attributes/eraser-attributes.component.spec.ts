@@ -12,6 +12,14 @@ describe('EraserAttributesComponent', () => {
 
     beforeEach(async(() => {
         eraserServiceSpy = jasmine.createSpyObj('EraserService', ['changeWidth']);
+        eraserServiceSpy.eraserData = {
+            type: 'eraser',
+            path: [],
+            lineWidth: 5,
+            lineCap: 'square',
+            fillStyle: 'white',
+            primaryColor: 'white',
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

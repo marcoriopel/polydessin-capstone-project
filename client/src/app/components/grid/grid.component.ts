@@ -41,7 +41,7 @@ export class GridComponent {
         this.circleSelectionService.setGridSpacing(this.currentSquareSize);
         this.magicWandService.setGridSpacing(this.currentSquareSize);
         this.squareSelectionService.setGridSpacing(this.currentSquareSize);
-        this.drawingService.opacity = this.currentOpacity;
+        this.drawingService.gridOpacity = this.currentOpacity;
         this.hotkeyService.getKey().subscribe((toolName) => {
             switch (toolName) {
                 case GRID_NAME: {
@@ -98,7 +98,7 @@ export class GridComponent {
         if (isNaN(newOpacity) || newOpacity < MIN_GRID_OPACITY || newOpacity > MAX_GRID_OPACITY || newOpacity.toString() === '') {
             alert("L'opacité doit être un nombre entre 10 et 100.");
         } else {
-            this.drawingService.opacity = newOpacity;
+            this.drawingService.gridOpacity = newOpacity;
             this.currentOpacity = newOpacity;
             if (this.isEnabled) {
                 this.drawingService.setGrid();

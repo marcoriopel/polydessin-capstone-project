@@ -43,6 +43,14 @@ describe('SprayService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('ngOnDestroy should clearTimeout', () => {
+        const clearTimeoutSpy = spyOn(global, 'clearTimeout');
+
+        service.ngOnDestroy();
+
+        expect(clearTimeoutSpy).toHaveBeenCalled();
+    });
+
     it(' mouseDown should set filter of baseCtx and previewCtx to none', () => {
         const mouseEvent = {
             button: MouseButton.RIGHT,

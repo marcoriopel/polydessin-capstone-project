@@ -1,18 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TypeOfFillSelectionComponent } from './type-of-fill-selection.component';
+import { FillTypesSelectionComponent } from './fill-types-selection.component';
 
 describe('TypeOfFillSelectionComponent', () => {
-    let component: TypeOfFillSelectionComponent;
-    let fixture: ComponentFixture<TypeOfFillSelectionComponent>;
+    let component: FillTypesSelectionComponent;
+    let fixture: ComponentFixture<FillTypesSelectionComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [TypeOfFillSelectionComponent],
+            declarations: [FillTypesSelectionComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TypeOfFillSelectionComponent);
+        fixture = TestBed.createComponent(FillTypesSelectionComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
