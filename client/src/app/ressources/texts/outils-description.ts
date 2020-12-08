@@ -14,8 +14,8 @@ export const OTHER_FEATURES: Feature[] = [
     {
         name: 'Magnétisme',
         description:
-            "Cette option deplacera une boite englobant sur la ligne de la grille la plus proche lorsque vous la déplacez avec la sourie. Ceci ce fait en y et x. Il suffit d'activer cette outil pour l'utiliser. Il aussi possible de faire le déplacement avec les touches directionnelles",
-        picture: './../../../assets/img/magnétisme.PNG',
+            "Cette option déplacera une boite englobante sur la ligne de la grille la plus proche lorsque vous la déplacez avec la souris. Ceci se fait en y et x. Il suffit d'activer cette outil pour l'utiliser. Il est aussi possible de faire le déplacement avec les touches directionnelles",
+        picture: './../../../assets/img/magnetisme.PNG',
     },
     {
         name: 'Grille',
@@ -50,13 +50,13 @@ export const BASIC_TOOLS: Feature[] = [
     {
         name: 'Texte',
         description:
-            "Cet outil permet d'écrire du texte sur la surface de dessin. Un indicateur est présent dans le texte pour vous permettre de savoir où vous êtes rendu. Il est possible de bouger cette indicateur avec les touches directionnelles. Il est possible de changer la taille, la police, le style et l'alignement du texte.",
+            "Cet outil permet d'écrire du texte sur la surface de dessin. Un indicateur est présent dans le texte pour vous permettre de savoir où vous êtes rendu. Il est possible de bouger cet indicateur avec les touches directionnelles. Il est possible de changer la taille, la police, le style et l'alignement du texte.",
         picture: './../../../assets/video/texte.mp4',
     },
     {
         name: 'Étampe',
         description:
-            "Cet outil permet d'apposer de petites images sur le dessin. Pour l'afficher sur la surface de dessin, il suffit de faire un clic gauche à l'endroit où on désire la mettre. Il est possible faire pivoter l'étampe sur elle-même avec la roulette de la sourie.",
+            "Cet outil permet d'apposer de petites images sur le dessin. Pour l'afficher sur la surface de dessin, il suffit de faire un clic gauche à l'endroit où on désire la mettre. Il est possible faire pivoter l'étampe sur elle-même avec la roulette de la souris.",
         picture: './../../../assets/video/etampe.mp4',
     },
     {
@@ -83,13 +83,13 @@ export const DRAWING_TOOLS: Feature[] = [
     {
         name: 'Plume',
         description:
-            "La plume permet de faire tracer un trait très mince comme une ligne. Vous pouvez changer l'angle du trait à l'aide la roulette de la sourie.",
+            "La plume permet de tracer une ligne très mince selon un angle choisi. Vous pouvez changer l'angle du trait à l'aide la roulette de la souris.",
         picture: './../../../assets/video/plume.mp4',
     },
     {
         name: 'Aérosol',
         description:
-            "L'aérosol simule un effet de peinture en aérosol. Dès que le bouton est enfoncé, un jet de peinture est vaporisé sous le pointeur de la sourie.",
+            "L'aérosol simule un effet de peinture en aérosol. Dès que le bouton est enfoncé, un jet de peinture est vaporisé sous le pointeur de la souris.",
         picture: './../../../assets/video/aerosol.mp4',
     },
 ];
@@ -138,7 +138,7 @@ export const TRANSFORMATIONS: Feature[] = [
     },
     {
         name: "Rotation d'une sélection",
-        description: 'Cette fonctionnalité permet de pivoter une sélection sur son centre avec le roulette de la sourie.',
+        description: 'Cette fonctionnalité permet de pivoter une sélection sur son centre avec le roulette de la souris.',
         picture: './../../../assets/video/rotation_selection.mp4',
     },
     {
