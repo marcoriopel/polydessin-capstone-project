@@ -75,6 +75,7 @@ export class TextService extends Tool {
     }
 
     createText(): void {
+        if (this.text === undefined) return;
         this.removeIndicator();
         this.printText();
         this.drawingService.applyPreview();
