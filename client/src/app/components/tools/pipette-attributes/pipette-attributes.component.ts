@@ -10,6 +10,7 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
     @ViewChild('zoom', { static: false }) zoom: ElementRef<HTMLCanvasElement>;
 
     private zoomCtx: CanvasRenderingContext2D;
+
     constructor(public pipetteService: PipetteService) {}
 
     ngOnInit(): void {

@@ -161,16 +161,16 @@
         </label>
         <input
             type="radio"
-            [id]="this.toolNames.POLYGONE_TOOL_NAME"
+            [id]="this.toolNames.POLYGON_TOOL_NAME"
             name="tool"
-            [value]="this.toolNames.POLYGONE_TOOL_NAME"
+            [value]="this.toolNames.POLYGON_TOOL_NAME"
             (change)="onToolChange($event)"
-            [checked]="selectedTool.includes(this.toolNames.POLYGONE_TOOL_NAME)"
+            [checked]="selectedTool.includes(this.toolNames.POLYGON_TOOL_NAME)"
         />
-        <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
+        <label [for]="this.toolNames.POLYGON_TOOL_NAME">
             <mat-icon
                 class="material-icons"
-                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                [matTooltip]="elementDescriptions.POLYGON_TOOL_DESCRIPTION"
                 matTooltipPosition="right"
                 [matTooltipShowDelay]="tooltipShowDelay"
                 >change_history</mat-icon

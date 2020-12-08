@@ -27,7 +27,7 @@ export const CONFIRM_SAVED_DURATION = 5000;
 export const CONFIRM_KEY_PRESS_DURATION = 500;
 export const KEY_PRESS_INTERVAL_DURATION = 100;
 export const SELECTION_MOVE_STEP_SIZE = 3;
-export const LINE_WIDTH_POLYGONE_CORRECTION = 1.4;
+export const LINE_WIDTH_POLYGON_CORRECTION = 1.4;
 export const MIN_GRID_SQUARE_SIZE = 5;
 export const MAX_GRID_SQUARE_SIZE = 200;
 export const MIN_GRID_OPACITY = 10;
@@ -36,6 +36,8 @@ export const DEFAULT_GRID_SIZE = 5;
 export const GRID_STEP = 5;
 export const MAGIC_WAND_BORDER_ONE_SIDE = 2;
 export const MAGIC_WAND_BORDER_BOTH_SIDES = 4;
+export const MAGIC_WAND_TOLERANCE = 10;
+export const MAGIC_WAND_SECONDARY_TOLERANCE = 50;
 export const OFFSET = -1;
 
 export const DEFAULT_GRID_OPACITY = 100;
