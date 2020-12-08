@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Ellipse } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -441,5 +442,82 @@ describe('CircleService', () => {
         service.onKeyUp(event);
         expect(drawShapeSpy).toHaveBeenCalled();
     });
+
+    it('drawEllipse should call fill when fillStyle is not BORDER', () => {
+        const ellipse: Ellipse = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 5, y: 5 },
+            fillStyle: 0,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
+            isShiftDown: false,
+            lineWidth: 2,
+        };
+        const fillSpy = spyOn(baseCtxStub, 'fill');
+        baseCtxStub.lineWidth = 1;
+        service.drawEllipse(baseCtxStub, ellipse);
+        expect(fillSpy).toHaveBeenCalled();
+    });
+
+    it('drawEllipse should not call fill when fillStyle is DASHED', () => {
+        const ellipse: Ellipse = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 1, y: 1 },
+            fillStyle: FILL_STYLES.DASHED,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 1 },
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+        const fillSpy = spyOn(baseCtxStub, 'fill');
+        baseCtxStub.lineWidth = 1;
+        service.drawEllipse(baseCtxStub, ellipse);
+        expect(fillSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not call ctx.fill if style is BORDER', () => {
+        const ctxFillSpy = spyOn(baseCtxStub, 'fill');
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.BORDER,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 10, y: 10 },
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawCircle(baseCtxStub, { x: 0, y: 0 });
+        expect(ctxFillSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call ctx.fill if style is not BORDER or DASHED', () => {
+        const ctxFillSpy = spyOn(baseCtxStub, 'fill');
+        service.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: 0,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 10, y: 10 },
+            isShiftDown: false,
+            lineWidth: 1,
+        };
+
+        service.drawCircle(baseCtxStub, { x: 0, y: 0 });
+        expect(ctxFillSpy).toHaveBeenCalled();
+    });
+
     // tslint:disable-next-line: max-file-line-count
 });

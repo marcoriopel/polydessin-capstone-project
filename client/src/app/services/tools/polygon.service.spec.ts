@@ -340,5 +340,61 @@ describe('PolygonService', () => {
         service.drawPolygon(previewCtxStub, service['polygonData']);
         expect(strokeSpy).toHaveBeenCalled();
     });
+
+    it('should not call fill when fill style is border', () => {
+        const fillCtxSpy = spyOn(previewCtxStub, 'fill');
+        const polygonData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 2,
+            lineWidth: 1,
+            circleHeight: 10,
+            circleWidth: 10,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        } as Polygon;
+        service['polygonData'].fillStyle = FILL_STYLES.BORDER;
+        service.drawPolygon(previewCtxStub, polygonData);
+        expect(fillCtxSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call fill when fill style is not border', () => {
+        const fillCtxSpy = spyOn(previewCtxStub, 'fill');
+        const polygonData = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: 'black',
+            fillStyle: 0,
+            lineWidth: 1,
+            circleHeight: 10,
+            circleWidth: 10,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        } as Polygon;
+        service['polygonData'].fillStyle = 0;
+        service.drawPolygon(previewCtxStub, polygonData);
+        expect(fillCtxSpy).toHaveBeenCalled();
+    });
+
+    it('strokeStyle should equal secondaryColor of polygoneData if style is FILL', () => {
+        colorPickerStub.primaryColor = '#ffffff';
+        service['polygonData'] = {
+            type: 'polygone',
+            primaryColor: 'black',
+            secondaryColor: '#000000',
+            fillStyle: FILL_STYLES.FILL,
+            lineWidth: 1,
+            circleHeight: 10,
+            circleWidth: 10,
+            firstPoint: { x: 30, y: 30 },
+            lastPoint: { x: 29, y: 29 },
+            sides: 3,
+        };
+        service.drawPolygon(previewCtxStub, service['polygonData']);
+        expect(previewCtxStub.strokeStyle).toEqual('#ffffff');
+    });
     // tslint:disable-next-line: max-file-line-count
 });

@@ -236,4 +236,8 @@ describe('ToolSelectionService', () => {
         service.currentToolWheelEvent(wheelEvent);
         expect(wheelSpy).toHaveBeenCalledWith(wheelEvent);
     });
+
+    it('getCurrentTool should return currentToolName.asObservable', () => {
+        expect(service.getCurrentTool()).toEqual(service.currentToolName.asObservable());
+    });
 });

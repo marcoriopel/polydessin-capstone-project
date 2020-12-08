@@ -101,9 +101,10 @@ export class UndoRedoService extends Tool {
             const element = this.drawingService.redoStack[redoStackLength - 1];
             this.drawElement(element);
             const modification = this.drawingService.redoStack.pop();
-            if (modification !== undefined) {
-                this.drawingService.undoStack.push(modification);
-            }
+
+            this.drawingService.undoStack.push(
+                modification as Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp,
+            );
         }
         this.changeUndoAvailability();
         this.changeRedoAvailability();
