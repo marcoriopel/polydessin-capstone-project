@@ -75,10 +75,12 @@ describe('TexteComponent', () => {
         expect(textServiceSpy.align).toEqual('center');
     });
 
-    it('Should not change size when size is under minSize', () => {
+    it('Should not change size and call alert when size is under minSize', () => {
+        const alertSpy = spyOn(window, 'alert');
         component.textSize = 10;
         component.changeSize(0);
         expect(component.textSize).toEqual(10);
+        expect(alertSpy).toHaveBeenCalledWith('La taille du texte doit être un nombre entre 10 et 100.');
     });
 
     it('Should not change size when size is under minSize', () => {

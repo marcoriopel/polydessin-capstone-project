@@ -115,7 +115,7 @@ describe('StampService', () => {
         expect(scaleSpy).toHaveBeenCalled();
     });
 
-    it('printStamp should translate and rotate context', () => {
+    it('printStamp should put stampData.color as fillStyle', () => {
         service.printStamp(previewCtxStub, service.stampData);
         expect(previewCtxStub.fillStyle).toEqual('#000000');
     });
