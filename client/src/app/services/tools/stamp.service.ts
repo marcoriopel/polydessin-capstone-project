@@ -47,18 +47,12 @@ export class StampService extends Tool {
     setCurrentStamp(newStamp: StampAttributes): void {
         this.stampData.currentStamp = newStamp;
     }
-    setangle(newAngle: number): void {
+    setAngle(newAngle: number): void {
         this.stampData.angle = newAngle;
     }
 
     getSize(): number {
         return this.stampData.size;
-    }
-    getCurrentStamp(): StampAttributes {
-        return this.stampData.currentStamp;
-    }
-    getangle(): number {
-        return this.stampData.angle;
     }
 
     setCursor(): void {

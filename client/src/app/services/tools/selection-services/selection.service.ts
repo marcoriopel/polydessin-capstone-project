@@ -112,9 +112,9 @@ export class SelectionService extends Tool {
         if (this.isNewSelection) {
             // setUp underlying service
 
-            this.underlyingService.lastPoint = this.getPositionFromMouse(event);
-            const currentFillStyle = this.underlyingService.fillStyle;
-            this.underlyingService.fillStyle = FILL_STYLES.DASHED;
+            this.underlyingService.setLastPoint(this.getPositionFromMouse(event));
+            const currentFillStyle = this.underlyingService.getFillStyle();
+            this.underlyingService.setFillStyle(FILL_STYLES.DASHED);
             // draw selection
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
@@ -124,7 +124,7 @@ export class SelectionService extends Tool {
                 this.setSelectionData();
             }
             // reset underlying service to original form
-            this.underlyingService.fillStyle = currentFillStyle;
+            this.underlyingService.setFillStyle(currentFillStyle);
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         } else if (this.transormation === 'move') {
@@ -138,10 +138,10 @@ export class SelectionService extends Tool {
 
     onMouseMove(event: MouseEvent): void {
         if (this.isNewSelection) {
-            const currentFillStyle = this.underlyingService.fillStyle;
-            this.underlyingService.fillStyle = FILL_STYLES.BORDER;
+            const currentFillStyle = this.underlyingService.getFillStyle();
+            this.underlyingService.setFillStyle(FILL_STYLES.BORDER);
             this.underlyingService.onMouseMove(event);
-            this.underlyingService.fillStyle = currentFillStyle;
+            this.underlyingService.setFillStyle(currentFillStyle);
         } else if (this.transormation === 'move') {
             if (this.isMagnetism) {
                 const mousePosDifferenceX = event.x - this.mouseDownCoord.x;
@@ -180,7 +180,7 @@ export class SelectionService extends Tool {
             }
         }
         if (this.isNewSelection) {
-            this.underlyingService.fillStyle = FILL_STYLES.DASHED;
+            this.underlyingService.setFillStyle(FILL_STYLES.DASHED);
             this.underlyingService.onKeyDown(event);
         }
         switch (event.key) {
@@ -191,7 +191,7 @@ export class SelectionService extends Tool {
             }
             case 'Shift': {
                 this.isShiftKeyDown = true;
-                if (this.underlyingService) this.underlyingService.isShiftKeyDown = true;
+                if (this.underlyingService) this.underlyingService.setIsShiftDown(true);
                 break;
             }
             case 'Delete': {
@@ -234,9 +234,9 @@ export class SelectionService extends Tool {
         };
         this.isSelectionEmptySubject.next(false);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.underlyingService.firstPoint = { x: 0, y: 0 };
-        this.underlyingService.lastPoint = { x: this.drawingService.canvas.width, y: this.drawingService.canvas.height };
-        this.underlyingService.fillStyle = FILL_STYLES.DASHED;
+        this.underlyingService.setFirstPoint({ x: 0, y: 0 });
+        this.underlyingService.setLastPoint({ x: this.drawingService.canvas.width, y: this.drawingService.canvas.height });
+        this.underlyingService.setFillStyle(FILL_STYLES.DASHED);
         this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
         this.setSelection(this.initialSelection, this.selection);
         this.setSelectionData();
@@ -256,7 +256,7 @@ export class SelectionService extends Tool {
             if (this.isNewSelection) {
                 this.underlyingService.onKeyUp(event);
             }
-            this.underlyingService.isShiftKeyDown = false;
+            this.underlyingService.setIsShiftDown(false);
             this.isShiftKeyDown = false;
         }
         this.setSelectionPoint();

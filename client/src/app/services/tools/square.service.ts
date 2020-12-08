@@ -38,6 +38,26 @@ export class SquareService extends Tool {
         this.drawingService.baseCtx.lineJoin = 'miter';
     }
 
+    setIsShiftDown(isShiftDown: boolean): void {
+        this.isShiftKeyDown = isShiftDown;
+    }
+
+    setFirstPoint(newPoint: Vec2): void {
+        this.firstPoint = newPoint;
+    }
+
+    setLastPoint(newPoint: Vec2): void {
+        this.lastPoint = newPoint;
+    }
+
+    setFillStyle(newFillStyle: number): void {
+        this.fillStyle = newFillStyle;
+    }
+
+    getFillStyle(): number {
+        return this.fillStyle;
+    }
+
     setRectangleWidth(): void {
         this.rectangleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }

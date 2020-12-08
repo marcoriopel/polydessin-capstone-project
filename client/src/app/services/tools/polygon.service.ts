@@ -93,8 +93,6 @@ export class PolygonService extends Tool {
             this.polygonData.firstPoint = this.getPositionFromMouse(event);
             this.polygonData.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.setIsToolInUse(true);
-            console.log(this.polygonData.firstPoint);
-            console.log(this.polygonData.lastPoint);
         }
     }
 
@@ -134,9 +132,9 @@ export class PolygonService extends Tool {
     }
 
     drawCircle(ctx: CanvasRenderingContext2D): void {
-        this.circleService.changeFillStyle(FILL_STYLES.BORDER);
-        this.circleService.firstPoint = this.polygonData.firstPoint;
-        this.circleService.lastPoint = this.polygonData.lastPoint;
+        this.circleService.setFillStyle(FILL_STYLES.BORDER);
+        this.circleService.ellipseData.firstPoint = this.polygonData.firstPoint;
+        this.circleService.ellipseData.lastPoint = this.polygonData.lastPoint;
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.polygonData.firstPoint, this.polygonData.lastPoint));
     }
 

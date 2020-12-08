@@ -27,8 +27,19 @@ describe('PolygonService', () => {
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas', 'setIsToolInUse', 'autoSave']);
-        circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle']);
-
+        circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle', 'setFillStyle']);
+        circleServiceSpy.ellipseData = {
+            type: 'ellipse',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL_AND_BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 0 },
+        };
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;

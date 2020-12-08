@@ -16,7 +16,14 @@ describe('PolygonAttributesComponent', () => {
     const finalsides = 10;
 
     beforeEach(async(() => {
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'setSides']);
+        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', [
+            'changeFillStyle',
+            'changeWidth',
+            'setSides',
+            'getWidth',
+            'getFillStyle',
+            'getSides',
+        ]);
         polygoneServiceSpy['polygonData'] = {
             type: 'polygone',
             primaryColor: 'blue',

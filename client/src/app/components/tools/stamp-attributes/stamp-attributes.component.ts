@@ -32,6 +32,6 @@ export class StampAttributesComponent {
 
     changeAngle(newAngle: number): void {
         this.angle = newAngle;
-        this.stampService.setangle(newAngle);
+        this.stampService.setAngle(newAngle);
     }
 }
