@@ -30,6 +30,7 @@ describe('DrawingComponent', () => {
             'currentToolMouseUp',
             'currentToolMouseLeave',
             'currentToolMouseEnter',
+            'currentToolWheelEvent',
         ]);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey', 'autoSave']);
 
@@ -91,5 +92,11 @@ describe('DrawingComponent', () => {
     it(' onMouseLeave should call toolSelectionService.onMouseLeave', () => {
         component.onMouseLeave();
         expect(toolSelectionServiceSpy.currentToolMouseLeave).toHaveBeenCalled();
+    });
+
+    it(' onMouseWheel should call toolSelectionService.onMouseWheel', () => {
+        const event = {} as WheelEvent;
+        component.onMouseWheel(event);
+        expect(toolSelectionServiceSpy.currentToolWheelEvent).toHaveBeenCalled();
     });
 });

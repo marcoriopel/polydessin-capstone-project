@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { STAMPS } from '@app/classes/stamps';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { PATTERN_NAMES } from '@app/ressources/global-variables/brush-pattern-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -47,6 +48,7 @@ describe('UndoRedoService', () => {
     let resizeData: Resize;
     let fillData: Fill;
     let selectionData: Selection;
+    let stampData: Stamp;
 
     beforeEach(() => {
         obs = new Subject<boolean>();
@@ -191,6 +193,15 @@ describe('UndoRedoService', () => {
             type: 'selection',
             imageData: (undefined as unknown) as ImageData,
         };
+
+        stampData = {
+            type: 'stamp',
+            color: '#000000',
+            size: 0,
+            position: { x: 0, y: 0 },
+            currentStamp: STAMPS.ANGULAR,
+            angle: 0,
+        };
     });
 
     it('should be created', () => {
@@ -223,6 +234,13 @@ describe('UndoRedoService', () => {
         obs.next(true);
         service.undo();
         expect(resizeDrawingSpy.resizeCanvasSize).not.toHaveBeenCalled();
+    });
+
+    it('should not push on redoStack if undoStack is empty ', () => {
+        const redoStackPushSpy = spyOn(service.drawingService.redoStack, 'push');
+        drawingServiceSpy.undoStack = [(undefined as unknown) as Pencil];
+        service.undo();
+        expect(redoStackPushSpy).not.toHaveBeenCalled();
     });
 
     it('if there is already a modification it should be pushed to redo stack when calling undo', () => {
@@ -388,6 +406,12 @@ describe('UndoRedoService', () => {
         });
         service.setRedoAvailability(false);
         expect(returnValue).toBe(false);
+    });
+
+    it('drawElement should call printStamp when element is stamp', () => {
+        const printStampSpy = spyOn(service.stampService, 'printStamp');
+        service.drawElement(stampData);
+        expect(printStampSpy).toHaveBeenCalled();
     });
     // tslint:disable-next-line: max-file-line-count
 });

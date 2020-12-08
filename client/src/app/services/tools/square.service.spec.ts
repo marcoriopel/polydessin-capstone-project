@@ -8,6 +8,7 @@ import { SquareService } from './square.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
+// tslint:disable: max-file-line-count
 describe('SquareService', () => {
     let service: SquareService;
     let mouseEvent: MouseEvent;
@@ -345,5 +346,22 @@ describe('SquareService', () => {
         service.onKeyDown(event);
         expect(drawServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(drawShapeSpy).toHaveBeenCalled();
+    });
+
+    it('should not call rect of ctx', () => {
+        const ctxRectSpy = spyOn<any>(baseCtxStub, 'rect');
+        const rectangleData: Rectangle = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 5,
+            width: 5,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.BORDER,
+            isShiftDown: false,
+            lineWidth: 10,
+        };
+        service.drawRectangle(baseCtxStub, rectangleData);
+        expect(ctxRectSpy).not.toHaveBeenCalled();
     });
 });

@@ -63,6 +63,12 @@ describe('BrushService', () => {
         expect(service.brushData.lineWidth).toBe(1);
     });
 
+    it('reset should put filter at none on both context', () => {
+        service.reset();
+        expect(drawServiceSpy.baseCtx.filter).toEqual('none');
+        expect(drawServiceSpy.previewCtx.filter).toEqual('none');
+    });
+
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
         drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();

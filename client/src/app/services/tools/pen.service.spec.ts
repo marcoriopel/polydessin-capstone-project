@@ -411,4 +411,8 @@ describe('PenService', () => {
 
         expect(service.toRadians(angle)).toEqual(angleRad);
     });
+
+    it('getAngle should return the angle', () => {
+        expect(service.getAngle()).toEqual(angleObservableSpy);
+    });
 });
