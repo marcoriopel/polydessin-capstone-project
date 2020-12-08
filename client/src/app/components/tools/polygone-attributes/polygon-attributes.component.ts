@@ -12,9 +12,9 @@ export class PolygonAttributesComponent {
     numberOfSides: number;
 
     constructor(public polygonService: PolygonService) {
-        this.toolWidth = polygonService.polygonData.lineWidth;
-        this.fillStyle = polygonService.polygonData.fillStyle;
-        this.numberOfSides = polygonService.polygonData.sides;
+        this.toolWidth = polygonService.getWidth();
+        this.fillStyle = polygonService.getFillStyle();
+        this.numberOfSides = polygonService.getSides();
     }
 
     changeBorderWidth(newWidth: number): void {

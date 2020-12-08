@@ -74,9 +74,9 @@ describe('PolygonService', () => {
     });
 
     it('should change the fillStyle', () => {
-        service.polygonData.fillStyle = FILL_STYLES.FILL;
+        service['polygonData'].fillStyle = FILL_STYLES.FILL;
         service.changeFillStyle(FILL_STYLES.BORDER);
-        expect(service.polygonData.fillStyle).toBe(FILL_STYLES.BORDER);
+        expect(service['polygonData'].fillStyle).toBe(FILL_STYLES.BORDER);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -85,21 +85,21 @@ describe('PolygonService', () => {
     });
 
     it('should change width', () => {
-        service.polygonData.lineWidth = 0;
+        service['polygonData'].lineWidth = 0;
         service.changeWidth(1);
-        expect(service.polygonData.lineWidth).toBe(1);
+        expect(service['polygonData'].lineWidth).toBe(1);
     });
 
     it('should not change width', () => {
-        service.polygonData.lineWidth = 1;
+        service['polygonData'].lineWidth = 1;
         service.changeWidth(4);
-        expect(service.polygonData.lineWidth).not.toBe(1);
+        expect(service['polygonData'].lineWidth).not.toBe(1);
     });
 
     it('should drawShape when mouse is down on mousemove', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
-        service.polygonData.firstPoint = { x: 30, y: 30 };
-        service.polygonData.lastPoint = { x: 31, y: 31 };
+        service['polygonData'].firstPoint = { x: 30, y: 30 };
+        service['polygonData'].lastPoint = { x: 31, y: 31 };
         service.mouseDown = true;
         service.onMouseMove(mouseEvent);
         expect(drawPolygoneSpy).toHaveBeenCalled();
@@ -123,8 +123,8 @@ describe('PolygonService', () => {
 
     it('should call fill also if option is not to draw only the border', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
-        service.polygonData.fillStyle = FILL_STYLES.FILL;
-        service.polygonData = {
+        service['polygonData'].fillStyle = FILL_STYLES.FILL;
+        service['polygonData'] = {
             type: 'polygone',
             primaryColor: 'black',
             secondaryColor: 'black',
@@ -136,22 +136,22 @@ describe('PolygonService', () => {
             lastPoint: { x: 20, y: 20 },
             sides: 3,
         };
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(ctxFillSpy).toHaveBeenCalled();
     });
 
     it('should get number from calculation of circleWidth', () => {
-        service.polygonData.firstPoint = { x: 30, y: 30 };
-        service.polygonData.lastPoint = { x: 29, y: 29 };
+        service['polygonData'].firstPoint = { x: 30, y: 30 };
+        service['polygonData'].lastPoint = { x: 29, y: 29 };
         service.setCircleHeight();
         service.setCircleWidth();
         service.circleService.circleWidth = 1;
-        expect(service.polygonData.circleWidth).toBe(1);
+        expect(service['polygonData'].circleWidth).toBe(1);
     });
 
     it('drawCircle should call drawCircle of circleService', () => {
-        service.polygonData.firstPoint = { x: 30, y: 30 };
-        service.polygonData.lastPoint = { x: 29, y: 29 };
+        service['polygonData'].firstPoint = { x: 30, y: 30 };
+        service['polygonData'].lastPoint = { x: 29, y: 29 };
         service.drawCircle(baseCtxStub);
         expect(circleServiceSpy.drawCircle).toHaveBeenCalled();
     });
@@ -159,7 +159,7 @@ describe('PolygonService', () => {
     it('drawPolygone should call setCircleHeight and setCircleWidth', () => {
         const setCricleWidthSpy = spyOn<any>(service, 'setCircleWidth');
         const setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight');
-        service.polygonData = {
+        service['polygonData'] = {
             type: 'polygone',
             primaryColor: 'black',
             secondaryColor: 'black',
@@ -171,7 +171,7 @@ describe('PolygonService', () => {
             lastPoint: { x: 29, y: 29 },
             sides: 3,
         };
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(setCircleHeigthSpy).toHaveBeenCalled();
         expect(setCricleWidthSpy).toHaveBeenCalled();
     });
@@ -180,8 +180,8 @@ describe('PolygonService', () => {
         service.centerX = 0;
         let firstPoint: Vec2 = { x: 20, y: 20 };
         let lastPoint: Vec2 = { x: 10, y: 10 };
-        service.polygonData.lastPoint = lastPoint;
-        service.polygonData.firstPoint = firstPoint;
+        service['polygonData'].lastPoint = lastPoint;
+        service['polygonData'].firstPoint = firstPoint;
         service.setCenterX();
         expect(service.centerX).toEqual(10);
         firstPoint = { x: 20, y: 10 };
@@ -194,8 +194,8 @@ describe('PolygonService', () => {
         service.centerY = 0;
         let firstPoint: Vec2 = { x: 20, y: 20 };
         let lastPoint: Vec2 = { x: 10, y: 10 };
-        service.polygonData.lastPoint = lastPoint;
-        service.polygonData.firstPoint = firstPoint;
+        service['polygonData'].lastPoint = lastPoint;
+        service['polygonData'].firstPoint = firstPoint;
         service.setCenterY();
         expect(service.centerY).toEqual(10);
         firstPoint = { x: 20, y: 10 };
@@ -207,59 +207,59 @@ describe('PolygonService', () => {
     it('should find the top left quadrant', () => {
         const point1: Vec2 = { x: 20, y: 20 };
         const point2: Vec2 = { x: 10, y: 10 };
-        service.polygonData = {} as Polygon;
-        service.polygonData.firstPoint = point1;
-        service.polygonData.lastPoint = point2;
-        service.polygonData.circleWidth = 10;
-        service.polygonData.circleHeight = 10;
-        const quadrant = service.trigonometry.findQuadrant(point1, point2);
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service['polygonData'] = {} as Polygon;
+        service['polygonData'].firstPoint = point1;
+        service['polygonData'].lastPoint = point2;
+        service['polygonData'].circleWidth = 10;
+        service['polygonData'].circleHeight = 10;
+        const quadrant = service['trigonometry'].findQuadrant(point1, point2);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(quadrant).toBe(Quadrant.TOP_LEFT);
     });
 
     it('should find the top right quadrant', () => {
         const point1: Vec2 = { x: 10, y: 20 };
         const point2: Vec2 = { x: 20, y: 10 };
-        service.polygonData = {} as Polygon;
-        service.polygonData.firstPoint = point1;
-        service.polygonData.lastPoint = point2;
-        service.polygonData.circleWidth = 10;
-        service.polygonData.circleHeight = 10;
-        const quadrant = service.trigonometry.findQuadrant(point1, point2);
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service['polygonData'] = {} as Polygon;
+        service['polygonData'].firstPoint = point1;
+        service['polygonData'].lastPoint = point2;
+        service['polygonData'].circleWidth = 10;
+        service['polygonData'].circleHeight = 10;
+        const quadrant = service['trigonometry'].findQuadrant(point1, point2);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(quadrant).toBe(Quadrant.TOP_RIGHT);
     });
 
     it('should find the bottom left quadrant', () => {
         const point1: Vec2 = { x: 20, y: 10 };
         const point2: Vec2 = { x: 10, y: 20 };
-        service.polygonData = {} as Polygon;
-        service.polygonData.firstPoint = point1;
-        service.polygonData.lastPoint = point2;
-        service.polygonData.circleWidth = 10;
-        service.polygonData.circleHeight = 10;
-        const quadrant = service.trigonometry.findQuadrant(point1, point2);
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service['polygonData'] = {} as Polygon;
+        service['polygonData'].firstPoint = point1;
+        service['polygonData'].lastPoint = point2;
+        service['polygonData'].circleWidth = 10;
+        service['polygonData'].circleHeight = 10;
+        const quadrant = service['trigonometry'].findQuadrant(point1, point2);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(quadrant).toBe(Quadrant.BOTTOM_LEFT);
     });
 
     it('should find the bottom right quadrant', () => {
         const point1: Vec2 = { x: 10, y: 10 };
         const point2: Vec2 = { x: 20, y: 20 };
-        service.polygonData = {} as Polygon;
-        service.polygonData.firstPoint = point1;
-        service.polygonData.lastPoint = point2;
-        service.polygonData.circleWidth = 10;
-        service.polygonData.circleHeight = 10;
-        const quadrant = service.trigonometry.findQuadrant(point1, point2);
-        service.drawPolygone(baseCtxStub, service.polygonData);
+        service['polygonData'] = {} as Polygon;
+        service['polygonData'].firstPoint = point1;
+        service['polygonData'].lastPoint = point2;
+        service['polygonData'].circleWidth = 10;
+        service['polygonData'].circleHeight = 10;
+        const quadrant = service['trigonometry'].findQuadrant(point1, point2);
+        service.drawPolygone(baseCtxStub, service['polygonData']);
         expect(quadrant).toBe(Quadrant.BOTTOM_RIGHT);
     });
 
     it('should draw polygone on mouseUp if mouse was down', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
-        service.polygonData.firstPoint = { x: 0, y: 0 };
-        service.polygonData.lastPoint = { x: 5, y: 5 };
+        service['polygonData'].firstPoint = { x: 0, y: 0 };
+        service['polygonData'].lastPoint = { x: 5, y: 5 };
         service.mouseDown = true;
         service.onMouseUp(mouseEvent);
         expect(drawPolygoneSpy).toHaveBeenCalled();
@@ -269,7 +269,7 @@ describe('PolygonService', () => {
         const drawPolygoneSpy = spyOn<any>(service, 'drawPolygone');
         const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse');
         getPositionFromMouseSpy.and.returnValue({ x: 0, y: 0 });
-        service.polygonData.firstPoint = { x: 0, y: 0 };
+        service['polygonData'].firstPoint = { x: 0, y: 0 };
         service.mouseDown = true;
         service.onMouseUp({} as MouseEvent);
         expect(drawPolygoneSpy).not.toHaveBeenCalled();
@@ -290,7 +290,7 @@ describe('PolygonService', () => {
 
     it('should call stroke on drawPolygone if ctx is preview', () => {
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
-        service.polygonData = {
+        service['polygonData'] = {
             type: 'polygone',
             primaryColor: 'black',
             secondaryColor: 'black',
@@ -302,7 +302,7 @@ describe('PolygonService', () => {
             lastPoint: { x: 29, y: 29 },
             sides: 3,
         };
-        service.drawPolygone(previewCtxStub, service.polygonData);
+        service.drawPolygone(previewCtxStub, service['polygonData']);
         expect(strokeSpy).toHaveBeenCalled();
     });
     // tslint:disable-next-line: max-file-line-count

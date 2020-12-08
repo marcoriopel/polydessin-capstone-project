@@ -4,6 +4,8 @@ import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { PolygonAttributesComponent } from './polygon-attributes.component';
 
+// tslint:disable: no-string-literal
+
 describe('PolygonAttributesComponent', () => {
     let component: PolygonAttributesComponent;
     let fixture: ComponentFixture<PolygonAttributesComponent>;
@@ -15,7 +17,7 @@ describe('PolygonAttributesComponent', () => {
 
     beforeEach(async(() => {
         polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'setSides']);
-        polygoneServiceSpy.polygonData = {
+        polygoneServiceSpy['polygonData'] = {
             type: 'polygone',
             primaryColor: 'blue',
             secondaryColor: 'red',

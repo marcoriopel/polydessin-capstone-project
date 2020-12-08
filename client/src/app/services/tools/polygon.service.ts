@@ -26,8 +26,8 @@ export class PolygonService extends Tool {
     centerX: number;
     centerY: number;
     center: Vec2;
-    trigonometry: Trigonometry = new Trigonometry();
-    polygonData: Polygon;
+    private trigonometry: Trigonometry = new Trigonometry();
+    private polygonData: Polygon;
     minNumberOfSides: number = MIN_SIDES;
     maxNumberOfSides: number = MAX_SIDES;
 
@@ -60,6 +60,16 @@ export class PolygonService extends Tool {
     }
     setSides(sides: number): void {
         this.polygonData.sides = sides;
+    }
+
+    getFillStyle(): number {
+        return this.polygonData.fillStyle;
+    }
+    getWidth(): number {
+        return this.polygonData.lineWidth;
+    }
+    getSides(): number {
+        return this.polygonData.sides;
     }
 
     setCenterX(): void {
