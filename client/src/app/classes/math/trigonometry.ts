@@ -143,11 +143,9 @@ export class Trigonometry {
     }
 
     findTopLeftPointCircle(firstPoint: Vec2, lastPoint: Vec2): Vec2 {
-        const quadrant: Quadrant = this.findQuadrant(firstPoint, lastPoint);
-
         let x = 0;
         let y = 0;
-        switch (quadrant) {
+        switch (this.findQuadrant(firstPoint, lastPoint)) {
             case Quadrant.BOTTOM_LEFT:
                 x = lastPoint.x;
                 y = firstPoint.y;
@@ -174,7 +172,6 @@ export class Trigonometry {
 
         centerX = firstPoint.x > lastPoint.x ? lastPoint.x + centerX : lastPoint.x - centerX;
         centerY = firstPoint.y > lastPoint.y ? lastPoint.y + centerY : lastPoint.y - centerY;
-        const center: Vec2 = { x: centerX, y: centerY };
-        return center;
+        return { x: centerX, y: centerY };
     }
 }
