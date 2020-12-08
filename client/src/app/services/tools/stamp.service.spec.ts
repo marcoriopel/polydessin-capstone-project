@@ -105,12 +105,19 @@ describe('StampService', () => {
         expect(updateStampDataSpy).toHaveBeenCalledWith(mouseEvent);
     });
 
-    it('printStamp should translate and rotate context', () => {
+    it('printStamp should translate, rotate and scale context', () => {
         const translateSpy = spyOn(previewCtxStub, 'translate');
         const rotateSpy = spyOn(previewCtxStub, 'rotate');
+        const scaleSpy = spyOn(previewCtxStub, 'scale');
         service.printStamp(previewCtxStub, service.stampData);
         expect(translateSpy).toHaveBeenCalled();
         expect(rotateSpy).toHaveBeenCalled();
+        expect(scaleSpy).toHaveBeenCalled();
+    });
+
+    it('printStamp should translate and rotate context', () => {
+        service.printStamp(previewCtxStub, service.stampData);
+        expect(previewCtxStub.fillStyle).toEqual('#000000');
     });
 
     it('MouseWheel should call changeAngle and onMouseMove', () => {
