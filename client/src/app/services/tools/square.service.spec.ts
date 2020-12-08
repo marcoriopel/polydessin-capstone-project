@@ -8,6 +8,7 @@ import { SquareService } from './square.service';
 
 // tslint:disable: no-any
 // tslint:disable: no-magic-numbers
+// tslint:disable: max-file-line-count
 describe('SquareService', () => {
     let service: SquareService;
     let mouseEvent: MouseEvent;

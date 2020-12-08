@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { STAMPS } from '@app/classes/stamps';
 import { MAX_ANGLE } from '@app/ressources/global-variables/global-variables';
+import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { ColorSelectionService } from '../color-selection/color-selection.service';
 import { StampService } from './stamp.service';
 // tslint:disable: no-magic-numbers
 // tslint:disable: no-string-literal
