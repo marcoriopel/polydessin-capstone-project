@@ -15,17 +15,12 @@ export class ColorPickerComponent implements AfterViewInit {
     primaryColor: string = '#000000';
     secondaryColor: string = '#000000';
     colors: string[] = ['#000000'];
-    minOpacity: number = 0;
-    maxOpacity: number = MAX_OPACITY;
     primaryOpacity: number = MAX_OPACITY;
     secondaryOpacity: number = MAX_OPACITY;
 
     constructor(public colorSelectionService: ColorSelectionService, public hotkeyService: HotkeyService, public pipetteService: PipetteService) {
-        // Initial values for the colors on application opening
-        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
-        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
-        this.colorSelectionService.setPrimaryOpacity(this.primaryOpacity / MAX_OPACITY);
-        this.colorSelectionService.setSecondaryOpacity(this.secondaryOpacity / MAX_OPACITY);
+        this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }
 
     @HostListener('keyup', ['$event'])
@@ -39,7 +34,7 @@ export class ColorPickerComponent implements AfterViewInit {
         if (this.colors.length > MAXIMUM_NUMBER_OF_COLORS) {
             this.colors.pop();
         }
-        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(color, this.primaryOpacity));
+        this.colorSelectionService.primaryColor = this.hexToRGBA(color, this.primaryOpacity);
     }
 
     changeSecondaryColor(color: string): void {
@@ -48,54 +43,54 @@ export class ColorPickerComponent implements AfterViewInit {
         if (this.colors.length > MAXIMUM_NUMBER_OF_COLORS) {
             this.colors.pop();
         }
-        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(color, this.secondaryOpacity));
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(color, this.secondaryOpacity);
     }
 
     swapColors(): void {
         const temp: string = this.primaryColor;
         this.primaryColor = this.secondaryColor;
         this.secondaryColor = temp;
-        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
-        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
+        this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }
 
     decrementPrimaryOpacity(): void {
-        if (this.primaryOpacity > this.minOpacity) {
+        if (this.primaryOpacity > 0) {
             --this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+        this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
     }
 
     incrementPrimaryOpacity(): void {
-        if (this.primaryOpacity < this.maxOpacity) {
+        if (this.primaryOpacity < MAX_OPACITY) {
             ++this.primaryOpacity;
         }
-        this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+        this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
     }
 
     decrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity > this.minOpacity) {
+        if (this.secondaryOpacity > 0) {
             --this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }
 
     incrementSecondaryOpacity(): void {
-        if (this.secondaryOpacity < this.maxOpacity) {
+        if (this.secondaryOpacity < MAX_OPACITY) {
             ++this.secondaryOpacity;
         }
-        this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }
 
     changePrimaryOpacity(opacity: number, event: KeyboardEvent): void {
         event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity.toString() === '') {
             this.primaryOpacity = MAX_OPACITY;
-            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+            this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
             alert("L'opacité doit être un nombre entre 0 et 100.");
         } else {
             this.primaryOpacity = opacity;
-            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(this.primaryColor, this.primaryOpacity));
+            this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
         }
     }
 
@@ -103,21 +98,20 @@ export class ColorPickerComponent implements AfterViewInit {
         event.stopPropagation();
         if (isNaN(opacity) || opacity < 0 || opacity > MAX_OPACITY || opacity.toString() === '') {
             this.secondaryOpacity = MAX_OPACITY;
-            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
             alert("L'opacité doit être un nombre entre 0 et 100.");
         } else {
             this.secondaryOpacity = opacity;
-            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(this.secondaryColor, this.secondaryOpacity));
         }
+        this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }
 
     restorePreviousColor(color: string, isPrimary: boolean): void {
         if (isPrimary) {
             this.primaryColor = color;
-            this.colorSelectionService.setPrimaryColor(this.hexToRGBA(color, this.primaryOpacity));
+            this.colorSelectionService.primaryColor = this.hexToRGBA(color, this.primaryOpacity);
         } else {
             this.secondaryColor = color;
-            this.colorSelectionService.setSecondaryColor(this.hexToRGBA(color, this.secondaryOpacity));
+            this.colorSelectionService.secondaryColor = this.hexToRGBA(color, this.secondaryOpacity);
         }
     }
 

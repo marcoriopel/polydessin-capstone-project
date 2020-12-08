@@ -26,20 +26,17 @@ export class CarouselComponent implements OnInit, OnDestroy {
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
-    isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
     currentTag: string = '';
     maxTags: boolean = false;
     isArrowEventsChecked: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
-    selectable: boolean = true;
-    removable: boolean = true;
-    addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
+
     constructor(
         public router: Router,
         public hotkeyService: HotkeyService,

@@ -10,7 +10,7 @@ export class PencilAttributesComponent {
     toolWidth: number;
 
     constructor(public pencilService: PencilService) {
-        this.toolWidth = pencilService.width;
+        this.toolWidth = pencilService.pencilData.lineWidth;
     }
 
     changeWidth(newWidth: number): void {

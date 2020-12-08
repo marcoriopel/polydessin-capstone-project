@@ -10,7 +10,7 @@ export class EraserAttributesComponent {
     toolWidth: number;
 
     constructor(public eraserService: EraserService) {
-        this.toolWidth = eraserService.width;
+        this.toolWidth = eraserService.eraserData.lineWidth;
     }
 
     changeWidth(newWidth: number): void {
