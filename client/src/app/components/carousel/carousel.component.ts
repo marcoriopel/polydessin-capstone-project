@@ -149,7 +149,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         }
     }
 
-    async applySelectedDrawing(index: number): Promise<void> {
+    applySelectedDrawing(index: number): void {
         if (this.currentRoute === '/home') {
             this.router.navigateByUrl('/editor');
             this.currentRoute = '/editor';
@@ -162,7 +162,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
                     const img = URL.createObjectURL(image);
                     this.drawImageOnCanvas(img);
                 },
-                (error) => {
+                () => {
                     this.serverResponseService.loadErrorSnackBar();
                 },
             );
@@ -249,11 +249,11 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .deleteDrawing(fileName)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
-                (data) => {
+                () => {
                     this.loadDBData();
                 },
-                (error) => {
-                    this.serverResponseService.deleteErrorSnackBar(error.error);
+                () => {
+                    this.serverResponseService.deleteErrorSnackBar();
                     this.gotImages = true;
                 },
             );

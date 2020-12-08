@@ -27,14 +27,12 @@ describe('Service: ServerResponse', () => {
     });
 
     it('should open saveErrorSnackBar snackBar', () => {
-        const error = 'error';
-        service.saveErrorSnackBar(error);
+        service.saveErrorSnackBar();
         expect(snackBarSpy.open).toHaveBeenCalled();
     });
 
     it('should open deleteErrorSnackBar snackBar', () => {
-        const error = 'error';
-        service.deleteErrorSnackBar(error);
+        service.deleteErrorSnackBar();
         expect(snackBarSpy.open).toHaveBeenCalled();
     });
 
@@ -49,8 +47,7 @@ describe('Service: ServerResponse', () => {
     });
 
     it('should open sendMailErrorSnackBar', () => {
-        const error = 'error';
-        service.sendMailErrorSnackBar(error);
+        service.sendMailErrorSnackBar();
         expect(snackBarSpy.open).toHaveBeenCalled();
     });
 });
