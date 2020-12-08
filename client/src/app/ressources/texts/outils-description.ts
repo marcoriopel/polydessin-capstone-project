@@ -9,19 +9,19 @@ export const OTHER_FEATURES: Feature[] = [
         name: 'Palette de couleur',
         description:
             'Cet outil permet de définir la couleur de tous les outils. Vous pouvez définir deux couleurs : principale et secondaire. Ces deux couleurs peuvent intéragir entre eux. Vous pouvez choisir la couleur avec le panneau de couleur contenant toutes les couleurs. En changeant de couleur, l ancienne couleur est enregistré pour vous permettre de la récupérer au besoin. ',
-        picture: './../../../assets/img/couleur.PNG',
+        picture: './../../../assets/img/couleur.png',
     },
     {
         name: 'Magnétisme',
         description:
             "Cette option déplacera une boite englobante sur la ligne de la grille la plus proche lorsque vous la déplacez avec la souris. Ceci se fait en y et x. Il suffit d'activer cette outil pour l'utiliser. Il est aussi possible de faire le déplacement avec les touches directionnelles",
-        picture: './../../../assets/img/magnetisme.PNG',
+        picture: './../../../assets/img/magnetisme.png',
     },
     {
         name: 'Grille',
         description:
             "Cette fonctionnalité permet d'afficher une grille sur la surface de dessin. Il est possible d'activer et de désactiver la grille, de lui assigner une valeur d'opacité et d'indiquer la taille des carrées. Il est possible de modifier la taille des carrées avec les touches + et -",
-        picture: './../../../assets/img/grille.PNG',
+        picture: './../../../assets/img/grille.png',
     },
 ];
 
@@ -30,7 +30,7 @@ export const UNDO_REDO: Feature[] = [
         name: 'Annuler-refaire',
         description:
             "Cet outil permet d'annuler et de refaire vos dernières modifications sur la surface du dessin. IL est possible d'utiliser le raccourci CTRL + Z pour annuler une action et le raccourci CTRL + SHIFT + Z pour refaire une action.",
-        picture: './../../../assets/img/annuler.PNG',
+        picture: './../../../assets/img/annuler.png',
     },
 ];
 
