@@ -12,7 +12,7 @@ describe('StampAttributesComponent', () => {
 
     beforeEach(async(() => {
         obsAngle = new Subject<number>();
-        stampServiceSpy = jasmine.createSpyObj('StampService', ['getAngle']);
+        stampServiceSpy = jasmine.createSpyObj('StampService', ['getAngle', 'setSize', 'setCurrentStamp', 'setAngle', 'getSize']);
         stampServiceSpy.getAngle.and.returnValue(obsAngle.asObservable());
         TestBed.configureTestingModule({
             declarations: [StampAttributesComponent],
@@ -38,18 +38,18 @@ describe('StampAttributesComponent', () => {
     it('changeSize should change toolSize and stampSize', () => {
         component.changeSize(10);
         expect(component.toolSize).toEqual(10);
-        expect(stampServiceSpy.stampSize).toEqual(10);
+        expect(stampServiceSpy.setSize).toHaveBeenCalled();
     });
 
     it('changeStamp should change currentStamp', () => {
         const stampData = STAMPS.ANGULAR;
         component.changeStamp(stampData);
-        expect(stampServiceSpy.currentStamp).toEqual(stampData);
+        expect(stampServiceSpy.setCurrentStamp).toHaveBeenCalledWith(stampData);
     });
 
     it('changeAngle should change angle and stampService angle', () => {
         component.changeAngle(30);
-        expect(stampServiceSpy.angle).toEqual(30);
+        expect(stampServiceSpy.setAngle).toHaveBeenCalled();
         expect(component.angle).toEqual(30);
     });
 });

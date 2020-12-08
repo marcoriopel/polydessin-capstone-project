@@ -49,6 +49,11 @@ describe('DrawingService', () => {
         expect(hasColoredPixels).toEqual(false);
     });
 
+    it('should return isLastDrawing', () => {
+        service.isLastDrawing = false;
+        expect(service.checkedDrawing()).toEqual(false);
+    });
+
     it('should initialize canvas as all white canvas', () => {
         const fillRectSpy = spyOn(service.baseCtx, 'fillRect');
         service.initializeBaseCanvas();

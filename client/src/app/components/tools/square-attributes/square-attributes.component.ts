@@ -11,8 +11,8 @@ export class SquareAttributesComponent {
     fillStyle: number;
 
     constructor(public squareService: SquareService) {
-        this.toolWidth = squareService.width;
-        this.fillStyle = squareService.fillStyle;
+        this.toolWidth = squareService.rectangleData.lineWidth;
+        this.fillStyle = squareService.rectangleData.fillStyle;
     }
 
     changeBorderWidth(newWidth: number): void {
@@ -21,6 +21,6 @@ export class SquareAttributesComponent {
     }
 
     changeFillStyle(newFillStyle: number): void {
-        this.squareService.changeFillStyle(newFillStyle);
+        this.squareService.setFillStyle(newFillStyle);
     }
 }

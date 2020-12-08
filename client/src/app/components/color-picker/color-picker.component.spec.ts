@@ -161,9 +161,9 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should not decrement primary opacity because already at minimum', () => {
-        component.primaryOpacity = component.minOpacity;
+        component.primaryOpacity = 0;
         component.decrementPrimaryOpacity();
-        expect(component.primaryOpacity).toEqual(component.minOpacity);
+        expect(component.primaryOpacity).toEqual(0);
     });
 
     it('should decrement secondary opacity by 1', () => {
@@ -173,15 +173,15 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should not decrement secondary opacity because already at minimum', () => {
-        component.secondaryOpacity = component.minOpacity;
+        component.secondaryOpacity = 0;
         component.decrementSecondaryOpacity();
-        expect(component.secondaryOpacity).toEqual(component.minOpacity);
+        expect(component.secondaryOpacity).toEqual(0);
     });
 
     it('should increment primary opacity by 1', () => {
-        component.primaryOpacity = component.minOpacity;
+        component.primaryOpacity = 0;
         component.incrementPrimaryOpacity();
-        expect(component.primaryOpacity).toEqual(component.minOpacity + 1);
+        expect(component.primaryOpacity).toEqual(1);
     });
 
     it('should not increment primary opacity because already at maximum', () => {
@@ -191,9 +191,9 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should increment secondary opacity by 1', () => {
-        component.secondaryOpacity = component.minOpacity;
+        component.secondaryOpacity = 0;
         component.incrementSecondaryOpacity();
-        expect(component.secondaryOpacity).toEqual(component.minOpacity + 1);
+        expect(component.secondaryOpacity).toEqual(1);
     });
 
     it('should not increment secondary opacity because already at maximum', () => {

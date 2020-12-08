@@ -12,6 +12,20 @@ describe('LineAttributesComponent', () => {
 
     beforeEach(async(() => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['changeLineWidth', 'changeDotWidth', 'changeJunction']);
+        lineServiceSpy.lineData = {
+            type: 'line',
+            lineWidth: 1,
+            lineCap: 'round',
+            primaryColor: 'blue',
+            secondaryColor: 'red',
+            mouseClicks: [],
+            storedLines: [],
+            isDot: false,
+            line: { startingPoint: { x: 0, y: 0 }, endingPoint: { x: 0, y: 0 } },
+            isShiftDoubleClick: false,
+            hasLastPointBeenChanged: false,
+            dotWidth: 1,
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

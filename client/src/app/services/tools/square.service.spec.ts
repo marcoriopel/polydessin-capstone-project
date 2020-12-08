@@ -64,10 +64,33 @@ describe('SquareService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should set IsShiftDown', () => {
+        service.rectangleData.isShiftDown = false;
+        service.setIsShiftDown(true);
+        expect(service.rectangleData.isShiftDown).toBe(true);
+    });
+
+    it('should set firstPoint', () => {
+        service.firstPoint = { x: 0, y: 0 };
+        service.setFirstPoint({ x: 10, y: 10 });
+        expect(service.firstPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should set lastPoint', () => {
+        service.lastPoint = { x: 0, y: 0 };
+        service.setLastPoint({ x: 10, y: 10 });
+        expect(service.lastPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should return fillStyle', () => {
+        service.rectangleData.fillStyle = FILL_STYLES.BORDER;
+        expect(service.getFillStyle()).toEqual(FILL_STYLES.BORDER);
+    });
+
     it('should change line width', () => {
-        service.width = 0;
+        service.rectangleData.lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.rectangleData.lineWidth).toBe(1);
     });
 
     it('should change preview ctx lineJoin to witer on init', () => {
@@ -77,9 +100,9 @@ describe('SquareService', () => {
     });
 
     it('should change the fillStyle', () => {
-        service.fillStyle = FILL_STYLES.FILL;
-        service.changeFillStyle(FILL_STYLES.BORDER);
-        expect(service.fillStyle).toBe(FILL_STYLES.BORDER);
+        service.rectangleData.fillStyle = FILL_STYLES.FILL;
+        service.setFillStyle(FILL_STYLES.BORDER);
+        expect(service.rectangleData.fillStyle).toBe(FILL_STYLES.BORDER);
     });
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
@@ -102,7 +125,7 @@ describe('SquareService', () => {
             key: 'Shift',
         });
         service.onKeyDown(event);
-        expect(service.isShiftKeyDown).toBe(true);
+        expect(service.rectangleData.isShiftDown).toBe(true);
     });
 
     it('isShiftKeyDown should be false when shift key is released', () => {
@@ -110,7 +133,7 @@ describe('SquareService', () => {
             key: 'Shift',
         });
         service.onKeyUp(event);
-        expect(service.isShiftKeyDown).toBe(false);
+        expect(service.rectangleData.isShiftDown).toBe(false);
     });
 
     it('onMouseUp should call drawShape if mouse was already down', () => {
@@ -137,7 +160,7 @@ describe('SquareService', () => {
         service.lastPoint = { x: 29, y: 29 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        expect(service.rectangleWidth).toEqual(1);
+        expect(service.rectangleData.width).toEqual(1);
     });
 
     it('should get number from calculation of rectangleHeight', () => {
@@ -145,13 +168,13 @@ describe('SquareService', () => {
         service.lastPoint = { x: 25, y: 25 };
         service.setRectangleHeight();
         service.setRectangleWidth();
-        expect(service.rectangleHeight).toEqual(service.firstPoint.y - service.lastPoint.x);
+        expect(service.rectangleData.height).toEqual(service.firstPoint.y - service.lastPoint.x);
     });
 
     it('should call drawshape if mouse is down and shift is unpressed', () => {
         drawShapeSpy = spyOn<any>(service, 'drawShape');
         service.onMouseDown(mouseEvent);
-        service.isShiftKeyDown = true;
+        service.rectangleData.isShiftDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });
@@ -188,9 +211,9 @@ describe('SquareService', () => {
 
     it('should set square attributes if shift is down on drawshape ', () => {
         const squareAttributesSpy = spyOn(service, 'setSquareAttributes');
-        service.isShiftKeyDown = true;
+        service.rectangleData.isShiftDown = true;
         service.firstPoint = { x: 30, y: 30 };
-        service.topLeftPoint = { x: 25, y: 25 };
+        service.rectangleData.topLeftPoint = { x: 25, y: 25 };
         service.lastPoint = { x: 25, y: 25 };
         const shape = service.drawShape(drawServiceSpy.baseCtx);
         expect(shape).toEqual({ startingPoint: { x: 25.5, y: 25.5 }, width: 5, height: 5 });
@@ -199,64 +222,64 @@ describe('SquareService', () => {
 
     it('should finTopLeftPoint if firstPoint is top left corner', () => {
         // Top left is first point
-        service.rectangleHeight = 1;
-        service.rectangleWidth = 1;
+        service.rectangleData.height = 1;
+        service.rectangleData.width = 1;
         service.firstPoint = { x: 1, y: 1 };
-        service.topLeftPoint = { x: 0, y: 0 };
+        service.rectangleData.topLeftPoint = { x: 0, y: 0 };
         service.lastPoint = { x: 2, y: 2 };
         service.setSquareAttributes();
         const topLeft = { x: 1, y: 1 };
-        expect(service.topLeftPoint).toEqual(topLeft);
+        expect(service.rectangleData.topLeftPoint).toEqual(topLeft);
     });
 
     it('should finTopLeftPoint if firstPoint is top right corner', () => {
         // top left is left by width of first point
-        service.rectangleHeight = 1;
-        service.rectangleWidth = 1;
-        service.topLeftPoint = { x: 0, y: 0 };
+        service.rectangleData.height = 1;
+        service.rectangleData.width = 1;
+        service.rectangleData.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 2, y: 2 };
         service.lastPoint = { x: 1, y: 3 };
         service.setSquareAttributes();
         const expectedValue = { x: 1, y: 2 };
-        expect(service.topLeftPoint).toEqual(expectedValue);
+        expect(service.rectangleData.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should finTopLeftPoint if firstPoint is bottom left corner', () => {
         // top left is up by heigth of first point
-        service.rectangleHeight = 1;
-        service.rectangleWidth = 1;
-        service.topLeftPoint = { x: 0, y: 0 };
+        service.rectangleData.height = 1;
+        service.rectangleData.width = 1;
+        service.rectangleData.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 1, y: 2 };
         service.lastPoint = { x: 2, y: 1 };
         service.setSquareAttributes();
         const expectedValue = { x: 1, y: 1 };
-        expect(service.topLeftPoint).toEqual(expectedValue);
+        expect(service.rectangleData.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should finTopLeftPoint if firstPoint is bottom right corner', () => {
         // top left is last point
-        service.rectangleHeight = 1;
-        service.rectangleWidth = 1;
-        service.topLeftPoint = { x: 0, y: 0 };
+        service.rectangleData.height = 1;
+        service.rectangleData.width = 1;
+        service.rectangleData.topLeftPoint = { x: 0, y: 0 };
         service.firstPoint = { x: 3, y: 3 };
         service.lastPoint = { x: 2, y: 2 };
         service.setSquareAttributes();
         const expectedValue = { x: 2, y: 2 };
-        expect(service.topLeftPoint).toEqual(expectedValue);
+        expect(service.rectangleData.topLeftPoint).toEqual(expectedValue);
     });
 
     it('should not set isShiftKeyDown to true if key down of anything else than shift', () => {
-        service.isShiftKeyDown = false;
+        service.rectangleData.isShiftDown = false;
         const event = new KeyboardEvent('keypress', {
             key: 'Ctrl',
         });
         service.onKeyDown(event);
-        expect(service.isShiftKeyDown).toEqual(false);
+        expect(service.rectangleData.isShiftDown).toEqual(false);
     });
 
     it('should not draw anything if key up of shift but not mousedown', () => {
         drawShapeSpy = spyOn<any>(service, 'drawShape');
-        service.isShiftKeyDown = true;
+        service.rectangleData.isShiftDown = true;
         const event = new KeyboardEvent('keypress', {
             key: 'Shift',
         });

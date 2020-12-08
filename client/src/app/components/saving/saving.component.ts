@@ -25,10 +25,10 @@ export class SavingComponent implements OnInit, OnDestroy {
     name: string = '';
     maxTags: boolean = false;
     isLastTagInvalid: boolean = false;
-    addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
     tags: string[] = [];
     ownerForm: FormGroup;
+
     constructor(
         public hotkeyService: HotkeyService,
         public serverResponseService: ServerResponseService,

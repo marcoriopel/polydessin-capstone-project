@@ -128,7 +128,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         this.httpClient
             .post(url, body)
             .toPromise()
-            // tslint:disable-next-line: no-empty
             .then(() => {
                 this.isSendMailButtonDisabled = false;
                 this.serverResponseService.sendMailConfirmSnackBar();

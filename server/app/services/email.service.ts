@@ -30,9 +30,7 @@ export class EmailService {
                 axios
                     .post(MAIL_API_URL, formData, config)
                     // tslint:disable-next-line: no-empty
-                    .then(() => {
-                        console.log('mail envoyé');
-                    })
+                    .then(() => {})
                     .catch((error: Error) => {
                         throw error;
                     })
