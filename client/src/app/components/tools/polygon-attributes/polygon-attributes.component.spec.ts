@@ -9,14 +9,14 @@ import { PolygonAttributesComponent } from './polygon-attributes.component';
 describe('PolygonAttributesComponent', () => {
     let component: PolygonAttributesComponent;
     let fixture: ComponentFixture<PolygonAttributesComponent>;
-    let polygoneServiceSpy: jasmine.SpyObj<PolygonService>;
+    let polygonServiceSpy: jasmine.SpyObj<PolygonService>;
     const initialToolWidth = 1;
     const finalToolWidth = 5;
     const initialsides = 5;
     const finalsides = 10;
 
     beforeEach(async(() => {
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', [
+        polygonServiceSpy = jasmine.createSpyObj('PolygonService', [
             'changeFillStyle',
             'changeWidth',
             'setSides',
@@ -24,8 +24,8 @@ describe('PolygonAttributesComponent', () => {
             'getFillStyle',
             'getSides',
         ]);
-        polygoneServiceSpy['polygonData'] = {
-            type: 'polygone',
+        polygonServiceSpy['polygonData'] = {
+            type: 'polygon',
             primaryColor: 'blue',
             secondaryColor: 'red',
             fillStyle: FILL_STYLES.FILL_AND_BORDER,
@@ -40,7 +40,7 @@ describe('PolygonAttributesComponent', () => {
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [PolygonAttributesComponent],
-            providers: [{ provide: PolygonService, useValue: polygoneServiceSpy }],
+            providers: [{ provide: PolygonService, useValue: polygonServiceSpy }],
         }).compileComponents();
     }));
 
@@ -56,7 +56,7 @@ describe('PolygonAttributesComponent', () => {
 
     it('should call changeWidth of circleService', () => {
         component.changeBorderWidth(finalToolWidth);
-        expect(polygoneServiceSpy.changeWidth).toHaveBeenCalled();
+        expect(polygonServiceSpy.changeWidth).toHaveBeenCalled();
     });
 
     it('should change toolWidth', () => {
@@ -65,9 +65,9 @@ describe('PolygonAttributesComponent', () => {
         expect(component.toolWidth).toBe(finalToolWidth);
     });
 
-    it('should call changeFillStyle of polygoneService', () => {
+    it('should call changeFillStyle of polygonService', () => {
         component.changeFillStyle(finalToolWidth);
-        expect(polygoneServiceSpy.changeFillStyle).toHaveBeenCalled();
+        expect(polygonServiceSpy.changeFillStyle).toHaveBeenCalled();
     });
 
     it('should call changeSides and change the sides', () => {

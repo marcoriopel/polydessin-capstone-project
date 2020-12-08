@@ -22,7 +22,7 @@ export class HotkeyService {
         ['1', this.toolNames.SQUARE_TOOL_NAME],
         ['2', this.toolNames.CIRCLE_TOOL_NAME],
         ['l', this.toolNames.LINE_TOOL_NAME],
-        ['3', this.toolNames.POLYGONE_TOOL_NAME],
+        ['3', this.toolNames.POLYGON_TOOL_NAME],
         ['b', this.toolNames.FILL_TOOL_NAME],
         ['e', this.toolNames.ERASER_TOOL_NAME],
         ['r', this.toolNames.SQUARE_SELECTION_TOOL_NAME],

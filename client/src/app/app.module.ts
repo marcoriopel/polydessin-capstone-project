@@ -46,7 +46,7 @@ import { MagicWandAttributesComponent } from './components/tools/magic-wand-attr
 import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
-import { PolygonAttributesComponent } from './components/tools/polygone-attributes/polygon-attributes.component';
+import { PolygonAttributesComponent } from './components/tools/polygon-attributes/polygon-attributes.component';
 import { FillTypesSelectionComponent } from './components/tools/shared-Attributes/fill-types-selection/fill-types-selection.component';
 import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';

@@ -1,5 +1,3 @@
-// import { CircleService } from '@app/services/tools/circle.service';
-// import { Polygone } from './../../classes/tool-properties';
 import { TestBed } from '@angular/core/testing';
 import { Polygon } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
@@ -162,7 +160,7 @@ describe('PolygonService', () => {
         const ctxFillSpy = spyOn<any>(baseCtxStub, 'fill');
         service['polygonData'].fillStyle = FILL_STYLES.FILL;
         service['polygonData'] = {
-            type: 'polygone',
+            type: 'polygon',
             primaryColor: 'black',
             secondaryColor: 'black',
             fillStyle: 0,
@@ -193,11 +191,11 @@ describe('PolygonService', () => {
         expect(circleServiceSpy.drawCircle).toHaveBeenCalled();
     });
 
-    it('drawPolygone should call setCircleHeight and setCircleWidth', () => {
+    it('drawPolygon should call setCircleHeight and setCircleWidth', () => {
         const setCricleWidthSpy = spyOn<any>(service, 'setCircleWidth');
         const setCircleHeigthSpy = spyOn<any>(service, 'setCircleHeight');
         service['polygonData'] = {
-            type: 'polygone',
+            type: 'polygon',
             primaryColor: 'black',
             secondaryColor: 'black',
             fillStyle: 0,
@@ -293,7 +291,7 @@ describe('PolygonService', () => {
         expect(quadrant).toBe(Quadrant.BOTTOM_RIGHT);
     });
 
-    it('should draw polygone on mouseUp if mouse was down', () => {
+    it('should draw polygon on mouseUp if mouse was down', () => {
         const drawPolygonSpy = spyOn<any>(service, 'drawPolygon');
         service['polygonData'].firstPoint = { x: 0, y: 0 };
         service['polygonData'].lastPoint = { x: 5, y: 5 };
@@ -302,7 +300,7 @@ describe('PolygonService', () => {
         expect(drawPolygonSpy).toHaveBeenCalled();
     });
 
-    it('should not draw polygone on mouseUp if first point is same as last point', () => {
+    it('should not draw polygon on mouseUp if first point is same as last point', () => {
         const drawPolygonSpy = spyOn<any>(service, 'drawPolygon');
         const getPositionFromMouseSpy = spyOn<any>(service, 'getPositionFromMouse');
         getPositionFromMouseSpy.and.returnValue({ x: 0, y: 0 });
@@ -325,10 +323,10 @@ describe('PolygonService', () => {
         expect(positionSpy).not.toHaveBeenCalled();
     });
 
-    it('should call stroke on drawPolygone if ctx is preview', () => {
+    it('should call stroke on drawPolygon if ctx is preview', () => {
         const strokeSpy = spyOn(previewCtxStub, 'stroke');
         service['polygonData'] = {
-            type: 'polygone',
+            type: 'polygon',
             primaryColor: 'black',
             secondaryColor: 'black',
             fillStyle: 0,

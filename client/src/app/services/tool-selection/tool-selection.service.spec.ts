@@ -73,7 +73,7 @@ describe('ToolSelectionService', () => {
                 { provide: FillService, useValue: new MockTool(TOOL_NAMES.FILL_TOOL_NAME) },
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
-                { provide: PolygonService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
+                { provide: PolygonService, useValue: new MockTool(TOOL_NAMES.POLYGON_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
                 { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],

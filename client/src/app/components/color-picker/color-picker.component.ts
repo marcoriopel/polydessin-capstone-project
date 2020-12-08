@@ -19,7 +19,6 @@ export class ColorPickerComponent implements AfterViewInit {
     secondaryOpacity: number = MAX_OPACITY;
 
     constructor(public colorSelectionService: ColorSelectionService, public hotkeyService: HotkeyService, public pipetteService: PipetteService) {
-        // Initial values for the colors on application opening
         this.colorSelectionService.primaryColor = this.hexToRGBA(this.primaryColor, this.primaryOpacity);
         this.colorSelectionService.secondaryColor = this.hexToRGBA(this.secondaryColor, this.secondaryOpacity);
     }

@@ -32,7 +32,7 @@ export class UndoRedoService extends Tool {
         public eraserService: EraserService,
         public lineService: LineService,
         public brushService: BrushService,
-        public polygoneService: PolygonService,
+        public polygonService: PolygonService,
         public selectionService: SelectionService,
         public stampService: StampService,
     ) {
@@ -152,8 +152,8 @@ export class UndoRedoService extends Tool {
             case 'resize':
                 this.resizeDrawingService.restoreCanvas(element as Resize);
                 break;
-            case 'polygone':
-                this.polygoneService.drawPolygon(this.drawingService.baseCtx, element as Polygon);
+            case 'polygon':
+                this.polygonService.drawPolygon(this.drawingService.baseCtx, element as Polygon);
                 break;
             case 'selection':
                 this.drawingService.restoreSelection(element as Selection);

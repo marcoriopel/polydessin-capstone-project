@@ -30,7 +30,7 @@ describe('UndoRedoService', () => {
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let squareServiceSpy: jasmine.SpyObj<SquareService>;
     let circleServiceSpy: jasmine.SpyObj<CircleService>;
-    let polygoneServiceSpy: jasmine.SpyObj<PolygonService>;
+    let polygonServiceSpy: jasmine.SpyObj<PolygonService>;
 
     let obs: Subject<boolean>;
 
@@ -43,7 +43,7 @@ describe('UndoRedoService', () => {
     let rectangleData: Rectangle;
     let ellipseData: Ellipse;
     let lineData: Line;
-    let polygoneData: Polygon;
+    let polygonData: Polygon;
     let resizeData: Resize;
     let fillData: Fill;
     let selectionData: Selection;
@@ -67,7 +67,7 @@ describe('UndoRedoService', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['drawFullLine']);
         squareServiceSpy = jasmine.createSpyObj('SquareService', ['drawRectangle']);
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawEllipse']);
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['drawPolygon']);
+        polygonServiceSpy = jasmine.createSpyObj('PolygonService', ['drawPolygon']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -80,7 +80,7 @@ describe('UndoRedoService', () => {
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: SquareService, useValue: squareServiceSpy },
                 { provide: CircleService, useValue: circleServiceSpy },
-                { provide: PolygonService, useValue: polygoneServiceSpy },
+                { provide: PolygonService, useValue: polygonServiceSpy },
             ],
         });
         service = TestBed.inject(UndoRedoService);
@@ -163,8 +163,8 @@ describe('UndoRedoService', () => {
             dotWidth: 1,
         };
 
-        polygoneData = {
-            type: 'polygone',
+        polygonData = {
+            type: 'polygon',
             primaryColor: '#000000',
             secondaryColor: '#000000',
             fillStyle: 0,
@@ -344,9 +344,9 @@ describe('UndoRedoService', () => {
         expect(resizeDrawingSpy.restoreCanvas).toHaveBeenCalled();
     });
 
-    it('drawElement should call drawPolygone if the modification in the stack is of type polygone', () => {
-        service.drawElement(polygoneData);
-        expect(polygoneServiceSpy.drawPolygon).toHaveBeenCalled();
+    it('drawElement should call drawPolygon if the modification in the stack is of type polygon', () => {
+        service.drawElement(polygonData);
+        expect(polygonServiceSpy.drawPolygon).toHaveBeenCalled();
     });
 
     it('drawElement should call restoreSelection if the modification in the stack is of type selection', () => {
