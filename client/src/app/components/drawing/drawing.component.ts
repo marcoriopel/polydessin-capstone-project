@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -25,6 +26,7 @@ export class DrawingComponent implements AfterViewInit {
         private drawingService: DrawingService,
         public toolSelectionService: ToolSelectionService,
         public resizeDrawingService: ResizeDrawingService,
+        public continueDrawingService: ContinueDrawingService,
     ) {}
 
     ngAfterViewInit(): void {

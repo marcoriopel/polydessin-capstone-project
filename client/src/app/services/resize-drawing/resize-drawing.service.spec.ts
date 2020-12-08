@@ -1,77 +1,48 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize } from '@app/classes/tool-properties';
+import { Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
-import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Observable, Subject } from 'rxjs';
 import { ResizeDrawingService } from './resize-drawing.service';
-
-class DrawingServiceMock {
-    baseCtx: CanvasRenderingContext2D;
-    gridCtx: CanvasRenderingContext2D;
-    previewCtx: CanvasRenderingContext2D;
-    gridSpacing: number;
-    opacity: number;
-    isGridEnabled: boolean;
-    canvas: HTMLCanvasElement = document.createElement('canvas');
-    gridCanvas: HTMLCanvasElement;
-    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
-    undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    isToolInUse: Subject<boolean> = new Subject<boolean>();
-    imageData: ImageData;
-    pixelData: Uint8ClampedArray;
-    constructor() {
-        this.canvas.height = MINIMUM_CANVAS_HEIGHT;
-        this.canvas.width = MINIMUM_CANVAS_WIDTH;
-        this.baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.previewCtx = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
-        this.imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    }
-    // tslint:disable: no-empty
-    initializeBaseCanvas(): void {}
-    clearCanvas(): void {}
-    drawFill(): void {}
-    isCanvasBlank(): boolean {
-        return false;
-    }
-
-    setGrid(): void {}
-    updateStack(): void {}
-    getPixelData(): Uint8ClampedArray {
-        return this.pixelData;
-    }
-    getCanvasData(): ImageData {
-        return this.imageData;
-    }
-    restoreSelection(): void {}
-    getPreviewData(): ImageData {
-        return this.imageData;
-    }
-    setIsToolInUse(): void {}
-    getIsToolInUse(): Observable<boolean> {
-        return this.isToolInUse.asObservable();
-    }
-    resetStack(): void {}
-    applyPreview(): void {}
-    autoSave(): void {}
-}
 
 // tslint:disable: no-magic-numbers
 describe('ResizeDrawingService', () => {
     let service: ResizeDrawingService;
     let mouseEvent: MouseEvent;
     let target: HTMLElement;
-    let drawingService: DrawingServiceMock;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
-        drawingService = new DrawingServiceMock();
-        drawingService.canvas.width = MINIMUM_CANVAS_WIDTH;
-        drawingService.canvas.height = MINIMUM_CANVAS_HEIGHT;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'updateStack',
+            'setIsToolInUse',
+            'checkDrawing',
+            'initializeBaseCanvas',
+            'getPreviewData',
+            'getCanvasData',
+            'autoSave',
+        ]);
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        drawServiceSpy.canvas = canvas;
+        drawServiceSpy.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.gridCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.getCanvasData.and.returnValue(drawServiceSpy.baseCtx.getImageData(0, 0, WIDTH, HEIGHT));
+        drawServiceSpy.getPreviewData.and.returnValue(drawServiceSpy.baseCtx.getImageData(0, 0, WIDTH, HEIGHT));
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawingService }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
+            ],
         });
         service = TestBed.inject(ResizeDrawingService);
 
@@ -217,6 +188,8 @@ describe('ResizeDrawingService', () => {
         } as unknown) as MouseEvent;
         service.mouseDown = true;
         service.mouseDownCoord = { x: 400, y: 400 };
+        // tslint:disable-next-line: no-any
+        spyOn(service as any, 'horizontalResize').and.stub();
         service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
@@ -274,8 +247,12 @@ describe('ResizeDrawingService', () => {
     });
 
     it('should restore canvas', () => {
-        const imageDataSpy = spyOn(drawingService.baseCtx, 'putImageData');
-        const expectedData = { type: {} as string, canvasSize: { x: 500, y: 500 }, imageData: {} as ImageData };
+        const imageDataSpy = spyOn(drawServiceSpy.baseCtx, 'putImageData');
+        const expectedData: Resize = {
+            type: 'imageText',
+            canvasSize: { x: 500, y: 500 },
+            imageData: drawServiceSpy.baseCtx.getImageData(0, 0, 100, 100),
+        };
         service.restoreCanvas(expectedData);
         expect(service.previewSize).toEqual(expectedData.canvasSize);
         expect(imageDataSpy).toHaveBeenCalled();
