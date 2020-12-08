@@ -127,7 +127,6 @@ export class SquareService extends Tool {
     drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
         this.setRectangleHeight();
         this.setRectangleWidth();
-        console.log(this.rectangleData.width);
 
         if (this.rectangleData.isShiftDown) {
             this.rectangleData.width = Math.min(this.rectangleData.height, this.rectangleData.width);

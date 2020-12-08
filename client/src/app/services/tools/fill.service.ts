@@ -53,14 +53,14 @@ export class FillService extends Tool {
         while (stack.length) {
             const currentPixel = stack.pop() as Vec2;
             const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
-            if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
+            if (coloredPixels.has(this.vec2ToString(currentPixel))) {
                 continue;
             } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
                 canvasData.data[index + RGBA_INDEXER.RED] = rgbaPrimaryColor.RED;
                 canvasData.data[index + RGBA_INDEXER.GREEN] = rgbaPrimaryColor.GREEN;
                 canvasData.data[index + RGBA_INDEXER.BLUE] = rgbaPrimaryColor.BLUE;
                 canvasData.data[index + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
-                coloredPixels.set(this.Vec2ToString(currentPixel), true);
+                coloredPixels.set(this.vec2ToString(currentPixel), true);
                 if (currentPixel.y - 1 >= 0) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
                 }
@@ -102,7 +102,7 @@ export class FillService extends Tool {
         this.drawingService.updateStack(this.fillData);
     }
 
-    Vec2ToString(pixel: Vec2): string {
+    vec2ToString(pixel: Vec2): string {
         return pixel.x.toString() + ',' + pixel.y.toString();
     }
 
