@@ -83,7 +83,7 @@ describe('TextService', () => {
         expect(createTextSpy).toHaveBeenCalled();
     });
 
-    it('mouseDown should call createText when is not a new text', () => {
+    it('mouseDown should call initializeNewText when is a new text', () => {
         const initializeSpy = spyOn(service, 'initializeNewText');
         service.isNewText = false;
         service.text = [];
@@ -116,6 +116,7 @@ describe('TextService', () => {
     });
 
     it('createText should removeIndicator, printText and destroy', () => {
+        service.text = ['a', 'b'];
         const removeIndicatorSpy = spyOn(service, 'removeIndicator');
         const printTextSpy = spyOn(service, 'printText');
         const destroySpy = spyOn(service, 'destroy');
@@ -125,6 +126,13 @@ describe('TextService', () => {
         expect(printTextSpy).toHaveBeenCalled();
         expect(drawingServiceSpy.applyPreview).toHaveBeenCalled();
         expect(destroySpy).toHaveBeenCalled();
+    });
+
+    it('should not call removeIndicator if text is undefined', () => {
+        const removeIndicatorSpy = spyOn(service, 'removeIndicator');
+
+        service.createText();
+        expect(removeIndicatorSpy).not.toHaveBeenCalled();
     });
 
     it('onMouseEnter should change color', () => {
