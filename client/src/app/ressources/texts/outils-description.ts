@@ -145,7 +145,7 @@ export const TRANSFORMATIONS: Feature[] = [
         name: "Redimensionnement d'une sélection",
         description:
             'Cette fonctionnalité permet de redimensionner la sélection sur sa hauteur, sa largeur ou les deux en même temps. Pour ce faire, la surface dispose de trois points de contrôles sur les extrémités de la surface. Il suffit de glisser et déposer avec le bouton gauche de la souris.',
-        picture: './../../../assets/video/redimenssionnement_selection.mp4',
+        picture: './../../../assets/video/redimensionnement_selection.mp4',
     },
     {
         name: 'Redimensionnement',
