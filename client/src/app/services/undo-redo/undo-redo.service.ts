@@ -77,7 +77,7 @@ export class UndoRedoService extends Tool {
         }
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
         const modification = this.drawingService.undoStack.pop();
-        if (modification !== undefined) {
+        if (modification) {
             this.drawingService.redoStack.push(modification);
         }
         this.drawingService.clearCanvas(this.drawingService.baseCtx);

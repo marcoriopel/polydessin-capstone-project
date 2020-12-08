@@ -40,7 +40,7 @@ describe('EraserService', () => {
         drawEraserStrokeSpy = spyOn<any>(service, 'drawEraserStroke').and.callThrough();
 
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
         service['drawingService'].gridCanvas = gridCanvasStub;

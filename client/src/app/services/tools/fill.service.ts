@@ -112,14 +112,12 @@ export class FillService extends Tool {
         const diffBlue: number = Math.abs(pixelData[RGBA_INDEXER.BLUE] - canvasData.data[index + RGBA_INDEXER.BLUE]);
         const diffAlpha: number = Math.abs(pixelData[RGBA_INDEXER.ALPHA] - canvasData.data[index + RGBA_INDEXER.ALPHA]);
 
-        // After which you can just find the average color difference in percentage.
         const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (RGBA_LENGTH * MAXIMUM_RGBA_VALUE)) * MAX_PERCENTAGE;
 
         if (diffPercentage > this.tolerance) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     updateFillData(): void {

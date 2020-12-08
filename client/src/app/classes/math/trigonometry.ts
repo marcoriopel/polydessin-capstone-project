@@ -112,7 +112,6 @@ export class Trigonometry {
     }
 
     checkIf20pxAway(firstPoint: Vec2, secondPoint: Vec2): boolean {
-        // Phytagore
         const a = secondPoint.x - firstPoint.x;
         const b = secondPoint.y - firstPoint.y;
         const c = Math.sqrt(a * a + b * b);
@@ -124,7 +123,6 @@ export class Trigonometry {
     }
 
     distanceBetweenTwoDots(firstDot: Vec2, secondDot: Vec2): number {
-        // Phytagore
         const a = secondDot.x - firstDot.x;
         const b = secondDot.y - firstDot.y;
         const c = Math.sqrt(a * a + b * b);

@@ -15,11 +15,7 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
 
     ngOnInit(): void {
         this.pipetteService.mouseOut.subscribe((data: boolean) => {
-            if (data) {
-                this.zoom.nativeElement.style.visibility = 'visible';
-            } else {
-                this.zoom.nativeElement.style.visibility = 'hidden';
-            }
+            data ? (this.zoom.nativeElement.style.visibility = 'visible') : (this.zoom.nativeElement.style.visibility = 'hidden');
         });
     }
 

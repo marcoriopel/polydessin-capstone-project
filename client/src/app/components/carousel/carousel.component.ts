@@ -260,32 +260,19 @@ export class CarouselComponent implements OnInit, OnDestroy {
     }
 
     onClickTwoDrawings(): void {
-        if (this.drawingOfInterest === 1) {
-            this.drawingOfInterest = 0;
-        } else {
-            this.drawingOfInterest = 1;
-        }
+        this.drawingOfInterest === 1 ? (this.drawingOfInterest = 0) : (this.drawingOfInterest = 1);
     }
 
     onPreviousClick(): void {
         this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
-        if (!this.visibleDrawingsIndexes[0]) {
-            this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
-        } else {
-            this.visibleDrawingsIndexes[0]--;
-        }
+        this.visibleDrawingsIndexes[0] ? this.visibleDrawingsIndexes[0]-- : (this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1);
     }
 
     onNextClick(): void {
         this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
-
-        if (this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1) {
-            this.visibleDrawingsIndexes[2] = 0;
-        } else {
-            this.visibleDrawingsIndexes[2]++;
-        }
+        this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1 ? (this.visibleDrawingsIndexes[2] = 0) : this.visibleDrawingsIndexes[2]++;
     }
 
     hasLengthTagError(tag: string): boolean {
@@ -295,9 +282,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
     hasSpaceTagError(tag: string): boolean {
         if (tag.indexOf(' ') < 0) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     currentTagInput(tag: string): void {

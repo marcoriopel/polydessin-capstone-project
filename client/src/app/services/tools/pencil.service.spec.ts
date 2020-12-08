@@ -36,9 +36,8 @@ describe('PencilService', () => {
         service = TestBed.inject(PencilService);
         drawPencilStrokeSpy = spyOn<any>(service, 'drawPencilStroke').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
         service['drawingService'].gridCanvas = gridCanvasStub;
@@ -130,7 +129,6 @@ describe('PencilService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
