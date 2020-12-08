@@ -26,7 +26,7 @@ describe('SidebarComponent', () => {
     let toolSelectionServiceSpy: SpyObj<ToolSelectionService>;
     let squareSelectionServiceSpy: SpyObj<SquareSelectionService>;
     let circleSelectionServiceSpy: SpyObj<CircleSelectionService>;
-    let magicWanderSpy: SpyObj<MagicWandService>;
+    let magicWandSpy: SpyObj<MagicWandService>;
     let clipboardService: SpyObj<ClipboardService>;
     let hotkeyServiceSpy: SpyObj<HotkeyService>;
     let obs: Subject<string>;
@@ -61,8 +61,8 @@ describe('SidebarComponent', () => {
         circleSelectionServiceSpy.getIsSelectionEmptySubject.and.returnValue(obsCircleSelection.asObservable());
         clipboardService = jasmine.createSpyObj('ClipboardService', ['getIsPasteAvailableSubject']);
         clipboardService.getIsPasteAvailableSubject.and.returnValue(obsClipboard.asObservable());
-        magicWanderSpy = jasmine.createSpyObj('MagicWandService', ['getIsSelectionEmptySubject', 'cut', 'copy', 'paste']);
-        magicWanderSpy.getIsSelectionEmptySubject.and.returnValue(obsMagicWand.asObservable());
+        magicWandSpy = jasmine.createSpyObj('MagicWandService', ['getIsSelectionEmptySubject', 'cut', 'copy', 'paste']);
+        magicWandSpy.getIsSelectionEmptySubject.and.returnValue(obsMagicWand.asObservable());
 
         TestBed.configureTestingModule({
             imports: [BrowserAnimationsModule],
@@ -77,7 +77,7 @@ describe('SidebarComponent', () => {
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: circleSelectionServiceSpy },
                 { provide: ClipboardService, useValue: clipboardService },
-                { provide: MagicWandService, useValue: magicWanderSpy },
+                { provide: MagicWandService, useValue: magicWandSpy },
             ],
         }).compileComponents();
     });
@@ -203,7 +203,7 @@ describe('SidebarComponent', () => {
         expect(matdialogSpy.open).toHaveBeenCalledWith(ExportComponent);
     });
 
-    it('should call cut of square selection if it is suqare selection', () => {
+    it('should call cut of square selection if it is square selection', () => {
         component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
         component.cut();
         expect(squareSelectionServiceSpy.cut).toHaveBeenCalled();
@@ -221,13 +221,13 @@ describe('SidebarComponent', () => {
         expect(circleSelectionServiceSpy.copy).toHaveBeenCalled();
     });
 
-    it('should call copy of square selection if it is suqare selection', () => {
+    it('should call copy of square selection if it is square selection', () => {
         component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
         component.copy();
         expect(squareSelectionServiceSpy.copy).toHaveBeenCalled();
     });
 
-    it('should call paste of square selection if it is suqare selection', () => {
+    it('should call paste of square selection if it is square selection', () => {
         component.selectedTool = TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME;
         component.paste();
         expect(squareSelectionServiceSpy.paste).toHaveBeenCalled();
@@ -252,18 +252,18 @@ describe('SidebarComponent', () => {
     it('should call magicWandService cut if the selection tool is magic wand', () => {
         component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
         component.cut();
-        expect(magicWanderSpy.cut).toHaveBeenCalled();
+        expect(magicWandSpy.cut).toHaveBeenCalled();
     });
 
     it('should call magicWandService copy if the selection tool is magic wand', () => {
         component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
         component.copy();
-        expect(magicWanderSpy.copy).toHaveBeenCalled();
+        expect(magicWandSpy.copy).toHaveBeenCalled();
     });
 
     it('should call magicWandService paste if the selection tool is magic wand', () => {
         component.selectedTool = component.toolNames.MAGIC_WAND_TOOL_NAME;
         component.paste();
-        expect(magicWanderSpy.paste).toHaveBeenCalled();
+        expect(magicWandSpy.paste).toHaveBeenCalled();
     });
 });

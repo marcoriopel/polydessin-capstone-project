@@ -146,7 +146,7 @@ describe('GridComponent', () => {
         expect(component.currentOpacity).toEqual(50);
     });
 
-    it('should not change grid size and call alert if size is lower then minSize', () => {
+    it('should not change grid size and call alert if size is lower than minSize', () => {
         const alertSpy = spyOn(window, 'alert');
         component.currentSquareSize = 10;
         component.changeGridSize(0);
@@ -154,7 +154,7 @@ describe('GridComponent', () => {
         expect(alertSpy).toHaveBeenCalledWith('La taille des carrés doit être un nombre entre 5 et 200.');
     });
 
-    it('should not change opcacity and call alert if opcacity is lower then minOpcacity', () => {
+    it('should not change opacity and call alert if opcacity is lower than minOpcacity', () => {
         const alertSpy = spyOn(window, 'alert');
         component.currentOpacity = 10;
         component.changeOpacity(0);

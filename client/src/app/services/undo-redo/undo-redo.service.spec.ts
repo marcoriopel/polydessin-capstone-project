@@ -236,7 +236,7 @@ describe('UndoRedoService', () => {
         expect(resizeDrawingSpy.resizeCanvasSize).not.toHaveBeenCalled();
     });
 
-    it('should not push on redoStack if undoStacl is empty ', () => {
+    it('should not push on redoStack if undoStack is empty ', () => {
         const redoStackPushSpy = spyOn(service.drawingService.redoStack, 'push');
         drawingServiceSpy.undoStack = [(undefined as unknown) as Pencil];
         service.undo();
