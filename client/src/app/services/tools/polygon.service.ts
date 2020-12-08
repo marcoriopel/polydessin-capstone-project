@@ -102,7 +102,7 @@ export class PolygonService extends Tool {
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.updatePolygoneDataColor();
             if (this.polygonData.firstPoint.x !== this.polygonData.lastPoint.x && this.polygonData.firstPoint.y !== this.polygonData.lastPoint.y) {
-                this.drawPolygone(this.drawingService.baseCtx, this.polygonData);
+                this.drawPolygon(this.drawingService.baseCtx, this.polygonData);
                 this.drawingService.updateStack(this.polygonData);
             }
             this.mouseDown = false;
@@ -127,7 +127,7 @@ export class PolygonService extends Tool {
             this.drawingService.previewCtx.lineWidth = currentLineWidth;
             this.drawingService.previewCtx.setLineDash([0]);
             this.updatePolygoneDataColor();
-            this.drawPolygone(this.drawingService.previewCtx, this.polygonData);
+            this.drawPolygon(this.drawingService.previewCtx, this.polygonData);
         }
     }
 
@@ -138,7 +138,7 @@ export class PolygonService extends Tool {
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.polygonData.firstPoint, this.polygonData.lastPoint));
     }
 
-    drawPolygone(ctx: CanvasRenderingContext2D, polygoneData: Polygon): void {
+    drawPolygon(ctx: CanvasRenderingContext2D, polygoneData: Polygon): void {
         ctx.fillStyle = polygoneData.primaryColor;
         ctx.strokeStyle = polygoneData.secondaryColor;
         ctx.lineWidth = polygoneData.lineWidth;

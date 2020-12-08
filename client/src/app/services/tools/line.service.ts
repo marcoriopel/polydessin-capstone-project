@@ -13,21 +13,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class LineService extends Tool {
     trigonometry: Trigonometry = new Trigonometry();
     name: string = TOOL_NAMES.LINE_TOOL_NAME;
-    // hasLastPointBeenChanged: boolean = false;
-    // isShiftDoubleClick: boolean = false;
     shiftClick: Vec2 = { x: 0, y: 0 };
     isShiftKeyDown: boolean = false;
-    // storedLines: StraightLine[] = [];
     endingClickCoordinates: Vec2;
     isDrawing: boolean = false;
     numberOfClicks: number = 0;
-    // mouseClicks: Vec2[] = [];
     mouseEvent: MouseEvent;
-    // isDot: boolean = false;
-    // lineWidth: number = 1;
-    // dotWidth: number = 1;
     lineData: Line;
-    // line: StraightLine;
 
     constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -171,7 +163,6 @@ export class LineService extends Tool {
             // Get new coordinates for end of line
             this.endingClickCoordinates = this.getPositionFromMouse(event);
         }
-        // Draw the new line preview
         this.drawLine(
             this.lineData.mouseClicks[this.numberOfClicks - 1],
             this.endingClickCoordinates,
@@ -251,7 +242,6 @@ export class LineService extends Tool {
         this.lineData.mouseClicks = [];
         this.numberOfClicks = 0;
         this.isDrawing = false;
-        // Clear the old line segment preview
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
     }
 
@@ -270,7 +260,6 @@ export class LineService extends Tool {
         hypothenuse = Math.sqrt(Math.pow(opposite, 2) + Math.pow(adjacent, 2));
         quadrant = this.trigonometry.findCursorQuadrant(adjacent, opposite);
 
-        // Make adjacent and opposite values positive if they are negative
         adjacent = Math.abs(adjacent);
         opposite = Math.abs(opposite);
 

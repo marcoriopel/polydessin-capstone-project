@@ -62,6 +62,29 @@ describe('CircleService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should set IsShiftDown', () => {
+        service.ellipseData.isShiftDown = false;
+        service.setIsShiftDown(true);
+        expect(service.ellipseData.isShiftDown).toBe(true);
+    });
+
+    it('should set firstPoint', () => {
+        service.ellipseData.firstPoint = { x: 0, y: 0 };
+        service.setFirstPoint({ x: 10, y: 10 });
+        expect(service.ellipseData.firstPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should set lastPoint', () => {
+        service.ellipseData.lastPoint = { x: 0, y: 0 };
+        service.setLastPoint({ x: 10, y: 10 });
+        expect(service.ellipseData.lastPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should return fillStyle', () => {
+        service.ellipseData.fillStyle = FILL_STYLES.BORDER;
+        expect(service.getFillStyle()).toEqual(FILL_STYLES.BORDER);
+    });
+
     it('should change line width', () => {
         service.ellipseData.lineWidth = 0;
         service.changeWidth(1);

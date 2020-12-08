@@ -153,7 +153,7 @@ export class UndoRedoService extends Tool {
                 this.resizeDrawingService.restoreCanvas(element as Resize);
                 break;
             case 'polygone':
-                this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygon);
+                this.polygoneService.drawPolygon(this.drawingService.baseCtx, element as Polygon);
                 break;
             case 'selection':
                 this.drawingService.restoreSelection(element as Selection);

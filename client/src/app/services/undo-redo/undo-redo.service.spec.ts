@@ -67,7 +67,7 @@ describe('UndoRedoService', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['drawFullLine']);
         squareServiceSpy = jasmine.createSpyObj('SquareService', ['drawRectangle']);
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawEllipse']);
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['drawPolygone']);
+        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['drawPolygon']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -346,7 +346,7 @@ describe('UndoRedoService', () => {
 
     it('drawElement should call drawPolygone if the modification in the stack is of type polygone', () => {
         service.drawElement(polygoneData);
-        expect(polygoneServiceSpy.drawPolygone).toHaveBeenCalled();
+        expect(polygoneServiceSpy.drawPolygon).toHaveBeenCalled();
     });
 
     it('drawElement should call restoreSelection if the modification in the stack is of type selection', () => {

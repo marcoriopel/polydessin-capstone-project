@@ -64,6 +64,29 @@ describe('SquareService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should set IsShiftDown', () => {
+        service.rectangleData.isShiftDown = false;
+        service.setIsShiftDown(true);
+        expect(service.rectangleData.isShiftDown).toBe(true);
+    });
+
+    it('should set firstPoint', () => {
+        service.firstPoint = { x: 0, y: 0 };
+        service.setFirstPoint({ x: 10, y: 10 });
+        expect(service.firstPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should set lastPoint', () => {
+        service.lastPoint = { x: 0, y: 0 };
+        service.setLastPoint({ x: 10, y: 10 });
+        expect(service.lastPoint).toEqual({ x: 10, y: 10 });
+    });
+
+    it('should return fillStyle', () => {
+        service.rectangleData.fillStyle = FILL_STYLES.BORDER;
+        expect(service.getFillStyle()).toEqual(FILL_STYLES.BORDER);
+    });
+
     it('should change line width', () => {
         service.rectangleData.lineWidth = 0;
         service.changeWidth(1);
