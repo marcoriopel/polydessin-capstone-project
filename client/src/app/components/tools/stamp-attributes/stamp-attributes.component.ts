@@ -13,8 +13,8 @@ export class StampAttributesComponent {
     toolSize: number;
 
     constructor(public stampService: StampService) {
-        this.stampService.currentStamp = STAMPS.ANGULAR;
-        this.toolSize = this.stampService.stampSize;
+        this.stampService.setCurrentStamp(STAMPS.ANGULAR);
+        this.toolSize = this.stampService.getSize();
 
         this.stampService.getAngle().subscribe((angle) => {
             this.angle = angle as number;
@@ -23,15 +23,15 @@ export class StampAttributesComponent {
 
     changeSize(newSize: number): void {
         this.toolSize = newSize;
-        this.stampService.stampSize = newSize;
+        this.stampService.setSize(newSize);
     }
 
     changeStamp(newStamp: StampAttributes): void {
-        this.stampService.currentStamp = newStamp;
+        this.stampService.setCurrentStamp(newStamp);
     }
 
     changeAngle(newAngle: number): void {
         this.angle = newAngle;
-        this.stampService.angle = newAngle;
+        this.stampService.setangle(newAngle);
     }
 }

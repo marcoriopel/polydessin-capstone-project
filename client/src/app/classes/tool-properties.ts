@@ -101,6 +101,6 @@ export interface Stamp {
     color: string;
     size: number;
     position: Vec2;
-    stamp: StampAttributes;
+    currentStamp: StampAttributes;
     angle: number;
 }
