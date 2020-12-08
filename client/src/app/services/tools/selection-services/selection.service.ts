@@ -97,6 +97,7 @@ export class SelectionService extends Tool {
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
             this.isSelectionEmptySubject.next(true);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.underlyingService.changeWidth(1);
             this.underlyingService.onMouseDown(event);
         } else {
             this.isSelectionOver = false;

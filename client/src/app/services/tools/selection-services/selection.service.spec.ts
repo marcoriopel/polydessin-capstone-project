@@ -59,7 +59,19 @@ describe('SelectionService', () => {
             'setFirstPoint',
             'setLastPoint',
             'setIsShiftDown',
+            'changeWidth',
         ]);
+        underlyingServiceSpy.rectangleData = {
+            type: 'rectangle',
+            primaryColor: 'red',
+            secondaryColor: 'blue',
+            height: 0,
+            width: 0,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL_AND_BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
         rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
@@ -185,19 +197,19 @@ describe('SelectionService', () => {
         const strokeSelectionSpy = spyOn(service, 'strokeSelection');
         const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
         service.isNewSelection = true;
-        underlyingServiceSpy.fillStyle = FILL_STYLES.BORDER;
+        underlyingServiceSpy.rectangleData.fillStyle = FILL_STYLES.BORDER;
         // tslint:disable-next-line: only-arrow-functions
         underlyingServiceSpy.setFillStyle.and.callFake(function (fillStyle: number): void {
-            underlyingServiceSpy.fillStyle = fillStyle;
+            underlyingServiceSpy.rectangleData.fillStyle = fillStyle;
         });
         // tslint:disable-next-line: only-arrow-functions
         underlyingServiceSpy.getFillStyle.and.callFake(function (): number {
-            return underlyingServiceSpy.fillStyle;
+            return underlyingServiceSpy.rectangleData.fillStyle;
         });
 
         service.onMouseUp({} as MouseEvent);
 
-        expect(underlyingServiceSpy.fillStyle).toEqual(FILL_STYLES.BORDER);
+        expect(underlyingServiceSpy.rectangleData.fillStyle).toEqual(FILL_STYLES.BORDER);
         expect(strokeSelectionSpy).toHaveBeenCalled();
         expect(setSelectionPointSpy).toHaveBeenCalled();
     });
