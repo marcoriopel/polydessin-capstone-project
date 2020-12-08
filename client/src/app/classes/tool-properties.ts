@@ -67,7 +67,7 @@ export interface Line {
     dotWidth: number;
 }
 
-export interface Polygone {
+export interface Polygon {
     type: string;
     primaryColor: string;
     secondaryColor: string;

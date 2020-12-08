@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { PolygonAttributesComponent } from './polygon-attributes.component';
 
@@ -13,7 +14,19 @@ describe('PolygonAttributesComponent', () => {
     const finalsides = 10;
 
     beforeEach(async(() => {
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'changeSides']);
+        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['changeFillStyle', 'changeWidth', 'setSides']);
+        polygoneServiceSpy.polygonData = {
+            type: 'polygone',
+            primaryColor: 'blue',
+            secondaryColor: 'red',
+            fillStyle: FILL_STYLES.FILL_AND_BORDER,
+            lineWidth: 1,
+            circleHeight: 0,
+            circleWidth: 0,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 0 },
+            sides: 3,
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -126,7 +126,7 @@ export class UndoRedoService extends Tool {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
+    drawElement(element: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
         switch (element.type) {
             case 'pencil':
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -153,7 +153,7 @@ export class UndoRedoService extends Tool {
                 this.resizeDrawingService.restoreCanvas(element as Resize);
                 break;
             case 'polygone':
-                this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);
+                this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygon);
                 break;
             case 'selection':
                 this.drawingService.restoreSelection(element as Selection);

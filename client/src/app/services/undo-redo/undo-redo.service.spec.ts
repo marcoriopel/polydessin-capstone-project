@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
 import { PATTERN_NAMES } from '@app/ressources/global-variables/brush-pattern-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -43,7 +43,7 @@ describe('UndoRedoService', () => {
     let rectangleData: Rectangle;
     let ellipseData: Ellipse;
     let lineData: Line;
-    let polygoneData: Polygone;
+    let polygoneData: Polygon;
     let resizeData: Resize;
     let fillData: Fill;
     let selectionData: Selection;

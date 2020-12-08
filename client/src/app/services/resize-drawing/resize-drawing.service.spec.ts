@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
@@ -17,8 +17,8 @@ class DrawingServiceMock {
     canvas: HTMLCanvasElement = document.createElement('canvas');
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement = document.createElement('canvas');
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
+    undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
     imageData: ImageData;
     pixelData: Uint8ClampedArray;
