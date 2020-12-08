@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { STAMPS } from '@app/classes/stamps';
 import { MAX_ANGLE } from '@app/ressources/global-variables/global-variables';
-import { DrawingService } from '../drawing/drawing.service';
+import { DrawingService } from '@app/services/drawing/drawing.service';
 import { StampService } from './stamp.service';
-
+// tslint:disable: no-magic-numbers
 describe('StampService', () => {
     let service: StampService;
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;

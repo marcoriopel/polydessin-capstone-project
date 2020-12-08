@@ -7,7 +7,7 @@ import { SprayService } from './spray.service';
 // tslint:disable:no-string-literal
 // tslint:disable: no-empty
 // tslint:disable: no-magic-numbers
-
+// tslint:disable: max-file-line-count
 describe('SprayService', () => {
     let service: SprayService;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;

@@ -3,7 +3,7 @@ import { STAMPS } from '@app/classes/stamps';
 import { StampService } from '@app/services/tools/stamp.service';
 import { Subject } from 'rxjs';
 import { StampAttributesComponent } from './stamp-attributes.component';
-
+// tslint:disable: no-magic-numbers
 describe('StampAttributesComponent', () => {
     let component: StampAttributesComponent;
     let fixture: ComponentFixture<StampAttributesComponent>;
