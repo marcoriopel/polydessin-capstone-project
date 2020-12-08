@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -40,6 +41,7 @@ describe('DrawingComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
             ],
         }).compileComponents();
     }));

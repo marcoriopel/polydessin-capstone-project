@@ -6,7 +6,7 @@
 
     <div class="title-text">
         <h1>{{ title }}</h1>
-        <a routerLink="/editor" >Nouveau dessin</a>
-        <a routerLink="/editor" >Continuer un dessin</a>
+        <a routerLink="/editor"  (click)="continueDrawing()">Nouveau dessin</a>
+        <a  *ngIf="isContinueDrawingEnable" routerLink="/editor" (click)="oldDrawingCheck()">Continuer un dessin</a>
     </div>
 </div>
