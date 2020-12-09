@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { STAMPS } from '@app/classes/stamps';
 import { StampService } from '@app/services/tools/stamp.service';
@@ -15,6 +16,7 @@ describe('StampAttributesComponent', () => {
         stampServiceSpy = jasmine.createSpyObj('StampService', ['getAngle', 'setSize', 'setCurrentStamp', 'setAngle', 'getSize']);
         stampServiceSpy.getAngle.and.returnValue(obsAngle.asObservable());
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [StampAttributesComponent],
             providers: [{ provide: StampService, useValue: stampServiceSpy }],
         }).compileComponents();

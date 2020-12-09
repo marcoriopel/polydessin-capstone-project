@@ -167,13 +167,13 @@ export class MagicWandService extends SelectionService {
         while (this.stack.length) {
             const currentPixel = this.stack.pop() as Vec2;
             const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
-            if (selectedPixels.has(this.Vec2ToString(currentPixel))) {
+            if (selectedPixels.has(this.vec2ToString(currentPixel))) {
                 continue;
             }
             if (this.isSameColor(this.pixelData, canvasData, index, this.tolerance)) {
                 this.addPixelToSelection(index, canvasData);
                 this.adjustCornerSelectionValues(currentPixel);
-                selectedPixels.set(this.Vec2ToString(currentPixel), true);
+                selectedPixels.set(this.vec2ToString(currentPixel), true);
                 this.nextContiguousPixels(currentPixel, canvasData);
             }
         }
@@ -375,7 +375,7 @@ export class MagicWandService extends SelectionService {
         }
     }
 
-    Vec2ToString(pixel: Vec2): string {
+    vec2ToString(pixel: Vec2): string {
         return pixel.x.toString() + ',' + pixel.y.toString();
     }
 }

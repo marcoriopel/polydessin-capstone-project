@@ -119,7 +119,6 @@ describe('RotateSelectionService', () => {
     });
 
     it('clearSelectionBackground should set selection background to white', () => {
-        // create a black dummy canvas
         const canvas: HTMLCanvasElement = document.createElement('canvas');
         canvas.height = 10;
         canvas.width = 10;

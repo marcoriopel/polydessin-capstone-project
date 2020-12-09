@@ -16,6 +16,8 @@ npm-debug.log
 *.js.map
 *.js
 
+.env
+
 images/
 
 # Garder les fichiers necessaires pour les tests

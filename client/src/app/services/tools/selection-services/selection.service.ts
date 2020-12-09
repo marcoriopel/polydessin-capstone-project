@@ -166,7 +166,6 @@ export class SelectionService extends Tool {
                 this.initialize();
                 this.selectionResizeService.setSelectionBeforeResize(this.selection);
             }
-            // reset underlying service to original form
             this.underlyingService.setFillStyle(currentFillStyle);
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

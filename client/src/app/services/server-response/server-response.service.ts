@@ -13,14 +13,14 @@ export class ServerResponseService {
         this.snackBar.open('Erreur dans le chargement du dessin', 'Fermer', config);
     }
 
-    saveErrorSnackBar(error: string): void {
+    saveErrorSnackBar(): void {
         const config = new MatSnackBarConfig();
-        this.snackBar.open('Erreur dans la sauvegarde: ' + error, 'Fermer', config);
+        this.snackBar.open('Erreur dans la sauvegarde du dessin', 'Fermer', config);
     }
 
-    deleteErrorSnackBar(error: string): void {
+    deleteErrorSnackBar(): void {
         const config = new MatSnackBarConfig();
-        this.snackBar.open('Erreur dans la suppression du dessin: ' + error, 'Fermer', config);
+        this.snackBar.open('Erreur dans la suppression du dessin', 'Fermer', config);
     }
 
     saveConfirmSnackBar(): void {
@@ -35,8 +35,8 @@ export class ServerResponseService {
         this.snackBar.open('Le courriel est bien envoyé', 'Fermer', config);
     }
 
-    sendMailErrorSnackBar(error: string): void {
+    sendMailErrorSnackBar(): void {
         const config = new MatSnackBarConfig();
-        this.snackBar.open('Erreur dans le transfert du courrie: ' + error, 'Fermer', config);
+        this.snackBar.open("Erreur dans l'envoie du courriel", 'Fermer', config);
     }
 }

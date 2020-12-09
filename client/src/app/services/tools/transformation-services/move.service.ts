@@ -131,7 +131,7 @@ export class MoveService implements OnDestroy {
         setTimeout(() => {
             if (this.isArrowKeyPressed()) {
                 this.drawingService.setIsToolInUse(true);
-                if (this.intervalId === undefined) {
+                if (!this.intervalId) {
                     this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this, isMagnetism, squareSize);
                 }
             }
@@ -149,7 +149,7 @@ export class MoveService implements OnDestroy {
             this.drawingService.setIsToolInUse(false);
         }
 
-        if (this.intervalId !== undefined) {
+        if (this.intervalId) {
             if (!this.isArrowKeyPressed()) {
                 clearInterval(this.intervalId);
                 this.intervalId = undefined;

@@ -7,7 +7,7 @@ import { RotateService } from '../transformation-services/rotate.service';
 import { SelectionResizeService } from './selection-resize.service';
 import SpyObj = jasmine.SpyObj;
 
-fdescribe('SelectionResizeService', () => {
+describe('SelectionResizeService', () => {
     let service: SelectionResizeService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;

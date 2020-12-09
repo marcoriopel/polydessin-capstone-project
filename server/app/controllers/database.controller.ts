@@ -29,7 +29,7 @@ export class DatabaseController {
         this.router.post('/addDrawing', this.upload.single('image'), (req: Request, res: Response, next: NextFunction) => {
             const savedFileName = req.file.filename;
             let drawingTags: string[];
-            if (req.body[TAGS_NAME] === undefined) drawingTags = [''];
+            if (!req.body[TAGS_NAME]) drawingTags = [''];
             else drawingTags = req.body[TAGS_NAME];
             if (!Array.isArray(drawingTags)) drawingTags = [drawingTags];
             const DBDATA: DBData = {

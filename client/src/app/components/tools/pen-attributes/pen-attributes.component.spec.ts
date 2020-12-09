@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PenService } from '@app/services/tools/pen.service';
 import { Subject } from 'rxjs';
@@ -15,6 +16,7 @@ describe('PenAttributesComponent', () => {
         penServiceSpy.getAngle.and.returnValue(obs.asObservable());
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [{ provide: PenService, useValue: penServiceSpy }],
             declarations: [PenAttributesComponent],
         }).compileComponents();
