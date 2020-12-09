@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from './drawing.service';
 
+// tslint:disable: no-string-literal
 // tslint:disable: no-magic-numbers
 describe('DrawingService', () => {
     let service: DrawingService;
@@ -137,7 +138,7 @@ describe('DrawingService', () => {
     });
 
     it('should set tool in use', () => {
-        const setSpy = spyOn(service.isToolInUse, 'next');
+        const setSpy = spyOn(service['isToolInUse'], 'next');
         service.setIsToolInUse(true);
         expect(setSpy).toHaveBeenCalled();
     });

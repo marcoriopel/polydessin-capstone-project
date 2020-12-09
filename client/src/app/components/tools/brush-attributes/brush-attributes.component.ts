@@ -12,7 +12,7 @@ export class BrushAttributesComponent {
     patternNames: PatternNames = PATTERN_NAMES;
 
     constructor(public brushService: BrushService) {
-        this.toolWidth = brushService.brushData.lineWidth;
+        this.toolWidth = brushService.getLineWidth();
         this.brushService.setPattern(this.patternNames.FIRST_PATTERN);
     }
 

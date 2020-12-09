@@ -11,7 +11,7 @@ export class CircleAttributesComponent {
     fillStyle: number;
 
     constructor(public circleService: CircleService) {
-        this.toolWidth = circleService.ellipseData.lineWidth;
+        this.toolWidth = circleService.getLineWidth();
         this.fillStyle = circleService.getFillStyle();
     }
 

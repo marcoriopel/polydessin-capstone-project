@@ -19,7 +19,7 @@ export class DrawingService {
     previewCanvas: HTMLCanvasElement;
     undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
-    isToolInUse: Subject<boolean> = new Subject<boolean>();
+    private isToolInUse: Subject<boolean> = new Subject<boolean>();
     isLastDrawing: boolean;
 
     constructor(private injector: Injector) {}

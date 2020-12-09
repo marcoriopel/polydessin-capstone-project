@@ -16,13 +16,13 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
     mouseDown: boolean = false;
-    ellipseHeight: number;
-    ellipseWidth: number;
-    ellipseData: Ellipse;
-    circleHeight: number;
-    circleWidth: number;
-    quadrant: number;
-    trigonometry: Trigonometry = new Trigonometry();
+    private ellipseHeight: number;
+    private ellipseWidth: number;
+    private ellipseData: Ellipse;
+    private circleHeight: number;
+    private circleWidth: number;
+    private quadrant: number;
+    private trigonometry: Trigonometry = new Trigonometry();
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -38,6 +38,10 @@ export class CircleService extends Tool {
             firstPoint: { x: 0, y: 0 },
             lastPoint: { x: 0, y: 0 },
         };
+    }
+
+    getLineWidth(): number {
+        return this.ellipseData.lineWidth;
     }
 
     setIsShiftDown(isShiftDown: boolean): void {

@@ -10,6 +10,8 @@ import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
 
+// tslint:disable: no-string-literal
+
 describe('EditorComponent', () => {
     let component: EditorComponent;
     let fixture: ComponentFixture<EditorComponent>;
@@ -123,14 +125,14 @@ describe('EditorComponent', () => {
     it('should not resize canvas if resizeDrawingService.mouseDown is false', () => {
         const expectedResult = component.canvasSize;
         component.previewSize = { x: 500, y: 500 };
-        component.resizeDrawingService.mouseDown = false;
+        component.resizeDrawingService['mouseDown'] = false;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(component.canvasSize).toEqual(expectedResult);
     });
 
     it('should call resizeDrawingService.onMouseUp on mouseUp', () => {
-        component.resizeDrawingService.mouseDown = true;
+        component.resizeDrawingService['mouseDown'] = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
@@ -138,7 +140,7 @@ describe('EditorComponent', () => {
 
     it('should set previewDiv display to none', () => {
         component.previewDiv.style.display = 'block';
-        component.resizeDrawingService.mouseDown = true;
+        component.resizeDrawingService['mouseDown'] = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();

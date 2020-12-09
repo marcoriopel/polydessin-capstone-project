@@ -11,17 +11,16 @@ import { RotateService } from './rotate.service';
 })
 export class MoveService implements OnDestroy {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
-    pressedKeys: Map<string, boolean> = new Map([
+    private pressedKeys: Map<string, boolean> = new Map([
         [ARROW_KEYS.LEFT, false],
         [ARROW_KEYS.UP, false],
         [ARROW_KEYS.RIGHT, false],
         [ARROW_KEYS.DOWN, false],
     ]);
-    intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
-    selectionImage: HTMLCanvasElement = document.createElement('canvas');
+    private intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+    private selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
     constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
 

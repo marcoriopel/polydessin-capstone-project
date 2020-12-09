@@ -18,13 +18,12 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class ResizeDrawingService {
     canvasSize: Vec2;
     previewSize: Vec2;
-    mouseDownCoord: Vec2;
-    mouseDown: boolean = false;
-    serviceCaller: string;
     workSpaceSize: Vec2;
-    resizeData: Resize;
-    mouseEvent: MouseEvent;
-    imageData: ImageData;
+    private mouseDownCoord: Vec2;
+    private mouseDown: boolean = false;
+    private serviceCaller: string;
+    private resizeData: Resize;
+    private imageData: ImageData;
 
     constructor(public drawingService: DrawingService) {}
 
