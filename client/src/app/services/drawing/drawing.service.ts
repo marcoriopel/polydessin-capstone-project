@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import { Fill, Selection, ToolProperties } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
 import { Observable, Subject } from 'rxjs';
@@ -17,8 +17,8 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
+    undoStack: ToolProperties[] = [];
+    redoStack: ToolProperties[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
     isLastDrawing: boolean;
 
@@ -89,12 +89,13 @@ export class DrawingService {
         this.clearCanvas(this.previewCtx);
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
+    updateStack(modification: ToolProperties): void {
         const copiedTool = Object.assign({}, modification);
         this.undoStack.push(copiedTool);
         if (this.redoStack.length) {
             this.redoStack = [];
         }
+        console.log(this.undoStack);
     }
 
     drawFill(fill: Fill): void {
