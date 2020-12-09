@@ -3,7 +3,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { PipetteService } from './pipette.service';
-
+// tslint:disable: no-string-literal
 describe('PipetteService', () => {
     let service: PipetteService;
     let canvas: HTMLCanvasElement;
@@ -48,13 +48,9 @@ describe('PipetteService', () => {
         });
         service = TestBed.inject(PipetteService);
 
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].canvas = canvas;
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].baseCtx = baseCtxStub;
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].previewCanvas = previewCanvasStub;
-        // tslint:disable-next-line: no-string-literal
         service['drawingService'].gridCanvas = gridCanvasStub;
         service.zoom = zoomCanvasStud;
         service.zoomCtx = zoomCtxStud;

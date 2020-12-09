@@ -429,7 +429,6 @@ describe('LineService', () => {
         service.lineData.storedLines.push(line);
 
         service.drawLine(click1, click2, previewCtxStub, 1);
-        // Premier pixel seulement
         const imageData: ImageData = previewCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -444,7 +443,6 @@ describe('LineService', () => {
         service.lineData.storedLines.push(line);
 
         service.drawLine(click1, click2, baseCtxStub, 1);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -459,7 +457,6 @@ describe('LineService', () => {
         service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, previewCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = previewCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -474,7 +471,6 @@ describe('LineService', () => {
         service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, baseCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -488,13 +484,11 @@ describe('LineService', () => {
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.lineData.storedLines.push(line);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
         service.lineData.isShiftDoubleClick = true;
         service.lineData.mouseClicks.push(click1);
         service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, baseCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -508,7 +502,6 @@ describe('LineService', () => {
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
         service.lineData.isShiftDoubleClick = true;
         service.lineData.mouseClicks.push(click1);
         service.lineData.mouseClicks.push(click2);
@@ -537,7 +530,6 @@ describe('LineService', () => {
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
         service.lineData.isShiftDoubleClick = true;
         service.lineData.mouseClicks.push(click1);
         service.lineData.mouseClicks.push(click2);
@@ -566,7 +558,6 @@ describe('LineService', () => {
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
         service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
         service.lineData.isShiftDoubleClick = true;
         service.lineData.mouseClicks.push(click1);
         service.lineData.mouseClicks.push(click2);

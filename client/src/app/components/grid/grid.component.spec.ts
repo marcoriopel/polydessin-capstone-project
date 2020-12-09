@@ -1,4 +1,5 @@
 /* tslint:disable:no-unused-variable */
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GRID_STEP, MAX_GRID_SQUARE_SIZE, MIN_GRID_SQUARE_SIZE } from '@app/ressources/global-variables/global-variables';
 import { GRID_DECREASE_NAME, GRID_INCREASE_NAME, GRID_NAME } from '@app/ressources/global-variables/grid-elements';
@@ -29,6 +30,7 @@ describe('GridComponent', () => {
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [GridComponent],
             providers: [
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },

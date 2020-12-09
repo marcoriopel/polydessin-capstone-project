@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SprayService } from '@app/services/tools/spray.service';
 import { SprayAttributesComponent } from './spray-attributes.component';
@@ -16,6 +17,7 @@ describe('SprayAttributesComponent', () => {
         sprayServiceSpy.sprayFrequency = 15;
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [{ provide: SprayService, useValue: sprayServiceSpy }],
             declarations: [SprayAttributesComponent],
         }).compileComponents();

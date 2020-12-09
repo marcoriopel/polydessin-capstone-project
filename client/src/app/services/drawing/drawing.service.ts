@@ -61,12 +61,11 @@ export class DrawingService {
 
     initializeBaseCanvas(): void {
         if (this.isGridEnabled) this.setGrid();
-        // using an injector with a deprecated version to inject and bypass an observed circular dependency
-        // Retrieves an instance from the injector based on the provided token.
-        // tslint:disable-next-line: deprecation
-        const continueDrawingService = this.injector.get('ContinueDrawingService');
         if (this.isLastDrawing) {
-            continueDrawingService.continueDrawing();
+            // using an injector with a deprecated version to inject and bypass an observed circular dependency
+            // Retrieves an instance from the injector based on the provided token.
+            // tslint:disable-next-line: deprecation
+            this.injector.get('ContinueDrawingService').continueDrawing();
         } else {
             this.baseCtx.fillStyle = 'white';
             this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -90,8 +89,7 @@ export class DrawingService {
     }
 
     updateStack(modification: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
-        const copiedTool = Object.assign({}, modification);
-        this.undoStack.push(copiedTool);
+        this.undoStack.push(Object.assign({}, modification));
         if (this.redoStack.length) {
             this.redoStack = [];
         }
@@ -106,18 +104,15 @@ export class DrawingService {
     }
 
     getPixelData(pixelCoord: Vec2): Uint8ClampedArray {
-        const pixelData = this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
-        return pixelData;
+        return this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
     }
 
     getCanvasData(): ImageData {
-        const canvasData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     getPreviewData(): ImageData {
-        const canvasData = this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     resetStack(): void {
@@ -127,8 +122,7 @@ export class DrawingService {
 
     autoSave(): void {
         if (!this.canvas) return;
-        const sourceDrawing = this.canvas.toDataURL();
         localStorage.clear();
-        localStorage.setItem('drawingKey', sourceDrawing);
+        localStorage.setItem('drawingKey', this.canvas.toDataURL());
     }
 }
