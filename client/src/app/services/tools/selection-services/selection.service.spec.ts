@@ -159,7 +159,7 @@ describe('SelectionService', () => {
         expect(moveServiceSpy.onMouseDown).toHaveBeenCalled();
     });
 
-    it('onMouseUp should callgetPositionFromMouse and underlyingService.drawShape', () => {
+    it('onMouseUp should call getPositionFromMouse and underlyingService.drawShape', () => {
         const getPositionFromMouseSpy = spyOn(service, 'getPositionFromMouse');
         getPositionFromMouseSpy.and.returnValue({ x: 0, y: 0 });
         underlyingServiceSpy.drawShape.and.returnValue({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });

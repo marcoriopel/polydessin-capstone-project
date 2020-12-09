@@ -133,12 +133,4 @@ describe('ExportComponent', () => {
         expect(clickSpy).not.toHaveBeenCalled();
         expect(dialogSpy.close).not.toHaveBeenCalled();
     });
-
-    // xit('should call the function click and close the modal when the name is to long', () => {
-    //     component.name = 'cercle';
-    //     const clickSpy = spyOn(component.link, 'click');
-    //     component.sendMail();
-    //     expect(clickSpy).toHaveBeenCalled();
-    //     expect(dialogSpy.close).toHaveBeenCalled();
-    // });
 });

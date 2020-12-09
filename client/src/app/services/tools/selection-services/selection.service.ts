@@ -82,9 +82,8 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
-            this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
+            this.isNewSelection = true;
             if (!this.moveService.isTransformationOver) {
-                // A l'exterieur de la selection
                 this.moveService.isTransformationOver = true;
                 this.moveService.printSelectionOnPreview();
                 this.applyPreview();
@@ -111,12 +110,10 @@ export class SelectionService extends Tool {
 
     onMouseUp(event: MouseEvent): void {
         if (this.isNewSelection) {
-            // setUp underlying service
-
             this.underlyingService.setLastPoint(this.getPositionFromMouse(event));
             const currentFillStyle = this.underlyingService.getFillStyle();
             this.underlyingService.setFillStyle(FILL_STYLES.DASHED);
-            // draw selection
+
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionEmptySubject.next(false);
@@ -124,7 +121,6 @@ export class SelectionService extends Tool {
                 this.setSelection(this.initialSelection, this.selection);
                 this.setSelectionData();
             }
-            // reset underlying service to original form
             this.underlyingService.setFillStyle(currentFillStyle);
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);

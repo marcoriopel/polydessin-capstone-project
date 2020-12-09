@@ -284,11 +284,11 @@ describe('FillService', () => {
         expect(currentImageData).toEqual(expectedImageData);
     });
 
-    it('Vec2ToString should return Vec2 as string value', () => {
+    it('vec2ToString should return Vec2 as string value', () => {
         const vector2D: Vec2 = { x: 1, y: 0 };
         const expectedOutput = '1,0';
 
-        expect(service.Vec2ToString(vector2D)).toBe(expectedOutput);
+        expect(service.vec2ToString(vector2D)).toBe(expectedOutput);
     });
 
     it('isInToleranceRange should return true if pixelData is the same as ImageData with tolerance 0', () => {

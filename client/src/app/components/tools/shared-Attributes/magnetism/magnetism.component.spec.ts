@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { MAGNETISM_NAME } from '@app/ressources/global-variables/global-variables';
@@ -21,6 +22,7 @@ describe('MagnetismComponent', () => {
 
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [MagnetismComponent],
             providers: [{ provide: HotkeyService, useValue: hotkeyServiceSpy }],
         }).compileComponents();

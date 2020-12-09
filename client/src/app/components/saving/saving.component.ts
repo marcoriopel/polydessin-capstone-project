@@ -115,14 +115,14 @@ export class SavingComponent implements OnInit, OnDestroy {
             .addDrawing(meta, blob)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
-                (data) => {
+                () => {
                     this.isSaveButtonDisabled = false;
                     this.serverResponseService.saveConfirmSnackBar();
                     this.dialog.closeAll();
                 },
-                (error) => {
+                () => {
                     this.isSaveButtonDisabled = false;
-                    this.serverResponseService.saveErrorSnackBar(error.error);
+                    this.serverResponseService.saveErrorSnackBar();
                     this.dialog.closeAll();
                 },
             );

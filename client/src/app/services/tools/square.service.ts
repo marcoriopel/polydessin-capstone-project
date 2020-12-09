@@ -172,8 +172,7 @@ export class SquareService extends Tool {
     }
 
     setSquareAttributes(): void {
-        const quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
-        switch (quadrant) {
+        switch (this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint)) {
             case Quadrant.BOTTOM_LEFT:
                 this.rectangleData.topLeftPoint.x = this.firstPoint.x - this.rectangleData.width;
                 this.rectangleData.topLeftPoint.y = this.firstPoint.y;

@@ -436,37 +436,5 @@ describe('Trigonometry', () => {
         const returnValue = trigonometry.getCenter(firstPoint, lastPoint);
         expect(returnValue).toEqual(expectedValue);
     });
-
-    // it('should return lastPoint.x and firstPoint.y if in first quadrant', () => {
-    //     const firstPoint: Vec2 = { x: 0, y: 0 };
-    //     const lastPoint: Vec2 = { x: 10, y: 10 };
-    //     const expectedValue: Vec2 = { x: lastPoint.x, y: firstPoint.y };
-    //     const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
-    //     expect(returnValue).toEqual(expectedValue);
-    // });
-
-    // it('should return firstPoint.x and lastPoint.y if in second quadrant', () => {
-    //     const firstPoint: Vec2 = { x: 10, y: 0 };
-    //     const lastPoint: Vec2 = { x: 0, y: 10 };
-    //     const expectedValue: Vec2 = { x: firstPoint.x, y: lastPoint.y };
-    //     const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
-    //     expect(returnValue).toEqual(expectedValue);
-    // });
-
-    // it('should return lastPoint.x and lastPoint.y if in third quadrant', () => {
-    //     const firstPoint: Vec2 = { x: 5, y: 10 };
-    //     const lastPoint: Vec2 = { x: 0, y: 0 };
-    //     const expectedValue: Vec2 = { x: lastPoint.x, y: lastPoint.y };
-    //     const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
-    //     expect(returnValue).toEqual(expectedValue);
-    // });
-
-    // it('should return firstPoint.x and firstPoint.y if in fourth quadrant', () => {
-    //     const firstPoint: Vec2 = { x: 0, y: 10 };
-    //     const lastPoint: Vec2 = { x: 10, y: 0 };
-    //     const expectedValue: Vec2 = { x: firstPoint.x, y: firstPoint.y };
-    //     const returnValue = trigonometry.findTopLeftPointCircle(firstPoint, lastPoint);
-    //     expect(returnValue).toEqual(expectedValue);
-    // });
 });
 // tslint:disable-next-line: max-file-line-count

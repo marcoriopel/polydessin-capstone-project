@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Fill, Selection, ToolProperties } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
 import { Observable, Subject } from 'rxjs';
@@ -17,8 +17,8 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: ToolProperties[] = [];
-    redoStack: ToolProperties[] = [];
+    undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
+    redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
     isLastDrawing: boolean;
 
@@ -61,12 +61,11 @@ export class DrawingService {
 
     initializeBaseCanvas(): void {
         if (this.isGridEnabled) this.setGrid();
-        // using an injector with a deprecated version to inject and bypass an observed circular dependency
-        // Retrieves an instance from the injector based on the provided token.
-        // tslint:disable-next-line: deprecation
-        const continueDrawingService = this.injector.get('ContinueDrawingService');
         if (this.isLastDrawing) {
-            continueDrawingService.continueDrawing();
+            // using an injector with a deprecated version to inject and bypass an observed circular dependency
+            // Retrieves an instance from the injector based on the provided token.
+            // tslint:disable-next-line: deprecation
+            this.injector.get('ContinueDrawingService').continueDrawing();
         } else {
             this.baseCtx.fillStyle = 'white';
             this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -89,9 +88,8 @@ export class DrawingService {
         this.clearCanvas(this.previewCtx);
     }
 
-    updateStack(modification: ToolProperties): void {
-        const copiedTool = Object.assign({}, modification);
-        this.undoStack.push(copiedTool);
+    updateStack(modification: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
+        this.undoStack.push(Object.assign({}, modification));
         if (this.redoStack.length) {
             this.redoStack = [];
         }
@@ -107,18 +105,15 @@ export class DrawingService {
     }
 
     getPixelData(pixelCoord: Vec2): Uint8ClampedArray {
-        const pixelData = this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
-        return pixelData;
+        return this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
     }
 
     getCanvasData(): ImageData {
-        const canvasData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     getPreviewData(): ImageData {
-        const canvasData = this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     resetStack(): void {
@@ -128,8 +123,7 @@ export class DrawingService {
 
     autoSave(): void {
         if (!this.canvas) return;
-        const sourceDrawing = this.canvas.toDataURL();
         localStorage.clear();
-        localStorage.setItem('drawingKey', sourceDrawing);
+        localStorage.setItem('drawingKey', this.canvas.toDataURL());
     }
 }

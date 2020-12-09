@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TextService } from '@app/services/tools/text.service';
@@ -11,6 +12,7 @@ describe('TexteComponent', () => {
     beforeEach(async(() => {
         textServiceSpy = jasmine.createSpyObj('TextService', ['applyTextStyle', 'createText', 'onKeyDown']);
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [TextComponent],
             imports: [MatButtonToggleModule],
             providers: [{ provide: TextService, useValue: textServiceSpy }],

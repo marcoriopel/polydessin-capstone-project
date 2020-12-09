@@ -2,17 +2,14 @@ import { StampAttributes } from '@app/classes/stamps';
 import { StraightLine } from './line';
 import { Vec2 } from './vec2';
 
-export interface ToolProperties {
-    type: string;
-}
-export interface Pencil extends ToolProperties {
+export interface Pencil {
     type: string;
     path: Vec2[];
     lineWidth: number;
     primaryColor: string;
 }
 
-export interface Brush extends ToolProperties {
+export interface Brush {
     type: string;
     path: Vec2[];
     lineWidth: number;
@@ -21,7 +18,7 @@ export interface Brush extends ToolProperties {
     primaryColor: string;
 }
 
-export interface Eraser extends ToolProperties {
+export interface Eraser {
     type: string;
     path: Vec2[];
     lineWidth: number;
@@ -30,7 +27,7 @@ export interface Eraser extends ToolProperties {
     primaryColor: string;
 }
 
-export interface Rectangle extends ToolProperties {
+export interface Rectangle {
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -42,7 +39,7 @@ export interface Rectangle extends ToolProperties {
     lineWidth: number;
 }
 
-export interface Ellipse extends ToolProperties {
+export interface Ellipse {
     lastPoint: Vec2;
     firstPoint: Vec2;
     type: string;
@@ -55,7 +52,7 @@ export interface Ellipse extends ToolProperties {
     lineWidth: number;
 }
 
-export interface Line extends ToolProperties {
+export interface Line {
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -70,7 +67,7 @@ export interface Line extends ToolProperties {
     dotWidth: number;
 }
 
-export interface Polygon extends ToolProperties {
+export interface Polygon {
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -83,44 +80,27 @@ export interface Polygon extends ToolProperties {
     sides: number;
 }
 
-export interface Resize extends ToolProperties {
+export interface Resize {
     type: string;
     canvasSize: Vec2;
     imageData: ImageData;
 }
 
-export interface Fill extends ToolProperties {
+export interface Fill {
     type: string;
     imageData: ImageData;
 }
 
-export interface Selection extends ToolProperties {
+export interface Selection {
     type: string;
     imageData: ImageData;
 }
 
-export interface Spray extends ToolProperties {
-    type: string;
-    imageData: ImageData;
-}
-
-export interface Pen extends ToolProperties {
-    type: string;
-    imageData: ImageData;
-}
-
-export interface Text extends ToolProperties {
-    type: string;
-    imageData: ImageData;
-}
-
-export interface Stamp extends ToolProperties {
-    currentStamp: StampAttributes;
+export interface Stamp {
     type: string;
     color: string;
-    opacity: number;
     size: number;
     position: Vec2;
-    stamp: StampAttributes;
+    currentStamp: StampAttributes;
     angle: number;
 }

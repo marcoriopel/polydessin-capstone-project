@@ -318,7 +318,7 @@ describe('MagicWandService', () => {
         service.mouseDownCoord = { x: 5, y: 5 };
         drawingServiceSpy.canvas.width = 5;
         drawingServiceSpy.canvas.height = 5;
-        const vec2ToStringSpy = spyOn(service, 'Vec2ToString').and.returnValue('5,5');
+        const vec2ToStringSpy = spyOn(service, 'vec2ToString').and.returnValue('5,5');
         const isSameColorSpy = spyOn(service, 'isSameColor').and.returnValue(true);
         const addPixelToSelectionSpy = spyOn(service, 'addPixelToSelection');
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
@@ -490,11 +490,11 @@ describe('MagicWandService', () => {
         expect(service.isSameColor(pixelData, canvasData, index, 0)).toBe(false);
     });
 
-    it('Vec2ToString should return Vec2 as string value', () => {
+    it('vec2ToString should return Vec2 as string value', () => {
         const vector2D: Vec2 = { x: 1, y: 0 };
         const expectedOutput = '1,0';
 
-        expect(service.Vec2ToString(vector2D)).toBe(expectedOutput);
+        expect(service.vec2ToString(vector2D)).toBe(expectedOutput);
     });
 
     it('should check all pixels with wand and add if same', () => {

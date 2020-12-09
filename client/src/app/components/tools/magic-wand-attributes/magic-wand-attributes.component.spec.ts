@@ -1,4 +1,5 @@
 /* tslint:disable:no-unused-variable */
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { MagicWandAttributesComponent } from './magic-wand-attributes.component';
@@ -12,6 +13,7 @@ describe('MagicWandAttributesComponent', () => {
         magicWandServiceSpy = jasmine.createSpyObj('MagicWandService', ['enableMagnetism', 'setMagnetismAlignment']);
 
         TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [MagicWandAttributesComponent],
             providers: [{ provide: MagicWandService, useValue: magicWandServiceSpy }],
         }).compileComponents();
