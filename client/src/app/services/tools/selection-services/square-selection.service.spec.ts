@@ -24,7 +24,8 @@ describe('SquareSelectionService', () => {
             height: 10,
         };
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['initialize']);
-        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas', 'calculateCenter']);
+        rotateServiceSpy.calculateCenter.and.returnValue({ x: 1, y: 1 });
         TestBed.configureTestingModule({
             providers: [
                 { provide: MoveService, useValue: moveServiceSpy },
