@@ -25,6 +25,7 @@ import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { Observable, Subject } from 'rxjs';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -108,9 +109,8 @@ export class SelectionService extends Tool {
         this.drawingService.previewCtx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
         if (event.button !== MouseButton.LEFT) return;
         if (!this.isInSelection(event)) {
-            this.isNewSelection = true; // Réinitialisation pour une nouvelle selection
+            this.isNewSelection = true;
             if (!this.moveService.isTransformationOver) {
-                // A l'exterieur de la selection
                 this.moveService.isTransformationOver = true;
                 this.moveService.printSelectionOnPreview();
                 this.applyPreview();
@@ -147,24 +147,20 @@ export class SelectionService extends Tool {
         this.currentPoint = SELECTION_POINTS_NAMES.NO_POINTS;
         if (this.isNewSelection) {
             this.setSelection(this.initialSelection, this.selection);
-            // setUp underlying service
-
             this.underlyingService.lastPoint = this.getPositionFromMouse(event);
             const currentFillStyle = this.underlyingService.fillStyle;
             this.underlyingService.fillStyle = FILL_STYLES.DASHED;
-            // draw selection
             this.selection = this.underlyingService.drawShape(this.drawingService.previewCtx);
             if (this.selection.height !== 0 && this.selection.width !== 0) {
                 this.isSelectionEmptySubject.next(false);
                 this.isSelectionOver = false;
-                // this.setSelection(this.initialSelection, this.selection);
                 this.setSelection(this.moveService.initialSelection, this.selection);
                 this.setSelectionData();
                 this.setSelectionCorners();
                 this.setSelectionPoint();
                 this.initialize();
+                this.selectionResizeService.setSelectionBeforeResize(this.selection);
             }
-            // reset underlying service to original form
             this.underlyingService.fillStyle = currentFillStyle;
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -304,6 +300,7 @@ export class SelectionService extends Tool {
     }
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
+        this.selectionResizeService.onKeyDown(event);
         if (event.ctrlKey) {
             this.ctrlKeyDown(event);
         }
@@ -327,7 +324,7 @@ export class SelectionService extends Tool {
             }
             case 'Shift': {
                 this.isShiftKeyDown = true;
-                if (this.underlyingService) this.underlyingService.isShiftKeyDown = true;
+                if (this.underlyingService && !this.isResizing) this.underlyingService.isShiftKeyDown = true;
                 break;
             }
             case 'Delete': {
@@ -380,6 +377,7 @@ export class SelectionService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
+        this.selectionResizeService.onKeyUp(event);
         this.moveService.onKeyUp(event);
         this.rotateService.onKeyUp(event);
         if (!this.isShiftKeyDown) {
@@ -388,6 +386,7 @@ export class SelectionService extends Tool {
             this.strokeSelection();
         }
         if (event.key === 'Shift') {
+            this.selectionResizeService.isShiftKeyDown = false;
             if (this.isNewSelection) {
                 this.underlyingService.onKeyUp(event);
             }

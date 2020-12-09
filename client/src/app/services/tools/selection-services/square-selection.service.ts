@@ -64,7 +64,6 @@ export class SquareSelectionService extends SelectionService {
 
             const center = this.rotateService.calculateCenter();
 
-            // BOITE ENGLOBANTE ICI!
             const highestVerticalSelectionPoint = Math.max(
                 this.selectionCorners.topRight.coordinates.y,
                 this.selectionCorners.bottomRight.coordinates.y,
