@@ -59,10 +59,6 @@ export class ContinueDrawingService {
         this.drawingService.isLastDrawing = false;
     }
 
-    clearCanvas(): void {
-        this.drawingService.clearCanvas(this.drawingService.baseCtx);
-    }
-
     resizingCanvas(width: number = MINIMUM_CANVAS_WIDTH, height: number = MINIMUM_CANVAS_HEIGHT): void {
         this.drawingService.canvas.width = width;
         this.drawingService.canvas.height = height;
