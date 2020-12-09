@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class ClipboardService {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     clipBoardCanvas: HTMLCanvasElement = document.createElement('canvas');
     angle: number;
     selectionType: number;
@@ -18,21 +19,26 @@ export class ClipboardService {
     }
 
     copy(selection: SelectionBox, selectionImage: HTMLCanvasElement, angle: number): void {
-        this.setSelection(selection);
+        this.setSelection(this.selection, selection);
         this.isPasteAvailableSubject.next(true);
         this.clipBoardCanvas.width = this.selection.width;
         this.clipBoardCanvas.height = this.selection.height;
         const selectionImageCtx = this.clipBoardCanvas.getContext('2d') as CanvasRenderingContext2D;
-        selectionImageCtx.drawImage(selectionImage, 0, 0);
+        selectionImageCtx.drawImage(selectionImage, 0, 0, selection.width, selection.height);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.angle = angle;
     }
 
-    private setSelection(selection: SelectionBox): void {
-        this.selection.startingPoint.x = selection.startingPoint.x;
-        this.selection.startingPoint.y = selection.startingPoint.y;
-        this.selection.height = selection.height;
-        this.selection.width = selection.width;
+    resetSelectionPosition(selectionContour: SelectionBox): void {
+        this.selection.startingPoint.x -= selectionContour.startingPoint.x;
+        this.selection.startingPoint.y -= selectionContour.startingPoint.y;
+    }
+
+    private setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 
     getIsPasteAvailableSubject(): Observable<boolean> {

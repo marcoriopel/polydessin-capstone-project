@@ -287,9 +287,9 @@ export class SelectionService extends Tool {
 
     onMouseMoveMagnetism(mousePosDifferenceX: number, mousePosDifferenceY: number): void {
         const gridInfo: GridInfo = { SQUARE_SIZE: this.squareSize, ALIGNMENT: this.currentAlignment };
-        const changeX = this.magnetismService.magnetismXAxisChange(mousePosDifferenceX, gridInfo, this.selection);
+        const changeX = this.magnetismService.magnetismXAxisChange(mousePosDifferenceX, gridInfo, this.selectionContour);
         this.mouseDownCoord.x = this.mouseDownCoord.x + changeX;
-        const changeY = this.magnetismService.magnetismYAxisChange(mousePosDifferenceY, gridInfo, this.selection);
+        const changeY = this.magnetismService.magnetismYAxisChange(mousePosDifferenceY, gridInfo, this.selectionContour);
         this.mouseDownCoord.y = this.mouseDownCoord.y + changeY;
         this.magnetismService.onMouseMoveMagnetism(changeX, changeY);
     }
@@ -305,7 +305,7 @@ export class SelectionService extends Tool {
             this.ctrlKeyDown(event);
         }
         if (this.selection.height !== 0 || this.selection.height !== 0) {
-            const axisCoordinates: Vec2 = this.magnetismService.magnetismCoordinateReference(this.currentAlignment, this.selection);
+            const axisCoordinates: Vec2 = this.magnetismService.magnetismCoordinateReference(this.currentAlignment, this.selectionContour);
             if (this.isMagnetism && !this.isSnappedOnGrid(axisCoordinates)) {
                 this.moveService.snapOnGrid(event, axisCoordinates, this.squareSize);
             } else {
@@ -549,6 +549,7 @@ export class SelectionService extends Tool {
     cut(): void {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.clipboardService.resetSelectionPosition(this.selectionContour);
             this.moveService.clearSelectionBackground();
             this.applyPreview();
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
@@ -561,6 +562,7 @@ export class SelectionService extends Tool {
     copy(): void {
         if (this.selection.height !== 0 || this.selection.height !== 0) {
             this.clipboardService.copy(this.selection, this.selectionImage, this.rotateService.angle);
+            this.clipboardService.resetSelectionPosition(this.selectionContour);
             this.moveService.printSelectionOnPreview();
         }
     }
@@ -573,6 +575,7 @@ export class SelectionService extends Tool {
                 this.applyPreview();
             }
             this.setSelection(this.selection, this.clipboardService.selection);
+            this.updateSelectionCorners();
             this.setSelectionImage(this.clipboardService.clipBoardCanvas);
             this.rotateService.initialize(this.selection, this.selectionImage);
             this.isSelectionEmptySubject.next(false);

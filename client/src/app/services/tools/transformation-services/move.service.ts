@@ -11,6 +11,7 @@ import { RotateService } from './rotate.service';
 })
 export class MoveService {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
     pressedKeys: Map<string, boolean> = new Map([
