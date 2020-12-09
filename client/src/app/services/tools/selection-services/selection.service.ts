@@ -576,7 +576,7 @@ export class SelectionService extends Tool {
             }
             this.setSelection(this.selection, this.clipboardService.selection);
             this.updateSelectionCorners();
-            this.setSelectionImage(this.clipboardService.clipBoardCanvas);
+            this.setSelectionImage(this.clipboardService.clipboardCanvas);
             this.rotateService.initialize(this.selection, this.selectionImage);
             this.isSelectionEmptySubject.next(false);
             this.rotateService.angle = this.clipboardService.angle;

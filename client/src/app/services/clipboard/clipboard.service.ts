@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 export class ClipboardService {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    clipBoardCanvas: HTMLCanvasElement = document.createElement('canvas');
+    clipboardCanvas: HTMLCanvasElement = document.createElement('canvas');
     angle: number;
     selectionType: number;
     isPasteAvailableSubject: Subject<boolean> = new Subject<boolean>();
@@ -21,9 +21,9 @@ export class ClipboardService {
     copy(selection: SelectionBox, selectionImage: HTMLCanvasElement, angle: number): void {
         this.setSelection(this.selection, selection);
         this.isPasteAvailableSubject.next(true);
-        this.clipBoardCanvas.width = this.selection.width;
-        this.clipBoardCanvas.height = this.selection.height;
-        const selectionImageCtx = this.clipBoardCanvas.getContext('2d') as CanvasRenderingContext2D;
+        this.clipboardCanvas.width = this.selection.width;
+        this.clipboardCanvas.height = this.selection.height;
+        const selectionImageCtx = this.clipboardCanvas.getContext('2d') as CanvasRenderingContext2D;
         selectionImageCtx.drawImage(selectionImage, 0, 0, selection.width, selection.height);
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.angle = angle;
