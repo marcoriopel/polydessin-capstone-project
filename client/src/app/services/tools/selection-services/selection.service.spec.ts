@@ -8,6 +8,7 @@ import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { MagnetismService } from './magnetism.service';
+import { SelectionResizeService } from './selection-resize.service';
 import { SelectionService } from './selection.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -21,6 +22,7 @@ describe('SelectionService', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;
     let magnetismServiceSpy: SpyObj<MagnetismService>;
+    let selectionResizeServiceSpy: SpyObj<SelectionResizeService>;
     let previewCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
@@ -41,6 +43,7 @@ describe('SelectionService', () => {
             'setIsToolInUse',
             'applyPreview',
             'autoSave',
+            'drawImage',
         ]);
         moveServiceSpy = jasmine.createSpyObj('MoveService', [
             'printSelectionOnPreview',
@@ -50,6 +53,14 @@ describe('SelectionService', () => {
             'onKeyUp',
             'snapOnGrid',
             'initialize',
+            'clearSelectionBackground',
+            'resizeSelection',
+        ]);
+        selectionResizeServiceSpy = jasmine.createSpyObj('SelectionResizeService', [
+            'drawSelectionOnPreviewCtx',
+            'initialize',
+            'setSelectionBeforeResize',
+            'resizeSelection',
         ]);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', [
             'onMouseDown',
@@ -826,5 +837,78 @@ describe('SelectionService', () => {
         service.onMouseMove(mouseEvent);
         expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
         expect(setCursorSpy).not.toHaveBeenCalled();
+    });
+
+    it('resizeSelection should be called if resizing while moving cursor', () => {
+        const setCursorSpy = spyOn(service, 'setCursor');
+        const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
+            SELECTION_POINTS_NAMES.BOTTOM_LEFT,
+        );
+        const mouseEvent = {
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
+        expect(setCursorSpy).not.toHaveBeenCalled();
+    });
+
+    xit('cursor should not be reset if it is still on selection point', () => {
+        const setCursorSpy = spyOn(service, 'setCursor');
+        const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
+            SELECTION_POINTS_NAMES.BOTTOM_LEFT,
+        );
+        const mouseEvent = {
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.isResizing = true;
+        service.onMouseMove(mouseEvent);
+        expect(selectionResizeServiceSpy.initialize).toHaveBeenCalled();
+        expect(selectionResizeServiceSpy.resizeSelection).toHaveBeenCalled();
+        expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
+        expect(setCursorSpy).not.toHaveBeenCalled();
+    });
+
+    it('ctrlKeyDown should be called if key down is a control key', () => {
+        const ctrlKeyDownSpy = spyOn(service, 'ctrlKeyDown');
+        const event = {
+            ctrlKey: true,
+        } as KeyboardEvent;
+        service.onKeyDown(event);
+        expect(ctrlKeyDownSpy).toHaveBeenCalled();
+    });
+
+    it('pressing delete key should initialize move service', () => {
+        const event = {
+            key: 'Delete',
+        } as KeyboardEvent;
+        service.onKeyDown(event);
+        expect(moveServiceSpy.initialize).toHaveBeenCalled();
+    });
+
+    it('should call cut if control key is x', () => {
+        const cutSpy = spyOn(service, 'cut');
+        const event = {
+            key: 'x',
+        } as KeyboardEvent;
+        service.ctrlKeyDown(event);
+        expect(cutSpy).toHaveBeenCalled();
+    });
+
+    it('should call copy if control key is c', () => {
+        const copySpy = spyOn(service, 'copy');
+        const event = {
+            key: 'c',
+        } as KeyboardEvent;
+        service.ctrlKeyDown(event);
+        expect(copySpy).toHaveBeenCalled();
+    });
+
+    it('should call paste if control key is v', () => {
+        const pasteSpy = spyOn(service, 'paste');
+        const event = {
+            key: 'v',
+        } as KeyboardEvent;
+        service.ctrlKeyDown(event);
+        expect(pasteSpy).toHaveBeenCalled();
     });
 });

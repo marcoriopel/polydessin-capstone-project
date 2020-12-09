@@ -46,7 +46,13 @@ describe('MagicWandService', () => {
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'clearCanvas', 'getPixelData', 'getCanvasData', 'updateStack']);
 
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseDown', 'printSelectionOnPreview', 'onKeyUp', 'onMouseMove', 'initialize']);
-        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyUp', 'initialize', 'rotatePreviewCanvas']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', [
+            'restoreSelection',
+            'onKeyUp',
+            'initialize',
+            'rotatePreviewCanvas',
+            'calculateCenter',
+        ]);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
@@ -447,6 +453,7 @@ describe('MagicWandService', () => {
     });
 
     it('should stroke selection if selection size is not null', () => {
+        rotateServiceSpy.calculateCenter.and.returnValue({ x: 1, y: 1 });
         const setBorderCanvasSpy = spyOn(service, 'setBorderCanvas');
         service.selection.height = 5;
         service.selection.width = 5;
