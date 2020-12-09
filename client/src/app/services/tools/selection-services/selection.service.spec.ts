@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
+import { SelectionPoints, SELECTION_POINTS_NAMES } from '@app/classes/selection-points';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,7 +26,7 @@ fdescribe('SelectionService', () => {
     let underlyingServiceSpy: SpyObj<SquareService>;
     let rotateServiceSpy: SpyObj<RotateService>;
     let gridCanvasStub: HTMLCanvasElement;
-
+    let selectionPoints: SelectionPoints;
     beforeEach(() => {
         magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
             'magnetismXAxisChange',
@@ -85,6 +86,15 @@ fdescribe('SelectionService', () => {
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
         drawingServiceSpy.gridCanvas = gridCanvasStub;
+
+        selectionPoints = {
+            LEFT_X: 0,
+            TOP_Y: 0,
+            MIDDLE_X: 50,
+            MIDDLE_Y: 50,
+            RIGHT_X: 100,
+            BOTTOM_Y: 100,
+        };
 
         TestBed.configureTestingModule({
             providers: [
@@ -683,5 +693,83 @@ fdescribe('SelectionService', () => {
 
         expect(isSnappedOnGridSpy).toHaveBeenCalled();
         expect(moveServiceSpy.snapOnGrid).toHaveBeenCalled();
+    });
+
+    it('should return top left point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 0, y: 0 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_LEFT);
+    });
+
+    it('should return middle top point', () => {
+        service.selectionPoints = selectionPoints;
+
+        const mouseCoordinates = { x: 50, y: 0 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_MIDDLE);
+    });
+
+    it('should return top right point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 100, y: 0 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_RIGHT);
+    });
+
+    it('should return middle left point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 0, y: 50 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.MIDDLE_LEFT);
+    });
+
+    it('should return middle right point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 100, y: 50 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.MIDDLE_RIGHT);
+    });
+
+    it('should return bottom left point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 0, y: 100 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_LEFT);
+    });
+
+    it('should return bottom middle point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 50, y: 100 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_MIDDLE);
+    });
+
+    it('should return bottom right point', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 100, y: 100 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_RIGHT);
+    });
+
+    it('should return no point if cursor on left side but outside of point coordinates', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 0, y: 10 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
+    });
+
+    it('should return no point if cursor on middle but outside of point coordinates', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 50, y: 10 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
+    });
+
+    it('should return no point if cursor on right side but outside of point coordinates', () => {
+        service.selectionPoints = selectionPoints;
+        const mouseCoordinates = { x: 100, y: 10 };
+        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
     });
 });
