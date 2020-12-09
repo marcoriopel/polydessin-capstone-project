@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import { Fill, Selection, ToolProperties } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
 import { Observable, Subject } from 'rxjs';
@@ -12,13 +12,13 @@ export class DrawingService {
     gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
     gridSpacing: number;
-    opacity: number;
+    gridOpacity: number;
     isGridEnabled: boolean;
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
+    undoStack: ToolProperties[] = [];
+    redoStack: ToolProperties[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
     isLastDrawing: boolean;
 
@@ -37,7 +37,7 @@ export class DrawingService {
             this.gridCtx.moveTo(0, x);
             this.gridCtx.lineTo(canvasWidth, x);
         }
-        this.gridCtx.globalAlpha = this.opacity / MAX_PERCENTAGE;
+        this.gridCtx.globalAlpha = this.gridOpacity / MAX_PERCENTAGE;
         this.gridCtx.strokeStyle = 'black';
         this.gridCtx.closePath();
         this.gridCtx.stroke();
@@ -89,11 +89,13 @@ export class DrawingService {
         this.clearCanvas(this.previewCtx);
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
-        this.undoStack.push(modification);
+    updateStack(modification: ToolProperties): void {
+        const copiedTool = Object.assign({}, modification);
+        this.undoStack.push(copiedTool);
         if (this.redoStack.length) {
             this.redoStack = [];
         }
+        console.log(this.undoStack);
     }
 
     drawFill(fill: Fill): void {

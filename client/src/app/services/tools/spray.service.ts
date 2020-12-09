@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Spray } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import {
     MAX_SPRAY_DOT_WIDTH,
@@ -20,7 +21,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class SprayService extends Tool {
+export class SprayService extends Tool implements OnDestroy {
     name: string = TOOL_NAMES.SPRAY_TOOL_NAME;
     density: number = SPRAY_DENSITY;
     minDotWidth: number = MIN_SPRAY_DOT_WIDTH;
@@ -34,9 +35,15 @@ export class SprayService extends Tool {
     width: number = this.minToolWidth;
     dotWidth: number = this.minDotWidth;
     sprayFrequency: number = this.minFrequency;
+    sprayData: Spray;
+    canvasData: ImageData;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
+    }
+
+    ngOnDestroy(): void {
+        clearTimeout(this.timeoutId);
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -47,6 +54,7 @@ export class SprayService extends Tool {
         } else {
             this.mouseDown = true;
             this.mouseCoord = this.getPositionFromMouse(event);
+            clearTimeout(this.timeoutId);
             this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
@@ -60,6 +68,10 @@ export class SprayService extends Tool {
         }
         this.mouseDown = false;
         this.drawingService.autoSave();
+        const canvasData: ImageData = this.drawingService.getCanvasData();
+        this.canvasData = canvasData;
+        this.updateSprayData();
+        this.drawingService.updateStack(this.sprayData);
     }
 
     onMouseMove(event: MouseEvent): void {
@@ -122,6 +134,15 @@ export class SprayService extends Tool {
     }
 
     reset(): void {
+        clearTimeout(this.timeoutId);
         this.drawingService.previewCtx.globalAlpha = 1;
+    }
+
+    updateSprayData(): void {
+        this.sprayData = {
+            type: 'spray',
+            imageData: this.canvasData,
+        };
+        this.drawingService.autoSave();
     }
 }

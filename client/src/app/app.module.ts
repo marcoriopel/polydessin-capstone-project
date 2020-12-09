@@ -46,10 +46,10 @@ import { MagicWandAttributesComponent } from './components/tools/magic-wand-attr
 import { PenAttributesComponent } from './components/tools/pen-attributes/pen-attributes.component';
 import { PencilAttributesComponent } from './components/tools/pencil-attributes/pencil-attributes.component';
 import { PipetteAttributesComponent } from './components/tools/pipette-attributes/pipette-attributes.component';
-import { PolygoneAttributesComponent } from './components/tools/polygone-attributes/polygone-attributes.component';
+import { PolygonAttributesComponent } from './components/tools/polygon-attributes/polygon-attributes.component';
+import { FillTypesSelectionComponent } from './components/tools/shared-Attributes/fill-types-selection/fill-types-selection.component';
 import { MagnetismComponent } from './components/tools/shared-Attributes/magnetism/magnetism.component';
 import { SliderComponent } from './components/tools/shared-Attributes/slider/slider.component';
-import { TypeOfFillSelectionComponent } from './components/tools/shared-Attributes/type-of-fill-selection/type-of-fill-selection.component';
 import { SprayAttributesComponent } from './components/tools/spray-attributes/spray-attributes.component';
 import { SquareAttributesComponent } from './components/tools/square-attributes/square-attributes.component';
 import { SquareSelectionAttributesComponent } from './components/tools/square-selection-attributes/square-selection-attributes.component';
@@ -81,13 +81,13 @@ import { UserGuideComponent } from './components/userguide/user-guide.component'
         SquareAttributesComponent,
         NewDrawingModalComponent,
         ColorPickerComponent,
-        TypeOfFillSelectionComponent,
+        FillTypesSelectionComponent,
         PipetteAttributesComponent,
         FillAttributesComponent,
         SavingComponent,
         CarouselComponent,
         ExportComponent,
-        PolygoneAttributesComponent,
+        PolygonAttributesComponent,
         SquareSelectionAttributesComponent,
         CircleSelectionAttributesComponent,
         PenAttributesComponent,

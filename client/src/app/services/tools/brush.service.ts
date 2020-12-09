@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Brush } from '@app/classes/tool-properties';
-import { Vec2 } from '@app/classes/vec2';
 import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
@@ -12,14 +11,18 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class BrushService extends Tool {
     name: string = TOOL_NAMES.BRUSH_TOOL_NAME;
-    private brushData: Brush;
-    private pathData: Vec2[];
-    width: number = 1;
-    pattern: string;
+    brushData: Brush;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
-        this.clearPath();
+        this.brushData = {
+            type: 'brush',
+            path: [],
+            lineWidth: 1,
+            lineCap: 'round',
+            pattern: 'none',
+            primaryColor: this.colorSelectionService.primaryColor,
+        };
     }
 
     reset(): void {
@@ -33,10 +36,10 @@ export class BrushService extends Tool {
         } else {
             this.mouseDown = true;
             this.clearPath();
-            this.applyPattern(this.pattern);
+            this.applyPattern(this.brushData.pattern);
             this.mouseDownCoord = this.getPositionFromMouse(event);
-            this.pathData.push(this.mouseDownCoord);
-            this.updateBrushData();
+            this.brushData.path.push(this.mouseDownCoord);
+            this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.previewCtx, this.brushData);
             this.drawingService.setIsToolInUse(true);
         }
@@ -45,8 +48,8 @@ export class BrushService extends Tool {
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
-            this.updateBrushData();
+            this.brushData.path.push(mousePosition);
+            this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.baseCtx, this.brushData);
             this.drawingService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
@@ -59,8 +62,8 @@ export class BrushService extends Tool {
     }
 
     onMouseLeave(): void {
-        this.updateBrushData();
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
+        this.brushData.primaryColor = this.colorSelectionService.primaryColor;
         this.drawLine(this.drawingService.baseCtx, this.brushData);
         this.clearPath();
     }
@@ -68,20 +71,19 @@ export class BrushService extends Tool {
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
-            this.pathData.push(mousePosition);
+            this.brushData.path.push(mousePosition);
 
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.updateBrushData();
             this.drawLine(this.drawingService.previewCtx, this.brushData);
         }
     }
 
     changeWidth(newWidth: number): void {
-        this.width = newWidth;
+        this.brushData.lineWidth = newWidth;
     }
 
     setPattern(pattern: string): void {
-        this.pattern = pattern;
+        this.brushData.pattern = pattern;
     }
 
     drawLine(ctx: CanvasRenderingContext2D, brush: Brush): void {
@@ -108,18 +110,7 @@ export class BrushService extends Tool {
         this.drawingService.previewCtx.strokeRect(-this.drawingService.previewCtx.lineWidth, 0, 1, 0);
     }
 
-    private updateBrushData(): void {
-        this.brushData = {
-            type: 'brush',
-            path: this.pathData,
-            lineWidth: this.width,
-            lineCap: 'round',
-            pattern: this.pattern,
-            primaryColor: this.colorSelectionService.primaryColor,
-        };
-    }
-
     private clearPath(): void {
-        this.pathData = [];
+        this.brushData.path = [];
     }
 }

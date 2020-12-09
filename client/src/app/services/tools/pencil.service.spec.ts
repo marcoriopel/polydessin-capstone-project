@@ -54,10 +54,15 @@ describe('PencilService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should be the rigth cursor', () => {
+        service.setCursor();
+        expect(drawServiceSpy.gridCanvas.style.cursor).toEqual('crosshair');
+    });
+
     it('should change width', () => {
-        service.width = 0;
+        service.pencilData.lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.pencilData.lineWidth).toBe(1);
     });
 
     it(' should draw line on mouseleave', () => {
