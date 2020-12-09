@@ -61,6 +61,25 @@ describe('MoveService', () => {
         expect(service.selectionImage).toEqual(selectionImage);
     });
 
+    it('ngOnDestroy should clearTimeout', fakeAsync(() => {
+        service.intervalId = setTimeout(() => {}, 100);
+        const clearIntervalSpy = spyOn(global, 'clearInterval');
+
+        service.ngOnDestroy();
+
+        tick(501);
+        expect(clearIntervalSpy).toHaveBeenCalled();
+    }));
+
+    it('ngOnDestroy should clearTimeout', fakeAsync(() => {
+        const clearIntervalSpy = spyOn(global, 'clearInterval');
+
+        service.ngOnDestroy();
+
+        tick(2);
+        expect(clearIntervalSpy).not.toHaveBeenCalled();
+    }));
+
     it('onMouseDown should set isTransformationOver to false', () => {
         service.isTransformationOver = true;
 

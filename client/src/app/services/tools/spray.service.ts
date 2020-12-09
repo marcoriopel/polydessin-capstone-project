@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Tool } from '@app/classes/tool';
 import { Vec2 } from '@app/classes/vec2';
 import {
@@ -20,7 +20,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 @Injectable({
     providedIn: 'root',
 })
-export class SprayService extends Tool {
+export class SprayService extends Tool implements OnDestroy {
     name: string = TOOL_NAMES.SPRAY_TOOL_NAME;
     density: number = SPRAY_DENSITY;
     minDotWidth: number = MIN_SPRAY_DOT_WIDTH;
@@ -39,6 +39,10 @@ export class SprayService extends Tool {
         super(drawingService);
     }
 
+    ngOnDestroy(): void {
+        clearTimeout(this.timeoutId);
+    }
+
     onMouseDown(event: MouseEvent): void {
         this.drawingService.baseCtx.filter = 'none';
         this.drawingService.previewCtx.filter = 'none';
@@ -47,6 +51,7 @@ export class SprayService extends Tool {
         } else {
             this.mouseDown = true;
             this.mouseCoord = this.getPositionFromMouse(event);
+            clearTimeout(this.timeoutId);
             this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
             this.drawingService.setIsToolInUse(true);
         }
@@ -122,6 +127,7 @@ export class SprayService extends Tool {
     }
 
     reset(): void {
+        clearTimeout(this.timeoutId);
         this.drawingService.previewCtx.globalAlpha = 1;
     }
 }

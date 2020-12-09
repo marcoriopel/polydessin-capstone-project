@@ -17,7 +17,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PenService } from '@app/services/tools/pen.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
@@ -53,7 +53,7 @@ export class ToolSelectionService {
         public eraserService: EraserService,
         public squareSelectionService: SquareSelectionService,
         public circleSelectionService: CircleSelectionService,
-        public polygoneService: PolygoneService,
+        public polygonService: PolygonService,
         public pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
@@ -75,7 +75,7 @@ export class ToolSelectionService {
             [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
-            [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.POLYGON_TOOL_NAME, polygonService],
             [TOOL_NAMES.TEXT_TOOL_NAME, textService],
             [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
             [TOOL_NAMES.MAGIC_WAND_TOOL_NAME, magicWandService],

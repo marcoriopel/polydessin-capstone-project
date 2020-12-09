@@ -59,9 +59,9 @@ describe('EraserService', () => {
     });
 
     it('should change width', () => {
-        service.width = 0;
+        service.eraserData.lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.eraserData.lineWidth).toBe(1);
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {

@@ -13,6 +13,14 @@ describe('BrushAttributesComponent', () => {
 
     beforeEach(async(() => {
         brushServiceSpy = jasmine.createSpyObj('BrushService', ['changeWidth', 'setPattern']);
+        brushServiceSpy.brushData = {
+            type: 'brush',
+            path: [],
+            lineWidth: 1,
+            lineCap: 'round',
+            pattern: 'none',
+            primaryColor: 'red',
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

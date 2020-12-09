@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SelectionType } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -25,6 +26,7 @@ export class CircleSelectionService extends SelectionService {
     ) {
         super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService);
         super.underlyingService = circleService;
+        this.selectionType = SelectionType.CIRCLE;
     }
 
     setSelectionData(): void {

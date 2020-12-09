@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
@@ -25,20 +26,17 @@ export class CarouselComponent implements OnInit, OnDestroy {
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
-    isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
     currentTag: string = '';
     maxTags: boolean = false;
     isArrowEventsChecked: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
-    selectable: boolean = true;
-    removable: boolean = true;
-    addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
     currentRoute: string;
     IMAGE_BASE_PATH: string = 'http://localhost:3000/api/database/getDrawingPng/';
+
     constructor(
         public router: Router,
         public hotkeyService: HotkeyService,
@@ -47,6 +45,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
+        public continueDrawingService: ContinueDrawingService,
         public textService: TextService,
     ) {}
 

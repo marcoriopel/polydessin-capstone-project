@@ -41,6 +41,10 @@ export class ClipboardService {
         selection.height = incomingSelection.height;
     }
 
+    setSelectionType(selectionType: number): void {
+        this.selectionType = selectionType;
+    }
+
     getIsPasteAvailableSubject(): Observable<boolean> {
         return this.isPasteAvailableSubject.asObservable();
     }

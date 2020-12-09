@@ -10,7 +10,7 @@ export interface SidebarElementTooltips {
     FILL_TOOL_DESCRIPTION: string;
     ERASER_TOOL_DESCRIPTION: string;
     PIPETTE_TOOL_DESCRIPTION: string;
-    POLYGONE_TOOL_DESCRIPTION: string;
+    POLYGON_TOOL_DESCRIPTION: string;
     CIRCLE_SELECTION_TOOL_NAME: string;
     SQUARE_SELECTION_TOOL_NAME: string;
     STAMP_TOOL_DESCRIPTION: string;
@@ -44,7 +44,7 @@ export const SIDEBAR_ELEMENT_TOOLTIPS: SidebarElementTooltips = {
     ERASER_TOOL_DESCRIPTION: 'Efface (E)',
     TEXT_TOOL_DESCRIPTION: 'Texte (T)',
     PIPETTE_TOOL_DESCRIPTION: 'Pipette (I)',
-    POLYGONE_TOOL_DESCRIPTION: 'Polygone (3)',
+    POLYGON_TOOL_DESCRIPTION: 'Polygone (3)',
     STAMP_TOOL_DESCRIPTION: 'Étampe (D)',
     CIRCLE_SELECTION_TOOL_NAME: 'Sélection par ellipse (S)',
     SQUARE_SELECTION_TOOL_NAME: 'Sélection par rectangle (R)',

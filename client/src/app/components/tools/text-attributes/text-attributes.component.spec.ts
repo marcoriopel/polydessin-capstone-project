@@ -74,4 +74,44 @@ describe('TexteComponent', () => {
         expect(textServiceSpy.applyTextStyle).toHaveBeenCalledWith();
         expect(textServiceSpy.align).toEqual('center');
     });
+
+    it('Should not change size and call alert when size is under minSize', () => {
+        const alertSpy = spyOn(window, 'alert');
+        component.textSize = 10;
+        component.changeSize(0);
+        expect(component.textSize).toEqual(10);
+        expect(alertSpy).toHaveBeenCalledWith('La taille du texte doit être un nombre entre 10 et 100.');
+    });
+
+    it('Should not change size when size is under minSize', () => {
+        component.textSize = 10;
+        component.changeSize(0);
+        expect(component.textSize).toEqual(10);
+    });
+
+    it('onFocus should set isWrittingEnable to false', () => {
+        component.onFocus();
+        expect(textServiceSpy.isWritingEnable).toEqual(false);
+    });
+
+    it('onFocusOut should set isWrittingEnable to true', () => {
+        component.onFocusOut();
+        expect(textServiceSpy.isWritingEnable).toEqual(true);
+    });
+
+    it('should call blur if key is Enter', () => {
+        const blurSpy = spyOn(component.textSizeInput.nativeElement, 'blur');
+        const keyboardEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        const stopPropagationSpy = spyOn(keyboardEvent, 'stopPropagation');
+        component.onKeyDown(keyboardEvent);
+        expect(blurSpy).toHaveBeenCalled();
+        expect(stopPropagationSpy).toHaveBeenCalled();
+    });
+
+    it('should not call blur if key is not Enter', () => {
+        const blurSpy = spyOn(component.textSizeInput.nativeElement, 'blur');
+        const keyboardEvent = new KeyboardEvent('keydown', { key: 'a' });
+        component.onKeyDown(keyboardEvent);
+        expect(blurSpy).not.toHaveBeenCalled();
+    });
 });
