@@ -33,17 +33,17 @@ describe('MoveService', () => {
 
         service.selection = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
 
-        service.pressedKeys.set(ARROW_KEYS.LEFT, false);
-        service.pressedKeys.set(ARROW_KEYS.UP, false);
-        service.pressedKeys.set(ARROW_KEYS.RIGHT, false);
-        service.pressedKeys.set(ARROW_KEYS.DOWN, false);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, false);
+        service['pressedKeys'].set(ARROW_KEYS.UP, false);
+        service['pressedKeys'].set(ARROW_KEYS.RIGHT, false);
+        service['pressedKeys'].set(ARROW_KEYS.DOWN, false);
 
-        service.intervalId = undefined;
+        service['intervalId'] = undefined;
     });
 
     afterEach(() => {
-        if (service.intervalId) {
-            clearInterval(service.intervalId);
+        if (service['intervalId']) {
+            clearInterval(service['intervalId']);
         }
     });
 
@@ -58,11 +58,11 @@ describe('MoveService', () => {
 
         expect(service.initialSelection).toEqual(selection);
         expect(service.selection).toEqual(selection);
-        expect(service.selectionImage).toEqual(selectionImage);
+        expect(service['selectionImage']).toEqual(selectionImage);
     });
 
     it('ngOnDestroy should clearTimeout', fakeAsync(() => {
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
 
         service.ngOnDestroy();
@@ -141,8 +141,8 @@ describe('MoveService', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         const setIntervalSpy = spyOn(global, 'setInterval');
         // tslint:disable-next-line: no-empty
-        service.intervalId = setTimeout(() => {}, 100);
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['intervalId'] = setTimeout(() => {}, 100);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
@@ -155,23 +155,23 @@ describe('MoveService', () => {
     it('onKeyDown should call setInterval if intervalID is undefined and isArrowKeyPressed', fakeAsync(() => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
 
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyDown({ key: 't' } as KeyboardEvent, false, 5);
 
         tick(501);
 
         expect(printSelectionOnPreviewSpy).not.toHaveBeenCalled();
-        expect(service.intervalId).toBeDefined();
+        expect(service['intervalId']).toBeDefined();
         // tslint:disable-next-line: no-non-null-assertion
-        clearInterval(service.intervalId!);
+        clearInterval(service['intervalId']!);
     }));
 
     it('onKeyDown should printSelectionOnPreview if key is ArrowKey', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         // tslint:disable-next-line: no-empty
-        service.intervalId = setTimeout(() => {}, 100);
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['intervalId'] = setTimeout(() => {}, 100);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
@@ -181,8 +181,8 @@ describe('MoveService', () => {
     it('onKeyDown should set isTransformationOver to false', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         // tslint:disable-next-line: no-empty
-        service.intervalId = setTimeout(() => {}, 100);
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['intervalId'] = setTimeout(() => {}, 100);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
@@ -192,7 +192,7 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowLeft', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
         service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, false, 5);
@@ -203,7 +203,7 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x of square size if key is ArrowLeft and there is magnetism', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
         service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, true, 5);
@@ -214,9 +214,9 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowLeft and ArrowLeft is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyDown({ key: 'ArrowLeft' } as KeyboardEvent, false, 5);
 
@@ -226,7 +226,7 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.x if key is ArrowRight', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
 
         service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent, false, 5);
@@ -237,9 +237,9 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowRight and ArrowRight is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
-        service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
+        service['pressedKeys'].set(ARROW_KEYS.RIGHT, true);
 
         service.onKeyDown({ key: 'ArrowRight' } as KeyboardEvent, false, 5);
 
@@ -249,7 +249,7 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowUp', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
         service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
@@ -260,9 +260,9 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowUp and ArrowUp is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
-        service.pressedKeys.set(ARROW_KEYS.UP, true);
+        service['pressedKeys'].set(ARROW_KEYS.UP, true);
 
         service.onKeyDown({ key: 'ArrowUp' } as KeyboardEvent, false, 5);
 
@@ -272,7 +272,7 @@ describe('MoveService', () => {
 
     it('onKeyDown should change selection.startingPoint.y if key is ArrowDown', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialYValue = service.selection.startingPoint.y;
 
         service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent, false, 5);
@@ -283,9 +283,9 @@ describe('MoveService', () => {
 
     it('onKeyDown should not change selection.startingPoint.x if key is ArrowDown and ArrowDown is pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const initialXValue = service.selection.startingPoint.x;
-        service.pressedKeys.set(ARROW_KEYS.DOWN, true);
+        service['pressedKeys'].set(ARROW_KEYS.DOWN, true);
 
         service.onKeyDown({ key: 'ArrowDown' } as KeyboardEvent, false, 5);
 
@@ -294,9 +294,9 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should not clear interval if interval if isArrowKeyPressed', () => {
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyUp({ key: 'ArrowRight' } as KeyboardEvent);
 
@@ -312,22 +312,22 @@ describe('MoveService', () => {
     });
 
     it('onKeyUp should clear interval if interval is not undefined and if none of the keys are pressed', () => {
-        service.intervalId = setTimeout(() => {}, 100);
+        service['intervalId'] = setTimeout(() => {}, 100);
         const clearIntervalSpy = spyOn(global, 'clearInterval');
 
         service.onKeyUp({ key: 't' } as KeyboardEvent);
 
         expect(clearIntervalSpy).toHaveBeenCalled();
-        expect(service.intervalId).toBe((undefined as unknown) as NodeJS.Timeout);
+        expect(service['intervalId']).toBe((undefined as unknown) as NodeJS.Timeout);
     });
 
     it('onKeyUp should set pressedKeys ARROW_KEYS.LEFT to false if previously true', () => {
-        service.intervalId = setTimeout(() => {}, 100);
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['intervalId'] = setTimeout(() => {}, 100);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.onKeyUp({ key: 'ArrowLeft' } as KeyboardEvent);
 
-        expect(service.pressedKeys.get(ARROW_KEYS.LEFT)).toBe(false);
+        expect(service['pressedKeys'].get(ARROW_KEYS.LEFT)).toBe(false);
     });
 
     it('clearSelectionBackground should reset set drawingService.previewCtx.fillStyle to original value', () => {
@@ -364,7 +364,7 @@ describe('MoveService', () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         service.drawingService.previewCtx = ctx;
 
-        service.selectionImage = canvas;
+        service['selectionImage'] = canvas;
 
         service.clearSelectionBackground();
 
@@ -409,7 +409,7 @@ describe('MoveService', () => {
 
     it('move should change startingPoint.x if isArrowKeyLeftPressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
         const initialXValue = service.selection.startingPoint.x;
 
         service['move'](service, false, 5);
@@ -420,7 +420,7 @@ describe('MoveService', () => {
 
     it('move should change startingPoint.x of square size if isArrowKeyLeftPressed and there is magnetism', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
         const initialXValue = service.selection.startingPoint.x;
 
         service['move'](service, true, 5);
@@ -431,7 +431,7 @@ describe('MoveService', () => {
 
     it('move should change startingPoint.x if isArrowKeyRightPressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
+        service['pressedKeys'].set(ARROW_KEYS.RIGHT, true);
         const initialXValue = service.selection.startingPoint.x;
 
         service['move'](service, false, 5);
@@ -442,7 +442,7 @@ describe('MoveService', () => {
 
     it('move should change startingPoint.y if isArrowKeyUpPressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.UP, true);
+        service['pressedKeys'].set(ARROW_KEYS.UP, true);
         const initialYValue = service.selection.startingPoint.y;
 
         service['move'](service, false, 5);
@@ -453,7 +453,7 @@ describe('MoveService', () => {
 
     it('move should change startingPoint.y if isArrowKeyDownPressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.DOWN, true);
+        service['pressedKeys'].set(ARROW_KEYS.DOWN, true);
         const initialYValue = service.selection.startingPoint.y;
 
         service['move'](service, false, 5);
@@ -464,10 +464,10 @@ describe('MoveService', () => {
 
     it('move should not change startingPoint if all keys are pressed', () => {
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
-        service.pressedKeys.set(ARROW_KEYS.UP, true);
-        service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
-        service.pressedKeys.set(ARROW_KEYS.DOWN, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.UP, true);
+        service['pressedKeys'].set(ARROW_KEYS.RIGHT, true);
+        service['pressedKeys'].set(ARROW_KEYS.DOWN, true);
         const initialStartingPoint = service.selection.startingPoint;
 
         service['move'](service, false, 5);
@@ -477,16 +477,16 @@ describe('MoveService', () => {
     });
 
     it('isArrowKeyPressed should return true if at least one arrowKey is pressed', () => {
-        service.pressedKeys.set(ARROW_KEYS.UP, true);
+        service['pressedKeys'].set(ARROW_KEYS.UP, true);
 
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
 
     it('isArrowKeyPressed should return true if all arrowKeys are pressed', () => {
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
-        service.pressedKeys.set(ARROW_KEYS.UP, true);
-        service.pressedKeys.set(ARROW_KEYS.RIGHT, true);
-        service.pressedKeys.set(ARROW_KEYS.DOWN, true);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
+        service['pressedKeys'].set(ARROW_KEYS.UP, true);
+        service['pressedKeys'].set(ARROW_KEYS.RIGHT, true);
+        service['pressedKeys'].set(ARROW_KEYS.DOWN, true);
 
         expect(service['isArrowKeyPressed']()).toBe(true);
     });
@@ -589,8 +589,8 @@ describe('MoveService', () => {
         const baseCoordinates = { x: 16, y: 15 };
         const printSelectionOnPreviewSpy = spyOn(service, 'printSelectionOnPreview');
         // tslint:disable-next-line: no-empty
-        service.intervalId = setTimeout(() => {}, 100);
-        service.pressedKeys.set(ARROW_KEYS.LEFT, true);
+        service['intervalId'] = setTimeout(() => {}, 100);
+        service['pressedKeys'].set(ARROW_KEYS.LEFT, true);
 
         service.snapOnGrid({ key: 'j' } as KeyboardEvent, baseCoordinates, 5);
 

@@ -33,11 +33,11 @@ import { takeUntil } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class ToolSelectionService {
-    destroy$: Subject<boolean> = new Subject<boolean>();
-    sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
-    private tools: Map<string, Tool>;
     currentTool: Tool;
-    currentToolName: Subject<string> = new Subject<string>();
+    private destroy$: Subject<boolean> = new Subject<boolean>();
+    private sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
+    private tools: Map<string, Tool>;
+    private currentToolName: Subject<string> = new Subject<string>();
 
     constructor(
         public dialog: MatDialog,

@@ -9,7 +9,7 @@ import { MoveService } from '@app/services/tools/transformation-services/move.se
     providedIn: 'root',
 })
 export class MagnetismService {
-    alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
+    private alignmentNames: AlignmentNames = ALIGNMENT_NAMES;
 
     constructor(public moveService: MoveService) {}
 

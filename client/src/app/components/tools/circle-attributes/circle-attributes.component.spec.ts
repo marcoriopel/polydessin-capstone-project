@@ -4,6 +4,8 @@ import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { CircleService } from '@app/services/tools/circle.service';
 import { CircleAttributesComponent } from './circle-attributes.component';
 
+// tslint:disable: no-string-literal
+
 describe('CircleAttributesComponent', () => {
     let component: CircleAttributesComponent;
     let fixture: ComponentFixture<CircleAttributesComponent>;
@@ -12,8 +14,8 @@ describe('CircleAttributesComponent', () => {
     const finalToolWidth = 5;
 
     beforeEach(async(() => {
-        circleServiceSpy = jasmine.createSpyObj('CircleService', ['changeWidth', 'changeFillStyle', 'getFillStyle', 'setFillStyle']);
-        circleServiceSpy.ellipseData = {
+        circleServiceSpy = jasmine.createSpyObj('CircleService', ['changeWidth', 'changeFillStyle', 'getFillStyle', 'setFillStyle', 'getLineWidth']);
+        circleServiceSpy['ellipseData'] = {
             type: 'ellipse',
             primaryColor: 'red',
             secondaryColor: 'blue',

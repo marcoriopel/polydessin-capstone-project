@@ -58,9 +58,13 @@ describe('BrushService', () => {
     });
 
     it('should change width', () => {
-        service.brushData.lineWidth = 0;
+        service['brushData'].lineWidth = 0;
         service.changeWidth(1);
-        expect(service.brushData.lineWidth).toBe(1);
+        expect(service['brushData'].lineWidth).toBe(1);
+    });
+
+    it('should return lineWith', () => {
+        expect(service.getLineWidth()).toEqual(service['brushData'].lineWidth);
     });
 
     it('reset should put filter at none on both context', () => {
@@ -146,7 +150,7 @@ describe('BrushService', () => {
 
     it(' setPattern should change current pattern', () => {
         service.setPattern(pattern);
-        expect(service.brushData.pattern).toEqual(pattern);
+        expect(service['brushData'].pattern).toEqual(pattern);
     });
 
     it(' applyPattern should change filter of layers when called with a valid pattern string', () => {

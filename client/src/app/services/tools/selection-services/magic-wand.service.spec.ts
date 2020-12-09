@@ -11,6 +11,8 @@ import { MagnetismService } from './magnetism.service';
 import SpyObj = jasmine.SpyObj;
 
 // tslint:disable: no-magic-numbers
+// tslint:disable: no-string-literal
+
 describe('MagicWandService', () => {
     let service: MagicWandService;
     let drawingService: DrawingService;
@@ -237,47 +239,47 @@ describe('MagicWandService', () => {
     });
 
     it('should set corner value minX if value is minimum', () => {
-        service.cornerSelectionValues = new Map([
+        service['cornerSelectionValues'] = new Map([
             ['minX', 5],
             ['maxX', 0],
             ['minY', 0],
             ['maxY', 0],
         ]);
         service.adjustCornerSelectionValues({ x: 2, y: 0 });
-        expect(service.cornerSelectionValues.get('minX')).toEqual(2);
+        expect(service['cornerSelectionValues'].get('minX')).toEqual(2);
     });
 
     it('should set corner value minY if value is minimum', () => {
-        service.cornerSelectionValues = new Map([
+        service['cornerSelectionValues'] = new Map([
             ['minX', 0],
             ['maxX', 0],
             ['minY', 5],
             ['maxY', 0],
         ]);
         service.adjustCornerSelectionValues({ x: 0, y: 2 });
-        expect(service.cornerSelectionValues.get('minY')).toEqual(2);
+        expect(service['cornerSelectionValues'].get('minY')).toEqual(2);
     });
 
     it('should set corner value maxX if value is maximum', () => {
-        service.cornerSelectionValues = new Map([
+        service['cornerSelectionValues'] = new Map([
             ['minX', 0],
             ['maxX', 2],
             ['minY', 0],
             ['maxY', 0],
         ]);
         service.adjustCornerSelectionValues({ x: 5, y: 0 });
-        expect(service.cornerSelectionValues.get('maxX')).toEqual(5);
+        expect(service['cornerSelectionValues'].get('maxX')).toEqual(5);
     });
 
     it('should set corner value maxY if value is maximum', () => {
-        service.cornerSelectionValues = new Map([
+        service['cornerSelectionValues'] = new Map([
             ['minX', 0],
             ['maxX', 0],
             ['minY', 0],
             ['maxY', 2],
         ]);
         service.adjustCornerSelectionValues({ x: 0, y: 5 });
-        expect(service.cornerSelectionValues.get('maxY')).toEqual(5);
+        expect(service['cornerSelectionValues'].get('maxY')).toEqual(5);
     });
 
     it('should add pixel and check the next pixels on contiguous wand', () => {
@@ -334,7 +336,7 @@ describe('MagicWandService', () => {
     });
 
     it('should push pixels to stack when they are valid', () => {
-        service.stack = [];
+        service['stack'] = [];
         drawingServiceSpy.canvas.width = 5;
         drawingServiceSpy.canvas.height = 5;
         const currentPixel = { x: 2, y: 2 };
@@ -344,11 +346,11 @@ describe('MagicWandService', () => {
         service.nextContiguousPixels(currentPixel, canvasData);
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addSecondaryToleranceSpy).not.toHaveBeenCalled();
-        expect(service.stack.length).toEqual(4);
+        expect(service['stack'].length).toEqual(4);
     });
 
     it('should not push pixels to stack when they are not the same color', () => {
-        service.stack = [];
+        service['stack'] = [];
         drawingServiceSpy.canvas.width = 5;
         drawingServiceSpy.canvas.height = 5;
         const currentPixel = { x: 2, y: 2 };
@@ -358,35 +360,35 @@ describe('MagicWandService', () => {
         service.nextContiguousPixels(currentPixel, canvasData);
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(addSecondaryToleranceSpy).toHaveBeenCalled();
-        expect(service.stack.length).toEqual(0);
+        expect(service['stack'].length).toEqual(0);
     });
 
     it('should not do anything if pixels are out of canvas', () => {
-        service.stack = [];
+        service['stack'] = [];
         drawingServiceSpy.canvas.width = 0;
         drawingServiceSpy.canvas.height = 0;
         const currentPixel = { x: 0, y: 0 };
         const canvasData = new ImageData(10, 10);
         service.nextContiguousPixels(currentPixel, canvasData);
-        expect(service.stack.length).toEqual(0);
+        expect(service['stack'].length).toEqual(0);
     });
 
     it('should add pixel to selection', () => {
         const canvasData = new ImageData(10, 10);
-        service.selectionImageData = new ImageData(10, 10);
-        service.selectionImageData.data[0] = 0;
-        service.selectionImageData.data[1] = 0;
-        service.selectionImageData.data[2] = 0;
-        service.selectionImageData.data[3] = 0;
+        service['selectionImageData'] = new ImageData(10, 10);
+        service['selectionImageData'].data[0] = 0;
+        service['selectionImageData'].data[1] = 0;
+        service['selectionImageData'].data[2] = 0;
+        service['selectionImageData'].data[3] = 0;
         canvasData.data[0] = 253;
         canvasData.data[1] = 253;
         canvasData.data[2] = 253;
         canvasData.data[3] = 15;
         service.addPixelToSelection(0, canvasData);
-        expect(service.selectionImageData.data[0]).toEqual(253);
-        expect(service.selectionImageData.data[1]).toEqual(253);
-        expect(service.selectionImageData.data[2]).toEqual(253);
-        expect(service.selectionImageData.data[3]).toEqual(15);
+        expect(service['selectionImageData'].data[0]).toEqual(253);
+        expect(service['selectionImageData'].data[1]).toEqual(253);
+        expect(service['selectionImageData'].data[2]).toEqual(253);
+        expect(service['selectionImageData'].data[3]).toEqual(15);
     });
 
     it('should add pixel to selection if it is the color of secondary tolerance', () => {
@@ -394,11 +396,11 @@ describe('MagicWandService', () => {
         const pixelData = new Uint8ClampedArray();
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const isSameColorSpy = spyOn(service, 'isSameColor').and.returnValue(true);
-        service.selectionImageData = new ImageData(10, 10);
-        service.selectionImageData.data[0] = 0;
-        service.selectionImageData.data[1] = 0;
-        service.selectionImageData.data[2] = 0;
-        service.selectionImageData.data[3] = 0;
+        service['selectionImageData'] = new ImageData(10, 10);
+        service['selectionImageData'].data[0] = 0;
+        service['selectionImageData'].data[1] = 0;
+        service['selectionImageData'].data[2] = 0;
+        service['selectionImageData'].data[3] = 0;
         canvasData.data[0] = 253;
         canvasData.data[1] = 253;
         canvasData.data[2] = 253;
@@ -406,10 +408,10 @@ describe('MagicWandService', () => {
         service.addSecondaryTolerance(pixelData, 0, canvasData, { x: 0, y: 0 });
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).toHaveBeenCalled();
-        expect(service.selectionImageData.data[0]).toEqual(253);
-        expect(service.selectionImageData.data[1]).toEqual(253);
-        expect(service.selectionImageData.data[2]).toEqual(253);
-        expect(service.selectionImageData.data[3]).toEqual(15);
+        expect(service['selectionImageData'].data[0]).toEqual(253);
+        expect(service['selectionImageData'].data[1]).toEqual(253);
+        expect(service['selectionImageData'].data[2]).toEqual(253);
+        expect(service['selectionImageData'].data[3]).toEqual(15);
     });
 
     it('should not add pixel to selection if it is not the color of secondary tolerance', () => {
@@ -417,11 +419,11 @@ describe('MagicWandService', () => {
         const pixelData = new Uint8ClampedArray();
         const adjustCornerSelectionValuesSpy = spyOn(service, 'adjustCornerSelectionValues');
         const isSameColorSpy = spyOn(service, 'isSameColor').and.returnValue(false);
-        service.selectionImageData = new ImageData(10, 10);
-        service.selectionImageData.data[0] = 0;
-        service.selectionImageData.data[1] = 0;
-        service.selectionImageData.data[2] = 0;
-        service.selectionImageData.data[3] = 0;
+        service['selectionImageData'] = new ImageData(10, 10);
+        service['selectionImageData'].data[0] = 0;
+        service['selectionImageData'].data[1] = 0;
+        service['selectionImageData'].data[2] = 0;
+        service['selectionImageData'].data[3] = 0;
         canvasData.data[0] = 253;
         canvasData.data[1] = 253;
         canvasData.data[2] = 253;
@@ -429,14 +431,14 @@ describe('MagicWandService', () => {
         service.addSecondaryTolerance(pixelData, 0, canvasData, { x: 0, y: 0 });
         expect(isSameColorSpy).toHaveBeenCalled();
         expect(adjustCornerSelectionValuesSpy).not.toHaveBeenCalled();
-        expect(service.selectionImageData.data[0]).toEqual(0);
-        expect(service.selectionImageData.data[1]).toEqual(0);
-        expect(service.selectionImageData.data[2]).toEqual(0);
-        expect(service.selectionImageData.data[3]).toEqual(0);
+        expect(service['selectionImageData'].data[0]).toEqual(0);
+        expect(service['selectionImageData'].data[1]).toEqual(0);
+        expect(service['selectionImageData'].data[2]).toEqual(0);
+        expect(service['selectionImageData'].data[3]).toEqual(0);
     });
 
     it('should put image data and initialize services when setting the selection data', () => {
-        const putImageDataSpy = spyOn(service.selectionImageCtx, 'putImageData');
+        const putImageDataSpy = spyOn(service['selectionImageCtx'], 'putImageData');
         service.setSelectionData();
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
@@ -468,7 +470,7 @@ describe('MagicWandService', () => {
     });
 
     it('should set the border canvas ', () => {
-        const drawImageBorderSpy = spyOn(service.borderCanvasCtx, 'drawImage');
+        const drawImageBorderSpy = spyOn(service['borderCanvasCtx'], 'drawImage');
         const drawImagePreviewSpy = spyOn(drawingServiceSpy.previewCtx, 'drawImage');
         service.setBorderCanvas();
         expect(drawImageBorderSpy).toHaveBeenCalled();

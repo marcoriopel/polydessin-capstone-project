@@ -133,8 +133,8 @@ export class PolygonService extends Tool {
 
     drawCircle(ctx: CanvasRenderingContext2D): void {
         this.circleService.setFillStyle(FILL_STYLES.BORDER);
-        this.circleService.ellipseData.firstPoint = this.polygonData.firstPoint;
-        this.circleService.ellipseData.lastPoint = this.polygonData.lastPoint;
+        this.circleService.setFirstPoint(this.polygonData.firstPoint);
+        this.circleService.setLastPoint(this.polygonData.lastPoint);
         this.circleService.drawCircle(ctx, this.trigonometry.findTopLeftPointCircle(this.polygonData.firstPoint, this.polygonData.lastPoint));
     }
 

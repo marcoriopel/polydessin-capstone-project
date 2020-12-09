@@ -5,6 +5,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { RotateService } from './rotate.service';
 import SpyObj = jasmine.SpyObj;
 
+// tslint:disable: no-string-literal
 // tslint:disable: no-magic-numbers
 describe('RotateSelectionService', () => {
     let service: RotateService;
@@ -23,9 +24,9 @@ describe('RotateSelectionService', () => {
         const canvas = document.createElement('canvas');
         canvas.width = 10;
         canvas.height = 10;
-        service.selectionImageCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        service['selectionImageCtx'] = canvas.getContext('2d') as CanvasRenderingContext2D;
         drawingServiceSpy.previewCtx = previewCtxSpy;
-        service.selection = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
+        service['selection'] = { startingPoint: { x: 0, y: 0 }, width: 1, height: 1 };
 
         mouseWheelEvent = {
             deltaY: 101,
@@ -43,9 +44,9 @@ describe('RotateSelectionService', () => {
         service.initialize(selection, selectionImage);
 
         expect(service.initialSelection).toEqual(selection);
-        expect(service.selection).toEqual(selection);
-        expect(service.selectionImage).toEqual(selectionImage);
-        expect(service.selectionImageCtx).toEqual(selectionImageCtx);
+        expect(service['selection']).toEqual(selection);
+        expect(service['selectionImage']).toEqual(selectionImage);
+        expect(service['selectionImageCtx']).toEqual(selectionImageCtx);
     });
 
     it('should change angle', () => {
@@ -85,36 +86,36 @@ describe('RotateSelectionService', () => {
 
     it('Should rotate with rotation step of 1 when alt is press', () => {
         const keyboardEvent = new KeyboardEvent('keydown', { key: 'Alt' });
-        service.isAltKeyDown = false;
+        service['isAltKeyDown'] = false;
         service.onKeyDown(keyboardEvent);
-        expect(service.isAltKeyDown).toEqual(true);
-        expect(service.deltaRotation).toEqual(ROTATION_STEP_ALT);
+        expect(service['isAltKeyDown']).toEqual(true);
+        expect(service['deltaRotation']).toEqual(ROTATION_STEP_ALT);
     });
 
     it('Should not change deltaRotation when alt is press a long time', () => {
         const keyboardEvent = new KeyboardEvent('keydown', { key: 'Alt' });
-        service.isAltKeyDown = true;
-        const deltaRotation = service.deltaRotation;
+        service['isAltKeyDown'] = true;
+        const deltaRotation = service['deltaRotation'];
         service.onKeyDown(keyboardEvent);
-        expect(service.isAltKeyDown).toEqual(true);
-        expect(service.deltaRotation).toEqual(deltaRotation);
+        expect(service['isAltKeyDown']).toEqual(true);
+        expect(service['deltaRotation']).toEqual(deltaRotation);
     });
 
     it('Should return to normal when alt unpress', () => {
         const keyboardEvent = new KeyboardEvent('keyUp', { key: 'Alt' });
-        service.isAltKeyDown = true;
+        service['isAltKeyDown'] = true;
         service.onKeyUp(keyboardEvent);
-        expect(service.isAltKeyDown).toEqual(false);
-        expect(service.deltaRotation).toEqual(ROTATION_STEP);
+        expect(service['isAltKeyDown']).toEqual(false);
+        expect(service['deltaRotation']).toEqual(ROTATION_STEP);
     });
 
     it('Should not change anything if alt was not press', () => {
         const keyboardEvent = new KeyboardEvent('keyUp', { key: 'Alt' });
-        service.isAltKeyDown = false;
-        const deltaRotation = service.deltaRotation;
+        service['isAltKeyDown'] = false;
+        const deltaRotation = service['deltaRotation'];
         service.onKeyUp(keyboardEvent);
-        expect(service.isAltKeyDown).toEqual(false);
-        expect(service.deltaRotation).toEqual(deltaRotation);
+        expect(service['isAltKeyDown']).toEqual(false);
+        expect(service['deltaRotation']).toEqual(deltaRotation);
     });
 
     it('clearSelectionBackground should set selection background to white', () => {
@@ -127,7 +128,7 @@ describe('RotateSelectionService', () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         service.drawingService.previewCtx = ctx;
 
-        service.selectionImage = canvas;
+        service['selectionImage'] = canvas;
 
         service.clearSelectionBackground();
 

@@ -11,7 +11,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class BrushService extends Tool {
     name: string = TOOL_NAMES.BRUSH_TOOL_NAME;
-    brushData: Brush;
+    private brushData: Brush;
 
     constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
         super(drawingService);
@@ -23,6 +23,10 @@ export class BrushService extends Tool {
             pattern: 'none',
             primaryColor: this.colorSelectionService.primaryColor,
         };
+    }
+
+    getLineWidth(): number {
+        return this.brushData.lineWidth;
     }
 
     reset(): void {

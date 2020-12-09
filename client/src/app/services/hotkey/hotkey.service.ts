@@ -9,9 +9,9 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class HotkeyService {
-    toolName: Subject<string> = new Subject<string>();
-    toolNames: ToolNames = TOOL_NAMES;
-    sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
+    private toolName: Subject<string> = new Subject<string>();
+    private toolNames: ToolNames = TOOL_NAMES;
+    private sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
     isHotkeyEnabled: boolean = true;
 
     keyMapping: Map<string, string> = new Map([

@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-empty
+// tslint:disable: no-string-literal
 
 class MockTool extends Tool {
     constructor(name: string) {
@@ -238,6 +239,6 @@ describe('ToolSelectionService', () => {
     });
 
     it('getCurrentTool should return currentToolName.asObservable', () => {
-        expect(service.getCurrentTool()).toEqual(service.currentToolName.asObservable());
+        expect(service.getCurrentTool()).toEqual(service['currentToolName'].asObservable());
     });
 });

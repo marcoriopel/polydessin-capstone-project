@@ -25,8 +25,8 @@ describe('PolygonService', () => {
 
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', ['updateStack', 'clearCanvas', 'setIsToolInUse', 'autoSave']);
-        circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle', 'setFillStyle']);
-        circleServiceSpy.ellipseData = {
+        circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawCircle', 'changeFillStyle', 'setFillStyle', 'setFirstPoint', 'setLastPoint']);
+        circleServiceSpy['ellipseData'] = {
             type: 'ellipse',
             primaryColor: 'red',
             secondaryColor: 'blue',
@@ -180,7 +180,7 @@ describe('PolygonService', () => {
         service['polygonData'].lastPoint = { x: 29, y: 29 };
         service.setCircleHeight();
         service.setCircleWidth();
-        service.circleService.circleWidth = 1;
+        service.circleService['circleWidth'] = 1;
         expect(service['polygonData'].circleWidth).toBe(1);
     });
 

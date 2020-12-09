@@ -29,19 +29,19 @@ import { SelectionService } from './selection.service';
 export class MagicWandService extends SelectionService {
     name: string = TOOL_NAMES.MAGIC_WAND_TOOL_NAME;
     mouseDownCoord: Vec2;
-    stack: Vec2[];
     selectionData: Selection;
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selectionImageCtx: CanvasRenderingContext2D = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
     transormation: string = '';
     isNewSelection: boolean = false;
-    pixelData: Uint8ClampedArray;
-    tolerance: number = MAGIC_WAND_TOLERANCE;
-    secondaryTolerance: number = MAGIC_WAND_SECONDARY_TOLERANCE;
-    selectionImageData: ImageData;
-    borderCanvas: HTMLCanvasElement = document.createElement('canvas');
-    borderCanvasCtx: CanvasRenderingContext2D = this.borderCanvas.getContext('2d') as CanvasRenderingContext2D;
-    cornerSelectionValues: Map<string, number> = new Map([
+    private selectionImageCtx: CanvasRenderingContext2D = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
+    private stack: Vec2[];
+    private pixelData: Uint8ClampedArray;
+    private tolerance: number = MAGIC_WAND_TOLERANCE;
+    private secondaryTolerance: number = MAGIC_WAND_SECONDARY_TOLERANCE;
+    private selectionImageData: ImageData;
+    private borderCanvas: HTMLCanvasElement = document.createElement('canvas');
+    private borderCanvasCtx: CanvasRenderingContext2D = this.borderCanvas.getContext('2d') as CanvasRenderingContext2D;
+    private cornerSelectionValues: Map<string, number> = new Map([
         ['minX', 0],
         ['maxX', 0],
         ['minY', 0],

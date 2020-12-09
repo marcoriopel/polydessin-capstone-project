@@ -9,14 +9,14 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 })
 export class RotateService {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selection: SelectionBox;
-    selectionImage: HTMLCanvasElement = document.createElement('canvas');
-    selectionImageCtx: CanvasRenderingContext2D;
     angle: number = 0;
     isRotationOver: boolean = true;
-    isAltKeyDown: boolean = false;
     mouseWheel: boolean = false;
-    deltaRotation: number = ROTATION_STEP;
+    private selection: SelectionBox;
+    private selectionImage: HTMLCanvasElement = document.createElement('canvas');
+    private selectionImageCtx: CanvasRenderingContext2D;
+    private isAltKeyDown: boolean = false;
+    private deltaRotation: number = ROTATION_STEP;
 
     constructor(public drawingService: DrawingService) {}
 

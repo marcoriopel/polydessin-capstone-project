@@ -16,7 +16,7 @@ import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-magic-numbers
 // tslint:disable: no-any
 
-fdescribe('SelectionService', () => {
+describe('SelectionService', () => {
     let service: SelectionService;
     let drawingServiceSpy: SpyObj<DrawingService>;
     let moveServiceSpy: SpyObj<MoveService>;
@@ -49,6 +49,7 @@ fdescribe('SelectionService', () => {
             'onKeyDown',
             'onKeyUp',
             'snapOnGrid',
+            'initialize',
         ]);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', [
             'onMouseDown',
@@ -145,6 +146,35 @@ fdescribe('SelectionService', () => {
         expect(service.selection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
         expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
         expect(underlyingServiceSpy.onMouseDown).toHaveBeenCalled();
+    });
+
+    it('onMouseDown should set isResizing to true if cursor is on selection point', () => {
+        const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
+            SELECTION_POINTS_NAMES.BOTTOM_LEFT,
+        );
+        const mouseEvent = {
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.onMouseDown(mouseEvent);
+        expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
+        expect(service.isResizing).toBe(true);
+    });
+
+    it('onMouseUp should call all the methods to resize selection box if currently resizing', () => {
+        const setSelectionCornersSpy = spyOn(service, 'setSelectionCorners');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        const mouseEvent = {
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.isResizing = true;
+        service.onMouseUp(mouseEvent);
+        expect(setSelectionCornersSpy).toHaveBeenCalled();
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+        expect(service.isResizing).toBe(false);
     });
 
     it('onMouseDown should call applypreview if click is not in selection and moveService is currently in transformation', () => {
@@ -771,5 +801,30 @@ fdescribe('SelectionService', () => {
         const mouseCoordinates = { x: 100, y: 10 };
         let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
+    });
+
+    it('should adjust angle if new angle is greater than 360 degrees', () => {
+        const newAngle = 365;
+        let result = service.updateAngle(newAngle);
+        expect(result).toEqual(5);
+    });
+
+    it('should adjust angle if new angle is less than 0 degrees', () => {
+        const newAngle = -5;
+        let result = service.updateAngle(newAngle);
+        expect(result).toEqual(355);
+    });
+
+    it('cursor should not be reset if it is still on selection point', () => {
+        const setCursorSpy = spyOn(service, 'setCursor');
+        const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
+            SELECTION_POINTS_NAMES.BOTTOM_LEFT,
+        );
+        const mouseEvent = {
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.onMouseMove(mouseEvent);
+        expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
+        expect(setCursorSpy).not.toHaveBeenCalled();
     });
 });
