@@ -7,7 +7,7 @@ import { SprayService } from './spray.service';
 // tslint:disable:no-string-literal
 // tslint:disable: no-empty
 // tslint:disable: no-magic-numbers
-
+// tslint:disable: max-file-line-count
 describe('SprayService', () => {
     let service: SprayService;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
@@ -41,6 +41,14 @@ describe('SprayService', () => {
 
     it('should be created', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('ngOnDestroy should clearTimeout', () => {
+        const clearTimeoutSpy = spyOn(global, 'clearTimeout');
+
+        service.ngOnDestroy();
+
+        expect(clearTimeoutSpy).toHaveBeenCalled();
     });
 
     it(' mouseDown should set filter of baseCtx and previewCtx to none', () => {
@@ -183,6 +191,59 @@ describe('SprayService', () => {
         service.onMouseMove(mouseEvent);
 
         expect(service.mouseCoord).toEqual({ x: 25, y: 25 });
+    });
+
+    it(' mouseLeave should call clearTimeout if mousDown is true', () => {
+        const clearTimeoutSpy = spyOn(global, 'clearTimeout');
+        service.mouseDown = true;
+
+        service.onMouseLeave();
+
+        expect(clearTimeoutSpy).toHaveBeenCalled();
+    });
+
+    it(' mouseLeave should not call clearTimeout if mousDown is false', () => {
+        const clearTimeoutSpy = spyOn(global, 'clearTimeout');
+        service.mouseDown = false;
+
+        service.onMouseLeave();
+
+        expect(clearTimeoutSpy).not.toHaveBeenCalled();
+    });
+
+    it(' mouseLeave should call applyPreview and setIsToolInUse if mousDown is true', () => {
+        service.mouseDown = true;
+
+        service.onMouseLeave();
+
+        expect(drawServiceSpy.applyPreview).toHaveBeenCalled();
+        expect(drawServiceSpy.setIsToolInUse).toHaveBeenCalled();
+    });
+
+    it(' mouseEnter should call setTimeOut if mousDown is true', () => {
+        const setTimeoutSpy = spyOn(global, 'setTimeout');
+        service.mouseDown = true;
+        const mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.onMouseEnter(mouseEvent);
+
+        expect(setTimeoutSpy).toHaveBeenCalled();
+    });
+
+    it(' mouseEnter should not call setTimeOut if mousDown is false', () => {
+        const setTimeoutSpy = spyOn(global, 'setTimeout');
+        service.mouseDown = false;
+        const mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        service.onMouseEnter(mouseEvent);
+
+        expect(setTimeoutSpy).not.toHaveBeenCalled();
     });
 
     it('drawSpray should not call setTimeout if timeoutId is undefined', () => {

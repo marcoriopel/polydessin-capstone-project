@@ -81,5 +81,6 @@ export class EditorComponent implements AfterViewInit {
     onMouseUp(event: MouseEvent): void {
         this.resizeDrawingService.onMouseUp();
         this.previewDiv.style.display = 'none';
+        this.toolSelectionService.currentToolMouseUp(event);
     }
 }

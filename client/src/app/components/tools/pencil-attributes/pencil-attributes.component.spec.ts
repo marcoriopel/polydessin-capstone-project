@@ -12,6 +12,12 @@ describe('PencilAttributesComponent', () => {
 
     beforeEach(async(() => {
         pencilServiceSpy = jasmine.createSpyObj('PencilService', ['changeWidth']);
+        pencilServiceSpy.pencilData = {
+            type: 'pencil',
+            path: [],
+            lineWidth: 1,
+            primaryColor: 'red',
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

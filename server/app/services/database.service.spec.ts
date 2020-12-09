@@ -58,6 +58,15 @@ describe('Database service', () => {
         } catch {}
     });
 
+    it('should get only dbdata of files that are stored on the server', async () => {
+        try {
+            const invalidData = { id: '6', name: 'testtt', tags: ['tag1', 'tag2'], fileName: 'fileNameNotPresent' };
+            await databaseService.collection.insertOne(invalidData);
+            const dbData = await databaseService.getDBData();
+            expect(dbData.length).to.equal(1);
+        } catch {}
+    });
+
     it('should delete drawing', async () => {
         await databaseService.deleteDrawing(fileNameTest);
         const dbData = await databaseService.collection.find({}).toArray();
@@ -89,6 +98,12 @@ describe('Database service', () => {
         const dbData = await databaseService.collection.find({}).toArray();
         expect(dbData.length).to.equal(2);
         expect(dbData.find((x) => x.name === DBDATA.name)).to.deep.equals(DBDATA);
+    });
+
+    it('should return that data is valid even if tags is not an array', async () => {
+        const DBDATA: DBData = { id: 'test', name: 'meta', tags: {} as string[], fileName: fileNameTest };
+        databaseService.isValidData(DBDATA);
+        expect(databaseService.isValidData(DBDATA));
     });
 
     it('should not insert a new drawing if name is empty', async () => {

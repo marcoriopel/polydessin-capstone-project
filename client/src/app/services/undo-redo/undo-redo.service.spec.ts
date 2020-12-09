@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { STAMPS } from '@app/classes/stamps';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { PATTERN_NAMES } from '@app/ressources/global-variables/brush-pattern-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
@@ -8,7 +9,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { Subject } from 'rxjs';
@@ -30,7 +31,7 @@ describe('UndoRedoService', () => {
     let lineServiceSpy: jasmine.SpyObj<LineService>;
     let squareServiceSpy: jasmine.SpyObj<SquareService>;
     let circleServiceSpy: jasmine.SpyObj<CircleService>;
-    let polygoneServiceSpy: jasmine.SpyObj<PolygoneService>;
+    let polygonServiceSpy: jasmine.SpyObj<PolygonService>;
 
     let obs: Subject<boolean>;
 
@@ -43,10 +44,11 @@ describe('UndoRedoService', () => {
     let rectangleData: Rectangle;
     let ellipseData: Ellipse;
     let lineData: Line;
-    let polygoneData: Polygone;
+    let polygonData: Polygon;
     let resizeData: Resize;
     let fillData: Fill;
     let selectionData: Selection;
+    let stampData: Stamp;
 
     beforeEach(() => {
         obs = new Subject<boolean>();
@@ -67,7 +69,7 @@ describe('UndoRedoService', () => {
         lineServiceSpy = jasmine.createSpyObj('LineService', ['drawFullLine']);
         squareServiceSpy = jasmine.createSpyObj('SquareService', ['drawRectangle']);
         circleServiceSpy = jasmine.createSpyObj('CircleService', ['drawEllipse']);
-        polygoneServiceSpy = jasmine.createSpyObj('PolygoneService', ['drawPolygone']);
+        polygonServiceSpy = jasmine.createSpyObj('PolygonService', ['drawPolygon']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -80,7 +82,7 @@ describe('UndoRedoService', () => {
                 { provide: LineService, useValue: lineServiceSpy },
                 { provide: SquareService, useValue: squareServiceSpy },
                 { provide: CircleService, useValue: circleServiceSpy },
-                { provide: PolygoneService, useValue: polygoneServiceSpy },
+                { provide: PolygonService, useValue: polygonServiceSpy },
             ],
         });
         service = TestBed.inject(UndoRedoService);
@@ -159,12 +161,12 @@ describe('UndoRedoService', () => {
             line: { startingPoint: { x: 0, y: 0 }, endingPoint: { x: 1, y: 1 } },
             storedLines: [{ startingPoint: { x: 0, y: 0 }, endingPoint: { x: 1, y: 1 } }],
             isShiftDoubleClick: false,
-            hasLastPointBeenChaged: false,
+            hasLastPointBeenChanged: false,
             dotWidth: 1,
         };
 
-        polygoneData = {
-            type: 'polygone',
+        polygonData = {
+            type: 'polygon',
             primaryColor: '#000000',
             secondaryColor: '#000000',
             fillStyle: 0,
@@ -190,6 +192,15 @@ describe('UndoRedoService', () => {
         selectionData = {
             type: 'selection',
             imageData: (undefined as unknown) as ImageData,
+        };
+
+        stampData = {
+            type: 'stamp',
+            color: '#000000',
+            size: 0,
+            position: { x: 0, y: 0 },
+            currentStamp: STAMPS.ANGULAR,
+            angle: 0,
         };
     });
 
@@ -223,6 +234,13 @@ describe('UndoRedoService', () => {
         obs.next(true);
         service.undo();
         expect(resizeDrawingSpy.resizeCanvasSize).not.toHaveBeenCalled();
+    });
+
+    it('should not push on redoStack if undoStack is empty ', () => {
+        const redoStackPushSpy = spyOn(service.drawingService.redoStack, 'push');
+        drawingServiceSpy.undoStack = [(undefined as unknown) as Pencil];
+        service.undo();
+        expect(redoStackPushSpy).not.toHaveBeenCalled();
     });
 
     it('if there is already a modification it should be pushed to redo stack when calling undo', () => {
@@ -344,9 +362,9 @@ describe('UndoRedoService', () => {
         expect(resizeDrawingSpy.restoreCanvas).toHaveBeenCalled();
     });
 
-    it('drawElement should call drawPolygone if the modification in the stack is of type polygone', () => {
-        service.drawElement(polygoneData);
-        expect(polygoneServiceSpy.drawPolygone).toHaveBeenCalled();
+    it('drawElement should call drawPolygon if the modification in the stack is of type polygon', () => {
+        service.drawElement(polygonData);
+        expect(polygonServiceSpy.drawPolygon).toHaveBeenCalled();
     });
 
     it('drawElement should call restoreSelection if the modification in the stack is of type selection', () => {
@@ -388,6 +406,12 @@ describe('UndoRedoService', () => {
         });
         service.setRedoAvailability(false);
         expect(returnValue).toBe(false);
+    });
+
+    it('drawElement should call printStamp when element is stamp', () => {
+        const printStampSpy = spyOn(service.stampService, 'printStamp');
+        service.drawElement(stampData);
+        expect(printStampSpy).toHaveBeenCalled();
     });
     // tslint:disable-next-line: max-file-line-count
 });

@@ -5,9 +5,12 @@ import { Vec2 } from '@app/classes/vec2';
 import {
     MAGIC_WAND_BORDER_BOTH_SIDES,
     MAGIC_WAND_BORDER_ONE_SIDE,
+    MAGIC_WAND_SECONDARY_TOLERANCE,
+    MAGIC_WAND_TOLERANCE,
     MAX_PERCENTAGE,
     MouseButton,
     OFFSET,
+    SelectionType,
 } from '@app/ressources/global-variables/global-variables';
 import { MAXIMUM_RGBA_VALUE, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressources/global-variables/rgba';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -27,15 +30,14 @@ export class MagicWandService extends SelectionService {
     name: string = TOOL_NAMES.MAGIC_WAND_TOOL_NAME;
     mouseDownCoord: Vec2;
     stack: Vec2[];
-    isShiftKeyDown: boolean = false;
     selectionData: Selection;
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selectionImageCtx: CanvasRenderingContext2D = this.selectionImage.getContext('2d') as CanvasRenderingContext2D;
     transormation: string = '';
     isNewSelection: boolean = false;
     pixelData: Uint8ClampedArray;
-    tolerance: number = 15;
-    secondaryTolerance: number = 50;
+    tolerance: number = MAGIC_WAND_TOLERANCE;
+    secondaryTolerance: number = MAGIC_WAND_SECONDARY_TOLERANCE;
     selectionImageData: ImageData;
     borderCanvas: HTMLCanvasElement = document.createElement('canvas');
     borderCanvasCtx: CanvasRenderingContext2D = this.borderCanvas.getContext('2d') as CanvasRenderingContext2D;
@@ -56,6 +58,7 @@ export class MagicWandService extends SelectionService {
         public selectionResizeService: SelectionResizeService,
     ) {
         super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService);
+        this.selectionType = SelectionType.WAND;
     }
 
     setMagnetismAlignment(alignment: string): void {
@@ -103,6 +106,7 @@ export class MagicWandService extends SelectionService {
             }
             this.isNewSelection = false;
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.isSelectionEmptySubject.next(false);
         } else if (this.transormation === 'move') {
             this.transormation = '';
             this.updateSelectionCorners();

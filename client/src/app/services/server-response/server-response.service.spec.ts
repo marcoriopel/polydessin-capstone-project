@@ -42,4 +42,15 @@ describe('Service: ServerResponse', () => {
         service.saveConfirmSnackBar();
         expect(snackBarSpy.open).toHaveBeenCalled();
     });
+
+    it('should open sendMailConfirmSnackBar', () => {
+        service.sendMailConfirmSnackBar();
+        expect(snackBarSpy.open).toHaveBeenCalled();
+    });
+
+    it('should open sendMailErrorSnackBar', () => {
+        const error = 'error';
+        service.sendMailErrorSnackBar(error);
+        expect(snackBarSpy.open).toHaveBeenCalled();
+    });
 });

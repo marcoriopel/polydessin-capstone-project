@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -8,7 +8,7 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
@@ -22,9 +22,6 @@ export class UndoRedoService extends Tool {
     isUndoAvailableSubject: Subject<boolean> = new Subject<boolean>();
     isRedoAvailable: boolean = false;
     isRedoAvailableSubject: Subject<boolean> = new Subject<boolean>();
-    isShiftDown: boolean = false;
-    isControlDown: boolean = false;
-    isZDown: boolean = false;
 
     constructor(
         public drawingService: DrawingService,
@@ -35,7 +32,7 @@ export class UndoRedoService extends Tool {
         public eraserService: EraserService,
         public lineService: LineService,
         public brushService: BrushService,
-        public polygoneService: PolygoneService,
+        public polygonService: PolygonService,
         public selectionService: SelectionService,
         public stampService: StampService,
     ) {
@@ -104,9 +101,10 @@ export class UndoRedoService extends Tool {
             const element = this.drawingService.redoStack[redoStackLength - 1];
             this.drawElement(element);
             const modification = this.drawingService.redoStack.pop();
-            if (modification !== undefined) {
-                this.drawingService.undoStack.push(modification);
-            }
+
+            this.drawingService.undoStack.push(
+                modification as Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp,
+            );
         }
         this.changeUndoAvailability();
         this.changeRedoAvailability();
@@ -129,7 +127,7 @@ export class UndoRedoService extends Tool {
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
+    drawElement(element: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
         switch (element.type) {
             case 'pencil':
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
@@ -155,8 +153,8 @@ export class UndoRedoService extends Tool {
             case 'resize':
                 this.resizeDrawingService.restoreCanvas(element as Resize);
                 break;
-            case 'polygone':
-                this.polygoneService.drawPolygone(this.drawingService.baseCtx, element as Polygone);
+            case 'polygon':
+                this.polygonService.drawPolygon(this.drawingService.baseCtx, element as Polygon);
                 break;
             case 'selection':
                 this.drawingService.restoreSelection(element as Selection);

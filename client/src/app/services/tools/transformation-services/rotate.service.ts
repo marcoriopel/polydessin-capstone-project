@@ -10,7 +10,6 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 export class RotateService {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
-    isTransformationOver: boolean = true;
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
     selectionImageCtx: CanvasRenderingContext2D;
     angle: number = 0;
@@ -18,7 +17,6 @@ export class RotateService {
     isAltKeyDown: boolean = false;
     mouseWheel: boolean = false;
     deltaRotation: number = ROTATION_STEP;
-    intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
 
     constructor(public drawingService: DrawingService) {}
 

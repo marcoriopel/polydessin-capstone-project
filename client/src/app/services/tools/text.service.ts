@@ -59,7 +59,7 @@ export class TextService extends Tool {
     }
 
     isMouseOnText(mousePosition: Vec2): boolean {
-        if (this.text === undefined) return false;
+        if (!this.text) return false;
         const selectionWidth = this.textStartingPoint.x + this.drawingService.previewCtx.measureText(this.maxLine).width;
         const selectionHeight = this.height * this.text.join('').split('Enter').length + this.textStartingPoint.y;
         if (
@@ -75,6 +75,7 @@ export class TextService extends Tool {
     }
 
     createText(): void {
+        if (!this.text) return;
         this.removeIndicator();
         this.printText();
         this.drawingService.applyPreview();
@@ -225,7 +226,7 @@ export class TextService extends Tool {
 
     printText(): void {
         this.maxLine = '';
-        if (this.text === undefined) return;
+        if (!this.text) return;
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         let line: string[] = [];
         let lineHeight = this.textStartingPoint.y + this.height;
