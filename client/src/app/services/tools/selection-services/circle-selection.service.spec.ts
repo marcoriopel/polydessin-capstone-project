@@ -25,7 +25,8 @@ describe('CircleSelectionService', () => {
             height: 10,
         };
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['initialize']);
-        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas', 'calculateCenter']);
+        rotateServiceSpy.calculateCenter.and.returnValue({ x: 1, y: 1 });
         TestBed.configureTestingModule({
             providers: [
                 { provide: MoveService, useValue: moveServiceSpy },
@@ -100,7 +101,6 @@ describe('CircleSelectionService', () => {
         service.selection.width = width;
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
         moveServiceSpy.selection = selectionBox;
-
         service.strokeSelection();
         expect(strokeRectSpy).toHaveBeenCalledWith(startingPointX, startingPointY, width, height);
     });
@@ -114,6 +114,11 @@ describe('CircleSelectionService', () => {
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
         service.selection.height = height;
         service.selection.width = width;
+        service.selectionCorners.topRight.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.topLeft.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.bottomLeft.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.bottomRight.coordinates = { x: startingPointX, y: startingPointY };
+
         moveServiceSpy.selection = selectionBox;
         service.strokeSelection();
         expect(ellipseSpy).toHaveBeenCalledWith(startingPointX + width / 2, startingPointY + height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);

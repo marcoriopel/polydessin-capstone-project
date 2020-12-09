@@ -31,6 +31,7 @@ export class MoveService implements OnDestroy {
     }
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
+        this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }
