@@ -3,10 +3,12 @@ import { SelectionBox } from '@app/classes/selection-box';
 import { SelectionPoints, SELECTION_POINTS_NAMES } from '@app/classes/selection-points';
 import { FILL_STYLES } from '@app/ressources/global-variables/fill-styles';
 import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { ClipboardService } from '@app/services/clipboard/clipboard.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { Subject } from 'rxjs';
 import { MagnetismService } from './magnetism.service';
 import { SelectionResizeService } from './selection-resize.service';
 import { SelectionService } from './selection.service';
@@ -27,9 +29,13 @@ describe('SelectionService', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
     let rotateServiceSpy: SpyObj<RotateService>;
+    let clipboardServiceSpy: SpyObj<ClipboardService>;
+    let obs: Subject<boolean>;
+
     let gridCanvasStub: HTMLCanvasElement;
     let selectionPoints: SelectionPoints;
     beforeEach(() => {
+        obs = new Subject<boolean>();
         magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
             'magnetismXAxisChange',
             'magnetismYAxisChange',
@@ -45,6 +51,10 @@ describe('SelectionService', () => {
             'autoSave',
             'drawImage',
         ]);
+        clipboardServiceSpy = jasmine.createSpyObj('clipboardService', ['copy', 'resetSelectionPosition', 'getIsPasteAvailableSubject']);
+        clipboardServiceSpy.isPasteAvailableSubject = obs;
+        clipboardServiceSpy.selection = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
+
         moveServiceSpy = jasmine.createSpyObj('MoveService', [
             'printSelectionOnPreview',
             'onMouseDown',
@@ -52,6 +62,7 @@ describe('SelectionService', () => {
             'onKeyDown',
             'onKeyUp',
             'snapOnGrid',
+            'clearSelectionBackground',
             'initialize',
             'clearSelectionBackground',
             'resizeSelection',
@@ -94,7 +105,16 @@ describe('SelectionService', () => {
         gridCanvasStub = canvas as HTMLCanvasElement;
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['setLineDash', 'fillRect', 'save', 'restore']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['drawImage']);
-        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyDown', 'onKeyUp', 'rotatePreviewCanvas', 'onMouseWheel']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', [
+            'restoreSelection',
+            'onKeyDown',
+            'onKeyUp',
+            'rotatePreviewCanvas',
+            'onMouseWheel',
+            'initialize',
+            'calculateCenter',
+            'onWheelEvent',
+        ]);
         drawingServiceSpy.previewCtx = previewCtxSpy;
         drawingServiceSpy.baseCtx = baseCtxSpy;
         drawingServiceSpy.gridCanvas = gridCanvasStub;
@@ -114,6 +134,7 @@ describe('SelectionService', () => {
                 { provide: MoveService, useValue: moveServiceSpy },
                 { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
+                { provide: ClipboardService, useValue: clipboardServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -658,31 +679,6 @@ describe('SelectionService', () => {
         });
     });
 
-    // it('setSelectionPoint should draw 8 blue squares if selection is not empty', () => {
-    //     service.selectionContour = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
-    //     previewCtxSpy.fillStyle = 'black';
-
-    //     service.setSelectionPoint();
-
-    //     expect(previewCtxSpy.fillStyle).toEqual('#09acd9');
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledTimes(8);
-    // });
-
-    // it('setSelectionPoint should draw 8 blue squares around selection', () => {
-    //     service.selectionContour = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
-
-    //     service.setSelectionPoint();
-
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, -3, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(2, -3, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, -3, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, 2, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, 2, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(-3, 2, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(2, 7, 6, 6);
-    //     expect(previewCtxSpy.fillRect).toHaveBeenCalledWith(7, 7, 6, 6);
-    // });
-
     it('setSelectionPoint should not draw blue squares if selection is empty', () => {
         service.setSelectionPoint();
         expect(previewCtxSpy.fillRect).not.toHaveBeenCalled();
@@ -734,6 +730,353 @@ describe('SelectionService', () => {
 
         expect(isSnappedOnGridSpy).toHaveBeenCalled();
         expect(moveServiceSpy.snapOnGrid).toHaveBeenCalled();
+    });
+
+    it('cut should call applyPreview', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+
+        service.cut();
+
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should call copy and resetSlectionPosition of clipboardService', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.selectionImage = document.createElement('canvas');
+        service.rotateService.angle = 3;
+        service.selectionContour = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.cut();
+
+        expect(clipboardServiceSpy.copy).toHaveBeenCalledWith(
+            { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 },
+            service.selectionImage,
+            service.rotateService.angle,
+        );
+        expect(clipboardServiceSpy.resetSelectionPosition).toHaveBeenCalledWith(service.selectionContour);
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should not call copy and resetSlectionPosition of clipboardService if selection is empty', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 0, height: 0 };
+        service.selectionImage = document.createElement('canvas');
+        service.rotateService.angle = 3;
+        service.selectionContour = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.cut();
+
+        expect(clipboardServiceSpy.copy).not.toHaveBeenCalled();
+        expect(clipboardServiceSpy.resetSelectionPosition).not.toHaveBeenCalled();
+    });
+
+    it('cut should set clipboardService.selectionType', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        clipboardServiceSpy.selectionType = 0;
+        service.selectionType = 3;
+
+        service.cut();
+
+        expect(clipboardServiceSpy.selectionType).toEqual(service.selectionType);
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should call moveService.clearSelectionBackground', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.cut();
+
+        expect(moveServiceSpy.clearSelectionBackground).toHaveBeenCalled();
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should reset selection', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.cut();
+
+        expect(service.selection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should set isSelectionEmptySubject to true using next', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        const nextSpy = spyOn(service.isSelectionEmptySubject, 'next');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.cut();
+
+        expect(nextSpy).toHaveBeenCalledWith(true);
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should set moveService.isTransformationOver to true', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.moveService.isTransformationOver = false;
+
+        service.cut();
+
+        expect(service.moveService.isTransformationOver).toEqual(true);
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('cut should set isSelectionOver to true', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.isSelectionOver = false;
+
+        service.cut();
+
+        expect(service.isSelectionOver).toEqual(true);
+        expect(applyPreviewSpy).toHaveBeenCalledWith();
+    });
+
+    it('copy should call copy and resetSlectionPosition of clipboardService', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.selectionImage = document.createElement('canvas');
+        service.rotateService.angle = 3;
+        service.selectionContour = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.copy();
+
+        expect(clipboardServiceSpy.copy).toHaveBeenCalledWith(
+            { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 },
+            service.selectionImage,
+            service.rotateService.angle,
+        );
+        expect(clipboardServiceSpy.resetSelectionPosition).toHaveBeenCalledWith(service.selectionContour);
+    });
+
+    it('copy should not call copy and resetSlectionPosition of clipboardService if selection is empty', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 0, height: 0 };
+        service.selectionImage = document.createElement('canvas');
+        service.rotateService.angle = 3;
+        service.selectionContour = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.copy();
+
+        expect(clipboardServiceSpy.copy).not.toHaveBeenCalled();
+        expect(clipboardServiceSpy.resetSelectionPosition).not.toHaveBeenCalled();
+    });
+
+    it('copy should set clipboardService.selectionType', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        clipboardServiceSpy.selectionType = 0;
+        service.selectionType = 3;
+
+        service.copy();
+
+        expect(clipboardServiceSpy.selectionType).toEqual(service.selectionType);
+    });
+
+    it('copy should call moveService.printSelectionOnPreview', () => {
+        service.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+
+        service.copy();
+
+        expect(moveServiceSpy.printSelectionOnPreview).toHaveBeenCalled();
+    });
+
+    it('paste should call setSelection, updateSelectionCorners, setSelectionImage, strokeSelection and setSelectionPoint', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should call rotateService.initialize', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(rotateServiceSpy.initialize).toHaveBeenCalledWith(service.selection, service.selectionImage);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should call moveService.initialize', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(moveServiceSpy.initialize).toHaveBeenCalledWith(service.selection, service.selectionImage);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set isSelectionEmptySubject using next', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        const nextSpy = spyOn(service.isSelectionEmptySubject, 'next');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(nextSpy).toHaveBeenCalledWith(false);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set rotateService.angle', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(service.rotateService.angle).toEqual(service.clipboardService.angle);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set rotateService.intialSelection', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(service.rotateService.initialSelection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set moveService.intialSelection', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(service.moveService.initialSelection).toEqual({ startingPoint: { x: 0, y: 0 }, width: 0, height: 0 });
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set isSelectionOver to false', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(service.isSelectionOver).toEqual(false);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should set moveService.isTransformationOver to false', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(service.moveService.isTransformationOver).toEqual(false);
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('paste should call moveService.printSelectionOnPreview()', () => {
+        const setSelectionSpy = spyOn(service, 'setSelection');
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const setSelectionImageSpy = spyOn(service, 'setSelectionImage');
+        const strokeSelectionSpy = spyOn(service, 'strokeSelection');
+        const setSelectionPointSpy = spyOn(service, 'setSelectionPoint');
+        service.clipboardService.selection = { startingPoint: { x: 2, y: 3 }, width: 10, height: 10 };
+        service.clipboardService.selectionType = service.selectionType;
+
+        service.paste();
+
+        expect(moveServiceSpy.printSelectionOnPreview).toHaveBeenCalled();
+        expect(setSelectionSpy).toHaveBeenCalledWith(service.selection, service.clipboardService.selection);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+        expect(setSelectionImageSpy).toHaveBeenCalledWith(service.clipboardService.clipboardCanvas);
+        expect(strokeSelectionSpy).toHaveBeenCalled();
+        expect(setSelectionPointSpy).toHaveBeenCalled();
+    });
+
+    it('setSelectionPoint should call restore after canvas modifications', () => {
+        service.selection.height = 1;
+        service.selection.width = 1;
+        service.setSelectionPoint();
+        expect(drawingServiceSpy.previewCtx.restore).toHaveBeenCalled();
     });
 
     it('should return top left point', () => {
@@ -854,16 +1197,22 @@ describe('SelectionService', () => {
 
     xit('cursor should not be reset if it is still on selection point', () => {
         const setCursorSpy = spyOn(service, 'setCursor');
+        const setSelectionSpy = spyOn(service, 'setSelection');
         const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
             SELECTION_POINTS_NAMES.BOTTOM_LEFT,
         );
+        selectionResizeServiceSpy.resizeSelection.and.returnValue({
+            startingPoint: { x: 0, y: 0 },
+            width: 1,
+            height: 1,
+        });
         const mouseEvent = {
             button: MouseButton.LEFT,
         } as MouseEvent;
         service.isResizing = true;
         service.onMouseMove(mouseEvent);
         expect(selectionResizeServiceSpy.initialize).toHaveBeenCalled();
-        expect(selectionResizeServiceSpy.resizeSelection).toHaveBeenCalled();
+        expect(setSelectionSpy).toHaveBeenCalled();
         expect(checkIfCursorIsOnSelectionPointSpy).toHaveBeenCalled();
         expect(setCursorSpy).not.toHaveBeenCalled();
     });
@@ -910,5 +1259,42 @@ describe('SelectionService', () => {
         } as KeyboardEvent;
         service.ctrlKeyDown(event);
         expect(pasteSpy).toHaveBeenCalled();
+    });
+
+    it('if mouseWheel is true when calling isInSelection, should call calculateCenter', () => {
+        rotateServiceSpy.calculateCenter.and.returnValue({ x: 1, y: 1 });
+        const mouseEvent = {
+            offsetX: 25,
+            offsetY: 25,
+            button: MouseButton.LEFT,
+        } as MouseEvent;
+        rotateServiceSpy.mouseWheel = true;
+        service.isInSelection(mouseEvent);
+        expect(rotateServiceSpy.calculateCenter).toHaveBeenCalled();
+    });
+
+    it('setSelectionImage should change image width and height', () => {
+        service.setSelectionImage(gridCanvasStub);
+        expect(service.selectionImage.width).toEqual(100);
+        expect(service.selectionImage.height).toEqual(100);
+    });
+
+    it('onWheelEvent should update selection contour if selection is not over', () => {
+        const updateSelectionCornersSpy = spyOn(service, 'updateSelectionCorners');
+        const mouseWheelEvent = {
+            deltaY: 101,
+        } as WheelEvent;
+        service.isSelectionOver = false;
+        service.onWheelEvent(mouseWheelEvent);
+        expect(updateSelectionCornersSpy).toHaveBeenCalled();
+    });
+
+    it('test', () => {
+        let obs: Subject<boolean>;
+        obs = new Subject<boolean>();
+        const getIsSelectionEmptySubjectSpy = spyOn(service, 'getIsSelectionEmptySubject');
+        getIsSelectionEmptySubjectSpy.and.callThrough();
+        let result = service.getIsSelectionEmptySubject();
+        expect(result).toEqual(obs.asObservable());
     });
 });
