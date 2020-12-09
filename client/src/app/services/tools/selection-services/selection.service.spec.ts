@@ -72,6 +72,9 @@ describe('SelectionService', () => {
             'initialize',
             'setSelectionBeforeResize',
             'resizeSelection',
+            'onKeyDown',
+            'onKeyUp',
+            '',
         ]);
         underlyingServiceSpy = jasmine.createSpyObj('SquareService', [
             'onMouseDown',
@@ -135,6 +138,7 @@ describe('SelectionService', () => {
                 { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
                 { provide: ClipboardService, useValue: clipboardServiceSpy },
+                { provide: SelectionResizeService, useValue: selectionResizeServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -1195,7 +1199,7 @@ describe('SelectionService', () => {
         expect(setCursorSpy).not.toHaveBeenCalled();
     });
 
-    xit('cursor should not be reset if it is still on selection point', () => {
+    it('cursor should not be reset if it is still on selection point', () => {
         const setCursorSpy = spyOn(service, 'setCursor');
         const setSelectionSpy = spyOn(service, 'setSelection');
         const checkIfCursorIsOnSelectionPointSpy = spyOn(service, 'checkIfCursorIsOnSelectionPoint').and.returnValue(
