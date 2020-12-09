@@ -8,7 +8,6 @@ import { Observable, Subject } from 'rxjs';
 })
 export class ClipboardService {
     selection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
-    selectionContour: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     clipboardCanvas: HTMLCanvasElement = document.createElement('canvas');
     angle: number;
     selectionType: number;
