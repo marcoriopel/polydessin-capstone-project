@@ -298,6 +298,8 @@ export class SelectionService extends Tool {
         const changeY = this.magnetismService.magnetismYAxisChange(mousePosDifferenceY, gridInfo, this.selectionContour);
         this.mouseDownCoord.y = this.mouseDownCoord.y + changeY;
         this.magnetismService.onMouseMoveMagnetism(changeX, changeY);
+        this.selectionContour.startingPoint.x += changeX;
+        this.selectionContour.startingPoint.y += changeY;
     }
 
     isSnappedOnGrid(coordinates: Vec2): boolean {
