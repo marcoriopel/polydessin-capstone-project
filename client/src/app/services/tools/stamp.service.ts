@@ -12,7 +12,7 @@ import {
 import { Tool } from '@app/classes/tool';
 import { Stamp } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
-import { ANGLE_HALF_TURN, MAX_ANGLE, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
+import { ANGLE_HALF_TURN, MAX_ANGLE, MAX_OPACITY, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -38,6 +38,7 @@ export class StampService extends Tool {
             position: { x: 0, y: 0 },
             currentStamp: STAMPS.ANGULAR,
             angle: INITIAL_STAMP_ANGLE,
+            opacity: MAX_OPACITY,
         };
     }
 

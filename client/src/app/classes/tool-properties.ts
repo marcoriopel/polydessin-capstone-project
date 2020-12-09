@@ -66,11 +66,11 @@ export interface Line extends ToolProperties {
     line: StraightLine;
     storedLines: StraightLine[];
     isShiftDoubleClick: boolean;
-    hasLastPointBeenChaged: boolean;
+    hasLastPointBeenChanged: boolean;
     dotWidth: number;
 }
 
-export interface Polygone extends ToolProperties {
+export interface Polygon extends ToolProperties {
     type: string;
     primaryColor: string;
     secondaryColor: string;
@@ -115,6 +115,7 @@ export interface Text extends ToolProperties {
 }
 
 export interface Stamp extends ToolProperties {
+    currentStamp: StampAttributes;
     type: string;
     color: string;
     opacity: number;
