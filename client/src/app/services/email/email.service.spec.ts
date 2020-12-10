@@ -5,7 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { EmailBody } from '@app/ressources/global-variables/email-body';
 import { EmailService } from './email.service';
 
-fdescribe('Service: EmailService', () => {
+describe('Service: EmailService', () => {
     let httpMock: HttpTestingController;
     let service: EmailService;
 

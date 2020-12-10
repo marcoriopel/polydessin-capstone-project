@@ -135,11 +135,10 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
                     this.serverResponseService.sendMailConfirmSnackBar();
                     this.dialog.closeAll();
                 },
-                (error) => {
+                () => {
                     this.isSendMailButtonDisabled = false;
                     this.serverResponseService.sendMailErrorSnackBar();
                     this.dialog.closeAll();
-                    throw error;
                 },
             );
         this.link.click();
