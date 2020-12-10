@@ -1,19 +1,19 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { expect } from 'chai';
+import * as Httpstatus from 'http-status-codes';
 import { EmailData } from '../controllers/emaildata';
-import { StatusCode } from '../ressources/global-variables';
 import { EmailService } from '../services/email.service';
 
+// tslint:disable: deprecation
+// tslint:disable: radix
 describe('EmailService', (): void => {
     let emailService: EmailService;
-    // tslint:disable-next-line: no-unused-expression
-    StatusCode.DEPARTURE;
     const FILENAME = 'foo';
     const PAYLOAD = 'DEF555';
     const FORMAT = 'jpg';
     const EMAIL = 'votre_email@polymtl.ca';
-    // const BADEMAIL = 'votre_email@.ca';
+    const BADEMAIL = 'votre_email@hsbs.ksk.ca';
     let data: EmailData;
     let mockForAxios: MockAdapter;
 
@@ -33,12 +33,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.OK);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.OK);
         await emailService.sendByEmail(data).then((status) => {
-            // tslint:disable-next-line: radix
-            expect(parseInt(status as string)).to.equals(StatusCode.OK);
+            expect(parseInt(status as string)).to.equals(Httpstatus.OK);
         });
     });
 
@@ -49,11 +46,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.BAD_REQUEST);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.BAD_REQUEST);
         await emailService.sendByEmail(data).catch((error) => {
-            expect(error.response.status).to.equals(StatusCode.BAD_REQUEST);
+            expect(error.response.status).to.equals(Httpstatus.BAD_REQUEST);
         });
     });
 
@@ -64,11 +59,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.TOO_MANY_REQUESTS);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.TOO_MANY_REQUESTS);
         await emailService.sendByEmail(data).catch((error) => {
-            expect(error.response.status).to.equals(StatusCode.TOO_MANY_REQUESTS);
+            expect(error.response.status).to.equals(Httpstatus.TOO_MANY_REQUESTS);
         });
     });
 
@@ -79,11 +72,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.INTERNAL_SERVER_ERROR);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.INTERNAL_SERVER_ERROR);
         await emailService.sendByEmail(data).catch((error) => {
-            expect(error.response.status).to.equals(StatusCode.INTERNAL_SERVER_ERROR);
+            expect(error.response.status).to.equals(Httpstatus.INTERNAL_SERVER_ERROR);
         });
     });
 
@@ -94,11 +85,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.GONE);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.GONE);
         await emailService.sendByEmail(data).catch((error) => {
-            expect(error.response.status).to.equals(StatusCode.GONE);
+            expect(error.response.status).to.equals(Httpstatus.GONE);
         });
     });
 
@@ -109,43 +98,9 @@ describe('EmailService', (): void => {
             filename: FILENAME,
             format: FORMAT,
         } as EmailData;
-        // tslint:disable-next-line: deprecation
-        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(StatusCode.IM_A_TEAPOT);
-        // tslint:disable-next-line: no-shadowed-variable
+        mockForAxios.onPost('http://log2990.step.polymtl.ca/email?address_validation=true&quick_return=true').reply(Httpstatus.IM_A_TEAPOT);
         await emailService.sendByEmail(data).catch((error) => {
-            expect(error.response.status).to.equals(StatusCode.IM_A_TEAPOT);
+            expect(error.response.status).to.equals(Httpstatus.IM_A_TEAPOT);
         });
     });
-
-    // it('should throw an error when the receiver email is not provided', async () => {
-    //     data = {
-    //         to: BADEMAIL,
-    //         payload: PAYLOAD,
-    //         filename: FILENAME,
-    //         format: FORMAT,
-    //     } as EmailData;
-    //     const invalidEmail = undefined;
-    //     const invalidEmailError = "L'adresse " + invalidEmail + ' est invalide';
-    //     // tslint:disable-next-line: no-shadowed-variable
-    //     // tslint:disable-next-line: no-any
-    //     await emailService.sendByEmail(data).catch((error: any) => {
-    //         expect(error.message).to.equals(invalidEmailError);
-    //     });
-    // });
-
-    // it('should throw an error when the receiver email has not the good format', async () => {
-    //     data = {
-    //         to: BADEMAIL,
-    //         payload: PAYLOAD,
-    //         filename: FILENAME,
-    //         format: FORMAT,
-    //     } as EmailData;
-    //     const invalidEmail = 'invalid-email-format';
-    //     const invalidEmailError = "L'adresse " + invalidEmail + ' est invalide';
-    //     // tslint:disable-next-line: no-shadowed-variable
-    //     // tslint:disable-next-line: no-any
-    //     await emailService.sendByEmail(data).catch((error: any) => {
-    //         expect(error.message).to.equals(invalidEmailError);
-    //     });
-    // });
 });

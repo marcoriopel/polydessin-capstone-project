@@ -26,22 +26,19 @@ export class EmailService {
                     ...formHeaders,
                 },
             };
-            return (
-                axios
-                    .post(MAIL_API_URL, formData, config)
-                    // tslint:disable-next-line: no-empty
-                    .then((res) => res.status.toString())
-                    .catch((error: Error) => {
-                        throw error;
-                    })
-            );
+            return axios
+                .post(MAIL_API_URL, formData, config)
+                .then((res) => res.status.toString())
+                .catch((error: Error) => {
+                    throw error;
+                });
         }
     }
 
-    private validateData(data: string): boolean {
+    validateData(data: string): boolean {
         return this.validateEmail(data);
     }
-    private validateEmail(email: string): boolean {
+    validateEmail(email: string): boolean {
         return email !== ' ';
     }
 }
