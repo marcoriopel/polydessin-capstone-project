@@ -4,8 +4,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
-import { ResizeDrawingService } from '../resize-drawing/resize-drawing.service';
 
 // tslint:disable: no-string-literal
 // tslint:disable no-magic-numbers
@@ -39,11 +39,11 @@ describe('ContinueDrawingService', () => {
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
         context = canvas.getContext('2d') as CanvasRenderingContext2D;
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave', 'clearCanvas']);
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
         serverResponseService = jasmine.createSpyObj('ServerResponseService', ['sendMailConfirmSnackBar']);
         dataBaseService = jasmine.createSpyObj('DataBaseService', ['deleteDrawing']);
-        router = jasmine.createSpyObj('Router', ['initialNavigation']);
+        router = jasmine.createSpyObj('Router', ['navigateByUrl']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -84,5 +84,25 @@ describe('ContinueDrawingService', () => {
             expect(context.drawImage).toHaveBeenCalled();
             done();
         });
+    });
+
+    it('should load old drawing', () => {
+        service.loadOldDrawing();
+        expect(router.navigateByUrl).toHaveBeenCalled();
+    });
+
+    it('should set last drawing', () => {
+        service.setLastDrawing();
+        expect(drawingServiceSpy.isLastDrawing).toBeTruthy();
+    });
+
+    it('should set last drawing to false', () => {
+        service.unlockContinueDrawing();
+        expect(drawingServiceSpy.isLastDrawing).toBeFalsy();
+    });
+
+    it('should clear canvas', () => {
+        service.clearCanvas();
+        expect(drawingServiceSpy.clearCanvas).toHaveBeenCalled();
     });
 });
