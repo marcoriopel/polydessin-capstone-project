@@ -23,15 +23,15 @@ import { BrushService } from '@app/services/tools/brush.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { LineService } from '@app/services/tools/line.service';
+import { PenService } from '@app/services/tools/pen.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
 import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
+import { TextService } from '@app/services/tools/text.service';
 import { Observable, Subject } from 'rxjs';
-import { PenService } from '../tools/pen.service';
-import { TextService } from '../tools/text.service';
 import { UndoRedoStackService } from './undo-redo-stack.service';
 
 @Injectable({

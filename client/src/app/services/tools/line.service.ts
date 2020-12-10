@@ -7,7 +7,7 @@ import { LineAngle, MouseButton, Quadrant } from '@app/ressources/global-variabl
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -126,22 +126,17 @@ export class LineService extends Tool {
         if (!this.isDrawing) {
             return;
         }
-        // Create a new line segment
         this.lineData.line = {
             startingPoint: this.lineData.mouseClicks[this.numberOfClicks - 2],
             endingPoint: this.endingClickCoordinates,
         };
-        // Draw the line with the new segment on preview canvas
         this.drawLine(this.lineData.line.startingPoint, this.lineData.line.endingPoint, this.drawingService.previewCtx, this.lineData.lineWidth);
 
-        // Draw the junction dots
         if (this.lineData.isDot) {
             this.drawDots(this.lineData.dotWidth, this.drawingService.previewCtx);
         }
-        // Add the new line segment to the stored lines
         this.lineData.storedLines.push(this.lineData.line);
 
-        // Replace last click with the good coordinates
         this.lineData.mouseClicks[this.lineData.mouseClicks.length - 1] = this.endingClickCoordinates;
     }
 

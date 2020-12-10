@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MouseButton, ONE_SECOND } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { SprayService } from './spray.service';
 
 // tslint:disable:no-string-literal

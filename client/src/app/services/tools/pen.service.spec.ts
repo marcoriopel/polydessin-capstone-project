@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { Subject } from 'rxjs';
-import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
 import { PenService } from './pen.service';
 
 // tslint:disable: no-magic-numbers

@@ -10,8 +10,6 @@ export class UndoRedoStackService {
     redoStack: ToolProperties[] = [];
     isToolInUse: Subject<boolean> = new Subject<boolean>();
 
-    constructor() {}
-
     setIsToolInUse(isInUse: boolean): void {
         this.isToolInUse.next(isInUse);
     }
