@@ -15,7 +15,7 @@ export const GENERALS_FEATURE: Feature[] = [
         NAME: 'Carrousel de dessin',
         DESCRIPTION:
             "Le carrousel de dessin permet d'ouvrir un dessin déjà créé et sauvegardé sur le serveur. Les dessins sauvegardés sont sous la forme d'un carrousel. Il est possible de voir trois dessins en même temps. Il est possible d'entrer des étiquettes pour pouvoir filtrer les dessins. Il est possible de charger le dessin en cliquant dessus.",
-        PICTURE: './../../../assets/img/carroussel.png',
+        PICTURE: './../../../assets/img/carrousel.png',
     },
     {
         NAME: 'Sauvegarde',
