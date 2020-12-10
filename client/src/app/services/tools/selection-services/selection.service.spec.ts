@@ -25,7 +25,7 @@ describe('SelectionService', () => {
     let baseCtxSpy: SpyObj<CanvasRenderingContext2D>;
     let underlyingServiceSpy: SpyObj<SquareService>;
     let rotateServiceSpy: SpyObj<RotateService>;
-    let undoRedoServiceStackSpy: SpyObj<UndoRedoStackService>;
+    let UndoRedoStackServiceSpy: SpyObj<UndoRedoStackService>;
 
     beforeEach(() => {
         magnetismServiceSpy = jasmine.createSpyObj('MagnetismService', [
@@ -56,7 +56,7 @@ describe('SelectionService', () => {
             'setIsShiftDown',
             'changeWidth',
         ]);
-        undoRedoServiceStackSpy = jasmine.createSpyObj('UndoRedoServiceStack', ['updateStack', 'setIsToolInUse']);
+        UndoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoStackService', ['updateStack', 'setIsToolInUse']);
         underlyingServiceSpy.rectangleData = {
             type: 'rectangle',
             primaryColor: 'red',
@@ -80,6 +80,7 @@ describe('SelectionService', () => {
                 { provide: MoveService, useValue: moveServiceSpy },
                 { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
+                { provide: UndoRedoStackService, useValue: UndoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -577,7 +578,7 @@ describe('SelectionService', () => {
 
         service.applyPreview();
 
-        expect(undoRedoServiceStackSpy.updateStack).toHaveBeenCalledWith(service.selectionData);
+        expect(UndoRedoStackServiceSpy.updateStack).toHaveBeenCalledWith(service.selectionData);
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 

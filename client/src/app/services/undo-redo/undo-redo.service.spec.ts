@@ -39,7 +39,6 @@ describe('UndoRedoService', () => {
 
     let drawingService: DrawingService;
     let resizeDrawingService: ResizeDrawingService;
-    let undoRedoStackService: UndoRedoStackService;
 
     let pencilData: Pencil;
     let brushData: Brush;
@@ -271,7 +270,7 @@ describe('UndoRedoService', () => {
         service.undoRedoStackService.undoStack.push(pencilData); // Pushing 2 modifications because one is popped
         obs.next(false);
         service.undo();
-        expect(undoRedoStackService.redoStack.length).toEqual(1);
+        expect(service.undoRedoStackService.redoStack.length).toEqual(1);
     });
 
     it('should not call drawElement if tool is in use (should not complete redo operation because unavailable', () => {

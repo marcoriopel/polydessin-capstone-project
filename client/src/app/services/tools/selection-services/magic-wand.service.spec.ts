@@ -44,7 +44,7 @@ describe('MagicWandService', () => {
             'applyPreview',
         ]);
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getPixelData', 'getCanvasData', 'updateStack']);
-        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoServiceStack', ['setIsToolInUse']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoServiceStack', ['setIsToolInUse', 'updateStack']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseDown', 'printSelectionOnPreview', 'onKeyUp', 'onMouseMove', 'initialize']);
         rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyUp', 'initialize', 'rotatePreviewCanvas']);
         TestBed.configureTestingModule({
@@ -54,6 +54,7 @@ describe('MagicWandService', () => {
                 { provide: RotateService, useValue: rotateServiceSpy },
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
                 { provide: ColorSelectionService, useValue: colorSelectionServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(MagicWandService);

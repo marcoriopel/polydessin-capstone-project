@@ -18,8 +18,8 @@ describe('SprayService', () => {
     let previewCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave']);
-        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoStackService', ['setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave', 'getCanvasData']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoStackService', ['setIsToolInUse', 'updateStack']);
         colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', ['getRgbaPrimaryColor']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke', 'arc', 'fill']);
@@ -28,6 +28,7 @@ describe('SprayService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorSelectionService, useValue: colorSelectionServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(SprayService);
