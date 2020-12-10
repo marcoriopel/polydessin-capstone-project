@@ -24,6 +24,7 @@ import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PolygonService } from '@app/services/tools/polygon.service';
 import { SelectionService } from '@app/services/tools/selection-services/selection.service';
+import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { Observable, Subject } from 'rxjs';
@@ -51,6 +52,7 @@ export class UndoRedoService extends Tool {
         public selectionService: SelectionService,
         public stampService: StampService,
         public undoRedoStackService: UndoRedoStackService,
+        public sprayService: SprayService,
     ) {
         super(drawingService);
         this.undoRedoStackService.getIsToolInUse().subscribe((value) => {
@@ -177,7 +179,7 @@ export class UndoRedoService extends Tool {
                 this.stampService.printStamp(this.drawingService.baseCtx, element as Stamp);
                 break;
             case 'spray':
-                this.sprayService.restoreSpray(this.drawingService.baseCtx, element as Spray);
+                this.sprayService.restoreSpray(element as Spray);
                 break;
         }
     }

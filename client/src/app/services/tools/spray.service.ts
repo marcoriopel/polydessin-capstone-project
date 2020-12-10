@@ -148,7 +148,7 @@ export class SprayService extends Tool implements OnDestroy {
         this.drawingService.autoSave();
     }
 
-    restoreSpray(): void {
-        console.log('test');
+    restoreSpray(sprayData: Spray): void {
+        this.drawingService.baseCtx.putImageData(sprayData.imageData, 0, 0);
     }
 }
