@@ -165,6 +165,7 @@ export class SelectionService extends Tool {
         if (coordinates.x % this.squareSize === 0 && coordinates.y % this.squareSize === 0) return true;
         return false;
     }
+
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
         if (event.ctrlKey) {
