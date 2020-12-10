@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
@@ -17,29 +17,38 @@ export class ContinueDrawingService {
     currentRoute: string;
     checkOldDrawing: boolean;
     width: number;
+    private isDrawingLoaded: boolean = false;
+
     constructor(
         public drawingService: DrawingService,
+        public resizeDrawingService: ResizeDrawingService,
         public router: Router,
         public serverResponseService: ServerResponseService,
         public databaseService: DatabaseService,
     ) {}
+
     continueDrawing(): void {
         const sourceDrawingURI = localStorage.getItem('drawingKey') as string;
-        this.convertURIToImageData(sourceDrawingURI);
+        const savedCanvasWidth = Number(localStorage.getItem('canvasWidth'));
+        const savedCanvasHeight = Number(localStorage.getItem('canvasHeight'));
+        this.convertURIToImageData(sourceDrawingURI, savedCanvasWidth, savedCanvasHeight);
     }
 
-    async convertURIToImageData(URI: string): Promise<void> {
+    async convertURIToImageData(URI: string, savedCanvasWidth: number, savedCanvasHeight: number): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (URI == null) return reject();
-            const canvas = this.drawingService.canvas;
             const context = this.drawingService.baseCtx;
             const image = new Image();
             image.src = URI;
             image.addEventListener(
                 'load',
                 () => {
-                    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-                    resolve();
+                    if (!this.isDrawingLoaded) {
+                        this.resizeDrawingService.resizeCanvasSize(savedCanvasWidth, savedCanvasHeight);
+                        context.drawImage(image, 0, 0, savedCanvasWidth, savedCanvasHeight);
+                        resolve();
+                        this.isDrawingLoaded = true;
+                    }
                 },
                 false,
             );
@@ -47,7 +56,9 @@ export class ContinueDrawingService {
     }
 
     loadOldDrawing(): boolean {
+        this.isDrawingLoaded = false;
         this.drawingService.isLastDrawing = localStorage.length > 0;
+        this.router.navigateByUrl('/editor');
         return this.isLastDrawing;
     }
 
@@ -61,14 +72,5 @@ export class ContinueDrawingService {
 
     clearCanvas(): void {
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
-    }
-
-    resizingCanvas(width: number = MINIMUM_CANVAS_WIDTH, height: number = MINIMUM_CANVAS_HEIGHT): void {
-        this.drawingService.canvas.width = width;
-        this.drawingService.canvas.height = height;
-        if (!this.checkOldDrawing) {
-            this.drawingService.canvas.width = width;
-            this.drawingService.canvas.height = height;
-        }
     }
 }
