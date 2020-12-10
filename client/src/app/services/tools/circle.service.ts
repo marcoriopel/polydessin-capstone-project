@@ -9,6 +9,7 @@ import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ress
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +25,11 @@ export class CircleService extends Tool {
     private quadrant: number;
     private trigonometry: Trigonometry = new Trigonometry();
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.ellipseData = {
             type: 'ellipse',
@@ -99,7 +104,7 @@ export class CircleService extends Tool {
         if (this.mouseDown) {
             this.ellipseData.firstPoint = this.getPositionFromMouse(event);
             this.ellipseData.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -108,7 +113,7 @@ export class CircleService extends Tool {
             this.ellipseData.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.drawingService.autoSave();
     }
@@ -154,7 +159,7 @@ export class CircleService extends Tool {
             ctx.stroke();
             ctx.lineWidth = this.ellipseData.lineWidth;
         } else {
-            this.drawingService.updateStack(this.ellipseData);
+            this.undoRedoStackService.updateStack(this.ellipseData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }

@@ -8,6 +8,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { Subject } from 'rxjs';
 import { MagnetismService } from './magnetism.service';
 import { SelectionResizeService } from './selection-resize.service';
@@ -31,6 +32,7 @@ describe('SelectionService', () => {
     let rotateServiceSpy: SpyObj<RotateService>;
     let clipboardServiceSpy: SpyObj<ClipboardService>;
     let obs: Subject<boolean>;
+    let undoRedoStackServiceSpy: SpyObj<UndoRedoStackService>;
 
     let gridCanvasStub: HTMLCanvasElement;
     let selectionPoints: SelectionPoints;
@@ -55,6 +57,7 @@ describe('SelectionService', () => {
         clipboardServiceSpy.isPasteAvailableSubject = obs;
         clipboardServiceSpy.selection = { startingPoint: { x: 0, y: 0 }, width: 10, height: 10 };
 
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getCanvasData', 'applyPreview', 'autoSave']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', [
             'printSelectionOnPreview',
             'onMouseDown',
@@ -89,6 +92,7 @@ describe('SelectionService', () => {
             'setIsShiftDown',
             'changeWidth',
         ]);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoStackService', ['updateStack', 'setIsToolInUse']);
         underlyingServiceSpy.rectangleData = {
             type: 'rectangle',
             primaryColor: 'red',
@@ -139,6 +143,7 @@ describe('SelectionService', () => {
                 { provide: MagnetismService, useValue: magnetismServiceSpy },
                 { provide: ClipboardService, useValue: clipboardServiceSpy },
                 { provide: SelectionResizeService, useValue: selectionResizeServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(SelectionService);
@@ -421,6 +426,17 @@ describe('SelectionService', () => {
         expect(service.isShiftKeyDown).toBeTrue();
     });
 
+    it('onKeyDown should call apply preview if key is delete', () => {
+        const applyPreviewSpy = spyOn(service, 'applyPreview');
+        const event = {
+            key: 'Delete',
+        } as KeyboardEvent;
+
+        service.onKeyDown(event);
+
+        expect(applyPreviewSpy).toHaveBeenCalled();
+    });
+
     it('selectAll should call setInitialSelection, setSelectionData and setSelectionPoint', () => {
         const setInitialSelectionSpy = spyOn(service, 'setSelection');
         const setSelectionDataSpy = spyOn(service, 'setSelectionData');
@@ -665,7 +681,7 @@ describe('SelectionService', () => {
 
         service.applyPreview();
 
-        expect(drawingServiceSpy.updateStack).toHaveBeenCalledWith(service.selectionData);
+        expect(undoRedoStackServiceSpy.updateStack).toHaveBeenCalledWith(service.selectionData);
         expect(updateSelectionDataSpy).toHaveBeenCalled();
     });
 
@@ -1228,14 +1244,6 @@ describe('SelectionService', () => {
         } as KeyboardEvent;
         service.onKeyDown(event);
         expect(ctrlKeyDownSpy).toHaveBeenCalled();
-    });
-
-    it('pressing deconste key should initialize move service', () => {
-        const event = {
-            key: 'Deconste',
-        } as KeyboardEvent;
-        service.onKeyDown(event);
-        expect(moveServiceSpy.initialize).toHaveBeenCalled();
     });
 
     it('should call cut if control key is x', () => {

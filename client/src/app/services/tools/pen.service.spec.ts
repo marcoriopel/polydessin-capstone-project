@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { Subject } from 'rxjs';
 import { PenService } from './pen.service';
 
@@ -17,6 +18,7 @@ describe('PenService', () => {
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
     let baseCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
     let previewCtxStub: CanvasRenderingContext2D;
+    let undoRedoStackServiceSpy: jasmine.SpyObj<UndoRedoStackService>;
     const WIDTH = 100;
     const HEIGHT = 100;
 
@@ -26,12 +28,16 @@ describe('PenService', () => {
         canvas.height = HEIGHT;
 
         angleObservableSpy = jasmine.createSpyObj('Subject<number>', ['next']);
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas', 'autoSave']);
-        baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('undoRedoStackService', ['setIsToolInUse', 'updateStack']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave', 'getCanvasData']);
+        baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke', 'putImageData']);
         previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
+            ],
         });
         service = TestBed.inject(PenService);
 
@@ -142,7 +148,7 @@ describe('PenService', () => {
 
         service.onMouseDown(mouseEvent);
         expect(drawPenStrokeSpy).toHaveBeenCalledWith(service['drawingService'].previewCtx);
-        expect(service['drawingService'].setIsToolInUse).toHaveBeenCalledWith(true);
+        expect(service['undoRedoStackService'].setIsToolInUse).toHaveBeenCalledWith(true);
     });
 
     it(' mouseDown should not call drawingService.setIsToolInUse if right click', () => {
@@ -156,7 +162,7 @@ describe('PenService', () => {
         service.onMouseDown(mouseEvent);
 
         expect(drawPenStrokeSpy).not.toHaveBeenCalled();
-        expect(service['drawingService'].setIsToolInUse).not.toHaveBeenCalled();
+        expect(service['undoRedoStackService'].setIsToolInUse).not.toHaveBeenCalled();
     });
 
     it(' mouseUp set mouseDown to false', () => {
@@ -187,7 +193,7 @@ describe('PenService', () => {
         service.mouseDown = true;
         service.onMouseUp({} as MouseEvent);
 
-        expect(service['drawingService'].setIsToolInUse).toHaveBeenCalledWith(false);
+        expect(service['undoRedoStackService'].setIsToolInUse).toHaveBeenCalledWith(false);
         expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
@@ -197,7 +203,7 @@ describe('PenService', () => {
 
         expect(service['drawingService'].applyPreview).not.toHaveBeenCalled();
         expect(service['drawingService'].clearCanvas).not.toHaveBeenCalled();
-        expect(service['drawingService'].setIsToolInUse).not.toHaveBeenCalled();
+        expect(service['undoRedoStackService'].setIsToolInUse).not.toHaveBeenCalled();
         expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
@@ -414,5 +420,14 @@ describe('PenService', () => {
 
     it('getAngle should return the angle', () => {
         expect(service.getAngle()).toEqual(angleObservableSpy);
+    });
+
+    it('sdf', () => {
+        const penData = {
+            type: 'pen',
+            imageData: (undefined as unknown) as ImageData,
+        };
+        service.restorePen(penData);
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 });

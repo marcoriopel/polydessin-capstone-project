@@ -4,6 +4,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { RotateService } from './rotate.service';
 
 @Injectable({
@@ -22,7 +23,7 @@ export class MoveService implements OnDestroy {
     private intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
     private selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
-    constructor(public drawingService: DrawingService, public rotateService: RotateService) {}
+    constructor(public drawingService: DrawingService, public rotateService: RotateService, public undoRedoStackService: UndoRedoStackService) {}
 
     ngOnDestroy(): void {
         if (this.intervalId) {
@@ -130,7 +131,7 @@ export class MoveService implements OnDestroy {
 
         setTimeout(() => {
             if (this.isArrowKeyPressed()) {
-                this.drawingService.setIsToolInUse(true);
+                this.undoRedoStackService.setIsToolInUse(true);
                 if (!this.intervalId) {
                     this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this, isMagnetism, squareSize);
                 }
@@ -146,7 +147,7 @@ export class MoveService implements OnDestroy {
     onKeyUp(event: KeyboardEvent): void {
         if (this.pressedKeys.has(event.key)) {
             this.pressedKeys.set(event.key, false);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
 
         if (this.intervalId) {

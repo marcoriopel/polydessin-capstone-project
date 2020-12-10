@@ -17,6 +17,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +32,12 @@ export class PolygonService extends Tool {
     minNumberOfSides: number = MIN_SIDES;
     maxNumberOfSides: number = MAX_SIDES;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService, public circleService: CircleService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public circleService: CircleService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.polygonData = {
             type: 'polygon',
@@ -92,7 +98,7 @@ export class PolygonService extends Tool {
         if (this.mouseDown) {
             this.polygonData.firstPoint = this.getPositionFromMouse(event);
             this.polygonData.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -103,10 +109,10 @@ export class PolygonService extends Tool {
             this.updatePolygonDataColor();
             if (this.polygonData.firstPoint.x !== this.polygonData.lastPoint.x && this.polygonData.firstPoint.y !== this.polygonData.lastPoint.y) {
                 this.drawPolygon(this.drawingService.baseCtx, this.polygonData);
-                this.drawingService.updateStack(this.polygonData);
+                this.undoRedoStackService.updateStack(this.polygonData);
             }
             this.mouseDown = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
 
             this.polygonData.circleWidth = 0;
             this.polygonData.circleHeight = 0;

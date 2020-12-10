@@ -177,7 +177,7 @@ describe('SelectionResizeService', () => {
         const mouseCoordinates = { x: 5, y: 5 };
         service.isShiftKeyDown = true;
         service.resizeTopMiddle(mouseCoordinates);
-        expect(service.selection.startingPoint.y).toEqual(1);
+        expect(service.selection.startingPoint.y).toEqual(5);
     });
 
     it('resizeBottomMiddle should not change selection width (vertical resize)', () => {

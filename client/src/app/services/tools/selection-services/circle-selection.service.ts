@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { CircleService } from '@app/services/tools/circle.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { MagnetismService } from './magnetism.service';
 import { SelectionResizeService } from './selection-resize.service';
 import { SelectionService } from './selection.service';
@@ -23,8 +24,9 @@ export class CircleSelectionService extends SelectionService {
         public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
         public selectionResizeService: SelectionResizeService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService, selectionResizeService, undoRedoStackService);
         super.underlyingService = circleService;
         this.selectionType = SelectionType.CIRCLE;
     }

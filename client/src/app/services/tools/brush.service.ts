@@ -5,6 +5,7 @@ import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,11 @@ export class BrushService extends Tool {
     name: string = TOOL_NAMES.BRUSH_TOOL_NAME;
     private brushData: Brush;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.brushData = {
             type: 'brush',
@@ -45,7 +50,7 @@ export class BrushService extends Tool {
             this.brushData.path.push(this.mouseDownCoord);
             this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.previewCtx, this.brushData);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -55,10 +60,10 @@ export class BrushService extends Tool {
             this.brushData.path.push(mousePosition);
             this.brushData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawLine(this.drawingService.baseCtx, this.brushData);
-            this.drawingService.updateStack(this.brushData);
+            this.undoRedoStackService.updateStack(this.brushData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.applyPattern('none');
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();

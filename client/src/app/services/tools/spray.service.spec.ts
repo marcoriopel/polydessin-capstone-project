@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { MouseButton, ONE_SECOND } from '@app/ressources/global-variables/global-variables';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { SprayService } from './spray.service';
 
 // tslint:disable:no-string-literal
@@ -11,12 +12,14 @@ import { SprayService } from './spray.service';
 describe('SprayService', () => {
     let service: SprayService;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let undoRedoStackServiceSpy: jasmine.SpyObj<UndoRedoStackService>;
     let colorSelectionServiceSpy: jasmine.SpyObj<ColorSelectionService>;
     let baseCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
     let previewCtxSpy: jasmine.SpyObj<CanvasRenderingContext2D>;
 
     beforeEach(() => {
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'applyPreview', 'clearCanvas', 'autoSave']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave', 'getCanvasData']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoStackService', ['setIsToolInUse', 'updateStack']);
         colorSelectionServiceSpy = jasmine.createSpyObj('ColorSelectionService', ['getRgbaPrimaryColor']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
         previewCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke', 'arc', 'fill']);
@@ -25,6 +28,7 @@ describe('SprayService', () => {
             providers: [
                 { provide: DrawingService, useValue: drawServiceSpy },
                 { provide: ColorSelectionService, useValue: colorSelectionServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(SprayService);
@@ -118,7 +122,7 @@ describe('SprayService', () => {
         service.onMouseDown(mouseEvent);
 
         expect(setTimeoutSpy).toHaveBeenCalled();
-        expect(drawServiceSpy.setIsToolInUse).toHaveBeenCalledWith(true);
+        expect(undoRedoStackServiceSpy.setIsToolInUse).toHaveBeenCalledWith(true);
     });
 
     it(' mouseUp should call clearTimeout if mousDown is true', () => {
@@ -151,7 +155,7 @@ describe('SprayService', () => {
 
         service.onMouseUp();
 
-        expect(drawServiceSpy.setIsToolInUse).toHaveBeenCalledWith(false);
+        expect(undoRedoStackServiceSpy.setIsToolInUse).toHaveBeenCalledWith(false);
     });
 
     it(' mouseUp should not make calls if mousDown is false', () => {
@@ -162,7 +166,7 @@ describe('SprayService', () => {
 
         expect(clearTimeoutSpy).not.toHaveBeenCalled();
         expect(drawServiceSpy.applyPreview).not.toHaveBeenCalled();
-        expect(drawServiceSpy.setIsToolInUse).not.toHaveBeenCalled();
+        expect(undoRedoStackServiceSpy.setIsToolInUse).not.toHaveBeenCalled();
     });
 
     it(' onMouseMove should not set mouseCord if mousDown is false', () => {
@@ -217,7 +221,7 @@ describe('SprayService', () => {
         service.onMouseLeave();
 
         expect(drawServiceSpy.applyPreview).toHaveBeenCalled();
-        expect(drawServiceSpy.setIsToolInUse).toHaveBeenCalled();
+        expect(undoRedoStackServiceSpy.setIsToolInUse).toHaveBeenCalled();
     });
 
     it(' mouseEnter should call setTimeOut if mousDown is true', () => {

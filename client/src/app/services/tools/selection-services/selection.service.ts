@@ -24,6 +24,7 @@ import { SelectionResizeService } from '@app/services/tools/selection-services/s
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -76,6 +77,7 @@ export class SelectionService extends Tool {
         public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
         public selectionResizeService: SelectionResizeService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {
         super(drawingService);
         this.isSelectionEmptySubject.next(true);
@@ -141,7 +143,7 @@ export class SelectionService extends Tool {
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
         }
-        this.drawingService.setIsToolInUse(true);
+        this.undoRedoStackService.setIsToolInUse(true);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -181,7 +183,7 @@ export class SelectionService extends Tool {
         this.updateSelectionCorners();
         this.strokeSelection();
         this.setSelectionPoint();
-        this.drawingService.setIsToolInUse(false);
+        this.undoRedoStackService.setIsToolInUse(false);
         this.drawingService.autoSave();
     }
 
@@ -311,6 +313,7 @@ export class SelectionService extends Tool {
         if (coordinates.x % this.squareSize === 0 && coordinates.y % this.squareSize === 0) return true;
         return false;
     }
+
     onKeyDown(event: KeyboardEvent): void {
         this.rotateService.onKeyDown(event);
         this.selectionResizeService.onKeyDown(event);
@@ -476,7 +479,7 @@ export class SelectionService extends Tool {
         this.drawingService.applyPreview();
         this.canvasData = this.drawingService.getCanvasData();
         this.updateSelectionData();
-        this.drawingService.updateStack(this.selectionData);
+        this.undoRedoStackService.updateStack(this.selectionData);
     }
 
     updateSelectionData(): void {

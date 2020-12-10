@@ -1,8 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import { Fill, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
-import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -17,9 +16,6 @@ export class DrawingService {
     canvas: HTMLCanvasElement;
     gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp)[] = [];
-    private isToolInUse: Subject<boolean> = new Subject<boolean>();
     isLastDrawing: boolean;
 
     constructor(private injector: Injector) {}
@@ -41,14 +37,6 @@ export class DrawingService {
         this.gridCtx.strokeStyle = 'black';
         this.gridCtx.closePath();
         this.gridCtx.stroke();
-    }
-
-    setIsToolInUse(isInUse: boolean): void {
-        this.isToolInUse.next(isInUse);
-    }
-
-    getIsToolInUse(): Observable<boolean> {
-        return this.isToolInUse.asObservable();
     }
 
     clearCanvas(context: CanvasRenderingContext2D): void {
@@ -88,13 +76,6 @@ export class DrawingService {
         this.clearCanvas(this.previewCtx);
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Selection | Stamp): void {
-        this.undoStack.push(Object.assign({}, modification));
-        if (this.redoStack.length) {
-            this.redoStack = [];
-        }
-    }
-
     drawFill(fill: Fill): void {
         this.baseCtx.putImageData(fill.imageData, 0, 0);
     }
@@ -115,14 +96,11 @@ export class DrawingService {
         return this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    resetStack(): void {
-        this.undoStack = [];
-        this.redoStack = [];
-    }
-
     autoSave(): void {
         if (!this.canvas) return;
         localStorage.clear();
         localStorage.setItem('drawingKey', this.canvas.toDataURL());
+        localStorage.setItem('canvasWidth', this.canvas.width.toString());
+        localStorage.setItem('canvasHeight', this.canvas.height.toString());
     }
 }

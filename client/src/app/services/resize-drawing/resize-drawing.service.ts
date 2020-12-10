@@ -11,6 +11,7 @@ import {
     MouseButton,
 } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -25,7 +26,7 @@ export class ResizeDrawingService {
     private resizeData: Resize;
     private imageData: ImageData;
 
-    constructor(public drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService, public undoRedoStackService: UndoRedoStackService) {}
 
     setDefaultCanvasSize(): void {
         if (this.workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
@@ -51,15 +52,14 @@ export class ResizeDrawingService {
     resizeCanvasSize(width: number, height: number): void {
         this.drawingService.canvas.width = width;
         this.drawingService.canvas.height = height;
+        this.drawingService.previewCanvas.width = width;
+        this.drawingService.previewCanvas.height = height;
         this.previewSize.x = width;
         this.previewSize.y = height;
     }
 
     restoreCanvas(resizeData: Resize): void {
-        this.drawingService.canvas.width = resizeData.canvasSize.x;
-        this.drawingService.canvas.height = resizeData.canvasSize.y;
-        this.previewSize.x = resizeData.canvasSize.x;
-        this.previewSize.y = resizeData.canvasSize.y;
+        this.resizeCanvasSize(resizeData.canvasSize.x, resizeData.canvasSize.y);
         this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
     }
 
@@ -81,7 +81,7 @@ export class ResizeDrawingService {
             this.canvasSize.y = this.previewSize.y;
 
             this.updateResizeData();
-            this.drawingService.updateStack(this.resizeData);
+            this.undoRedoStackService.updateStack(this.resizeData);
 
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();
