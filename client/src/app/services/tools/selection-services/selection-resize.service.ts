@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
 import { SELECTION_POINTS_NAMES } from '@app/classes/selection-points';
 import { Vec2 } from '@app/classes/vec2';
+import { NEGATIVE_SCALE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
-import { RotateService } from '../transformation-services/rotate.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 @Injectable({
     providedIn: 'root',
 })
 export class SelectionResizeService {
     private selectionBeforeResize: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
+    mouseCoordinates: Vec2;
     newSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     selectionImage: HTMLCanvasElement = document.createElement('canvas');
@@ -17,6 +19,7 @@ export class SelectionResizeService {
     newWidth: number = 0;
     newHeight: number = 0;
     isShiftKeyDown: boolean = false;
+    isResizeOver: boolean = true;
     private isHorizontalScaleNegative: boolean = false;
     private isVerticalScaleNegative: boolean = false;
     constructor(public drawingService: DrawingService, public moveService: MoveService, public rotateService: RotateService) {}
@@ -51,6 +54,7 @@ export class SelectionResizeService {
     }
 
     resizeSelection(mouseCoordinates: Vec2, selectionPoint: number): SelectionBox {
+        this.isResizeOver = false;
         switch (selectionPoint) {
             case SELECTION_POINTS_NAMES.BOTTOM_RIGHT: {
                 this.resizeBottomRight(mouseCoordinates);
@@ -85,12 +89,11 @@ export class SelectionResizeService {
                 break;
             }
         }
-        const newSelection = this.drawSelectionOnPreviewCtx(mouseCoordinates);
+        const newSelection = this.drawSelectionOnPreviewCtx();
         return newSelection;
     }
 
     resizeTopMiddle(mouseCoordinates: Vec2): void {
-        if (this.isShiftKeyDown) return;
         const bottomY: number = this.selection.startingPoint.y + this.selection.height;
         this.newSelection.width = this.selection.width;
         this.newSelection.height = bottomY - mouseCoordinates.y;
@@ -98,13 +101,11 @@ export class SelectionResizeService {
     }
 
     resizeBottomMiddle(mouseCoordinates: Vec2): void {
-        if (this.isShiftKeyDown) return;
         this.newSelection.width = this.selection.width;
         this.newSelection.height = mouseCoordinates.y - this.selection.startingPoint.y;
     }
 
     resizeLeftMiddle(mouseCoordinates: Vec2): void {
-        if (this.isShiftKeyDown) return;
         const rightX: number = this.selection.startingPoint.x + this.selection.width;
         this.newSelection.height = this.selection.height;
         this.newSelection.width = rightX - mouseCoordinates.x;
@@ -112,7 +113,6 @@ export class SelectionResizeService {
     }
 
     resizeRightMiddle(mouseCoordinates: Vec2): void {
-        if (this.isShiftKeyDown) return;
         this.newSelection.height = this.selection.height;
         this.newSelection.width = mouseCoordinates.x - this.selection.startingPoint.x;
     }
@@ -203,10 +203,10 @@ export class SelectionResizeService {
         let offsetY = mouseCoordinates.y - referenceCoordinates.y;
 
         if (this.isHorizontalScaleNegative) {
-            offsetX *= -1;
+            offsetX = -offsetX;
         }
         if (this.isVerticalScaleNegative) {
-            offsetY *= -1;
+            offsetY = -offsetY;
         }
         this.isVerticalScaleNegative = false;
         this.isHorizontalScaleNegative = false;
@@ -238,14 +238,14 @@ export class SelectionResizeService {
         }
     }
 
-    drawSelectionOnPreviewCtx(mouseCoordinates: Vec2): SelectionBox {
+    drawSelectionOnPreviewCtx(): SelectionBox {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
-        this.moveService.clearSelectionBackground();
+        this.clearSelectionBackground();
         this.drawingService.previewCtx.save();
         this.rotateService.rotatePreviewCanvas();
 
         if (this.newSelection.width < 0 && this.newSelection.height > 0) {
-            this.drawingService.previewCtx.scale(-1, 1);
+            this.drawingService.previewCtx.scale(NEGATIVE_SCALE, 1);
             this.drawingService.previewCtx.drawImage(
                 this.selectionImage,
                 -this.selection.startingPoint.x,
@@ -254,7 +254,7 @@ export class SelectionResizeService {
                 this.newSelection.height,
             );
         } else if (this.newSelection.height < 0 && this.newSelection.width > 0) {
-            this.drawingService.previewCtx.scale(1, -1);
+            this.drawingService.previewCtx.scale(1, NEGATIVE_SCALE);
             this.drawingService.previewCtx.drawImage(
                 this.selectionImage,
                 this.selection.startingPoint.x,
@@ -263,7 +263,7 @@ export class SelectionResizeService {
                 -this.newSelection.height,
             );
         } else if (this.newSelection.height < 0 && this.newSelection.width < 0) {
-            this.drawingService.previewCtx.scale(-1, -1);
+            this.drawingService.previewCtx.scale(NEGATIVE_SCALE, NEGATIVE_SCALE);
             this.drawingService.previewCtx.drawImage(
                 this.selectionImage,
                 -this.selection.startingPoint.x,
@@ -293,5 +293,19 @@ export class SelectionResizeService {
         this.drawingService.previewCtx.restore();
 
         return newSelection;
+    }
+
+    clearSelectionBackground(): void {
+        const currentFillStyle = this.drawingService.previewCtx.fillStyle;
+        this.drawingService.previewCtx.fillStyle = 'white';
+
+        this.drawingService.previewCtx.fillRect(
+            this.selectionBeforeResize.startingPoint.x,
+            this.selectionBeforeResize.startingPoint.y,
+            this.selectionBeforeResize.width,
+            this.selectionBeforeResize.height,
+        );
+
+        this.drawingService.previewCtx.fillStyle = currentFillStyle;
     }
 }

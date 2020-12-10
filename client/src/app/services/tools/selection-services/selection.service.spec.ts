@@ -1086,7 +1086,7 @@ describe('SelectionService', () => {
     it('should return top left point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 0, y: 0 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_LEFT);
     });
 
@@ -1094,82 +1094,82 @@ describe('SelectionService', () => {
         service.selectionPoints = selectionPoints;
 
         const mouseCoordinates = { x: 50, y: 0 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_MIDDLE);
     });
 
     it('should return top right point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 100, y: 0 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.TOP_RIGHT);
     });
 
     it('should return middle left point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 0, y: 50 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.MIDDLE_LEFT);
     });
 
     it('should return middle right point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 100, y: 50 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.MIDDLE_RIGHT);
     });
 
     it('should return bottom left point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 0, y: 100 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_LEFT);
     });
 
     it('should return bottom middle point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 50, y: 100 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_MIDDLE);
     });
 
     it('should return bottom right point', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 100, y: 100 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.BOTTOM_RIGHT);
     });
 
     it('should return no point if cursor on left side but outside of point coordinates', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 0, y: 10 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
     });
 
     it('should return no point if cursor on middle but outside of point coordinates', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 50, y: 10 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
     });
 
     it('should return no point if cursor on right side but outside of point coordinates', () => {
         service.selectionPoints = selectionPoints;
         const mouseCoordinates = { x: 100, y: 10 };
-        let result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
+        const result = service.checkIfCursorIsOnSelectionPoint(mouseCoordinates);
         expect(result).toEqual(SELECTION_POINTS_NAMES.NO_POINTS);
     });
 
     it('should adjust angle if new angle is greater than 360 degrees', () => {
         const newAngle = 365;
-        let result = service.updateAngle(newAngle);
+        const result = service.updateAngle(newAngle);
         expect(result).toEqual(5);
     });
 
     it('should adjust angle if new angle is less than 0 degrees', () => {
         const newAngle = -5;
-        let result = service.updateAngle(newAngle);
+        const result = service.updateAngle(newAngle);
         expect(result).toEqual(355);
     });
 
@@ -1230,9 +1230,9 @@ describe('SelectionService', () => {
         expect(ctrlKeyDownSpy).toHaveBeenCalled();
     });
 
-    it('pressing delete key should initialize move service', () => {
+    it('pressing deconste key should initialize move service', () => {
         const event = {
-            key: 'Delete',
+            key: 'Deconste',
         } as KeyboardEvent;
         service.onKeyDown(event);
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
@@ -1294,11 +1294,12 @@ describe('SelectionService', () => {
     });
 
     it('test', () => {
+        // tslint:disable-next-line: no-shadowed-variable
         let obs: Subject<boolean>;
         obs = new Subject<boolean>();
         const getIsSelectionEmptySubjectSpy = spyOn(service, 'getIsSelectionEmptySubject');
         getIsSelectionEmptySubjectSpy.and.callThrough();
-        let result = service.getIsSelectionEmptySubject();
+        const result = service.getIsSelectionEmptySubject();
         expect(result).toEqual(obs.asObservable());
     });
 });

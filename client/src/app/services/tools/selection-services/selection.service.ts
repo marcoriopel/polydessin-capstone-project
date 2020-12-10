@@ -123,6 +123,11 @@ export class SelectionService extends Tool {
                 this.rotateService.restoreSelection();
                 this.applyPreview();
             }
+            if (!this.selectionResizeService.isResizeOver) {
+                this.selectionResizeService.isResizeOver = true;
+                this.selectionResizeService.drawSelectionOnPreviewCtx();
+                this.applyPreview();
+            }
             this.isSelectionOver = true;
             this.selection = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
             this.isSelectionEmptySubject.next(true);
@@ -149,6 +154,7 @@ export class SelectionService extends Tool {
             this.isResizing = false;
             return;
         }
+
         this.currentPoint = SELECTION_POINTS_NAMES.NO_POINTS;
         if (this.isNewSelection) {
             this.setSelection(this.initialSelection, this.selection);
@@ -603,60 +609,100 @@ export class SelectionService extends Tool {
         }
     }
 
-    // tslint:disable-next-line: cyclomatic-complexity
     checkIfCursorIsOnSelectionPoint(mouseCoordinates: Vec2): number {
         if (this.selectionPoints.LEFT_X - 1 <= mouseCoordinates.x && mouseCoordinates.x <= this.selectionPoints.LEFT_X + SELECTION_POINT_WIDTH) {
-            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
-                return SELECTION_POINTS_NAMES.TOP_LEFT;
-            } else if (
-                this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
-                mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
-            ) {
-                return SELECTION_POINTS_NAMES.MIDDLE_LEFT;
-            } else if (
-                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
-                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
-            ) {
-                return SELECTION_POINTS_NAMES.BOTTOM_LEFT;
-            } else {
-                return SELECTION_POINTS_NAMES.NO_POINTS;
-            }
+            return this.findLeftPoint(mouseCoordinates);
         } else if (
             this.selectionPoints.MIDDLE_X - 1 <= mouseCoordinates.x &&
             mouseCoordinates.x <= this.selectionPoints.MIDDLE_X + SELECTION_POINT_WIDTH
         ) {
-            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
-                return SELECTION_POINTS_NAMES.TOP_MIDDLE;
-            } else if (
-                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
-                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
-            ) {
-                return SELECTION_POINTS_NAMES.BOTTOM_MIDDLE;
-            } else {
-                return SELECTION_POINTS_NAMES.NO_POINTS;
-            }
+            return this.findMiddlePoint(mouseCoordinates);
         } else if (
             this.selectionPoints.RIGHT_X - 1 <= mouseCoordinates.x &&
             mouseCoordinates.x <= this.selectionPoints.RIGHT_X + SELECTION_POINT_WIDTH
         ) {
-            if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
-                return SELECTION_POINTS_NAMES.TOP_RIGHT;
-            } else if (
-                this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
-                mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
-            ) {
-                return SELECTION_POINTS_NAMES.MIDDLE_RIGHT;
-            } else if (
-                this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
-                mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
-            ) {
-                return SELECTION_POINTS_NAMES.BOTTOM_RIGHT;
-            } else {
-                return SELECTION_POINTS_NAMES.NO_POINTS;
-            }
+            return this.findRightPoint(mouseCoordinates);
         } else {
             return SELECTION_POINTS_NAMES.NO_POINTS;
         }
+    }
+
+    findLeftPoint(mouseCoordinates: Vec2): number {
+        if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+            return SELECTION_POINTS_NAMES.TOP_LEFT;
+        } else if (
+            this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
+            mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
+        ) {
+            return SELECTION_POINTS_NAMES.MIDDLE_LEFT;
+        } else if (
+            this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+            mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+        ) {
+            return SELECTION_POINTS_NAMES.BOTTOM_LEFT;
+        } else {
+            return SELECTION_POINTS_NAMES.NO_POINTS;
+        }
+    }
+
+    findMiddlePoint(mouseCoordinates: Vec2): number {
+        if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+            return SELECTION_POINTS_NAMES.TOP_MIDDLE;
+        } else if (
+            this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+            mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+        ) {
+            return SELECTION_POINTS_NAMES.BOTTOM_MIDDLE;
+        } else {
+            return SELECTION_POINTS_NAMES.NO_POINTS;
+        }
+    }
+
+    findRightPoint(mouseCoordinates: Vec2): number {
+        if (this.selectionPoints.TOP_Y - 1 <= mouseCoordinates.y && mouseCoordinates.y <= this.selectionPoints.TOP_Y + SELECTION_POINT_WIDTH) {
+            return SELECTION_POINTS_NAMES.TOP_RIGHT;
+        } else if (
+            this.selectionPoints.MIDDLE_Y - 1 <= mouseCoordinates.y &&
+            mouseCoordinates.y <= this.selectionPoints.MIDDLE_Y + SELECTION_POINT_WIDTH
+        ) {
+            return SELECTION_POINTS_NAMES.MIDDLE_RIGHT;
+        } else if (
+            this.selectionPoints.BOTTOM_Y - 1 <= mouseCoordinates.y &&
+            mouseCoordinates.y <= this.selectionPoints.BOTTOM_Y + SELECTION_POINT_WIDTH
+        ) {
+            return SELECTION_POINTS_NAMES.BOTTOM_RIGHT;
+        } else {
+            return SELECTION_POINTS_NAMES.NO_POINTS;
+        }
+    }
+
+    strokeSelectionBox(): void {
+        const center = this.rotateService.calculateCenter();
+        const highestVerticalSelectionPoint = Math.max(
+            this.selectionCorners.topRight.coordinates.y,
+            this.selectionCorners.bottomRight.coordinates.y,
+            this.selectionCorners.topLeft.coordinates.y,
+            this.selectionCorners.bottomLeft.coordinates.y,
+        );
+        this.selectionContour.height = (highestVerticalSelectionPoint - center.y) * 2;
+
+        const highestHorizontalSelectionPoint = Math.max(
+            this.selectionCorners.topRight.coordinates.x,
+            this.selectionCorners.bottomRight.coordinates.x,
+            this.selectionCorners.topLeft.coordinates.x,
+            this.selectionCorners.bottomLeft.coordinates.x,
+        );
+        this.selectionContour.width = (highestHorizontalSelectionPoint - center.x) * 2;
+
+        this.selectionContour.startingPoint.x = center.x - this.selectionContour.width / 2;
+        this.selectionContour.startingPoint.y = center.y - this.selectionContour.height / 2;
+
+        this.drawingService.previewCtx.strokeRect(
+            this.selectionContour.startingPoint.x,
+            this.selectionContour.startingPoint.y,
+            this.selectionContour.width,
+            this.selectionContour.height,
+        );
     }
 
     getIsSelectionEmptySubject(): Observable<boolean> {

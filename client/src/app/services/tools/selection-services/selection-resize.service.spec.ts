@@ -2,10 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
 import { SELECTION_POINTS_NAMES } from '@app/classes/selection-points';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { MoveService } from '../transformation-services/move.service';
-import { RotateService } from '../transformation-services/rotate.service';
-import { SelectionResizeService } from './selection-resize.service';
+import { SelectionResizeService } from '@app/services/tools/selection-services/selection-resize.service';
+import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import SpyObj = jasmine.SpyObj;
+// tslint:disable: no-string-literal
+// tslint:disable: max-file-line-count
+// tslint:disable: no-magic-numbers
+// tslint:disable: no-any
 
 describe('SelectionResizeService', () => {
     let service: SelectionResizeService;
@@ -337,26 +341,23 @@ describe('SelectionResizeService', () => {
     });
 
     it('if width is negative and height is positive, scaling factor should be negative horizontally', () => {
-        const mouseCoordinates = { x: 10, y: 10 };
         service.newSelection.width = -1;
         service.newSelection.height = 1;
-        service.drawSelectionOnPreviewCtx(mouseCoordinates);
+        service.drawSelectionOnPreviewCtx();
         expect(previewCtxSpy.scale).toHaveBeenCalledWith(-1, 1);
     });
 
     it('if width is negative and height is negative, scaling factor should be negative horizontally and vertically', () => {
-        const mouseCoordinates = { x: 10, y: 10 };
         service.newSelection.width = -1;
         service.newSelection.height = -1;
-        service.drawSelectionOnPreviewCtx(mouseCoordinates);
+        service.drawSelectionOnPreviewCtx();
         expect(previewCtxSpy.scale).toHaveBeenCalledWith(-1, -1);
     });
 
     it('if width is positive and height is negative, scaling factor should be negative vertically', () => {
-        const mouseCoordinates = { x: 10, y: 10 };
         service.newSelection.width = 1;
         service.newSelection.height = -1;
-        service.drawSelectionOnPreviewCtx(mouseCoordinates);
+        service.drawSelectionOnPreviewCtx();
         expect(previewCtxSpy.scale).toHaveBeenCalledWith(1, -1);
     });
 });

@@ -39,6 +39,7 @@ export const MAGIC_WAND_BORDER_BOTH_SIDES = 4;
 export const MAGIC_WAND_TOLERANCE = 10;
 export const MAGIC_WAND_SECONDARY_TOLERANCE = 50;
 export const OFFSET = -1;
+export const NEGATIVE_SCALE = -1;
 
 export const DEFAULT_GRID_OPACITY = 100;
 export const TWO_DECIMAL_MULTIPLIER = 100;

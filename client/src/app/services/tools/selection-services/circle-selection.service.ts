@@ -88,33 +88,7 @@ export class CircleSelectionService extends SelectionService {
             );
             this.drawingService.previewCtx.restore();
             this.drawingService.previewCtx.stroke();
-            const center = this.rotateService.calculateCenter();
-
-            const highestVerticalSelectionPoint = Math.max(
-                this.selectionCorners.topRight.coordinates.y,
-                this.selectionCorners.bottomRight.coordinates.y,
-                this.selectionCorners.topLeft.coordinates.y,
-                this.selectionCorners.bottomLeft.coordinates.y,
-            );
-            this.selectionContour.height = (highestVerticalSelectionPoint - center.y) * 2;
-
-            const highestHorizontalSelectionPoint = Math.max(
-                this.selectionCorners.topRight.coordinates.x,
-                this.selectionCorners.bottomRight.coordinates.x,
-                this.selectionCorners.topLeft.coordinates.x,
-                this.selectionCorners.bottomLeft.coordinates.x,
-            );
-            this.selectionContour.width = (highestHorizontalSelectionPoint - center.x) * 2;
-
-            this.selectionContour.startingPoint.x = center.x - this.selectionContour.width / 2;
-            this.selectionContour.startingPoint.y = center.y - this.selectionContour.height / 2;
-
-            this.drawingService.previewCtx.strokeRect(
-                this.selectionContour.startingPoint.x,
-                this.selectionContour.startingPoint.y,
-                this.selectionContour.width,
-                this.selectionContour.height,
-            );
+            this.strokeSelectionBox();
             this.setSelectionPoint();
         }
         this.drawingService.autoSave();
