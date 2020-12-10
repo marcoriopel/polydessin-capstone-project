@@ -7,6 +7,7 @@ import { MAXIMUM_RGBA_VALUE, Rgba, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressou
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +22,11 @@ export class FillService extends Tool {
     fillData: Fill;
     canvasData: ImageData;
 
-    constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        public drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -78,7 +83,7 @@ export class FillService extends Tool {
         this.canvasData = canvasData;
         this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
-        this.drawingService.updateStack(this.fillData);
+        this.undoRedoStackService.updateStack(this.fillData);
     }
 
     fill(): void {
@@ -99,7 +104,7 @@ export class FillService extends Tool {
         this.canvasData = canvasData;
         this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
-        this.drawingService.updateStack(this.fillData);
+        this.undoRedoStackService.updateStack(this.fillData);
     }
 
     vec2ToString(pixel: Vec2): string {

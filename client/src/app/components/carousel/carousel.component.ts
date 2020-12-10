@@ -12,6 +12,7 @@ import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -47,6 +48,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public resizeDrawingService: ResizeDrawingService,
         public continueDrawingService: ContinueDrawingService,
         public textService: TextService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {}
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
@@ -233,7 +235,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
             drawing.onload = () => {
                 this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
                 this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-                this.drawingService.resetStack();
+                this.undoRedoStackService.resetStack();
                 resolve();
             };
         });

@@ -6,6 +6,7 @@ import { ColorSelectionService } from '@app/services/color-selection/color-selec
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { MagicWandService } from './magic-wand.service';
 import { MagnetismService } from './magnetism.service';
 import SpyObj = jasmine.SpyObj;
@@ -22,6 +23,7 @@ describe('MagicWandService', () => {
     let drawingServiceSpy: SpyObj<DrawingService>;
     let magnetismServiceSpy: SpyObj<MagnetismService>;
     let colorSelectionServiceSpy: SpyObj<ColorSelectionService>;
+    let undoRedoStackServiceSpy: SpyObj<UndoRedoStackService>;
     let mouseEvent: MouseEvent;
     let keyboardEvent: KeyboardEvent;
     const WIDTH = 100;
@@ -41,8 +43,8 @@ describe('MagicWandService', () => {
             'setIsToolInUse',
             'applyPreview',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['setIsToolInUse', 'clearCanvas', 'getPixelData', 'getCanvasData', 'updateStack']);
-
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'getPixelData', 'getCanvasData', 'updateStack']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('UndoRedoServiceStack', ['setIsToolInUse']);
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['onMouseDown', 'printSelectionOnPreview', 'onKeyUp', 'onMouseMove', 'initialize']);
         rotateServiceSpy = jasmine.createSpyObj('RotateService', ['restoreSelection', 'onKeyUp', 'initialize', 'rotatePreviewCanvas']);
         TestBed.configureTestingModule({
@@ -441,7 +443,7 @@ describe('MagicWandService', () => {
         expect(putImageDataSpy).toHaveBeenCalled();
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
         expect(rotateServiceSpy.initialize).toHaveBeenCalled();
-        expect(drawingServiceSpy.updateStack).toHaveBeenCalled();
+        expect(undoRedoStackServiceSpy.updateStack).toHaveBeenCalled();
     });
 
     it('should stroke selection if selection size is not null', () => {

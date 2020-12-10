@@ -14,7 +14,7 @@ import {
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 // this tool was inpired by the code found on http://perfectionkills.com/exploring-canvas-drawing-techniques/
 
 @Injectable({
@@ -35,7 +35,11 @@ export class SprayService extends Tool implements OnDestroy {
     dotWidth: number = this.minDotWidth;
     sprayFrequency: number = this.minFrequency;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -53,7 +57,7 @@ export class SprayService extends Tool implements OnDestroy {
             this.mouseCoord = this.getPositionFromMouse(event);
             clearTimeout(this.timeoutId);
             this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -61,7 +65,7 @@ export class SprayService extends Tool implements OnDestroy {
         if (this.mouseDown) {
             clearTimeout(this.timeoutId);
             this.drawingService.applyPreview();
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.drawingService.autoSave();
@@ -77,7 +81,7 @@ export class SprayService extends Tool implements OnDestroy {
         if (this.mouseDown) {
             clearTimeout(this.timeoutId);
             this.drawingService.applyPreview();
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
     }
 
@@ -85,7 +89,7 @@ export class SprayService extends Tool implements OnDestroy {
         if (this.mouseDown) {
             this.mouseCoord = this.getPositionFromMouse(event);
             this.timeoutId = setTimeout(this.drawSpray, ONE_SECOND / this.sprayFrequency, this, this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 

@@ -6,6 +6,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable, Subject } from 'rxjs';
+import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
 
 // this tool was inpired by the code found on http://perfectionkills.com/exploring-canvas-drawing-techniques/
 
@@ -21,7 +22,11 @@ export class PenService extends Tool {
     lastPoint: Vec2;
     currentPoint: Vec2;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -48,7 +53,7 @@ export class PenService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.currentPoint = this.getPositionFromMouse(event);
             this.drawPenStroke(this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -56,7 +61,7 @@ export class PenService extends Tool {
         if (this.mouseDown) {
             this.drawingService.applyPreview();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.drawingService.autoSave();

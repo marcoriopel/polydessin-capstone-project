@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
+import { Fill, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from './drawing.service';
@@ -100,22 +100,6 @@ describe('DrawingService', () => {
         expect(canvasData.height).toEqual(expectedCanvasData.height);
     });
 
-    it('should update stack on updateStack', () => {
-        service.undoStack = [];
-        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
-        service.updateStack(pencil);
-        expect(service.undoStack.length).toEqual(1);
-    });
-
-    it('should update stack on updateStack and clear redo stack', () => {
-        service.undoStack = [];
-        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
-        service.redoStack.push(pencil);
-        service.updateStack(pencil);
-        expect(service.undoStack.length).toEqual(1);
-        expect(service.redoStack.length).toEqual(0);
-    });
-
     it('should drawfill on basectx', () => {
         const imageDataSpy = spyOn(service.baseCtx, 'putImageData');
         const fill: Fill = { type: {} as string, imageData: {} as ImageData };
@@ -134,12 +118,6 @@ describe('DrawingService', () => {
         const imageDataSpy = spyOn(service.previewCtx, 'getImageData');
         service.getPreviewData();
         expect(imageDataSpy).toHaveBeenCalled();
-    });
-
-    it('should set tool in use', () => {
-        const setSpy = spyOn(service.isToolInUse, 'next');
-        service.setIsToolInUse(true);
-        expect(setSpy).toHaveBeenCalled();
     });
 
     it('should draw grid on setgrid', () => {

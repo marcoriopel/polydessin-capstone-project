@@ -17,6 +17,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { Observable, Subject } from 'rxjs';
+import { UndoRedoStackService } from '../undo-redo/undo-redo-stack.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -29,7 +30,11 @@ export class StampService extends Tool {
     private isAltKeyDown: boolean = false;
     private stampData: Stamp;
 
-    constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        public drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.stampData = {
             type: 'stamp',
@@ -86,8 +91,8 @@ export class StampService extends Tool {
     onMouseDown(event: MouseEvent): void {
         this.updateStampData(event);
         this.printStamp(this.drawingService.baseCtx, this.stampData);
-        this.drawingService.updateStack(this.stampData);
-        this.drawingService.setIsToolInUse(false);
+        this.undoRedoStackService.updateStack(this.stampData);
+        this.undoRedoStackService.setIsToolInUse(false);
         this.drawingService.autoSave();
     }
 
