@@ -12,16 +12,18 @@ describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let matDialogSpy: SpyObj<MatDialog>;
+    let continueDrawingSpy: SpyObj<ContinueDrawingService>;
 
     beforeEach(async(() => {
         matDialogSpy = jasmine.createSpyObj('dialog', ['open']);
+        continueDrawingSpy = jasmine.createSpyObj('ContinueDrawingService', ['loadOldDrawing', 'unlockContinueDrawing']);
 
         TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
             declarations: [MainPageComponent],
             providers: [
                 { provide: MatDialog, useValue: matDialogSpy },
-                { provide: ContinueDrawingService, useValue: {} },
+                { provide: ContinueDrawingService, useValue: continueDrawingSpy },
             ],
         }).compileComponents();
     }));
@@ -48,5 +50,29 @@ describe('MainPageComponent', () => {
     it('should open carousel component on call', () => {
         component.openCarousel();
         expect(matDialogSpy.open).toHaveBeenCalledWith(CarouselComponent);
+    });
+
+    it('should load old drawing', () => {
+        component.oldDrawingCheck();
+        expect(continueDrawingSpy.loadOldDrawing).toHaveBeenCalled();
+    });
+
+    it('should continueDrawing', () => {
+        component.continueDrawing();
+        expect(continueDrawingSpy.unlockContinueDrawing).toHaveBeenCalled();
+    });
+
+    it('should return print button true if local storage has key', () => {
+        const keySpy = spyOn(localStorage, 'getItem').and.returnValue('yes');
+        component.printButton();
+        expect(component.printButton()).toBeTruthy();
+        expect(keySpy).toHaveBeenCalled();
+    });
+
+    it('should return print button false if local storage hasnt the key', () => {
+        const keySpy = spyOn(localStorage, 'getItem').and.returnValue(null);
+        component.printButton();
+        expect(component.printButton()).toBeFalsy();
+        expect(keySpy).toHaveBeenCalled();
     });
 });
