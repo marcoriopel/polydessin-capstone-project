@@ -2,6 +2,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
 import { EmailService } from '../services/email.service';
 import { TYPES } from '../types';
+
 @injectable()
 export class EmailController {
     router: Router;
