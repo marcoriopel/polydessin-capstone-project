@@ -1,68 +1,49 @@
 import { TestBed } from '@angular/core/testing';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize } from '@app/classes/tool-properties';
+import { Resize } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { CANVAS_RESIZING_POINTS } from '@app/ressources/global-variables/canvas-resizing-points';
-import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { MouseButton } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
-import { Observable, Subject } from 'rxjs';
 import { ResizeDrawingService } from './resize-drawing.service';
 
-class DrawingServiceMock {
-    canvas: HTMLCanvasElement = document.createElement('canvas');
-    previewCanvas: HTMLCanvasElement = document.createElement('canvas');
-    baseCtx: CanvasRenderingContext2D;
-    previewCtx: CanvasRenderingContext2D;
-    imageData: ImageData;
-    pixelData: Uint8ClampedArray;
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse)[] = [];
-    isToolInUse: Subject<boolean>;
-    constructor() {
-        this.canvas.height = MINIMUM_CANVAS_HEIGHT;
-        this.canvas.width = MINIMUM_CANVAS_WIDTH;
-        this.baseCtx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-        this.previewCtx = this.previewCanvas.getContext('2d') as CanvasRenderingContext2D;
-        this.imageData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    }
-    // tslint:disable: no-empty
-    initializeBaseCanvas(): void {}
-    clearCanvas(): void {}
-    drawFill(): void {}
-    isCanvasBlank(): boolean {
-        return false;
-    }
-    updateStack(): void {}
-    getPixelData(): Uint8ClampedArray {
-        return this.pixelData;
-    }
-    getCanvasData(): ImageData {
-        return this.imageData;
-    }
-    restoreSelection(): void {}
-    getPreviewData(): ImageData {
-        return this.imageData;
-    }
-    setIsToolInUse(): void {}
-    getIsToolInUse(): Observable<boolean> {
-        return this.isToolInUse.asObservable();
-    }
-    resetStack(): void {}
-}
-
+// tslint:disable: no-string-literal
 // tslint:disable: no-magic-numbers
 describe('ResizeDrawingService', () => {
     let service: ResizeDrawingService;
     let mouseEvent: MouseEvent;
     let target: HTMLElement;
-    let drawingService: DrawingService;
+    let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    const WIDTH = 100;
+    const HEIGHT = 100;
 
     beforeEach(() => {
-        drawingService = new DrawingServiceMock() as DrawingService;
-        drawingService.canvas.width = MINIMUM_CANVAS_WIDTH;
-        drawingService.canvas.height = MINIMUM_CANVAS_HEIGHT;
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', [
+            'clearCanvas',
+            'setIsToolInUse',
+            'checkDrawing',
+            'initializeBaseCanvas',
+            'getPreviewData',
+            'getCanvasData',
+            'autoSave',
+        ]);
+        const canvas = document.createElement('canvas');
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+
+        drawServiceSpy.canvas = canvas;
+        drawServiceSpy.previewCanvas = canvas;
+        drawServiceSpy.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.gridCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
+        drawServiceSpy.getCanvasData.and.returnValue(drawServiceSpy.baseCtx.getImageData(0, 0, WIDTH, HEIGHT));
+        drawServiceSpy.getPreviewData.and.returnValue(drawServiceSpy.baseCtx.getImageData(0, 0, WIDTH, HEIGHT));
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawingService }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
+            ],
         });
         service = TestBed.inject(ResizeDrawingService);
 
@@ -79,7 +60,7 @@ describe('ResizeDrawingService', () => {
 
         service.previewSize = { x: 400, y: 400 };
         service.canvasSize = { x: 400, y: 400 };
-        service.mouseDownCoord = { x: 200, y: 400 };
+        service['mouseDownCoord'] = { x: 200, y: 400 };
     });
 
     it('should be created', () => {
@@ -102,7 +83,7 @@ describe('ResizeDrawingService', () => {
 
     it(' mouseDown should set mouseDown property to true on left click', () => {
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDown).toEqual(true);
+        expect(service['mouseDown']).toEqual(true);
     });
 
     it(' mouseDown should set mouseDown property to false on right click', () => {
@@ -110,31 +91,31 @@ describe('ResizeDrawingService', () => {
             button: MouseButton.RIGHT,
         } as MouseEvent;
         service.onMouseDown(mouseEventRClick);
-        expect(service.mouseDown).toEqual(false);
+        expect(service['mouseDown']).toEqual(false);
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
         const expectedResult: Vec2 = { x: 500, y: 500 };
         service.onMouseDown(mouseEvent);
-        expect(service.mouseDownCoord).toEqual(expectedResult);
+        expect(service['mouseDownCoord']).toEqual(expectedResult);
     });
 
     it(' mouseDown should set serviceCaller to correct value', () => {
         const expectedResult = CANVAS_RESIZING_POINTS.VERTICAL;
         service.onMouseDown(mouseEvent);
-        expect(service.serviceCaller).toEqual(expectedResult);
+        expect(service['serviceCaller']).toEqual(expectedResult);
     });
 
     it('mouseUp should set mouseDown to false', () => {
-        service.mouseDown = true;
+        service['mouseDown'] = true;
         service.onMouseUp();
-        expect(service.mouseDown).toBe(false);
+        expect(service['mouseDown']).toBe(false);
     });
 
     it('mouseUp should leave mouseDown to false', () => {
-        service.mouseDown = false;
+        service['mouseDown'] = false;
         service.onMouseUp();
-        expect(service.mouseDown).toBe(false);
+        expect(service['mouseDown']).toBe(false);
     });
 
     it('should get position from mouse', () => {
@@ -142,8 +123,8 @@ describe('ResizeDrawingService', () => {
     });
 
     it('should change previewSize width', () => {
-        service.mouseDown = true;
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
+        service['mouseDown'] = true;
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 500 });
     });
@@ -153,23 +134,23 @@ describe('ResizeDrawingService', () => {
             clientX: 50,
             clientY: 50,
         } as unknown) as MouseEvent;
-        service.mouseDown = true;
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
+        service['mouseDown'] = true;
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should not change previewSize on verticalResize', () => {
-        service.mouseDown = false;
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL;
+        service['mouseDown'] = false;
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should change previewSize height', () => {
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 400, y: 200 };
-        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
+        service['mouseDown'] = true;
+        service['mouseDownCoord'] = { x: 400, y: 200 };
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 500, y: 400 });
     });
@@ -179,24 +160,24 @@ describe('ResizeDrawingService', () => {
             clientX: 50,
             clientY: 50,
         } as unknown) as MouseEvent;
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 400, y: 200 };
-        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
+        service['mouseDown'] = true;
+        service['mouseDownCoord'] = { x: 400, y: 200 };
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should not change previewSize on horizontalResize', () => {
-        service.mouseDown = false;
-        service.serviceCaller = CANVAS_RESIZING_POINTS.HORIZONTAL;
+        service['mouseDown'] = false;
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should change previewSize height and width', () => {
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 400, y: 400 };
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
+        service['mouseDown'] = true;
+        service['mouseDownCoord'] = { x: 400, y: 400 };
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 500, y: 500 });
     });
@@ -206,23 +187,25 @@ describe('ResizeDrawingService', () => {
             clientX: 50,
             clientY: 50,
         } as unknown) as MouseEvent;
-        service.mouseDown = true;
-        service.mouseDownCoord = { x: 400, y: 400 };
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
+        service['mouseDown'] = true;
+        service['mouseDownCoord'] = { x: 400, y: 400 };
+        // tslint:disable-next-line: no-any
+        spyOn(service as any, 'horizontalResize').and.stub();
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(localMouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should not change previewSize on verticalAndHorizontalResize', () => {
-        service.mouseDown = false;
-        service.serviceCaller = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
+        service['mouseDown'] = false;
+        service['serviceCaller'] = CANVAS_RESIZING_POINTS.VERTICAL_AND_HORIZONTAL;
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
 
     it('should not change previewSize on resizeCanvas', () => {
-        service.mouseDown = true;
-        service.serviceCaller = 'not an actual possibility';
+        service['mouseDown'] = true;
+        service['serviceCaller'] = 'not an actual possibility';
         service.resizeCanvas(mouseEvent);
         expect(service.previewSize).toEqual({ x: 400, y: 400 });
     });
@@ -239,7 +222,7 @@ describe('ResizeDrawingService', () => {
 
         service.previewSize = { x: 500, y: 500 };
         service.canvasSize = { x: 20, y: 20 };
-        service.mouseDown = true;
+        service['mouseDown'] = true;
         service.onMouseUp();
 
         const ctxAfterResize = service.drawingService.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -252,7 +235,7 @@ describe('ResizeDrawingService', () => {
         service.previewSize = { x: 500, y: 500 };
         service.drawingService.canvas.width = service.canvasSize.x;
         service.drawingService.canvas.height = service.canvasSize.y;
-        service.mouseDown = true;
+        service['mouseDown'] = true;
 
         service.onMouseUp();
         expect(service.canvasSize).toEqual(expectedResult);
@@ -265,8 +248,12 @@ describe('ResizeDrawingService', () => {
     });
 
     it('should restore canvas', () => {
-        const imageDataSpy = spyOn(drawingService.baseCtx, 'putImageData');
-        const expectedData = { type: {} as string, canvasSize: { x: 500, y: 500 }, imageData: {} as ImageData };
+        const imageDataSpy = spyOn(drawServiceSpy.baseCtx, 'putImageData');
+        const expectedData: Resize = {
+            type: 'imageText',
+            canvasSize: { x: 500, y: 500 },
+            imageData: drawServiceSpy.baseCtx.getImageData(0, 0, 100, 100),
+        };
         service.restoreCanvas(expectedData);
         expect(service.previewSize).toEqual(expectedData.canvasSize);
         expect(imageDataSpy).toHaveBeenCalled();

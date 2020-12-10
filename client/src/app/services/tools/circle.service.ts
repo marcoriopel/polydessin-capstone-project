@@ -9,30 +9,64 @@ import { DASH_LENGTH, DASH_SPACE_LENGTH, MouseButton, Quadrant } from '@app/ress
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class CircleService extends Tool {
     name: string = TOOL_NAMES.CIRCLE_TOOL_NAME;
-    fillStyle: number = FILL_STYLES.FILL;
-    isShiftKeyDown: boolean = false;
     mouseDown: boolean = false;
-    ellipseRadius: Vec2;
-    ellipseCenter: Vec2;
-    ellipseHeight: number;
-    ellipseWidth: number;
-    ellipseData: Ellipse;
-    width: number = 1;
-    firstPoint: Vec2;
-    lastPoint: Vec2;
-    circleHeight: number;
-    circleWidth: number;
-    quadrant: number;
-    trigonometry: Trigonometry = new Trigonometry();
+    private ellipseHeight: number;
+    private ellipseWidth: number;
+    private ellipseData: Ellipse;
+    private circleHeight: number;
+    private circleWidth: number;
+    private quadrant: number;
+    private trigonometry: Trigonometry = new Trigonometry();
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
+        this.ellipseData = {
+            type: 'ellipse',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            center: { x: 0, y: 0 },
+            radius: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL_AND_BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+            firstPoint: { x: 0, y: 0 },
+            lastPoint: { x: 0, y: 0 },
+        };
+    }
+
+    getLineWidth(): number {
+        return this.ellipseData.lineWidth;
+    }
+
+    setIsShiftDown(isShiftDown: boolean): void {
+        this.ellipseData.isShiftDown = isShiftDown;
+    }
+
+    setFirstPoint(newPoint: Vec2): void {
+        this.ellipseData.firstPoint = newPoint;
+    }
+
+    setLastPoint(newPoint: Vec2): void {
+        this.ellipseData.lastPoint = newPoint;
+    }
+
+    setFillStyle(newFillStyle: number): void {
+        this.ellipseData.fillStyle = newFillStyle;
+    }
+
+    getFillStyle(): number {
+        return this.ellipseData.fillStyle;
     }
 
     initialize(): void {
@@ -40,16 +74,12 @@ export class CircleService extends Tool {
     }
 
     changeWidth(newWidth: number): void {
-        this.width = newWidth;
-    }
-
-    changeFillStyle(newFillStyle: number): void {
-        this.fillStyle = newFillStyle;
+        this.ellipseData.lineWidth = newWidth;
     }
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
-            this.isShiftKeyDown = true;
+            this.ellipseData.isShiftDown = true;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawShape(this.drawingService.previewCtx);
@@ -58,8 +88,8 @@ export class CircleService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.key === 'Shift' && this.isShiftKeyDown) {
-            this.isShiftKeyDown = false;
+        if (event.key === 'Shift' && this.ellipseData.isShiftDown) {
+            this.ellipseData.isShiftDown = false;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawShape(this.drawingService.previewCtx);
@@ -72,50 +102,51 @@ export class CircleService extends Tool {
         this.drawingService.previewCtx.filter = 'none';
         this.mouseDown = event.button === MouseButton.LEFT;
         if (this.mouseDown) {
-            this.firstPoint = this.getPositionFromMouse(event);
-            this.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.setIsToolInUse(true);
+            this.ellipseData.firstPoint = this.getPositionFromMouse(event);
+            this.ellipseData.lastPoint = this.getPositionFromMouse(event);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
     onMouseUp(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.lastPoint = this.getPositionFromMouse(event);
+            this.ellipseData.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
+        this.drawingService.autoSave();
     }
 
     onMouseMove(event: MouseEvent): void {
         if (this.mouseDown) {
-            this.lastPoint = this.getPositionFromMouse(event);
+            this.ellipseData.lastPoint = this.getPositionFromMouse(event);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawShape(this.drawingService.previewCtx);
         }
     }
 
     drawShape(ctx: CanvasRenderingContext2D): SelectionBox {
-        const topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
+        const topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.ellipseData.firstPoint, this.ellipseData.lastPoint);
         ctx.fillStyle = this.colorSelectionService.primaryColor;
         ctx.strokeStyle = this.colorSelectionService.secondaryColor;
-        ctx.lineWidth = this.width;
+        ctx.lineWidth = this.ellipseData.lineWidth;
         ctx.setLineDash([0]);
 
-        if (this.fillStyle === FILL_STYLES.FILL) {
+        if (this.ellipseData.fillStyle === FILL_STYLES.FILL) {
             ctx.strokeStyle = this.colorSelectionService.primaryColor;
             ctx.lineWidth = 1;
         }
 
         this.setEllipseHeight();
         this.setEllipseWidth();
-        this.ellipseRadius = { x: this.ellipseWidth / 2, y: this.ellipseHeight / 2 };
-        this.ellipseCenter = { x: topLeftPoint.x + this.ellipseRadius.x, y: topLeftPoint.y + this.ellipseRadius.y };
+        this.ellipseData.radius = { x: this.ellipseWidth / 2, y: this.ellipseHeight / 2 };
+        this.ellipseData.center = { x: topLeftPoint.x + this.ellipseData.radius.x, y: topLeftPoint.y + this.ellipseData.radius.y };
 
-        if (this.isShiftKeyDown) {
+        if (this.ellipseData.isShiftDown) {
             this.drawCircle(ctx, topLeftPoint);
         } else {
-            this.updateEllipseData();
+            this.updateEllipseDataColor();
             this.drawEllipse(ctx, this.ellipseData);
         }
 
@@ -126,16 +157,16 @@ export class CircleService extends Tool {
             ctx.setLineDash([DASH_LENGTH, DASH_SPACE_LENGTH]);
             ctx.rect(topLeftPoint.x, topLeftPoint.y, this.ellipseWidth, this.ellipseHeight);
             ctx.stroke();
-            ctx.lineWidth = this.width;
+            ctx.lineWidth = this.ellipseData.lineWidth;
         } else {
-            this.drawingService.updateStack(this.ellipseData);
+            this.undoRedoStackService.updateStack(this.ellipseData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.drawingService.previewCtx.setLineDash([0]);
         }
 
-        topLeftPoint.x = this.ellipseData.center.x - this.ellipseRadius.x;
-        topLeftPoint.y = this.ellipseData.center.y - this.ellipseRadius.y;
-        return { startingPoint: topLeftPoint, width: this.ellipseRadius.x * 2, height: this.ellipseRadius.y * 2 };
+        topLeftPoint.x = this.ellipseData.center.x - this.ellipseData.radius.x;
+        topLeftPoint.y = this.ellipseData.center.y - this.ellipseData.radius.y;
+        return { startingPoint: topLeftPoint, width: this.ellipseData.radius.x * 2, height: this.ellipseData.radius.y * 2 };
     }
 
     drawEllipse(ctx: CanvasRenderingContext2D, ellipse: Ellipse): void {
@@ -164,7 +195,7 @@ export class CircleService extends Tool {
     drawCircle(ctx: CanvasRenderingContext2D, point: Vec2): void {
         this.setCircleHeight();
         this.setCircleWidth();
-        this.quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
+        this.quadrant = this.trigonometry.findQuadrant(this.ellipseData.firstPoint, this.ellipseData.lastPoint);
         const ellipseRadiusX = this.circleWidth / 2;
         const ellipseRadiusY = this.circleHeight / 2;
         let circleRadius = Math.min(ellipseRadiusX, ellipseRadiusY);
@@ -172,66 +203,56 @@ export class CircleService extends Tool {
         let ellipseCenterY = point.y + circleRadius;
         switch (this.quadrant) {
             case Quadrant.BOTTOM_LEFT:
-                ellipseCenterX = this.firstPoint.x - circleRadius;
-                ellipseCenterY = this.firstPoint.y + circleRadius;
+                ellipseCenterX = this.ellipseData.firstPoint.x - circleRadius;
+                ellipseCenterY = this.ellipseData.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_LEFT:
-                ellipseCenterX = this.firstPoint.x - circleRadius;
-                ellipseCenterY = this.firstPoint.y - circleRadius;
+                ellipseCenterX = this.ellipseData.firstPoint.x - circleRadius;
+                ellipseCenterY = this.ellipseData.firstPoint.y - circleRadius;
                 break;
             case Quadrant.BOTTOM_RIGHT:
-                ellipseCenterX = this.firstPoint.x + circleRadius;
-                ellipseCenterY = this.firstPoint.y + circleRadius;
+                ellipseCenterX = this.ellipseData.firstPoint.x + circleRadius;
+                ellipseCenterY = this.ellipseData.firstPoint.y + circleRadius;
                 break;
             case Quadrant.TOP_RIGHT:
-                ellipseCenterX = this.firstPoint.x + circleRadius;
-                ellipseCenterY = this.firstPoint.y - circleRadius;
+                ellipseCenterX = this.ellipseData.firstPoint.x + circleRadius;
+                ellipseCenterY = this.ellipseData.firstPoint.y - circleRadius;
                 break;
         }
         ctx.beginPath();
         if (circleRadius > ctx.lineWidth / 2) {
             circleRadius -= ctx.lineWidth / 2;
             ctx.arc(ellipseCenterX, ellipseCenterY, circleRadius, 0, Math.PI * 2, false);
-            if (this.fillStyle !== FILL_STYLES.BORDER && this.fillStyle !== FILL_STYLES.DASHED) {
+            if (this.ellipseData.fillStyle !== FILL_STYLES.BORDER && this.ellipseData.fillStyle !== FILL_STYLES.DASHED) {
                 ctx.fill();
             }
         }
 
         ctx.stroke();
 
-        this.ellipseRadius = { x: circleRadius, y: circleRadius };
-        this.ellipseCenter = { x: ellipseCenterX, y: ellipseCenterY };
-        this.updateEllipseData();
+        this.ellipseData.radius = { x: circleRadius, y: circleRadius };
+        this.ellipseData.center = { x: ellipseCenterX, y: ellipseCenterY };
+        this.updateEllipseDataColor();
     }
 
     setEllipseWidth(): void {
-        this.ellipseWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+        this.ellipseWidth = Math.abs(this.ellipseData.firstPoint.x - this.ellipseData.lastPoint.x);
     }
 
     setEllipseHeight(): void {
-        this.ellipseHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
+        this.ellipseHeight = Math.abs(this.ellipseData.firstPoint.y - this.ellipseData.lastPoint.y);
     }
 
-    private updateEllipseData(): void {
-        this.ellipseData = {
-            type: 'ellipse',
-            primaryColor: this.colorSelectionService.primaryColor,
-            secondaryColor: this.colorSelectionService.secondaryColor,
-            center: this.ellipseCenter,
-            radius: this.ellipseRadius,
-            fillStyle: this.fillStyle,
-            isShiftDown: this.isShiftKeyDown,
-            lineWidth: this.width,
-            firstPoint: this.firstPoint,
-            lastPoint: this.lastPoint,
-        };
+    private updateEllipseDataColor(): void {
+        this.ellipseData.primaryColor = this.colorSelectionService.primaryColor;
+        this.ellipseData.secondaryColor = this.colorSelectionService.secondaryColor;
     }
 
     setCircleWidth(): void {
-        this.circleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+        this.circleWidth = Math.abs(this.ellipseData.firstPoint.x - this.ellipseData.lastPoint.x);
     }
 
     setCircleHeight(): void {
-        this.circleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
+        this.circleHeight = Math.abs(this.ellipseData.firstPoint.y - this.ellipseData.lastPoint.y);
     }
 }

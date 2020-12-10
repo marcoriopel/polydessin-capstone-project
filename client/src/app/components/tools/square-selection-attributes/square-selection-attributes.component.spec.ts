@@ -1,25 +1,25 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
-import { SquareselectionAttributesComponent } from './square-selection-attributes.component';
+import { SquareSelectionAttributesComponent } from './square-selection-attributes.component';
 
-describe('SqareselectionAttributesComponent', () => {
-    let component: SquareselectionAttributesComponent;
-    let fixture: ComponentFixture<SquareselectionAttributesComponent>;
+describe('SqareSelectionAttributesComponent', () => {
+    let component: SquareSelectionAttributesComponent;
+    let fixture: ComponentFixture<SquareSelectionAttributesComponent>;
     let squareSelectionServiceSpy: jasmine.SpyObj<SquareSelectionService>;
 
     beforeEach(async(() => {
-        squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['changeWidth', 'changeFillStyle']);
+        squareSelectionServiceSpy = jasmine.createSpyObj('SquareSelectionService', ['enableMagnetism', 'setMagnetismAlignment']);
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [SquareselectionAttributesComponent],
+            declarations: [SquareSelectionAttributesComponent],
             providers: [{ provide: SquareSelectionService, useValue: squareSelectionServiceSpy }],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(SquareselectionAttributesComponent);
+        fixture = TestBed.createComponent(SquareSelectionAttributesComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

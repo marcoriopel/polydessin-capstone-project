@@ -42,6 +42,22 @@
         </label>
         <input
             type="radio"
+            [id]="this.toolNames.PEN_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.PEN_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.PEN_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.PEN_TOOL_NAME">
+            <mat-icon
+                class="fas fa-pen-fancy"
+                [matTooltip]="elementDescriptions.PEN_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+        <input
+            type="radio"
             [id]="this.toolNames.BRUSH_TOOL_NAME"
             name="tool"
             [value]="this.toolNames.BRUSH_TOOL_NAME"
@@ -57,6 +73,58 @@
                 >brush</mat-icon
             >
         </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.SPRAY_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.SPRAY_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.SPRAY_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.SPRAY_TOOL_NAME">
+            <mat-icon
+                class="fas fa-spray-can"
+                [matTooltip]="elementDescriptions.SPRAY_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+
+        <input
+            type="radio"
+            [id]="this.toolNames.TEXT_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.TEXT_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.TEXT_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.TEXT_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.TEXT_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >text_format</mat-icon
+            >
+        </label>
+        <input
+            type="radio"
+            [id]="this.toolNames.STAMP_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.STAMP_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.STAMP_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.STAMP_TOOL_NAME">
+            <mat-icon
+                class="fas fa-stamp"
+                [matTooltip]="elementDescriptions.STAMP_TOOL_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
+
         <input
             type="radio"
             [id]="this.toolNames.SQUARE_TOOL_NAME"
@@ -93,16 +161,16 @@
         </label>
         <input
             type="radio"
-            [id]="this.toolNames.POLYGONE_TOOL_NAME"
+            [id]="this.toolNames.POLYGON_TOOL_NAME"
             name="tool"
-            [value]="this.toolNames.POLYGONE_TOOL_NAME"
+            [value]="this.toolNames.POLYGON_TOOL_NAME"
             (change)="onToolChange($event)"
-            [checked]="selectedTool.includes(this.toolNames.POLYGONE_TOOL_NAME)"
+            [checked]="selectedTool.includes(this.toolNames.POLYGON_TOOL_NAME)"
         />
-        <label [for]="this.toolNames.POLYGONE_TOOL_NAME">
+        <label [for]="this.toolNames.POLYGON_TOOL_NAME">
             <mat-icon
                 class="material-icons"
-                [matTooltip]="elementDescriptions.POLYGONE_TOOL_DESCRIPTION"
+                [matTooltip]="elementDescriptions.POLYGON_TOOL_DESCRIPTION"
                 matTooltipPosition="right"
                 [matTooltipShowDelay]="tooltipShowDelay"
                 >change_history</mat-icon
@@ -127,40 +195,56 @@
         </label>
 
         <input
-        type="radio"
-        [id]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
-        name="tool"
-        [value]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
-        (change)="onToolChange($event)"
-        [checked]="selectedTool.includes(this.toolNames.CIRCLE_SELECTION_TOOL_NAME)"
-    />
-    <label [for]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME">
-        <mat-icon
-            class="material-icons"
-            [matTooltip]="elementDescriptions.CIRCLE_SELECTION_TOOL_NAME"
-            matTooltipPosition="right"
-            [matTooltipShowDelay]="tooltipShowDelay"
-            >vignette</mat-icon
-        >
-    </label>
+            type="radio"
+            [id]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.CIRCLE_SELECTION_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.CIRCLE_SELECTION_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.CIRCLE_SELECTION_TOOL_NAME"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >vignette</mat-icon
+            >
+        </label>
 
-    <input
-    type="radio"
-    [id]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
-    name="tool"
-    [value]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
-    (change)="onToolChange($event)"
-    [checked]="selectedTool.includes(this.toolNames.SQUARE_SELECTION_TOOL_NAME)"
-/>
-<label [for]="this.toolNames.SQUARE_SELECTION_TOOL_NAME">
-    <mat-icon
-        class="material-icons"
-        [matTooltip]="elementDescriptions.SQUARE_SELECTION_TOOL_NAME"
-        matTooltipPosition="right"
-        [matTooltipShowDelay]="tooltipShowDelay"
-        >highlight_alt</mat-icon
-    >
-</label>
+        <input
+            type="radio"
+            [id]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.SQUARE_SELECTION_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.SQUARE_SELECTION_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.SQUARE_SELECTION_TOOL_NAME">
+            <mat-icon
+                class="material-icons"
+                [matTooltip]="elementDescriptions.SQUARE_SELECTION_TOOL_NAME"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+                >highlight_alt</mat-icon
+            >
+        </label>
+        <input
+            type="radio"
+            [id]="this.toolNames.MAGIC_WAND_TOOL_NAME"
+            name="tool"
+            [value]="this.toolNames.MAGIC_WAND_TOOL_NAME"
+            (change)="onToolChange($event)"
+            [checked]="selectedTool.includes(this.toolNames.MAGIC_WAND_TOOL_NAME)"
+        />
+        <label [for]="this.toolNames.MAGIC_WAND_TOOL_NAME">
+            <mat-icon
+                class="fas fa-magic"
+                [matTooltip]="elementDescriptions.MAGIC_WAND_DESCRIPTION"
+                matTooltipPosition="right"
+                [matTooltipShowDelay]="tooltipShowDelay"
+            ></mat-icon>
+        </label>
         <input
             type="radio"
             [id]="this.toolNames.FILL_TOOL_NAME"
@@ -211,8 +295,38 @@
                 >colorize</mat-icon
             >
         </label>
+        <mat-icon
+            #cutButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.CUT_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="cut()"
+            >content_cut</mat-icon
+        >
+        <mat-icon
+            #copyButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.COPY_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="copy()"
+            >content_copy</mat-icon
+        >
+        <mat-icon
+            #pasteButton
+            class="material-icons disabled"
+            [matTooltip]="elementDescriptions.PASTE_DESCRIPTION"
+            matTooltipPosition="right"
+            [matTooltipShowDelay]="tooltipShowDelay"
+            mat-button
+            (click)="paste()"
+            >content_paste</mat-icon
+        >
     </div>
-    <div class="sidebarSection">
+    <div class="topDivider sidebarSection">
         <mat-icon
             class="material-icons"
             [matTooltip]="elementDescriptions.CAROUSEL_DESCRIPTION"
@@ -250,10 +364,11 @@
             (click)="openUserguide()"
             >help</mat-icon
         >
+
         <mat-icon
             id="undo"
             #undo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.UNDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"
@@ -263,7 +378,7 @@
         <mat-icon
             id="redo"
             #redo
-            class="material-icons"
+            class="material-icons disabled"
             [matTooltip]="elementDescriptions.REDO_DESCRIPTION"
             matTooltipPosition="right"
             [matTooltipShowDelay]="tooltipShowDelay"

@@ -1,68 +1,125 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { SelectionBox } from '@app/classes/selection-box';
+import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { CONFIRM_KEY_PRESS_DURATION, KEY_PRESS_INTERVAL_DURATION, SELECTION_MOVE_STEP_SIZE } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
+import { RotateService } from './rotate.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class MoveService {
+export class MoveService implements OnDestroy {
     initialSelection: SelectionBox = { startingPoint: { x: 0, y: 0 }, width: 0, height: 0 };
     selection: SelectionBox;
     isTransformationOver: boolean = true;
-    pressedKeys: Map<string, boolean> = new Map([
+    private pressedKeys: Map<string, boolean> = new Map([
         [ARROW_KEYS.LEFT, false],
         [ARROW_KEYS.UP, false],
         [ARROW_KEYS.RIGHT, false],
         [ARROW_KEYS.DOWN, false],
     ]);
-    intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
-    selectionImage: HTMLCanvasElement = document.createElement('canvas');
+    private intervalId: ReturnType<typeof setTimeout> | undefined = undefined;
+    private selectionImage: HTMLCanvasElement = document.createElement('canvas');
 
-    constructor(public drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService, public rotateService: RotateService, public undoRedoStackService: UndoRedoStackService) {}
+
+    ngOnDestroy(): void {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    }
 
     initialize(selection: SelectionBox, selectionImage: HTMLCanvasElement): void {
-        this.initialSelection.startingPoint.x = selection.startingPoint.x;
-        this.initialSelection.startingPoint.y = selection.startingPoint.y;
-        this.initialSelection.height = selection.height;
-        this.initialSelection.width = selection.width;
+        this.setSelection(this.initialSelection, selection);
         this.selection = selection;
         this.selectionImage = selectionImage;
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.isTransformationOver = false;
-    }
-
-    onMouseMove(event: MouseEvent): void {
-        this.selection.startingPoint.x += event.movementX;
-        this.selection.startingPoint.y += event.movementY;
-        this.printSelectionOnPreview();
-    }
-
-    onKeyDown(event: KeyboardEvent): void {
+    snapOnGrid(event: KeyboardEvent, baseCoordinates: Vec2, squareSize: number): void {
         let isArrowKey = false;
 
         switch (event.key) {
             case ARROW_KEYS.LEFT:
+                this.selection.startingPoint.x -= baseCoordinates.x % squareSize;
+                let changeYLeft = baseCoordinates.y % squareSize;
+                if (changeYLeft > squareSize / 2) {
+                    changeYLeft = changeYLeft - squareSize;
+                }
+                this.selection.startingPoint.y -= changeYLeft;
+                break;
+            case ARROW_KEYS.UP:
+                this.selection.startingPoint.y -= baseCoordinates.y % squareSize;
+                let changeXUp = baseCoordinates.x % squareSize;
+                if (changeXUp > squareSize / 2) {
+                    changeXUp = changeXUp - squareSize;
+                }
+                this.selection.startingPoint.x -= changeXUp;
+                break;
+            case ARROW_KEYS.RIGHT:
+                if (baseCoordinates.x % squareSize !== 0) this.selection.startingPoint.x += squareSize - (baseCoordinates.x % squareSize);
+                let changeYRight = baseCoordinates.y % squareSize;
+                if (changeYRight > squareSize / 2) {
+                    changeYRight = changeYRight - squareSize;
+                }
+                this.selection.startingPoint.y -= changeYRight;
+                break;
+            case ARROW_KEYS.DOWN:
+                if (baseCoordinates.y % squareSize !== 0) this.selection.startingPoint.y += squareSize - (baseCoordinates.y % squareSize);
+                let changeXDown = baseCoordinates.x % squareSize;
+                if (changeXDown > squareSize / 2) {
+                    changeXDown = changeXDown - squareSize;
+                }
+                this.selection.startingPoint.x -= changeXDown;
+                break;
+        }
+
+        if (this.pressedKeys.has(event.key)) {
+            this.pressedKeys.set(event.key, true);
+            isArrowKey = true;
+        }
+
+        if (isArrowKey) {
+            this.printSelectionOnPreview();
+            this.isTransformationOver = false;
+        }
+    }
+    onMouseDown(event: MouseEvent): void {
+        this.isTransformationOver = false;
+    }
+
+    onMouseMove(movementX: number, movementY: number): void {
+        this.selection.startingPoint.x += movementX;
+        this.selection.startingPoint.y += movementY;
+        this.printSelectionOnPreview();
+    }
+
+    onKeyDown(event: KeyboardEvent, isMagnetism: boolean, squareSize: number): void {
+        let isArrowKey = false;
+        let moveStep = SELECTION_MOVE_STEP_SIZE;
+        if (isMagnetism) {
+            moveStep = squareSize;
+        }
+        switch (event.key) {
+            case ARROW_KEYS.LEFT:
                 if (!this.pressedKeys.get(ARROW_KEYS.LEFT)) {
-                    this.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
+                    this.selection.startingPoint.x -= moveStep;
                 }
                 break;
             case ARROW_KEYS.UP:
                 if (!this.pressedKeys.get(ARROW_KEYS.UP)) {
-                    this.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
+                    this.selection.startingPoint.y -= moveStep;
                 }
                 break;
             case ARROW_KEYS.RIGHT:
                 if (!this.pressedKeys.get(ARROW_KEYS.RIGHT)) {
-                    this.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
+                    this.selection.startingPoint.x += moveStep;
                 }
                 break;
             case ARROW_KEYS.DOWN:
                 if (!this.pressedKeys.get(ARROW_KEYS.DOWN)) {
-                    this.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
+                    this.selection.startingPoint.y += moveStep;
                 }
                 break;
         }
@@ -74,9 +131,9 @@ export class MoveService {
 
         setTimeout(() => {
             if (this.isArrowKeyPressed()) {
-                this.drawingService.setIsToolInUse(true);
-                if (this.intervalId === undefined) {
-                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this);
+                this.undoRedoStackService.setIsToolInUse(true);
+                if (!this.intervalId) {
+                    this.intervalId = setInterval(this.move, KEY_PRESS_INTERVAL_DURATION, this, isMagnetism, squareSize);
                 }
             }
         }, CONFIRM_KEY_PRESS_DURATION);
@@ -90,10 +147,10 @@ export class MoveService {
     onKeyUp(event: KeyboardEvent): void {
         if (this.pressedKeys.has(event.key)) {
             this.pressedKeys.set(event.key, false);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
 
-        if (this.intervalId !== undefined) {
+        if (this.intervalId) {
             if (!this.isArrowKeyPressed()) {
                 clearInterval(this.intervalId);
                 this.intervalId = undefined;
@@ -122,21 +179,35 @@ export class MoveService {
     printSelectionOnPreview(): void {
         this.drawingService.clearCanvas(this.drawingService.previewCtx);
         this.clearSelectionBackground();
-        this.drawingService.previewCtx.drawImage(this.selectionImage, this.selection.startingPoint.x, this.selection.startingPoint.y);
+        this.drawingService.previewCtx.save();
+        this.rotateService.rotatePreviewCanvas();
+        this.drawingService.previewCtx.drawImage(
+            this.selectionImage,
+            this.selection.startingPoint.x,
+            this.selection.startingPoint.y,
+            this.selection.width,
+            this.selection.height,
+        );
+        this.drawingService.previewCtx.restore();
     }
 
-    private move(self: MoveService): void {
+    private move(self: MoveService, isMagnetism: boolean, squareSize: number): void {
+        let moveStep = SELECTION_MOVE_STEP_SIZE;
+        if (isMagnetism) {
+            moveStep = squareSize;
+        }
+
         if (self.pressedKeys.get(ARROW_KEYS.LEFT)) {
-            self.selection.startingPoint.x -= SELECTION_MOVE_STEP_SIZE;
+            self.selection.startingPoint.x -= moveStep;
         }
         if (self.pressedKeys.get(ARROW_KEYS.UP)) {
-            self.selection.startingPoint.y -= SELECTION_MOVE_STEP_SIZE;
+            self.selection.startingPoint.y -= moveStep;
         }
         if (self.pressedKeys.get(ARROW_KEYS.RIGHT)) {
-            self.selection.startingPoint.x += SELECTION_MOVE_STEP_SIZE;
+            self.selection.startingPoint.x += moveStep;
         }
         if (self.pressedKeys.get(ARROW_KEYS.DOWN)) {
-            self.selection.startingPoint.y += SELECTION_MOVE_STEP_SIZE;
+            self.selection.startingPoint.y += moveStep;
         }
 
         self.printSelectionOnPreview();
@@ -149,5 +220,12 @@ export class MoveService {
             }
         }
         return false;
+    }
+
+    setSelection(selection: SelectionBox, incomingSelection: SelectionBox): void {
+        selection.startingPoint.x = incomingSelection.startingPoint.x;
+        selection.startingPoint.y = incomingSelection.startingPoint.y;
+        selection.width = incomingSelection.width;
+        selection.height = incomingSelection.height;
     }
 }

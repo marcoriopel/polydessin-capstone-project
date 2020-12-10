@@ -9,7 +9,7 @@ describe('PencilService', () => {
     let service: PencilService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
-
+    let gridCanvasStub: HTMLCanvasElement;
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
@@ -27,20 +27,20 @@ describe('PencilService', () => {
         drawCanvas.height = HEIGHT;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         previewCanvasStub = canvas as HTMLCanvasElement;
-
+        gridCanvasStub = canvas as HTMLCanvasElement;
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
         });
         service = TestBed.inject(PencilService);
         drawPencilStrokeSpy = spyOn<any>(service, 'drawPencilStroke').and.callThrough();
 
-        // Configuration du spy du service
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -53,10 +53,15 @@ describe('PencilService', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should be the rigth cursor', () => {
+        service.setCursor();
+        expect(drawServiceSpy.gridCanvas.style.cursor).toEqual('crosshair');
+    });
+
     it('should change width', () => {
-        service.width = 0;
+        service.pencilData.lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.pencilData.lineWidth).toBe(1);
     });
 
     it(' should draw line on mouseleave', () => {
@@ -96,7 +101,6 @@ describe('PencilService', () => {
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
         service.mouseDown = false;
         service.mouseDownCoord = { x: 0, y: 0 };
-
         service.onMouseUp(mouseEvent);
         expect(drawPencilStrokeSpy).not.toHaveBeenCalled();
     });
@@ -120,9 +124,9 @@ describe('PencilService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it(' should change the pixel of the canvas ', () => {
@@ -130,14 +134,13 @@ describe('PencilService', () => {
         service.onMouseDown(mouseEvent);
         mouseEvent = { offsetX: 1, offsetY: 0, button: 0 } as MouseEvent;
         service.onMouseUp(mouseEvent);
-
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
         expect(imageData.data[2]).toEqual(0); // B
         // tslint:disable-next-line:no-magic-numbers
         expect(imageData.data[3]).not.toEqual(0); // A
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' should get position from mouse', () => {

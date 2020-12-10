@@ -9,6 +9,7 @@ describe('BrushService', () => {
     let service: BrushService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let gridCanvasStub: HTMLCanvasElement;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCanvasStub: HTMLCanvasElement;
@@ -26,11 +27,12 @@ describe('BrushService', () => {
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
         previewCanvasStub = canvas as HTMLCanvasElement;
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
 
         TestBed.configureTestingModule({
             providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
@@ -42,6 +44,7 @@ describe('BrushService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -55,15 +58,25 @@ describe('BrushService', () => {
     });
 
     it('should change width', () => {
-        service.width = 0;
+        service['brushData'].lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service['brushData'].lineWidth).toBe(1);
+    });
+
+    it('should return lineWith', () => {
+        expect(service.getLineWidth()).toEqual(service['brushData'].lineWidth);
+    });
+
+    it('reset should put filter at none on both context', () => {
+        service.reset();
+        expect(drawServiceSpy.baseCtx.filter).toEqual('none');
+        expect(drawServiceSpy.previewCtx.filter).toEqual('none');
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -137,7 +150,7 @@ describe('BrushService', () => {
 
     it(' setPattern should change current pattern', () => {
         service.setPattern(pattern);
-        expect(service.pattern).toEqual(pattern);
+        expect(service['brushData'].pattern).toEqual(pattern);
     });
 
     it(' applyPattern should change filter of layers when called with a valid pattern string', () => {

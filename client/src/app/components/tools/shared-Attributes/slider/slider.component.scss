@@ -31,7 +31,7 @@ mat-slider {
 }
 
 p {
-    margin: 5px 0px 0px 0px;
+    margin: 10px 0px 0px 0px;
     font-size: 12px;
 }
 
@@ -43,10 +43,23 @@ hr {
     width: 100%;
 }
 
+input {
+    background-color: #f0f0f0;
+    cursor: context-menu;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-width: 1px;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    text-align: center;
+    outline: n;
+}
+
 .topBorder {
     margin: 0;
 }
 
 .bottomBorder {
-    margin: 1em 0;
+    margin: 1em 0 0 0;
 }

@@ -5,11 +5,14 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadSelectedDrawingAlertComponent } from '@app/components/load-selected-drawing-alert/load-selected-drawing-alert.component';
 import { MAX_NAME_LENGTH, MAX_NUMBER_TAG, MAX_NUMBER_VISIBLE_DRAWINGS, MAX_TAG_LENGTH } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { TextService } from '@app/services/tools/text.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { DBData } from '@common/communication/drawing-data';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -24,16 +27,12 @@ export class CarouselComponent implements OnInit, OnDestroy {
     databaseMetadata: DBData[] = [];
     filteredMetadata: DBData[] = [];
     gotImages: boolean = false;
-    isOpenButtonDisabled: boolean = false;
     visibleDrawingsIndexes: number[] = [];
     currentTag: string = '';
     maxTags: boolean = false;
     isArrowEventsChecked: boolean = true;
     name: string = '';
     drawingOfInterest: number = 0;
-    selectable: boolean = true;
-    removable: boolean = true;
-    addOnBlur: boolean = true;
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
     tags: string[] = [];
     currentRoute: string;
@@ -47,11 +46,17 @@ export class CarouselComponent implements OnInit, OnDestroy {
         public dialog: MatDialog,
         public drawingService: DrawingService,
         public resizeDrawingService: ResizeDrawingService,
+        public continueDrawingService: ContinueDrawingService,
+        public textService: TextService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {}
 
     @ViewChild('chipList', { static: false }) chipList: MatChipList;
 
     ngOnInit(): void {
+        if (this.textService.isNewText) {
+            this.textService.createText();
+        }
         this.hotkeyService.isHotkeyEnabled = false;
         this.loadDBData();
         this.currentRoute = this.router.url;
@@ -146,7 +151,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
         }
     }
 
-    async applySelectedDrawing(index: number): Promise<void> {
+    applySelectedDrawing(index: number): void {
         if (this.currentRoute === '/home') {
             this.router.navigateByUrl('/editor');
             this.currentRoute = '/editor';
@@ -159,7 +164,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
                     const img = URL.createObjectURL(image);
                     this.drawImageOnCanvas(img);
                 },
-                (error) => {
+                () => {
                     this.serverResponseService.loadErrorSnackBar();
                 },
             );
@@ -230,7 +235,7 @@ export class CarouselComponent implements OnInit, OnDestroy {
             drawing.onload = () => {
                 this.resizeDrawingService.resizeCanvasSize(drawing.width, drawing.height);
                 this.drawingService.baseCtx.drawImage(drawing, 0, 0, drawing.width, drawing.height);
-                this.drawingService.resetStack();
+                this.undoRedoStackService.resetStack();
                 resolve();
             };
         });
@@ -246,43 +251,30 @@ export class CarouselComponent implements OnInit, OnDestroy {
             .deleteDrawing(fileName)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
-                (data) => {
+                () => {
                     this.loadDBData();
                 },
-                (error) => {
-                    this.serverResponseService.deleteErrorSnackBar(error.error);
+                () => {
+                    this.serverResponseService.deleteErrorSnackBar();
                     this.gotImages = true;
                 },
             );
     }
 
     onClickTwoDrawings(): void {
-        if (this.drawingOfInterest === 1) {
-            this.drawingOfInterest = 0;
-        } else {
-            this.drawingOfInterest = 1;
-        }
+        this.drawingOfInterest === 1 ? (this.drawingOfInterest = 0) : (this.drawingOfInterest = 1);
     }
 
     onPreviousClick(): void {
         this.visibleDrawingsIndexes[2] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[0];
-        if (!this.visibleDrawingsIndexes[0]) {
-            this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1;
-        } else {
-            this.visibleDrawingsIndexes[0]--;
-        }
+        this.visibleDrawingsIndexes[0] ? this.visibleDrawingsIndexes[0]-- : (this.visibleDrawingsIndexes[0] = this.filteredMetadata.length - 1);
     }
 
     onNextClick(): void {
         this.visibleDrawingsIndexes[0] = this.visibleDrawingsIndexes[1];
         this.visibleDrawingsIndexes[1] = this.visibleDrawingsIndexes[2];
-
-        if (this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1) {
-            this.visibleDrawingsIndexes[2] = 0;
-        } else {
-            this.visibleDrawingsIndexes[2]++;
-        }
+        this.visibleDrawingsIndexes[2] === this.filteredMetadata.length - 1 ? (this.visibleDrawingsIndexes[2] = 0) : this.visibleDrawingsIndexes[2]++;
     }
 
     hasLengthTagError(tag: string): boolean {
@@ -292,9 +284,8 @@ export class CarouselComponent implements OnInit, OnDestroy {
     hasSpaceTagError(tag: string): boolean {
         if (tag.indexOf(' ') < 0) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     currentTagInput(tag: string): void {

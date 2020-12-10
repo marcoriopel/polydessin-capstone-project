@@ -7,6 +7,7 @@ import { MAXIMUM_RGBA_VALUE, Rgba, RGBA_INDEXER, RGBA_LENGTH } from '@app/ressou
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -21,7 +22,11 @@ export class FillService extends Tool {
     fillData: Fill;
     canvasData: ImageData;
 
-    constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        public drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -53,14 +58,14 @@ export class FillService extends Tool {
         while (stack.length) {
             const currentPixel = stack.pop() as Vec2;
             const index = (currentPixel.x + currentPixel.y * this.drawingService.canvas.width) * RGBA_LENGTH;
-            if (coloredPixels.has(this.Vec2ToString(currentPixel))) {
+            if (coloredPixels.has(this.vec2ToString(currentPixel))) {
                 continue;
             } else if (this.isInToleranceRange(pixelData, canvasData, index)) {
                 canvasData.data[index + RGBA_INDEXER.RED] = rgbaPrimaryColor.RED;
                 canvasData.data[index + RGBA_INDEXER.GREEN] = rgbaPrimaryColor.GREEN;
                 canvasData.data[index + RGBA_INDEXER.BLUE] = rgbaPrimaryColor.BLUE;
                 canvasData.data[index + RGBA_INDEXER.ALPHA] = rgbaPrimaryColor.ALPHA;
-                coloredPixels.set(this.Vec2ToString(currentPixel), true);
+                coloredPixels.set(this.vec2ToString(currentPixel), true);
                 if (currentPixel.y - 1 >= 0) {
                     stack.push({ x: currentPixel.x, y: currentPixel.y - 1 });
                 }
@@ -78,7 +83,7 @@ export class FillService extends Tool {
         this.canvasData = canvasData;
         this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
-        this.drawingService.updateStack(this.fillData);
+        this.undoRedoStackService.updateStack(this.fillData);
     }
 
     fill(): void {
@@ -99,10 +104,10 @@ export class FillService extends Tool {
         this.canvasData = canvasData;
         this.updateFillData();
         this.drawingService.baseCtx.putImageData(canvasData, 0, 0);
-        this.drawingService.updateStack(this.fillData);
+        this.undoRedoStackService.updateStack(this.fillData);
     }
 
-    Vec2ToString(pixel: Vec2): string {
+    vec2ToString(pixel: Vec2): string {
         return pixel.x.toString() + ',' + pixel.y.toString();
     }
 
@@ -112,14 +117,12 @@ export class FillService extends Tool {
         const diffBlue: number = Math.abs(pixelData[RGBA_INDEXER.BLUE] - canvasData.data[index + RGBA_INDEXER.BLUE]);
         const diffAlpha: number = Math.abs(pixelData[RGBA_INDEXER.ALPHA] - canvasData.data[index + RGBA_INDEXER.ALPHA]);
 
-        // After which you can just find the average color difference in percentage.
         const diffPercentage: number = ((diffRed + diffGreen + diffBlue + diffAlpha) / (RGBA_LENGTH * MAXIMUM_RGBA_VALUE)) * MAX_PERCENTAGE;
 
         if (diffPercentage > this.tolerance) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     updateFillData(): void {
@@ -127,5 +130,6 @@ export class FillService extends Tool {
             type: 'fill',
             imageData: this.canvasData,
         };
+        this.drawingService.autoSave();
     }
 }

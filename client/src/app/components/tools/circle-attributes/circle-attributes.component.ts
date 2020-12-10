@@ -11,8 +11,8 @@ export class CircleAttributesComponent {
     fillStyle: number;
 
     constructor(public circleService: CircleService) {
-        this.toolWidth = circleService.width;
-        this.fillStyle = circleService.fillStyle;
+        this.toolWidth = circleService.getLineWidth();
+        this.fillStyle = circleService.getFillStyle();
     }
 
     changeBorderWidth(newWidth: number): void {
@@ -21,6 +21,6 @@ export class CircleAttributesComponent {
     }
 
     changeFillStyle(newFillStyle: number): void {
-        this.circleService.changeFillStyle(newFillStyle);
+        this.circleService.setFillStyle(newFillStyle);
     }
 }

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrushService } from '@app/services/tools/brush.service';
 import { BrushAttributesComponent } from './brush-attributes.component';
 
+// tslint:disable: no-string-literal
 describe('BrushAttributesComponent', () => {
     let component: BrushAttributesComponent;
     let fixture: ComponentFixture<BrushAttributesComponent>;
@@ -12,7 +13,15 @@ describe('BrushAttributesComponent', () => {
     const pattern = 'pattern2';
 
     beforeEach(async(() => {
-        brushServiceSpy = jasmine.createSpyObj('BrushService', ['changeWidth', 'setPattern']);
+        brushServiceSpy = jasmine.createSpyObj('BrushService', ['changeWidth', 'setPattern', 'getLineWidth']);
+        brushServiceSpy['brushData'] = {
+            type: 'brush',
+            path: [],
+            lineWidth: 1,
+            lineCap: 'round',
+            pattern: 'none',
+            primaryColor: 'red',
+        };
 
         TestBed.configureTestingModule({
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

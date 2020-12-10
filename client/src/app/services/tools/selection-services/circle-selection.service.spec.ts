@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { SelectionBox } from '@app/classes/selection-box';
+import { ALIGNMENT_NAMES } from '@app/ressources/global-variables/alignment-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
+import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
 import { CircleSelectionService } from './circle-selection.service';
 
 describe('CircleSelectionService', () => {
@@ -11,6 +13,7 @@ describe('CircleSelectionService', () => {
     let previewCtxStub: CanvasRenderingContext2D;
     let canvasStub: HTMLCanvasElement;
     let moveServiceSpy: jasmine.SpyObj<MoveService>;
+    let rotateServiceSpy: jasmine.SpyObj<RotateService>;
 
     const WIDTH = 100;
     const HEIGHT = 100;
@@ -22,8 +25,13 @@ describe('CircleSelectionService', () => {
             height: 10,
         };
         moveServiceSpy = jasmine.createSpyObj('MoveService', ['initialize']);
+        rotateServiceSpy = jasmine.createSpyObj('RotateService', ['initialize', 'rotatePreviewCanvas', 'calculateCenter']);
+        rotateServiceSpy.calculateCenter.and.returnValue({ x: 1, y: 1 });
         TestBed.configureTestingModule({
-            providers: [{ provide: MoveService, useValue: moveServiceSpy }],
+            providers: [
+                { provide: MoveService, useValue: moveServiceSpy },
+                { provide: RotateService, useValue: rotateServiceSpy },
+            ],
         });
         service = TestBed.inject(CircleSelectionService);
         drawingService = TestBed.inject(DrawingService);
@@ -49,7 +57,6 @@ describe('CircleSelectionService', () => {
     it('should call drawImage with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const drawImageSpy = spyOn(ctx, 'drawImage');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         const startingPointX = 0;
@@ -57,6 +64,7 @@ describe('CircleSelectionService', () => {
         service.selection.height = height;
         service.selection.width = width;
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
+        service.setSelectionData();
         expect(drawImageSpy).toHaveBeenCalledWith(
             drawingService.canvas,
             startingPointX,
@@ -74,11 +82,11 @@ describe('CircleSelectionService', () => {
     it('should call ellipse with good params', () => {
         const ctx = service.selectionImage.getContext('2d') as CanvasRenderingContext2D;
         const ellipseSpy = spyOn(ctx, 'ellipse');
-        service.setSelectionData(selectionBox);
         const height = 10;
         const width = 10;
         service.selection.height = height;
         service.selection.width = width;
+        service.setSelectionData();
         expect(ellipseSpy).toHaveBeenCalledWith(width / 2, height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
         expect(moveServiceSpy.initialize).toHaveBeenCalled();
     });
@@ -106,6 +114,11 @@ describe('CircleSelectionService', () => {
         service.selection.startingPoint = { x: startingPointX, y: startingPointY };
         service.selection.height = height;
         service.selection.width = width;
+        service.selectionCorners.topRight.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.topLeft.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.bottomLeft.coordinates = { x: startingPointX, y: startingPointY };
+        service.selectionCorners.bottomRight.coordinates = { x: startingPointX, y: startingPointY };
+
         moveServiceSpy.selection = selectionBox;
         service.strokeSelection();
         expect(ellipseSpy).toHaveBeenCalledWith(startingPointX + width / 2, startingPointY + height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
@@ -116,5 +129,11 @@ describe('CircleSelectionService', () => {
         const strokeRectSpy = spyOn(drawingService.previewCtx, 'strokeRect');
         service.strokeSelection();
         expect(strokeRectSpy).not.toHaveBeenCalled();
+    });
+
+    it('should setMagnetismAlignment', () => {
+        service.currentAlignment = ALIGNMENT_NAMES.ALIGN_BOTTOM_CENTER_NAME;
+        service.setMagnetismAlignment(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
+        expect(service.currentAlignment).toEqual(ALIGNMENT_NAMES.ALIGN_CENTER_LEFT_NAME);
     });
 });

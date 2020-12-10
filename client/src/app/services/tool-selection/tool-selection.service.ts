@@ -14,29 +14,38 @@ import { CircleService } from '@app/services/tools/circle.service';
 import { EraserService } from '@app/services/tools/eraser.service';
 import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
+import { PenService } from '@app/services/tools/pen.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
+import { MagicWandService } from '@app/services/tools/selection-services/magic-wand.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
+import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
+import { StampService } from '@app/services/tools/stamp.service';
+import { TextService } from '@app/services/tools/text.service';
 import { UndoRedoService } from '@app/services/undo-redo/undo-redo.service';
 import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 import { takeUntil } from 'rxjs/operators';
 @Injectable({
     providedIn: 'root',
 })
 export class ToolSelectionService {
-    destroy$: Subject<boolean> = new Subject<boolean>();
-    sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
-    private tools: Map<string, Tool>;
     currentTool: Tool;
+    private destroy$: Subject<boolean> = new Subject<boolean>();
+    private sidebarElements: SidebarElements = SIDEBAR_ELEMENTS;
+    private tools: Map<string, Tool>;
+    private currentToolName: Subject<string> = new Subject<string>();
 
     constructor(
         public dialog: MatDialog,
         public hotkeyService: HotkeyService,
         public pencilService: PencilService,
+        public penService: PenService,
         public brushService: BrushService,
+        public sprayService: SprayService,
         public squareService: SquareService,
         public circleService: CircleService,
         public lineService: LineService,
@@ -44,15 +53,20 @@ export class ToolSelectionService {
         public eraserService: EraserService,
         public squareSelectionService: SquareSelectionService,
         public circleSelectionService: CircleSelectionService,
-        public polygoneService: PolygoneService,
+        public polygonService: PolygonService,
         public pipetteService: PipetteService,
         public drawingService: DrawingService,
         public newDrawingService: NewDrawingService,
+        public magicWandService: MagicWandService,
         public undoRedoService: UndoRedoService,
+        public textService: TextService,
+        public stampService: StampService,
     ) {
         this.tools = new Map<string, Tool>([
             [TOOL_NAMES.PENCIL_TOOL_NAME, pencilService],
+            [TOOL_NAMES.PEN_TOOL_NAME, penService],
             [TOOL_NAMES.BRUSH_TOOL_NAME, brushService],
+            [TOOL_NAMES.SPRAY_TOOL_NAME, sprayService],
             [TOOL_NAMES.SQUARE_TOOL_NAME, squareService],
             [TOOL_NAMES.CIRCLE_TOOL_NAME, circleService],
             [TOOL_NAMES.LINE_TOOL_NAME, lineService],
@@ -61,7 +75,10 @@ export class ToolSelectionService {
             [TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME, squareSelectionService],
             [TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME, circleSelectionService],
             [TOOL_NAMES.PIPETTE_TOOL_NAME, pipetteService],
-            [TOOL_NAMES.POLYGONE_TOOL_NAME, polygoneService],
+            [TOOL_NAMES.POLYGON_TOOL_NAME, polygonService],
+            [TOOL_NAMES.TEXT_TOOL_NAME, textService],
+            [TOOL_NAMES.STAMP_TOOL_NAME, stampService],
+            [TOOL_NAMES.MAGIC_WAND_TOOL_NAME, magicWandService],
         ]);
         this.currentTool = pencilService;
         this.hotkeyService
@@ -84,6 +101,7 @@ export class ToolSelectionService {
             this.currentTool.initialize();
             this.currentTool.setCursor();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
+            this.currentToolName.next(toolName);
         }
     }
 
@@ -158,7 +176,15 @@ export class ToolSelectionService {
         this.currentTool.onMouseLeave();
     }
 
-    currentToolMouseEnter(): void {
-        this.currentTool.onMouseEnter();
+    currentToolMouseEnter(event: MouseEvent): void {
+        this.currentTool.onMouseEnter(event);
+    }
+
+    currentToolWheelEvent(event: WheelEvent): void {
+        this.currentTool.onWheelEvent(event);
+    }
+
+    getCurrentTool(): Observable<string> {
+        return this.currentToolName.asObservable();
     }
 }

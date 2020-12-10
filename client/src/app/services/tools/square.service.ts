@@ -9,6 +9,7 @@ import { MouseButton, Quadrant } from '@app/ressources/global-variables/global-v
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,19 +18,28 @@ export class SquareService extends Tool {
     name: string = TOOL_NAMES.SQUARE_TOOL_NAME;
     mouseDown: boolean = false;
     rectangleData: Rectangle;
-    isShiftKeyDown: boolean = false;
-    width: number = 1;
-    topLeftPoint: Vec2;
     lastPoint: Vec2;
     firstPoint: Vec2;
     previewLayer: HTMLElement | null;
-    fillStyle: number = FILL_STYLES.FILL;
-    rectangleHeight: number;
-    rectangleWidth: number;
     trigonometry: Trigonometry = new Trigonometry();
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
+        this.rectangleData = {
+            type: 'rectangle',
+            primaryColor: this.colorSelectionService.primaryColor,
+            secondaryColor: this.colorSelectionService.secondaryColor,
+            height: 0,
+            width: 0,
+            topLeftPoint: { x: 0, y: 0 },
+            fillStyle: FILL_STYLES.FILL_AND_BORDER,
+            isShiftDown: false,
+            lineWidth: 1,
+        };
     }
 
     initialize(): void {
@@ -38,20 +48,36 @@ export class SquareService extends Tool {
         this.drawingService.baseCtx.lineJoin = 'miter';
     }
 
+    setIsShiftDown(isShiftDown: boolean): void {
+        this.rectangleData.isShiftDown = isShiftDown;
+    }
+
+    setFirstPoint(newPoint: Vec2): void {
+        this.firstPoint = newPoint;
+    }
+
+    setLastPoint(newPoint: Vec2): void {
+        this.lastPoint = newPoint;
+    }
+
+    setFillStyle(newFillStyle: number): void {
+        this.rectangleData.fillStyle = newFillStyle;
+    }
+
+    getFillStyle(): number {
+        return this.rectangleData.fillStyle;
+    }
+
     setRectangleWidth(): void {
-        this.rectangleWidth = Math.abs(this.firstPoint.x - this.lastPoint.x);
+        this.rectangleData.width = Math.abs(this.firstPoint.x - this.lastPoint.x);
     }
 
     setRectangleHeight(): void {
-        this.rectangleHeight = Math.abs(this.firstPoint.y - this.lastPoint.y);
+        this.rectangleData.height = Math.abs(this.firstPoint.y - this.lastPoint.y);
     }
 
     changeWidth(newWidth: number): void {
-        this.width = newWidth;
-    }
-
-    changeFillStyle(newFillStyle: number): void {
-        this.fillStyle = newFillStyle;
+        this.rectangleData.lineWidth = newWidth;
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -61,7 +87,7 @@ export class SquareService extends Tool {
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -70,13 +96,14 @@ export class SquareService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
+            this.drawingService.autoSave();
         }
     }
 
     onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Shift') {
-            this.isShiftKeyDown = true;
+            this.rectangleData.isShiftDown = true;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawShape(this.drawingService.previewCtx);
@@ -85,8 +112,8 @@ export class SquareService extends Tool {
     }
 
     onKeyUp(event: KeyboardEvent): void {
-        if (event.key === 'Shift' && this.isShiftKeyDown) {
-            this.isShiftKeyDown = false;
+        if (event.key === 'Shift' && this.rectangleData.isShiftDown) {
+            this.rectangleData.isShiftDown = false;
             if (this.mouseDown) {
                 this.drawingService.clearCanvas(this.drawingService.previewCtx);
                 this.drawShape(this.drawingService.previewCtx);
@@ -106,23 +133,23 @@ export class SquareService extends Tool {
         this.setRectangleHeight();
         this.setRectangleWidth();
 
-        if (this.isShiftKeyDown) {
-            this.rectangleWidth = Math.min(this.rectangleHeight, this.rectangleWidth);
-            this.rectangleHeight = this.rectangleWidth;
+        if (this.rectangleData.isShiftDown) {
+            this.rectangleData.width = Math.min(this.rectangleData.height, this.rectangleData.width);
+            this.rectangleData.height = this.rectangleData.width;
             this.setSquareAttributes();
         } else {
-            this.topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
+            this.rectangleData.topLeftPoint = this.trigonometry.findTopLeftPointCircle(this.firstPoint, this.lastPoint);
         }
 
-        this.updateRectangleData();
+        this.updateRectangleDataColor();
         this.drawRectangle(ctx, this.rectangleData);
 
         if (ctx === this.drawingService.baseCtx) {
-            this.drawingService.updateStack(this.rectangleData);
+            this.undoRedoStackService.updateStack(this.rectangleData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
 
-        return { startingPoint: this.topLeftPoint, width: this.rectangleWidth, height: this.rectangleHeight };
+        return { startingPoint: this.rectangleData.topLeftPoint, width: this.rectangleData.width, height: this.rectangleData.height };
     }
 
     drawRectangle(ctx: CanvasRenderingContext2D, rectangle: Rectangle): void {
@@ -143,43 +170,35 @@ export class SquareService extends Tool {
             if (rectangle.fillStyle !== FILL_STYLES.BORDER && rectangle.fillStyle !== FILL_STYLES.DASHED) {
                 ctx.fillRect(rectangle.topLeftPoint.x, rectangle.topLeftPoint.y, rectangle.width, rectangle.height);
             }
+            rectangle.width += ctx.lineWidth;
+            rectangle.height += ctx.lineWidth;
         }
         ctx.stroke();
     }
 
     setSquareAttributes(): void {
-        const quadrant = this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint);
-        switch (quadrant) {
+        switch (this.trigonometry.findQuadrant(this.firstPoint, this.lastPoint)) {
             case Quadrant.BOTTOM_LEFT:
-                this.topLeftPoint.x = this.firstPoint.x - this.rectangleWidth;
-                this.topLeftPoint.y = this.firstPoint.y;
+                this.rectangleData.topLeftPoint.x = this.firstPoint.x - this.rectangleData.width;
+                this.rectangleData.topLeftPoint.y = this.firstPoint.y;
                 break;
             case Quadrant.TOP_LEFT:
-                this.topLeftPoint.x = this.firstPoint.x - this.rectangleWidth;
-                this.topLeftPoint.y = this.firstPoint.y - this.rectangleHeight;
+                this.rectangleData.topLeftPoint.x = this.firstPoint.x - this.rectangleData.width;
+                this.rectangleData.topLeftPoint.y = this.firstPoint.y - this.rectangleData.height;
                 break;
             case Quadrant.BOTTOM_RIGHT:
-                this.topLeftPoint.x = this.firstPoint.x;
-                this.topLeftPoint.y = this.firstPoint.y;
+                this.rectangleData.topLeftPoint.x = this.firstPoint.x;
+                this.rectangleData.topLeftPoint.y = this.firstPoint.y;
                 break;
             case Quadrant.TOP_RIGHT:
-                this.topLeftPoint.x = this.firstPoint.x;
-                this.topLeftPoint.y = this.firstPoint.y - this.rectangleHeight;
+                this.rectangleData.topLeftPoint.x = this.firstPoint.x;
+                this.rectangleData.topLeftPoint.y = this.firstPoint.y - this.rectangleData.height;
                 break;
         }
     }
 
-    private updateRectangleData(): void {
-        this.rectangleData = {
-            type: 'rectangle',
-            primaryColor: this.colorSelectionService.primaryColor,
-            secondaryColor: this.colorSelectionService.secondaryColor,
-            height: this.rectangleHeight,
-            width: this.rectangleWidth,
-            topLeftPoint: this.topLeftPoint,
-            fillStyle: this.fillStyle,
-            isShiftDown: this.isShiftKeyDown,
-            lineWidth: this.width,
-        };
+    private updateRectangleDataColor(): void {
+        this.rectangleData.primaryColor = this.colorSelectionService.primaryColor;
+        this.rectangleData.secondaryColor = this.colorSelectionService.secondaryColor;
     }
 }

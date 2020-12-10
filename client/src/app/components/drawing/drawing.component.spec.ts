@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MINIMUM_CANVAS_HEIGHT, MINIMUM_CANVAS_WIDTH } from '@app/ressources/global-variables/global-variables';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -29,8 +30,9 @@ describe('DrawingComponent', () => {
             'currentToolMouseUp',
             'currentToolMouseLeave',
             'currentToolMouseEnter',
+            'currentToolWheelEvent',
         ]);
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['getKey', 'autoSave']);
 
         TestBed.configureTestingModule({
             declarations: [DrawingComponent],
@@ -39,6 +41,7 @@ describe('DrawingComponent', () => {
                 { provide: DrawingService, useValue: drawingServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
             ],
         }).compileComponents();
     }));
@@ -81,12 +84,19 @@ describe('DrawingComponent', () => {
     });
 
     it(" should call the tool's mouse enter when receiving a mouse enter event", () => {
-        component.onMouseEnter();
+        const event = {} as MouseEvent;
+        component.onMouseEnter(event);
         expect(toolSelectionServiceSpy.currentToolMouseEnter).toHaveBeenCalled();
     });
 
     it(' onMouseLeave should call toolSelectionService.onMouseLeave', () => {
         component.onMouseLeave();
         expect(toolSelectionServiceSpy.currentToolMouseLeave).toHaveBeenCalled();
+    });
+
+    it(' onMouseWheel should call toolSelectionService.onMouseWheel', () => {
+        const event = {} as WheelEvent;
+        component.onMouseWheel(event);
+        expect(toolSelectionServiceSpy.currentToolWheelEvent).toHaveBeenCalled();
     });
 });

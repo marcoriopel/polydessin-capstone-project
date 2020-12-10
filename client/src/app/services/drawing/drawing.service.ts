@@ -1,35 +1,63 @@
-import { Injectable } from '@angular/core';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygone, Rectangle, Resize, Selection } from '@app/classes/tool-properties';
+import { Injectable, Injector } from '@angular/core';
+import { Fill, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
-import { Observable, Subject } from 'rxjs';
+import { MAX_PERCENTAGE } from '@app/ressources/global-variables/global-variables';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DrawingService {
     baseCtx: CanvasRenderingContext2D;
+    gridCtx: CanvasRenderingContext2D;
     previewCtx: CanvasRenderingContext2D;
+    gridSpacing: number;
+    gridOpacity: number;
+    isGridEnabled: boolean;
     canvas: HTMLCanvasElement;
+    gridCanvas: HTMLCanvasElement;
     previewCanvas: HTMLCanvasElement;
-    undoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    redoStack: (Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection)[] = [];
-    isToolInUse: Subject<boolean> = new Subject<boolean>();
+    isLastDrawing: boolean;
 
-    setIsToolInUse(isInUse: boolean): void {
-        this.isToolInUse.next(isInUse);
-    }
+    constructor(private injector: Injector) {}
+    setGrid(): void {
+        this.clearCanvas(this.gridCtx);
+        const canvasWidth = this.canvas.width;
+        const canvasHeight = this.canvas.height;
+        this.gridCtx.beginPath();
+        for (let x = 0; x <= canvasWidth; x += this.gridSpacing) {
+            this.gridCtx.moveTo(x, 0);
+            this.gridCtx.lineTo(x, canvasHeight);
+        }
 
-    getIsToolInUse(): Observable<boolean> {
-        return this.isToolInUse.asObservable();
+        for (let x = 0; x <= canvasHeight; x += this.gridSpacing) {
+            this.gridCtx.moveTo(0, x);
+            this.gridCtx.lineTo(canvasWidth, x);
+        }
+        this.gridCtx.globalAlpha = this.gridOpacity / MAX_PERCENTAGE;
+        this.gridCtx.strokeStyle = 'black';
+        this.gridCtx.closePath();
+        this.gridCtx.stroke();
     }
 
     clearCanvas(context: CanvasRenderingContext2D): void {
         context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    checkedDrawing(): boolean {
+        return this.isLastDrawing;
+    }
+
     initializeBaseCanvas(): void {
-        this.baseCtx.fillStyle = 'white';
-        this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        if (this.isGridEnabled) this.setGrid();
+        if (this.isLastDrawing) {
+            // using an injector with a deprecated version to inject and bypass an observed circular dependency
+            // Retrieves an instance from the injector based on the provided token.
+            // tslint:disable-next-line: deprecation
+            this.injector.get('ContinueDrawingService').continueDrawing();
+        } else {
+            this.baseCtx.fillStyle = 'white';
+            this.baseCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
     }
 
     isCanvasBlank(context: CanvasRenderingContext2D): boolean {
@@ -43,11 +71,9 @@ export class DrawingService {
         return context.canvas.toDataURL() === blank.toDataURL();
     }
 
-    updateStack(modification: Pencil | Brush | Eraser | Polygone | Line | Resize | Fill | Rectangle | Ellipse | Selection): void {
-        this.undoStack.push(modification);
-        if (this.redoStack.length) {
-            this.redoStack = [];
-        }
+    applyPreview(): void {
+        this.baseCtx.drawImage(this.previewCanvas, 0, 0);
+        this.clearCanvas(this.previewCtx);
     }
 
     drawFill(fill: Fill): void {
@@ -59,22 +85,22 @@ export class DrawingService {
     }
 
     getPixelData(pixelCoord: Vec2): Uint8ClampedArray {
-        const pixelData = this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
-        return pixelData;
+        return this.baseCtx.getImageData(pixelCoord.x, pixelCoord.y, 1, 1).data;
     }
 
     getCanvasData(): ImageData {
-        const canvasData = this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.baseCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
     getPreviewData(): ImageData {
-        const canvasData = this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-        return canvasData;
+        return this.previewCtx.getImageData(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    resetStack(): void {
-        this.undoStack = [];
-        this.redoStack = [];
+    autoSave(): void {
+        if (!this.canvas) return;
+        localStorage.clear();
+        localStorage.setItem('drawingKey', this.canvas.toDataURL());
+        localStorage.setItem('canvasWidth', this.canvas.width.toString());
+        localStorage.setItem('canvasHeight', this.canvas.height.toString());
     }
 }

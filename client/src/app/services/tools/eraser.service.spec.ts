@@ -9,6 +9,7 @@ describe('EraserService', () => {
     let service: EraserService;
     let mouseEvent: MouseEvent;
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
+    let gridCanvasStub: HTMLCanvasElement;
 
     let baseCtxStub: CanvasRenderingContext2D;
     let previewCtxStub: CanvasRenderingContext2D;
@@ -25,10 +26,11 @@ describe('EraserService', () => {
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         previewCanvasStub = canvas as HTMLCanvasElement;
 
         TestBed.configureTestingModule({
@@ -38,9 +40,11 @@ describe('EraserService', () => {
         drawEraserStrokeSpy = spyOn<any>(service, 'drawEraserStroke').and.callThrough();
 
         // tslint:disable:no-string-literal
-        service['drawingService'].baseCtx = baseCtxStub; // Jasmine doesnt copy properties with underlying data
+        service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
+
         strokeRectSpy = spyOn<any>(previewCtxStub, 'fillRect').and.callThrough();
 
         mouseEvent = {
@@ -55,9 +59,9 @@ describe('EraserService', () => {
     });
 
     it('should change width', () => {
-        service.width = 0;
+        service.eraserData.lineWidth = 0;
         service.changeWidth(1);
-        expect(service.width).toBe(1);
+        expect(service.eraserData.lineWidth).toBe(1);
     });
 
     it(' mouseDown should set mouseDownCoord to correct position', () => {
@@ -87,6 +91,7 @@ describe('EraserService', () => {
 
         service.onMouseUp(mouseEvent);
         expect(drawEraserStrokeSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it(' onMouseUp should not call drawLine if mouse was not already down', () => {
@@ -133,9 +138,9 @@ describe('EraserService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'crosshair';
+        drawServiceSpy.gridCanvas.style.cursor = 'crosshair';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('none');
+        expect(gridCanvasStub.style.cursor).toEqual('none');
     });
 
     it(' should draw line on cursor leave of canvas', () => {

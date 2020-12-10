@@ -10,15 +10,12 @@ export class PipetteAttributesComponent implements AfterViewInit, OnInit {
     @ViewChild('zoom', { static: false }) zoom: ElementRef<HTMLCanvasElement>;
 
     private zoomCtx: CanvasRenderingContext2D;
+
     constructor(public pipetteService: PipetteService) {}
 
     ngOnInit(): void {
         this.pipetteService.mouseOut.subscribe((data: boolean) => {
-            if (data) {
-                this.zoom.nativeElement.style.visibility = 'visible';
-            } else {
-                this.zoom.nativeElement.style.visibility = 'hidden';
-            }
+            data ? (this.zoom.nativeElement.style.visibility = 'visible') : (this.zoom.nativeElement.style.visibility = 'hidden');
         });
     }
 

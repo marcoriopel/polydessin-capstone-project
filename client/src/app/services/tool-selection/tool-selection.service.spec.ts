@@ -17,7 +17,7 @@ import { FillService } from '@app/services/tools/fill.service';
 import { LineService } from '@app/services/tools/line.service';
 import { PencilService } from '@app/services/tools/pencil.service';
 import { PipetteService } from '@app/services/tools/pipette.service';
-import { PolygoneService } from '@app/services/tools/polygone.service';
+import { PolygonService } from '@app/services/tools/polygon.service';
 import { CircleSelectionService } from '@app/services/tools/selection-services/circle-selection.service';
 import { SquareSelectionService } from '@app/services/tools/selection-services/square-selection.service';
 import { SquareService } from '@app/services/tools/square.service';
@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 
 import SpyObj = jasmine.SpyObj;
 // tslint:disable: no-empty
+// tslint:disable: no-string-literal
 
 class MockTool extends Tool {
     constructor(name: string) {
@@ -73,7 +74,7 @@ describe('ToolSelectionService', () => {
                 { provide: FillService, useValue: new MockTool(TOOL_NAMES.FILL_TOOL_NAME) },
                 { provide: SquareSelectionService, useValue: squareSelectionServiceSpy },
                 { provide: CircleSelectionService, useValue: new MockTool(TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME) },
-                { provide: PolygoneService, useValue: new MockTool(TOOL_NAMES.POLYGONE_TOOL_NAME) },
+                { provide: PolygonService, useValue: new MockTool(TOOL_NAMES.POLYGON_TOOL_NAME) },
                 { provide: PipetteService, useValue: new MockTool(TOOL_NAMES.PIPETTE_TOOL_NAME) },
                 { provide: UndoRedoService, useValue: undoRedoServiceSpy },
             ],
@@ -220,7 +221,7 @@ describe('ToolSelectionService', () => {
 
     it('should call current tool onMouseEnter on onMouseEnter event', () => {
         const mouseEnterSpy = spyOn(service.currentTool, 'onMouseEnter');
-        service.currentToolMouseEnter();
+        service.currentToolMouseEnter({} as MouseEvent);
         expect(mouseEnterSpy).toHaveBeenCalled();
     });
 
@@ -228,5 +229,16 @@ describe('ToolSelectionService', () => {
         const cursorSpy = spyOn(service.currentTool, 'setCursor');
         service.setCurrentToolCursor();
         expect(cursorSpy).toHaveBeenCalled();
+    });
+
+    it('should call current tool onWheelEvent on WheelEvent', () => {
+        const wheelEvent = new WheelEvent('wheel');
+        const wheelSpy = spyOn(service.currentTool, 'onWheelEvent');
+        service.currentToolWheelEvent(wheelEvent);
+        expect(wheelSpy).toHaveBeenCalledWith(wheelEvent);
+    });
+
+    it('getCurrentTool should return currentToolName.asObservable', () => {
+        expect(service.getCurrentTool()).toEqual(service['currentToolName'].asObservable());
     });
 });

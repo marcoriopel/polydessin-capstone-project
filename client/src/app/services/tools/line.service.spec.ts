@@ -12,6 +12,7 @@ describe('LineService', () => {
     let service: LineService;
     let mouseEvent: MouseEvent;
     let previewCanvasStub: HTMLCanvasElement;
+    let gridCanvasStub: HTMLCanvasElement;
 
     let drawServiceSpy: jasmine.SpyObj<DrawingService>;
 
@@ -24,12 +25,13 @@ describe('LineService', () => {
         const canvas = document.createElement('canvas');
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
+        gridCanvasStub = canvas as HTMLCanvasElement;
 
         const drawCanvas = document.createElement('canvas');
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'updateStack', 'setIsToolInUse', 'autoSave']);
         baseCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
         previewCtxStub = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
         previewCanvasStub = canvas as HTMLCanvasElement;
@@ -44,6 +46,7 @@ describe('LineService', () => {
         service['drawingService'].baseCtx = baseCtxStub;
         service['drawingService'].previewCtx = previewCtxStub;
         service['drawingService'].previewCanvas = previewCanvasStub;
+        service['drawingService'].gridCanvas = gridCanvasStub;
 
         mouseEvent = {
             offsetX: 25,
@@ -57,9 +60,9 @@ describe('LineService', () => {
     });
 
     it(' should set cursor to crosshair on handleCursorCall with previewLayer correctly loaded', () => {
-        drawServiceSpy.previewCanvas.style.cursor = 'none';
+        drawServiceSpy.gridCanvas.style.cursor = 'none';
         service.setCursor();
-        expect(previewCanvasStub.style.cursor).toEqual('crosshair');
+        expect(gridCanvasStub.style.cursor).toEqual('crosshair');
     });
 
     it('should not set isDrawing to true if mouse button is not left on mouse up', () => {
@@ -69,62 +72,62 @@ describe('LineService', () => {
             button: MouseButton.RIGHT,
         } as MouseEvent;
         service.isDrawing = false;
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
         expect(service.isDrawing).toBe(false);
     });
 
     it('should change line width', () => {
-        service.lineWidth = 0;
+        service.lineData.lineWidth = 0;
         service.changeLineWidth(1);
-        expect(service.lineWidth).toBe(1);
+        expect(service.lineData.lineWidth).toBe(1);
     });
 
     it('should change dot width', () => {
-        service.dotWidth = 0;
+        service.lineData.dotWidth = 0;
         service.changeDotWidth(1);
-        expect(service.dotWidth).toBe(1);
+        expect(service.lineData.dotWidth).toBe(1);
     });
 
     it('should change junction type', () => {
-        service.isDot = false;
+        service.lineData.isDot = false;
         service.changeJunction(true);
-        expect(service.isDot).toBe(true);
+        expect(service.lineData.isDot).toBe(true);
     });
 
     it('mouse up should add a click to mouseclicks', () => {
-        service.onMouseUp(mouseEvent);
-        expect(service.mouseClicks[0].x).toEqual(mouseEvent.offsetX);
-        expect(service.mouseClicks[0].y).toEqual(mouseEvent.offsetY);
+        service.onMouseDown(mouseEvent);
+        expect(service.lineData.mouseClicks[0].x).toEqual(mouseEvent.offsetX);
+        expect(service.lineData.mouseClicks[0].y).toEqual(mouseEvent.offsetY);
     });
 
     it('mouse up should update the number of clicks', () => {
         service.numberOfClicks = 0;
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
         expect(service.numberOfClicks).toBe(1);
     });
 
     it('mouse up should set drawing bool to true on single click', () => {
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
         expect(service.isDrawing).toBe(true);
     });
 
     it('mouse up should set is drawing to false on double click', () => {
         service.isDrawing = true;
-        service.onMouseUp(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseDown(mouseEvent);
         expect(service.isDrawing).toBe(false);
     });
 
     it('mouse up should reset the mouse clicks list if double click when not drawing a line', () => {
-        service.onMouseUp(mouseEvent);
-        service.onMouseUp(mouseEvent);
-        expect(service.mouseClicks).toEqual([]);
+        service.onMouseDown(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        expect(service.lineData.mouseClicks).toEqual([]);
     });
 
     it('mouse up should reset the number mouse clicks if double click when not drawing a line', () => {
         service.numberOfClicks = 1;
-        service.onMouseUp(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseDown(mouseEvent);
         expect(service.numberOfClicks).toBe(0);
     });
 
@@ -184,8 +187,8 @@ describe('LineService', () => {
     it('should return false if the two last clicks are different', () => {
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 10 };
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
         service.numberOfClicks = 2;
         const returnValue: boolean = service.checkIfDoubleClick();
         expect(returnValue).toBe(false);
@@ -194,8 +197,8 @@ describe('LineService', () => {
     it('should return true if the two last clicks are the same', () => {
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 10, y: 10 };
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
         service.numberOfClicks = 2;
         const returnValue: boolean = service.checkIfDoubleClick();
         expect(returnValue).toBe(true);
@@ -206,14 +209,14 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 11 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
-        service.mouseClicks.push(click2);
+        service.lineData.storedLines.push(line);
+        service.lineData.mouseClicks.push(click2);
         service.numberOfClicks = 1;
 
         service.deleteLastSegment();
         expect(drawLineSpy).toHaveBeenCalled();
-        expect(service.storedLines.length).toBe(0);
-        expect(service.mouseClicks.length).toBe(0);
+        expect(service.lineData.storedLines.length).toBe(0);
+        expect(service.lineData.mouseClicks.length).toBe(0);
         expect(service.numberOfClicks).toBe(0);
     });
 
@@ -236,7 +239,7 @@ describe('LineService', () => {
     it('should call drawDots', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const drawDots = spyOn<any>(service, 'drawDots');
-        service.isDot = true;
+        service.lineData.isDot = true;
 
         service.deleteLastSegment();
         expect(drawLineSpy).toHaveBeenCalled();
@@ -249,10 +252,10 @@ describe('LineService', () => {
     });
 
     it('should reset storedLines, mouseClicks and numberOfClicks', () => {
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
         service.deleteLine();
-        expect(service.storedLines).toEqual([]);
-        expect(service.mouseClicks).toEqual([]);
+        expect(service.lineData.storedLines).toEqual([]);
+        expect(service.lineData.mouseClicks).toEqual([]);
         expect(service.numberOfClicks).toEqual(0);
     });
 
@@ -260,14 +263,14 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.storedLines.push(line);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
-        service.onMouseUp(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseDown(mouseEvent);
 
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).toEqual(service.lineData.mouseClicks[0]);
     });
 
     it('should call drawFullLine on mouse up', () => {
@@ -275,25 +278,24 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.isDot = true;
-        service.storedLines.push(line);
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.isDot = true;
+        service.lineData.storedLines.push(line);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
-        service.onMouseUp(mouseEvent);
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
+        service.onMouseDown(mouseEvent);
 
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.mouseClicks[0]);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).toEqual(service.lineData.mouseClicks[0]);
         expect(drawFullLineSpy).toHaveBeenCalled();
     });
 
     it('should call draw line (to draw a segment)', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const click1: Vec2 = { x: 20, y: 20 };
-        service.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click1);
 
-        service.onMouseUp(mouseEvent);
-
+        service.onMouseDown(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
@@ -302,31 +304,32 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
 
         const click1: Vec2 = { x: 20, y: 20 };
-        service.mouseClicks.push(click1);
-        service.isDot = true;
-        service.onMouseUp(mouseEvent);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.isDot = true;
+        service.onMouseDown(mouseEvent);
 
         expect(drawDotsSpy).toHaveBeenCalled();
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should set isShiftDoubleClick to true when double clicking with shift down', () => {
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
         service.shiftClick = { x: 25, y: 25 };
-        service.onMouseUp(mouseEvent);
+        service.onMouseDown(mouseEvent);
 
-        expect(service.isShiftDoubleClick).toBe(true);
+        expect(service.lineData.isShiftDoubleClick).toBe(true);
     });
 
     it('stored line should correspond to mouse clicks', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
 
         const click1: Vec2 = { x: 20, y: 20 };
-        service.mouseClicks.push(click1);
-        service.isDot = true;
-        service.onMouseUp(mouseEvent);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.isDot = true;
+        service.onMouseDown(mouseEvent);
 
-        expect(service.storedLines[0].startingPoint).toEqual(click1);
+        expect(service.lineData.storedLines[0].startingPoint).toEqual(click1);
         expect(drawLineSpy).toHaveBeenCalled();
     });
 
@@ -334,12 +337,13 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
 
         const click1: Vec2 = { x: 20, y: 20 };
-        service.mouseClicks.push(click1);
-        service.isDot = true;
-        service.onMouseUp(mouseEvent);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.isDot = true;
+        service.onMouseDown(mouseEvent);
 
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(service.storedLines[0].endingPoint);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).toEqual(service.lineData.storedLines[0].endingPoint);
         expect(drawLineSpy).toHaveBeenCalled();
+        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
     });
 
     it('should change mouse event attribute', () => {
@@ -359,7 +363,7 @@ describe('LineService', () => {
         const drawLineSpy = spyOn<any>(service, 'drawLine');
         const drawDotsSpy = spyOn<any>(service, 'drawDots');
         service.isDrawing = true;
-        service.isDot = true;
+        service.lineData.isDot = true;
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
         expect(drawDotsSpy).toHaveBeenCalled();
@@ -371,7 +375,7 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).not.toHaveBeenCalled();
     });
@@ -382,7 +386,7 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 20, y: 20 };
         const click2: Vec2 = { x: 25, y: 25 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
         service.onMouseMove(mouseEvent);
         expect(drawLineSpy).toHaveBeenCalled();
     });
@@ -402,8 +406,8 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 11, y: 11 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
+        service.lineData.storedLines.push(line);
 
         service.deleteLastSegment();
         expect(drawLineSpy).toHaveBeenCalled();
@@ -412,7 +416,7 @@ describe('LineService', () => {
     it('endingClickCoordinates should stay the same if double click', () => {
         const click1: Vec2 = { x: 10, y: 10 };
         const click2: Vec2 = { x: 10, y: 10 };
-        service.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click1);
         service.adjustLineAngle(click2);
         const expectedValue: Vec2 = { x: 10, y: 10 };
         expect(service.endingClickCoordinates).toEqual(expectedValue);
@@ -422,10 +426,9 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 1, y: 0 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
 
         service.drawLine(click1, click2, previewCtxStub, 1);
-        // Premier pixel seulement
         const imageData: ImageData = previewCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -437,10 +440,9 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 1, y: 0 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
 
         service.drawLine(click1, click2, baseCtxStub, 1);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(0, 0, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -451,11 +453,10 @@ describe('LineService', () => {
     it('should be a pixel on preview canvas in the dot radius ', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, previewCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = previewCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -466,11 +467,10 @@ describe('LineService', () => {
     it('should be a pixel on base canvas in the dot radius ', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, baseCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -482,15 +482,13 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
         const line: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(line);
+        service.lineData.storedLines.push(line);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
-        service.isShiftDoubleClick = true;
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.isShiftDoubleClick = true;
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         service.drawDots(2, baseCtxStub);
-        // Premier pixel seulement
         const imageData: ImageData = baseCtxStub.getImageData(5, 1, 1, 1);
         expect(imageData.data[0]).toEqual(0); // R
         expect(imageData.data[1]).toEqual(0); // G
@@ -502,12 +500,11 @@ describe('LineService', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(straightLine);
+        service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
-        service.isShiftDoubleClick = true;
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.isShiftDoubleClick = true;
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         const lineData: Line = {
             type: 'line',
@@ -515,28 +512,27 @@ describe('LineService', () => {
             lineCap: 'round',
             primaryColor: '#000000',
             secondaryColor: '#000000',
-            mouseClicks: service.mouseClicks,
-            storedLines: service.storedLines,
+            mouseClicks: service.lineData.mouseClicks,
+            storedLines: service.lineData.storedLines,
             isDot: true,
             line: straightLine,
             isShiftDoubleClick: true,
-            hasLastPointBeenChaged: true,
+            hasLastPointBeenChanged: true,
             dotWidth: 2,
         };
         service.drawFullLine(baseCtxStub, lineData);
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(click2);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).toEqual(click2);
     });
 
     it('last click of mouseClicks should be equal to the second click of the double click', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(straightLine);
+        service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
-        service.isShiftDoubleClick = true;
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.isShiftDoubleClick = true;
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         const lineData: Line = {
             type: 'line',
@@ -544,28 +540,27 @@ describe('LineService', () => {
             lineCap: 'round',
             primaryColor: '#000000',
             secondaryColor: '#000000',
-            mouseClicks: service.mouseClicks,
-            storedLines: service.storedLines,
+            mouseClicks: service.lineData.mouseClicks,
+            storedLines: service.lineData.storedLines,
             isDot: true,
             line: straightLine,
             isShiftDoubleClick: true,
-            hasLastPointBeenChaged: false,
+            hasLastPointBeenChanged: false,
             dotWidth: 2,
         };
         service.drawFullLine(baseCtxStub, lineData);
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).toEqual(click2);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).toEqual(click2);
     });
 
     it('last click of mouseClicks should not be equal to the first click of mouseClicks if last point has not been changed', () => {
         const click1: Vec2 = { x: 0, y: 0 };
         const click2: Vec2 = { x: 5, y: 0 };
         const straightLine: StraightLine = { startingPoint: click1, endingPoint: click2 };
-        service.storedLines.push(straightLine);
+        service.lineData.storedLines.push(straightLine);
 
-        // isShiftDoubleClick true means that the ending point will be adjusted
-        service.isShiftDoubleClick = true;
-        service.mouseClicks.push(click1);
-        service.mouseClicks.push(click2);
+        service.lineData.isShiftDoubleClick = true;
+        service.lineData.mouseClicks.push(click1);
+        service.lineData.mouseClicks.push(click2);
 
         const lineData: Line = {
             type: 'line',
@@ -573,16 +568,16 @@ describe('LineService', () => {
             lineCap: 'round',
             primaryColor: '#000000',
             secondaryColor: '#000000',
-            mouseClicks: service.mouseClicks,
-            storedLines: service.storedLines,
+            mouseClicks: service.lineData.mouseClicks,
+            storedLines: service.lineData.storedLines,
             isDot: true,
             line: straightLine,
             isShiftDoubleClick: false,
-            hasLastPointBeenChaged: false,
+            hasLastPointBeenChanged: false,
             dotWidth: 2,
         };
         service.drawFullLine(baseCtxStub, lineData);
-        expect(service.mouseClicks[service.mouseClicks.length - 1]).not.toEqual(click1);
+        expect(service.lineData.mouseClicks[service.lineData.mouseClicks.length - 1]).not.toEqual(click1);
     });
     // tslint:disable-next-line: max-file-line-count
 });

@@ -1,12 +1,18 @@
+import { Injector } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Fill, Pencil, Selection } from '@app/classes/tool-properties';
+import { Fill, Selection } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { DrawingService } from './drawing.service';
 
+// tslint:disable: no-string-literal
+// tslint:disable: no-magic-numbers
 describe('DrawingService', () => {
     let service: DrawingService;
     const WIDTH = 100;
     const HEIGHT = 100;
+    let injectorSpy: jasmine.SpyObj<Injector>;
+    let continueDrawingServiceSpy: jasmine.SpyObj<ContinueDrawingService>;
 
     beforeEach(() => {
         const canvas = document.createElement('canvas');
@@ -17,11 +23,20 @@ describe('DrawingService', () => {
         drawCanvas.width = WIDTH;
         drawCanvas.height = HEIGHT;
 
-        TestBed.configureTestingModule({});
+        continueDrawingServiceSpy = jasmine.createSpyObj('ContinueDrawingService', ['furtherDrawing']);
+        injectorSpy = jasmine.createSpyObj('injector', ['get']);
+        // tslint:disable-next-line: deprecation
+        injectorSpy.get.and.returnValue(continueDrawingServiceSpy);
+        TestBed.configureTestingModule({
+            providers: [],
+        });
         service = TestBed.inject(DrawingService);
+        // tslint:disable-next-line: no-string-literal
+        service['injector'] = injectorSpy;
         service.canvas = canvas;
         service.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         service.previewCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
+        service.gridCtx = drawCanvas.getContext('2d') as CanvasRenderingContext2D;
     });
 
     it('should be created', () => {
@@ -33,6 +48,11 @@ describe('DrawingService', () => {
         const pixelBuffer = new Uint32Array(service.baseCtx.getImageData(0, 0, service.canvas.width, service.canvas.height).data.buffer);
         const hasColoredPixels = pixelBuffer.some((color) => color !== 0);
         expect(hasColoredPixels).toEqual(false);
+    });
+
+    it('should return isLastDrawing', () => {
+        service.isLastDrawing = false;
+        expect(service.checkedDrawing()).toEqual(false);
     });
 
     it('should initialize canvas as all white canvas', () => {
@@ -56,7 +76,6 @@ describe('DrawingService', () => {
 
     it('should get pixelData from baseCtx', () => {
         const pixel: Vec2 = { x: 1, y: 1 };
-        // tslint:disable-next-line: no-magic-numbers
         const expectedResult: Uint8ClampedArray = new Uint8ClampedArray([255, 0, 0, 255]);
 
         service.initializeBaseCanvas();
@@ -67,7 +86,6 @@ describe('DrawingService', () => {
     });
 
     it('should get ImageData from baseCtx', () => {
-        // tslint:disable-next-line: no-magic-numbers
         const pixels: Uint8ClampedArray = new Uint8ClampedArray([255, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]);
         const expectedCanvasData: ImageData = { data: pixels, height: 2, width: 2 };
 
@@ -77,27 +95,10 @@ describe('DrawingService', () => {
         service.initializeBaseCanvas();
         service.baseCtx.fillStyle = 'red';
         service.baseCtx.fillRect(0, 0, 1, 1);
-
         const canvasData = service.getCanvasData();
         expect(canvasData.data).toEqual(expectedCanvasData.data);
         expect(canvasData.width).toEqual(expectedCanvasData.width);
         expect(canvasData.height).toEqual(expectedCanvasData.height);
-    });
-
-    it('should update stack on updateStack', () => {
-        service.undoStack = [];
-        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
-        service.updateStack(pencil);
-        expect(service.undoStack.length).toEqual(1);
-    });
-
-    it('should update stack on updateStack and clear redo stack', () => {
-        service.undoStack = [];
-        const pencil: Pencil = { type: {} as string, path: {} as Vec2[], lineWidth: 1, primaryColor: 'black' };
-        service.redoStack.push(pencil);
-        service.updateStack(pencil);
-        expect(service.undoStack.length).toEqual(1);
-        expect(service.redoStack.length).toEqual(0);
     });
 
     it('should drawfill on basectx', () => {
@@ -120,9 +121,43 @@ describe('DrawingService', () => {
         expect(imageDataSpy).toHaveBeenCalled();
     });
 
-    it('should set tool in use', () => {
-        const setSpy = spyOn(service.isToolInUse, 'next');
-        service.setIsToolInUse(true);
-        expect(setSpy).toHaveBeenCalled();
+    it('should draw grid on setgrid', () => {
+        service.canvas.width = 10;
+        service.canvas.height = 10;
+        service.gridSpacing = 5;
+        const moveToSpy = spyOn(service.gridCtx, 'moveTo');
+        const lineToSpy = spyOn(service.gridCtx, 'lineTo');
+        service.setGrid();
+        expect(moveToSpy).toHaveBeenCalledTimes(6);
+        expect(lineToSpy).toHaveBeenCalledTimes(6);
+    });
+
+    it('should drawimage on basectx on applyPreview call', () => {
+        const baseCtxSpy = spyOn(service.baseCtx, 'drawImage');
+        const clearCanvasSpy = spyOn(service, 'clearCanvas');
+        service.applyPreview();
+        expect(baseCtxSpy).toHaveBeenCalled();
+        expect(clearCanvasSpy).toHaveBeenCalled();
+    });
+
+    it('should not call setGrid on initializeBaseCanvas if grid is disabled', () => {
+        service.isGridEnabled = false;
+        const setGridSpy = spyOn(service, 'setGrid');
+        service.initializeBaseCanvas();
+        expect(setGridSpy).not.toHaveBeenCalled();
+    });
+
+    it('should call setGrid on initializeBaseCanvas if grid is enabled', () => {
+        service.isGridEnabled = true;
+        const setGridSpy = spyOn(service, 'setGrid');
+        service.initializeBaseCanvas();
+        expect(setGridSpy).toHaveBeenCalled();
+    });
+
+    it('should not call clear of localStorage if canvas is undefined', () => {
+        const clearSpy = spyOn(localStorage, 'clear');
+        service.canvas = (undefined as unknown) as HTMLCanvasElement;
+        service.autoSave();
+        expect(clearSpy).not.toHaveBeenCalled();
     });
 });

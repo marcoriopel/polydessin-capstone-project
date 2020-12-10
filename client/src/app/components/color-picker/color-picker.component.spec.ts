@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MAXIMUM_NUMBER_OF_COLORS, MAX_OPACITY, MouseButton } from '@app/ressources/global-variables/global-variables';
+import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ColorPickerComponent } from './color-picker.component';
 
 class KeyEventMock {
@@ -18,14 +19,17 @@ describe('ColorPickerComponent', () => {
     let mouseEventClickLeft: MouseEvent;
     let mouseEventClickRight: MouseEvent;
     let baseCtxStub: CanvasRenderingContext2D;
+    let hotkeyServiceSpy: jasmine.SpyObj<HotkeyService>;
     const MAX_CANVAS_HEIGTH = 100;
     const MAX_CANVAS_WIDTH = 100;
 
     beforeEach(async(() => {
+        hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['']);
         TestBed.configureTestingModule({
             imports: [FormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [ColorPickerComponent],
+            providers: [{ provide: HotkeyService, useValue: hotkeyServiceSpy }],
         }).compileComponents();
     }));
 
@@ -157,9 +161,9 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should not decrement primary opacity because already at minimum', () => {
-        component.primaryOpacity = component.minOpacity;
+        component.primaryOpacity = 0;
         component.decrementPrimaryOpacity();
-        expect(component.primaryOpacity).toEqual(component.minOpacity);
+        expect(component.primaryOpacity).toEqual(0);
     });
 
     it('should decrement secondary opacity by 1', () => {
@@ -169,15 +173,15 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should not decrement secondary opacity because already at minimum', () => {
-        component.secondaryOpacity = component.minOpacity;
+        component.secondaryOpacity = 0;
         component.decrementSecondaryOpacity();
-        expect(component.secondaryOpacity).toEqual(component.minOpacity);
+        expect(component.secondaryOpacity).toEqual(0);
     });
 
     it('should increment primary opacity by 1', () => {
-        component.primaryOpacity = component.minOpacity;
+        component.primaryOpacity = 0;
         component.incrementPrimaryOpacity();
-        expect(component.primaryOpacity).toEqual(component.minOpacity + 1);
+        expect(component.primaryOpacity).toEqual(1);
     });
 
     it('should not increment primary opacity because already at maximum', () => {
@@ -187,9 +191,9 @@ describe('ColorPickerComponent', () => {
     });
 
     it('should increment secondary opacity by 1', () => {
-        component.secondaryOpacity = component.minOpacity;
+        component.secondaryOpacity = 0;
         component.incrementSecondaryOpacity();
-        expect(component.secondaryOpacity).toEqual(component.minOpacity + 1);
+        expect(component.secondaryOpacity).toEqual(1);
     });
 
     it('should not increment secondary opacity because already at maximum', () => {
@@ -260,5 +264,15 @@ describe('ColorPickerComponent', () => {
         const changeSecondaryColorSpy = spyOn(component, 'changeSecondaryColor');
         component.pipetteService.onMouseDown(mouseEventClickRight);
         expect(changeSecondaryColorSpy).toHaveBeenCalled();
+    });
+
+    it('onFocus should set isHotkeyEnabled to false', () => {
+        component.onFocus();
+        expect(hotkeyServiceSpy.isHotkeyEnabled).toEqual(false);
+    });
+
+    it('onFocusOut should set isHotkeyEnabled to true', () => {
+        component.onFocusOut();
+        expect(hotkeyServiceSpy.isHotkeyEnabled).toEqual(true);
     });
 });

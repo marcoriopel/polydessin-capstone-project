@@ -1,5 +1,6 @@
 <div id="squareAttributes">
     <h2 class="toolName">{{ squareService.name }}</h2>
+    <hr />
     <app-slider
         title="Épaisseur Contour"
         [min]="squareService.minBorderWidth"
@@ -8,5 +9,5 @@
         [value]="toolWidth"
         (valueChange)="changeBorderWidth($event)"
     ></app-slider>
-    <app-type-of-fill-selection (valueChange)="changeFillStyle($event)" [currentFillStyle]="this.fillStyle"></app-type-of-fill-selection>
+    <app-fill-types-selection (valueChange)="changeFillStyle($event)" [currentFillStyle]="this.fillStyle"></app-fill-types-selection>
 </div>

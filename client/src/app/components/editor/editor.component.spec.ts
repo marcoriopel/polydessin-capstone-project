@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DrawingComponent } from '@app/components/drawing/drawing.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { ContinueDrawingService } from '@app/services/continue-drawing/continue-drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { ToolSelectionService } from '@app/services/tool-selection/tool-selection.service';
@@ -10,6 +9,8 @@ import { Subject } from 'rxjs';
 import { EditorComponent } from './editor.component';
 
 import SpyObj = jasmine.SpyObj;
+
+// tslint:disable: no-string-literal
 
 describe('EditorComponent', () => {
     let component: EditorComponent;
@@ -22,6 +23,7 @@ describe('EditorComponent', () => {
     let keyboardEvent: KeyboardEvent;
 
     beforeEach(async(() => {
+        obs = new Subject<string>();
         toolSelectionServiceSpy = jasmine.createSpyObj('ToolSelectionService', [
             'currentToolKeyUp',
             'currentToolKeyDown',
@@ -31,9 +33,10 @@ describe('EditorComponent', () => {
             'currentToolMouseDown',
             'currentToolMouseUp',
             'currentToolMouseLeave',
+            'getCurrentTool',
         ]);
+        toolSelectionServiceSpy.getCurrentTool.and.returnValue(obs.asObservable());
         resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['onMouseDown', 'resizeCanvas', 'onMouseUp', 'setDefaultCanvasSize']);
-
         hotkeyServiceSpy = jasmine.createSpyObj('HotkeyService', ['onKeyDown', 'getKey']);
         obs = new Subject<string>();
         hotkeyServiceSpy.getKey.and.returnValue(obs.asObservable());
@@ -41,11 +44,12 @@ describe('EditorComponent', () => {
         TestBed.configureTestingModule({
             imports: [MatDialogModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            declarations: [EditorComponent, DrawingComponent, SidebarComponent],
+            declarations: [EditorComponent],
             providers: [
                 { provide: HotkeyService, useValue: hotkeyServiceSpy },
                 { provide: ToolSelectionService, useValue: toolSelectionServiceSpy },
                 { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
+                { provide: ContinueDrawingService, useValue: {} },
             ],
         }).compileComponents();
     }));
@@ -66,6 +70,25 @@ describe('EditorComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should call hotkeyService.onKeyDown', () => {
+        const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
+        component.onKeyDown(keyEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentToolKeyDown', () => {
+        const keyEvent = new KeyboardEvent('keydown', { key: 'e' });
+        component.onKeyDown(keyEvent);
+        expect(hotkeyServiceSpy.onKeyDown).toHaveBeenCalled();
+        expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
+    });
+
+    it('should call toolSectionService.currentToolKeyDown if key is +', () => {
+        const keyEvent = new KeyboardEvent('keydown', { key: '+' });
+        component.onKeyDown(keyEvent);
+        expect(toolSelectionServiceSpy.currentToolKeyDown).toHaveBeenCalled();
     });
 
     it('should call toolSectionService.currentToolKeyUp', () => {
@@ -102,14 +125,14 @@ describe('EditorComponent', () => {
     it('should not resize canvas if resizeDrawingService.mouseDown is false', () => {
         const expectedResult = component.canvasSize;
         component.previewSize = { x: 500, y: 500 };
-        component.resizeDrawingService.mouseDown = false;
+        component.resizeDrawingService['mouseDown'] = false;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(component.canvasSize).toEqual(expectedResult);
     });
 
     it('should call resizeDrawingService.onMouseUp on mouseUp', () => {
-        component.resizeDrawingService.mouseDown = true;
+        component.resizeDrawingService['mouseDown'] = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();
@@ -117,7 +140,7 @@ describe('EditorComponent', () => {
 
     it('should set previewDiv display to none', () => {
         component.previewDiv.style.display = 'block';
-        component.resizeDrawingService.mouseDown = true;
+        component.resizeDrawingService['mouseDown'] = true;
         const mouseEvent = {} as MouseEvent;
         component.onMouseUp(mouseEvent);
         expect(resizeDrawingServiceSpy.onMouseUp).toHaveBeenCalled();

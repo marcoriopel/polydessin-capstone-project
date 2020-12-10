@@ -23,7 +23,7 @@ export abstract class Tool {
 
     onMouseLeave(): void {}
 
-    onMouseEnter(): void {}
+    onMouseEnter(event: MouseEvent): void {}
 
     onKeyDown(event: KeyboardEvent): void {}
 
@@ -31,13 +31,14 @@ export abstract class Tool {
 
     onKeyUp(event: KeyboardEvent): void {}
 
+    onWheelEvent(event: WheelEvent): void {}
+
     getPositionFromMouse(event: MouseEvent): Vec2 {
         return { x: event.offsetX, y: event.offsetY };
     }
 
     setCursor(): void {
-        const previewCanvas = this.drawingService.previewCanvas;
-        previewCanvas.style.cursor = 'crosshair';
+        this.drawingService.gridCanvas.style.cursor = 'crosshair';
     }
 
     reset(): void {}

@@ -1,6 +1,8 @@
 export interface ToolNames {
     PENCIL_TOOL_NAME: string;
+    PEN_TOOL_NAME: string;
     BRUSH_TOOL_NAME: string;
+    SPRAY_TOOL_NAME: string;
     SQUARE_TOOL_NAME: string;
     CIRCLE_TOOL_NAME: string;
     LINE_TOOL_NAME: string;
@@ -9,12 +11,17 @@ export interface ToolNames {
     SQUARE_SELECTION_TOOL_NAME: string;
     CIRCLE_SELECTION_TOOL_NAME: string;
     PIPETTE_TOOL_NAME: string;
-    POLYGONE_TOOL_NAME: string;
+    POLYGON_TOOL_NAME: string;
+    TEXT_TOOL_NAME: string;
+    MAGIC_WAND_TOOL_NAME: string;
+    STAMP_TOOL_NAME: string;
 }
 
 export const TOOL_NAMES: ToolNames = {
     PENCIL_TOOL_NAME: 'Crayon',
+    PEN_TOOL_NAME: 'Plume',
     BRUSH_TOOL_NAME: 'Pinceau',
+    SPRAY_TOOL_NAME: 'Aérosol',
     SQUARE_TOOL_NAME: 'Rectangle',
     CIRCLE_TOOL_NAME: 'Ellipse',
     LINE_TOOL_NAME: 'Ligne',
@@ -23,12 +30,17 @@ export const TOOL_NAMES: ToolNames = {
     SQUARE_SELECTION_TOOL_NAME: 'Sélection - Rectangle',
     CIRCLE_SELECTION_TOOL_NAME: 'Sélection - Ellipse',
     PIPETTE_TOOL_NAME: 'Pipette',
-    POLYGONE_TOOL_NAME: 'Polygone',
+    POLYGON_TOOL_NAME: 'Polygone',
+    TEXT_TOOL_NAME: 'Texte',
+    STAMP_TOOL_NAME: 'Étampe',
+    MAGIC_WAND_TOOL_NAME: 'Baguette Magique',
 };
 
 export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.PENCIL_TOOL_NAME,
+    TOOL_NAMES.PEN_TOOL_NAME,
     TOOL_NAMES.BRUSH_TOOL_NAME,
+    TOOL_NAMES.SPRAY_TOOL_NAME,
     TOOL_NAMES.SQUARE_TOOL_NAME,
     TOOL_NAMES.CIRCLE_TOOL_NAME,
     TOOL_NAMES.LINE_TOOL_NAME,
@@ -37,5 +49,8 @@ export const TOOL_NAMES_ARRAY: string[] = [
     TOOL_NAMES.PIPETTE_TOOL_NAME,
     TOOL_NAMES.SQUARE_SELECTION_TOOL_NAME,
     TOOL_NAMES.CIRCLE_SELECTION_TOOL_NAME,
-    TOOL_NAMES.POLYGONE_TOOL_NAME,
+    TOOL_NAMES.POLYGON_TOOL_NAME,
+    TOOL_NAMES.TEXT_TOOL_NAME,
+    TOOL_NAMES.STAMP_TOOL_NAME,
+    TOOL_NAMES.MAGIC_WAND_TOOL_NAME,
 ];
