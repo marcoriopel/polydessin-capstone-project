@@ -1,6 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
-import { Brush, Ellipse, Eraser, Fill, Line, Pencil, Polygon, Rectangle, Resize, Selection, Stamp } from '@app/classes/tool-properties';
+import {
+    Brush,
+    Ellipse,
+    Eraser,
+    Fill,
+    Line,
+    Pencil,
+    Polygon,
+    Rectangle,
+    Resize,
+    Selection,
+    Stamp,
+    ToolProperties,
+} from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ResizeDrawingService } from '@app/services/resize-drawing/resize-drawing.service';
 import { BrushService } from '@app/services/tools/brush.service';
@@ -13,6 +26,7 @@ import { SelectionService } from '@app/services/tools/selection-services/selecti
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { Observable, Subject } from 'rxjs';
+import { UndoRedoStackService } from './undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -35,9 +49,10 @@ export class UndoRedoService extends Tool {
         public polygonService: PolygonService,
         public selectionService: SelectionService,
         public stampService: StampService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {
         super(drawingService);
-        this.drawingService.getIsToolInUse().subscribe((value) => {
+        this.undoRedoStackService.getIsToolInUse().subscribe((value) => {
             if (value) {
                 this.setUndoAvailability(false);
                 this.setRedoAvailability(false);
@@ -76,12 +91,12 @@ export class UndoRedoService extends Tool {
             return;
         }
         this.resizeDrawingService.resizeCanvasSize(this.resizeDrawingService.workSpaceSize.x / 2, this.resizeDrawingService.workSpaceSize.y / 2);
-        const modification = this.drawingService.undoStack.pop();
+        const modification = this.undoRedoStackService.undoStack.pop();
         if (modification) {
-            this.drawingService.redoStack.push(modification);
+            this.undoRedoStackService.redoStack.push(modification);
         }
         this.drawingService.clearCanvas(this.drawingService.baseCtx);
-        this.drawingService.undoStack.forEach((element) => {
+        this.undoRedoStackService.undoStack.forEach((element) => {
             this.drawElement(element);
         });
         this.changeUndoAvailability();
@@ -96,15 +111,13 @@ export class UndoRedoService extends Tool {
         if (!this.isRedoAvailable) {
             return;
         }
-        const redoStackLength = this.drawingService.redoStack.length;
+        const redoStackLength = this.undoRedoStackService.redoStack.length;
         if (redoStackLength) {
-            const element = this.drawingService.redoStack[redoStackLength - 1];
+            const element = this.undoRedoStackService.redoStack[redoStackLength - 1];
             this.drawElement(element);
-            const modification = this.drawingService.redoStack.pop();
+            const modification = this.undoRedoStackService.redoStack.pop();
 
-            this.drawingService.undoStack.push(
-                modification as Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp,
-            );
+            this.undoRedoStackService.undoStack.push(modification as ToolProperties);
         }
         this.changeUndoAvailability();
         this.changeRedoAvailability();
@@ -112,7 +125,7 @@ export class UndoRedoService extends Tool {
     }
 
     changeUndoAvailability(): void {
-        if (this.drawingService.undoStack.length) {
+        if (this.undoRedoStackService.undoStack.length) {
             this.setUndoAvailability(true);
         } else {
             this.setUndoAvailability(false);
@@ -120,14 +133,14 @@ export class UndoRedoService extends Tool {
     }
 
     changeRedoAvailability(): void {
-        if (this.drawingService.redoStack.length) {
+        if (this.undoRedoStackService.redoStack.length) {
             this.setRedoAvailability(true);
         } else {
             this.setRedoAvailability(false);
         }
     }
 
-    drawElement(element: Pencil | Brush | Eraser | Polygon | Line | Resize | Fill | Rectangle | Ellipse | Stamp): void {
+    drawElement(element: ToolProperties): void {
         switch (element.type) {
             case 'pencil':
                 this.pencilService.drawPencilStroke(this.drawingService.baseCtx, element as Pencil);
