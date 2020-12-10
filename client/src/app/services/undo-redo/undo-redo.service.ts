@@ -6,6 +6,7 @@ import {
     Eraser,
     Fill,
     Line,
+    Pen,
     Pencil,
     Polygon,
     Rectangle,
@@ -13,6 +14,7 @@ import {
     Selection,
     Spray,
     Stamp,
+    Text,
     ToolProperties,
 } from '@app/classes/tool-properties';
 import { DrawingService } from '@app/services/drawing/drawing.service';
@@ -28,6 +30,8 @@ import { SprayService } from '@app/services/tools/spray.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { StampService } from '@app/services/tools/stamp.service';
 import { Observable, Subject } from 'rxjs';
+import { PenService } from '../tools/pen.service';
+import { TextService } from '../tools/text.service';
 import { UndoRedoStackService } from './undo-redo-stack.service';
 
 @Injectable({
@@ -53,6 +57,8 @@ export class UndoRedoService extends Tool {
         public stampService: StampService,
         public undoRedoStackService: UndoRedoStackService,
         public sprayService: SprayService,
+        public penService: PenService,
+        public textService: TextService,
     ) {
         super(drawingService);
         this.undoRedoStackService.getIsToolInUse().subscribe((value) => {
@@ -180,6 +186,12 @@ export class UndoRedoService extends Tool {
                 break;
             case 'spray':
                 this.sprayService.restoreSpray(element as Spray);
+                break;
+            case 'pen':
+                this.penService.restorePen(element as Pen);
+                break;
+            case 'text':
+                this.textService.restoreText(element as Text);
                 break;
         }
     }

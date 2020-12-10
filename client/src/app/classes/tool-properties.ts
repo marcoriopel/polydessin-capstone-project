@@ -104,6 +104,16 @@ export interface Spray extends ToolProperties {
     type: string;
     imageData: ImageData;
 }
+
+export interface Pen extends ToolProperties {
+    type: string;
+    imageData: ImageData;
+}
+
+export interface Text extends ToolProperties {
+    type: string;
+    imageData: ImageData;
+}
 export interface Stamp extends ToolProperties {
     type: string;
     color: string;

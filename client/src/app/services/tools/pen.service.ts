@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Pen } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
@@ -21,6 +22,8 @@ export class PenService extends Tool {
     altKeyPressed: boolean = false;
     lastPoint: Vec2;
     currentPoint: Vec2;
+    penData: Pen;
+    canvasData: ImageData;
 
     constructor(
         drawingService: DrawingService,
@@ -62,6 +65,9 @@ export class PenService extends Tool {
             this.drawingService.applyPreview();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
             this.undoRedoStackService.setIsToolInUse(false);
+            this.canvasData = this.drawingService.getCanvasData();
+            this.updatePenData();
+            this.undoRedoStackService.updateStack(this.penData);
         }
         this.mouseDown = false;
         this.drawingService.autoSave();
@@ -123,5 +129,17 @@ export class PenService extends Tool {
 
     getAngle(): Observable<number> {
         return this.angleObservable;
+    }
+
+    restorePen(penData: Pen): void {
+        this.drawingService.baseCtx.putImageData(penData.imageData, 0, 0);
+    }
+
+    updatePenData(): void {
+        this.penData = {
+            type: 'pen',
+            imageData: this.canvasData,
+        };
+        this.drawingService.autoSave();
     }
 }
