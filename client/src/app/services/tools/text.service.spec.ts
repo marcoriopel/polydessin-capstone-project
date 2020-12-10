@@ -19,7 +19,7 @@ describe('TextService', () => {
     let mouseEventLeft: MouseEvent;
 
     beforeEach(() => {
-        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'applyPreview']);
+        drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['clearCanvas', 'applyPreview', 'getCanvasData', 'autoSave']);
         colorPickerStub = new ColorSelectionService();
         hotkeyServiceStub = new HotkeyService();
 

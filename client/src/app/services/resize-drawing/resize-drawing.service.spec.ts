@@ -19,7 +19,6 @@ describe('ResizeDrawingService', () => {
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', [
             'clearCanvas',
-            'updateStack',
             'setIsToolInUse',
             'checkDrawing',
             'initializeBaseCanvas',

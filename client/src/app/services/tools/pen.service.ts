@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Pen } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { ANGLE_HALF_TURN, MouseButton, ROTATION_STEP } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { Observable, Subject } from 'rxjs';
 
 // this tool was inpired by the code found on http://perfectionkills.com/exploring-canvas-drawing-techniques/
@@ -20,8 +22,14 @@ export class PenService extends Tool {
     altKeyPressed: boolean = false;
     lastPoint: Vec2;
     currentPoint: Vec2;
+    penData: Pen;
+    canvasData: ImageData;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -48,7 +56,7 @@ export class PenService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.currentPoint = this.getPositionFromMouse(event);
             this.drawPenStroke(this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -56,7 +64,10 @@ export class PenService extends Tool {
         if (this.mouseDown) {
             this.drawingService.applyPreview();
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
+            this.canvasData = this.drawingService.getCanvasData();
+            this.updatePenData();
+            this.undoRedoStackService.updateStack(this.penData);
         }
         this.mouseDown = false;
         this.drawingService.autoSave();
@@ -118,5 +129,17 @@ export class PenService extends Tool {
 
     getAngle(): Observable<number> {
         return this.angleObservable;
+    }
+
+    restorePen(penData: Pen): void {
+        this.drawingService.baseCtx.putImageData(penData.imageData, 0, 0);
+    }
+
+    updatePenData(): void {
+        this.penData = {
+            type: 'pen',
+            imageData: this.canvasData,
+        };
+        this.drawingService.autoSave();
     }
 }

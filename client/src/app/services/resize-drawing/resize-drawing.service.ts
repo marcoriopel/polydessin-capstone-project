@@ -11,6 +11,7 @@ import {
     MouseButton,
 } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -26,7 +27,7 @@ export class ResizeDrawingService {
     mouseEvent: MouseEvent;
     imageData: ImageData;
 
-    constructor(public drawingService: DrawingService) {}
+    constructor(public drawingService: DrawingService, public undoRedoStackService: UndoRedoStackService) {}
 
     setDefaultCanvasSize(): void {
         if (this.workSpaceSize.x > MINIMUM_WORKSPACE_WIDTH) {
@@ -81,7 +82,7 @@ export class ResizeDrawingService {
             this.canvasSize.y = this.previewSize.y;
 
             this.updateResizeData();
-            this.drawingService.updateStack(this.resizeData);
+            this.undoRedoStackService.updateStack(this.resizeData);
 
             setTimeout(() => {
                 this.drawingService.initializeBaseCanvas();

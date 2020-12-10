@@ -6,6 +6,7 @@ import { DrawingService } from '@app/services/drawing/drawing.service';
 import { SquareService } from '@app/services/tools/square.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 
@@ -21,8 +22,9 @@ export class SquareSelectionService extends SelectionService {
         public rotateService: RotateService,
         public clipboardService: ClipboardService,
         public magnetismService: MagnetismService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService, undoRedoStackService);
         super.underlyingService = squareService;
         this.selectionType = SelectionType.SQUARE;
     }
