@@ -421,13 +421,4 @@ describe('PenService', () => {
     it('getAngle should return the angle', () => {
         expect(service.getAngle()).toEqual(angleObservableSpy);
     });
-
-    it('sdf', () => {
-        const penData = {
-            type: 'pen',
-            imageData: (undefined as unknown) as ImageData,
-        };
-        service.restorePen(penData);
-        expect(drawServiceSpy.autoSave).toHaveBeenCalled();
-    });
 });
