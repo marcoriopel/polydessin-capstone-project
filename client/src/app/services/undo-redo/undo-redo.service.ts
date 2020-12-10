@@ -11,6 +11,7 @@ import {
     Rectangle,
     Resize,
     Selection,
+    Spray,
     Stamp,
     ToolProperties,
 } from '@app/classes/tool-properties';
@@ -174,6 +175,9 @@ export class UndoRedoService extends Tool {
                 break;
             case 'stamp':
                 this.stampService.printStamp(this.drawingService.baseCtx, element as Stamp);
+                break;
+            case 'spray':
+                this.sprayService.restoreSpray(this.drawingService.baseCtx, element as Spray);
                 break;
         }
     }

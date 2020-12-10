@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Spray } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import {
     MAX_SPRAY_DOT_WIDTH,
@@ -28,12 +29,13 @@ export class SprayService extends Tool implements OnDestroy {
     minFrequency: number = MIN_SPRAY_FREQUENCY;
     maxFrequency: number = MAX_SPRAY_FREQUENCY;
     minToolWidth: number = MIN_SPRAY_WIDTH;
-
+    sprayData: Spray;
     timeoutId: ReturnType<typeof setTimeout>;
     mouseCoord: Vec2;
     width: number = this.minToolWidth;
     dotWidth: number = this.minDotWidth;
     sprayFrequency: number = this.minFrequency;
+    canvasData: ImageData;
 
     constructor(
         drawingService: DrawingService,
@@ -66,6 +68,9 @@ export class SprayService extends Tool implements OnDestroy {
             clearTimeout(this.timeoutId);
             this.drawingService.applyPreview();
             this.undoRedoStackService.setIsToolInUse(false);
+            this.canvasData = this.drawingService.getCanvasData();
+            this.updateSprayData();
+            this.undoRedoStackService.updateStack(this.sprayData);
         }
         this.mouseDown = false;
         this.drawingService.autoSave();
@@ -133,5 +138,17 @@ export class SprayService extends Tool implements OnDestroy {
     reset(): void {
         clearTimeout(this.timeoutId);
         this.drawingService.previewCtx.globalAlpha = 1;
+    }
+
+    updateSprayData(): void {
+        this.sprayData = {
+            type: 'fill',
+            imageData: this.canvasData,
+        };
+        this.drawingService.autoSave();
+    }
+
+    restoreSpray(): void {
+        console.log('test');
     }
 }

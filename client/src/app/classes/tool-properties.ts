@@ -100,6 +100,10 @@ export interface Selection extends ToolProperties {
     imageData: ImageData;
 }
 
+export interface Spray extends ToolProperties {
+    type: string;
+    imageData: ImageData;
+}
 export interface Stamp extends ToolProperties {
     type: string;
     color: string;
