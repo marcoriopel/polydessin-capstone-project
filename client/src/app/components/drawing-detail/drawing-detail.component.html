@@ -6,11 +6,11 @@
     <mat-expansion-panel *ngFor="let basicTool of basicTools">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{ basicTool.name }}
+                {{ basicTool.NAME }}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ basicTool.description }}</p>
-        <video autoplay loop muted><source class="animated-gif" src="{{ basicTool.picture }}" type="video/mp4" /></video>
+        <p>{{ basicTool.DESCRIPTION }}</p>
+        <video autoplay loop muted><source class="animated-gif" src="{{ basicTool.PICTURE }}" type="video/mp4" /></video>
     </mat-expansion-panel>
 
     <mat-expansion-panel hideToggle>
@@ -20,11 +20,11 @@
         <mat-expansion-panel *ngFor="let drawingTool of drawingTools" hideToggle>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{ drawingTool.name }}
+                    {{ drawingTool.NAME }}
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>{{ drawingTool.description }}</p>
-            <video autoplay loop muted><source class="animated-gif" src="{{ drawingTool.picture }}" type="video/mp4" /></video>
+            <p>{{ drawingTool.DESCRIPTION }}</p>
+            <video autoplay loop muted><source class="animated-gif" src="{{ drawingTool.PICTURE }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
 
@@ -35,22 +35,22 @@
         <mat-expansion-panel *ngFor="let shape of shapes" hideToggle>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{ shape.name }}
+                    {{ shape.NAME }}
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>{{ shape.description }}</p>
-            <video autoplay loop muted><source class="animated-gif" src="{{ shape.picture }}" type="video/mp4" /></video>
+            <p>{{ shape.DESCRIPTION }}</p>
+            <video autoplay loop muted><source class="animated-gif" src="{{ shape.PICTURE }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
 
     <mat-expansion-panel *ngFor="let fill of fills">
         <mat-expansion-panel-header>
             <mat-panel-title>
-                {{ fill.name }}
+                {{ fill.NAME }}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>{{ fill.description }}</p>
-        <video autoplay loop muted><source class="animated-gif" src="{{ fill.picture }}" type="video/mp4" /></video>
+        <p>{{ fill.DESCRIPTION }}</p>
+        <video autoplay loop muted><source class="animated-gif" src="{{ fill.PICTURE }}" type="video/mp4" /></video>
     </mat-expansion-panel>
 
     <mat-expansion-panel hideToggle>
@@ -60,11 +60,11 @@
         <mat-expansion-panel *ngFor="let transformation of transformations" hideToggle>
             <mat-expansion-panel-header>
                 <mat-panel-title>
-                    {{ transformation.name }}
+                    {{ transformation.NAME }}
                 </mat-panel-title>
             </mat-expansion-panel-header>
-            <p>{{ transformation.description }}</p>
-            <video autoplay loop muted><source class="animated-gif" src="{{ transformation.picture }}" type="video/mp4" /></video>
+            <p>{{ transformation.DESCRIPTION }}</p>
+            <video autoplay loop muted><source class="animated-gif" src="{{ transformation.PICTURE }}" type="video/mp4" /></video>
         </mat-expansion-panel>
     </mat-expansion-panel>
 </mat-expansion-panel>
@@ -72,20 +72,20 @@
 <mat-expansion-panel *ngFor="let feature of otherFeatures">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            {{ feature.name }}
+            {{ feature.NAME }}
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>{{ feature.description }}</p>
-    <img class="image" src="{{ feature.picture }}" type="image/png" />
+    <p>{{ feature.DESCRIPTION }}</p>
+    <img class="image" src="{{ feature.PICTURE }}" type="image/png" />
 </mat-expansion-panel>
 
 <mat-expansion-panel *ngFor="let undo of undoredo">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            {{ undo.name }}
+            {{ undo.NAME }}
         </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>{{ undo.description }}</p>
-    <div><img class="image" src="{{ undo.picture }}" type="image/png" /></div>
+    <p>{{ undo.DESCRIPTION }}</p>
+    <div><img class="image" src="{{ undo.PICTURE }}" type="image/png" /></div>
     <div><img class="image" src="../../../assets/img/refaire.png" type="image/png" /></div>
 </mat-expansion-panel>

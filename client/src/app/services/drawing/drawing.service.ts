@@ -100,5 +100,7 @@ export class DrawingService {
         if (!this.canvas) return;
         localStorage.clear();
         localStorage.setItem('drawingKey', this.canvas.toDataURL());
+        localStorage.setItem('canvasWidth', this.canvas.width.toString());
+        localStorage.setItem('canvasHeight', this.canvas.height.toString());
     }
 }
