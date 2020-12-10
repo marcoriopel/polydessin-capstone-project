@@ -11,7 +11,6 @@ import { ContinueDrawingService } from '@app/services/continue-drawing/continue-
 })
 export class MainPageComponent {
     readonly title: string = 'PolyDessin';
-    isContinueDrawingEnable: boolean = this.printButton();
 
     constructor(public dialog: MatDialog, public continueDrawingService: ContinueDrawingService) {}
     openUserguide(): void {
@@ -22,14 +21,15 @@ export class MainPageComponent {
         this.dialog.open(CarouselComponent);
     }
 
-    oldDrawingCheck(): void {
+    loadOldDrawing(): void {
         this.continueDrawingService.loadOldDrawing();
     }
 
-    continueDrawing(): void {
+    unlockContinueDrawing(): void {
         this.continueDrawingService.unlockContinueDrawing();
     }
-    printButton(): boolean {
+
+    isContinueDrawingEnable(): boolean {
         return localStorage.getItem('drawingKey') ? true : false;
     }
 }

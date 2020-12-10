@@ -7,6 +7,7 @@ import { LineAngle, MouseButton, Quadrant } from '@app/ressources/global-variabl
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -21,7 +22,11 @@ export class LineService extends Tool {
     mouseEvent: MouseEvent;
     lineData: Line;
 
-    constructor(public drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        public drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.lineData = {
             type: 'line',
@@ -52,7 +57,7 @@ export class LineService extends Tool {
     }
 
     onMouseDown(event: MouseEvent): void {
-        this.drawingService.setIsToolInUse(true);
+        this.undoRedoStackService.setIsToolInUse(true);
         this.drawingService.baseCtx.filter = 'none';
         this.drawingService.previewCtx.filter = 'none';
         if (event.button !== MouseButton.LEFT) {
@@ -102,7 +107,7 @@ export class LineService extends Tool {
             this.lineData.primaryColor = this.colorSelectionService.primaryColor;
             this.lineData.secondaryColor = this.colorSelectionService.secondaryColor;
             this.drawFullLine(this.drawingService.baseCtx, this.lineData);
-            this.drawingService.updateStack(this.lineData);
+            this.undoRedoStackService.updateStack(this.lineData);
             this.lineData.hasLastPointBeenChanged = false;
 
             // Clear the preview canvas, the stored clicks and the stored lines used for previewing
@@ -110,7 +115,7 @@ export class LineService extends Tool {
             this.lineData.storedLines = [];
             this.lineData.mouseClicks = [];
             this.lineData.isShiftDoubleClick = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
             return;
         }
         this.drawSegment();
@@ -121,22 +126,17 @@ export class LineService extends Tool {
         if (!this.isDrawing) {
             return;
         }
-        // Create a new line segment
         this.lineData.line = {
             startingPoint: this.lineData.mouseClicks[this.numberOfClicks - 2],
             endingPoint: this.endingClickCoordinates,
         };
-        // Draw the line with the new segment on preview canvas
         this.drawLine(this.lineData.line.startingPoint, this.lineData.line.endingPoint, this.drawingService.previewCtx, this.lineData.lineWidth);
 
-        // Draw the junction dots
         if (this.lineData.isDot) {
             this.drawDots(this.lineData.dotWidth, this.drawingService.previewCtx);
         }
-        // Add the new line segment to the stored lines
         this.lineData.storedLines.push(this.lineData.line);
 
-        // Replace last click with the good coordinates
         this.lineData.mouseClicks[this.lineData.mouseClicks.length - 1] = this.endingClickCoordinates;
     }
 

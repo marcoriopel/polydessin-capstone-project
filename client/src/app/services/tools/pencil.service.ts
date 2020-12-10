@@ -5,6 +5,7 @@ import { MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,11 @@ export class PencilService extends Tool {
     pencilData: Pencil;
     name: string = TOOL_NAMES.PENCIL_TOOL_NAME;
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.pencilData = {
             type: 'pencil',
@@ -41,7 +46,7 @@ export class PencilService extends Tool {
             this.pencilData.path.push(this.mouseDownCoord);
             this.pencilData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawPencilStroke(this.drawingService.previewCtx, this.pencilData);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -49,11 +54,11 @@ export class PencilService extends Tool {
         if (this.mouseDown) {
             const mousePosition = this.getPositionFromMouse(event);
             this.pencilData.path.push(mousePosition);
-            this.drawingService.updateStack(this.pencilData);
+            this.undoRedoStackService.updateStack(this.pencilData);
             this.pencilData.primaryColor = this.colorSelectionService.primaryColor;
             this.drawPencilStroke(this.drawingService.baseCtx, this.pencilData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();

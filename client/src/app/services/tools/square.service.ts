@@ -9,6 +9,7 @@ import { MouseButton, Quadrant } from '@app/ressources/global-variables/global-v
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +23,11 @@ export class SquareService extends Tool {
     previewLayer: HTMLElement | null;
     trigonometry: Trigonometry = new Trigonometry();
 
-    constructor(drawingService: DrawingService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
         this.rectangleData = {
             type: 'rectangle',
@@ -82,7 +87,7 @@ export class SquareService extends Tool {
         if (this.mouseDown) {
             this.firstPoint = this.getPositionFromMouse(event);
             this.lastPoint = this.getPositionFromMouse(event);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
     }
 
@@ -91,7 +96,7 @@ export class SquareService extends Tool {
             this.lastPoint = this.getPositionFromMouse(event);
             this.drawShape(this.drawingService.baseCtx);
             this.mouseDown = false;
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.setIsToolInUse(false);
             this.drawingService.autoSave();
         }
     }
@@ -140,7 +145,7 @@ export class SquareService extends Tool {
         this.drawRectangle(ctx, this.rectangleData);
 
         if (ctx === this.drawingService.baseCtx) {
-            this.drawingService.updateStack(this.rectangleData);
+            this.undoRedoStackService.updateStack(this.rectangleData);
             this.drawingService.clearCanvas(this.drawingService.previewCtx);
         }
 

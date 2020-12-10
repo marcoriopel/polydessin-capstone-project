@@ -19,7 +19,6 @@ describe('ResizeDrawingService', () => {
     beforeEach(() => {
         drawServiceSpy = jasmine.createSpyObj('DrawingService', [
             'clearCanvas',
-            'updateStack',
             'setIsToolInUse',
             'checkDrawing',
             'initializeBaseCanvas',
@@ -32,6 +31,7 @@ describe('ResizeDrawingService', () => {
         canvas.height = HEIGHT;
 
         drawServiceSpy.canvas = canvas;
+        drawServiceSpy.previewCanvas = canvas;
         drawServiceSpy.baseCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy.previewCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
         drawServiceSpy.gridCtx = canvas.getContext('2d') as CanvasRenderingContext2D;
