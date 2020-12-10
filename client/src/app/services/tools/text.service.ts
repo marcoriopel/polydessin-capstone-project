@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Tool } from '@app/classes/tool';
+import { Text } from '@app/classes/tool-properties';
 import { Vec2 } from '@app/classes/vec2';
 import { ARROW_KEYS } from '@app/ressources/global-variables/arrow-keys';
 import { MARGIN, MouseButton, MOVE_DOWN } from '@app/ressources/global-variables/global-variables';
@@ -8,6 +9,7 @@ import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { ColorSelectionService } from '@app/services/color-selection/color-selection.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -27,8 +29,15 @@ export class TextService extends Tool {
     isFrontDelete: boolean = false;
     maxLine: string;
     isWritingEnable: boolean = true;
+    textData: Text;
+    canvasData: ImageData;
 
-    constructor(drawingService: DrawingService, public hotkeyService: HotkeyService, public colorSelectionService: ColorSelectionService) {
+    constructor(
+        drawingService: DrawingService,
+        public hotkeyService: HotkeyService,
+        public colorSelectionService: ColorSelectionService,
+        public undoRedoStackService: UndoRedoStackService,
+    ) {
         super(drawingService);
     }
 
@@ -79,6 +88,9 @@ export class TextService extends Tool {
         this.removeIndicator();
         this.printText();
         this.drawingService.applyPreview();
+        this.canvasData = this.drawingService.getCanvasData();
+        this.updateTextData();
+        this.undoRedoStackService.updateStack(this.textData);
         this.destroy();
     }
 
@@ -307,5 +319,17 @@ export class TextService extends Tool {
         const isNumber = key >= '0' && key <= '9';
         if (isLetter || isNumber || AUTHORIZED_KEY.includes(key)) return true;
         else return false;
+    }
+
+    restoreText(textData: Text): void {
+        this.drawingService.baseCtx.putImageData(textData.imageData, 0, 0);
+    }
+
+    updateTextData(): void {
+        this.textData = {
+            type: 'text',
+            imageData: this.canvasData,
+        };
+        this.drawingService.autoSave();
     }
 }

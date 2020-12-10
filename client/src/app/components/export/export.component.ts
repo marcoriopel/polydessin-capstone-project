@@ -1,13 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EmailBody } from '@app/ressources/global-variables/email-body';
 import { FilterStyles, FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { MAX_NAME_LENGTH } from '@app/ressources/global-variables/global-variables';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EmailService } from '@app/services/email/email.service';
 import { HotkeyService } from '@app/services/hotkey/hotkey.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-export',
@@ -27,6 +30,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
     extension: string[] = ['image/png', 'image/jpeg'];
 
     name: string = '';
+    destroy$: Subject<boolean> = new Subject<boolean>();
     imagesrc: string = '';
     urlImage: string = '';
     urlExtension: string = '';
@@ -40,9 +44,9 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
 
     constructor(
         public drawingService: DrawingService,
+        public emailService: EmailService,
         public hotkeyService: HotkeyService,
         private dialogRef: MatDialogRef<ExportComponent>,
-        private httpClient: HttpClient,
         public textService: TextService,
         public serverResponseService: ServerResponseService,
         public dialog: MatDialog,
@@ -111,35 +115,39 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         return this.ownerForm.controls[controlName].hasError(errorName);
     }
 
-    ngOnDestroy(): void {
-        this.hotkeyService.isHotkeyEnabled = true;
-    }
-
     sendMail(): void {
         this.isSendMailButtonDisabled = true;
         const url = 'http://localhost:3000/api/email/';
         const base64 = this.urlImage.split(',')[1];
-        const body = {
-            to: this.emailAddress,
-            payload: base64,
-            filename: this.name,
-            format: this.urlExtension,
+        const body: EmailBody = {
+            DESTINATION: this.emailAddress,
+            PAYLOAD: base64,
+            FILENAME: this.name,
+            FORMAT: this.urlExtension,
         };
-        this.httpClient
-            .post(url, body)
-            .toPromise()
-            .then(() => {
-                this.isSendMailButtonDisabled = false;
-                this.serverResponseService.sendMailConfirmSnackBar();
-                this.dialog.closeAll();
-            })
-            .catch((error) => {
-                this.isSendMailButtonDisabled = false;
-                this.serverResponseService.sendMailErrorSnackBar();
-                this.dialog.closeAll();
-                throw error;
-            });
+
+        this.emailService
+            .sendMail(url, body)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+                () => {
+                    this.isSendMailButtonDisabled = false;
+                    this.serverResponseService.sendMailConfirmSnackBar();
+                    this.dialog.closeAll();
+                },
+                () => {
+                    this.isSendMailButtonDisabled = false;
+                    this.serverResponseService.sendMailErrorSnackBar();
+                    this.dialog.closeAll();
+                },
+            );
         this.link.click();
         this.dialogRef.close();
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
+        this.hotkeyService.isHotkeyEnabled = true;
     }
 }

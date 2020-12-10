@@ -19,6 +19,7 @@ import { ColorSelectionService } from '@app/services/color-selection/color-selec
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { MoveService } from '@app/services/tools/transformation-services/move.service';
 import { RotateService } from '@app/services/tools/transformation-services/rotate.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 import { MagnetismService } from './magnetism.service';
 import { SelectionService } from './selection.service';
 
@@ -54,8 +55,9 @@ export class MagicWandService extends SelectionService {
         public magnetismService: MagnetismService,
         public colorSelectionService: ColorSelectionService,
         public clipboardService: ClipboardService,
+        public undoRedoStackService: UndoRedoStackService,
     ) {
-        super(drawingService, moveService, rotateService, clipboardService, magnetismService);
+        super(drawingService, moveService, rotateService, clipboardService, magnetismService, undoRedoStackService);
         this.selectionType = SelectionType.WAND;
     }
 
@@ -91,7 +93,7 @@ export class MagicWandService extends SelectionService {
             this.transormation = 'move';
             this.moveService.onMouseDown(event);
         }
-        this.drawingService.setIsToolInUse(true);
+        this.undoRedoStackService.setIsToolInUse(true);
     }
 
     onMouseUp(event: MouseEvent): void {
@@ -108,7 +110,7 @@ export class MagicWandService extends SelectionService {
         }
         this.strokeSelection();
         this.setSelectionPoint();
-        this.drawingService.setIsToolInUse(false);
+        this.undoRedoStackService.setIsToolInUse(false);
     }
 
     onKeyUp(event: KeyboardEvent): void {
@@ -245,7 +247,7 @@ export class MagicWandService extends SelectionService {
         this.selectionImageCtx.putImageData(this.selectionImageData, -this.selection.startingPoint.x, -this.selection.startingPoint.y);
         this.moveService.initialize(this.selection, this.selectionImage);
         this.rotateService.initialize(this.selection, this.selectionImage);
-        this.drawingService.updateStack(this.selectionData);
+        this.undoRedoStackService.updateStack(this.selectionData);
     }
 
     strokeSelection(): void {

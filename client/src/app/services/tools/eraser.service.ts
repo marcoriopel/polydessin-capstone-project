@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 import { MIN_ERASER_TOOL_WIDTH, MouseButton } from '@app/ressources/global-variables/global-variables';
 import { TOOL_NAMES } from '@app/ressources/global-variables/tool-names';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { UndoRedoStackService } from '@app/services/undo-redo/undo-redo-stack.service';
 
 @Injectable({
     providedIn: 'root',
@@ -14,7 +15,7 @@ export class EraserService extends Tool {
     eraserData: Eraser;
     minToolWidth: number = MIN_ERASER_TOOL_WIDTH;
 
-    constructor(drawingService: DrawingService) {
+    constructor(drawingService: DrawingService, public undoRedoStackService: UndoRedoStackService) {
         super(drawingService);
         this.eraserData = {
             type: 'eraser',
@@ -42,7 +43,7 @@ export class EraserService extends Tool {
             this.mouseDownCoord = this.getPositionFromMouse(event);
             this.eraserData.path.push(this.mouseDownCoord);
             this.drawRect(this.drawingService.previewCtx, this.eraserData.path);
-            this.drawingService.setIsToolInUse(true);
+            this.undoRedoStackService.setIsToolInUse(true);
         }
         this.squareCursor(event);
     }
@@ -52,8 +53,8 @@ export class EraserService extends Tool {
             const mousePosition = this.getPositionFromMouse(event);
             this.eraserData.path.push(mousePosition);
             this.drawEraserStroke(this.drawingService.baseCtx, this.eraserData);
-            this.drawingService.updateStack(this.eraserData);
-            this.drawingService.setIsToolInUse(false);
+            this.undoRedoStackService.updateStack(this.eraserData);
+            this.undoRedoStackService.setIsToolInUse(false);
         }
         this.mouseDown = false;
         this.clearPath();
