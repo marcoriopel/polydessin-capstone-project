@@ -34,7 +34,10 @@ describe('PenService', () => {
         previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
+            ],
         });
         service = TestBed.inject(PenService);
 
