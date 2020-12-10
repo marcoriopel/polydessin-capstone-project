@@ -7,10 +7,11 @@ import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
+import { Subject } from 'rxjs';
 import { ExportComponent } from './export.component';
 
 import SpyObj = jasmine.SpyObj;
-describe('ExportComponent', () => {
+fdescribe('ExportComponent', () => {
     let component: ExportComponent;
     let fixture: ComponentFixture<ExportComponent>;
     let drawingServiceStub: DrawingService;
@@ -58,8 +59,6 @@ describe('ExportComponent', () => {
         filter.width = WIDTH;
         filter.height = HEIGHT;
         filterCanvasStub = filter;
-
-        httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
 
         // tslint:disable-next-line: no-string-literal
         component['drawingService'].canvas = canvasStub;
@@ -132,5 +131,10 @@ describe('ExportComponent', () => {
         component.exportLocally();
         expect(clickSpy).not.toHaveBeenCalled();
         expect(dialogSpy.close).not.toHaveBeenCalled();
+    });
+
+    it('should call a success snack bar on successfull send mail', () => {
+        const postSpy = spyOn(httpClientSpy, 'post').and.returnValue(new Subject<any>().asObservable());
+        expect(postSpy).toHaveBeenCalled();
     });
 });
