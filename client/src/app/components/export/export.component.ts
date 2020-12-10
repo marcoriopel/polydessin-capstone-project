@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -48,7 +47,6 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         public emailService: EmailService,
         public hotkeyService: HotkeyService,
         private dialogRef: MatDialogRef<ExportComponent>,
-        private httpClient: HttpClient,
         public textService: TextService,
         public serverResponseService: ServerResponseService,
         public dialog: MatDialog,
@@ -129,7 +127,7 @@ export class ExportComponent implements AfterViewInit, OnInit, OnDestroy {
         };
 
         this.emailService
-            .sendEmail(url, body)
+            .sendMail(url, body)
             .pipe(takeUntil(this.destroy$))
             .subscribe(
                 () => {

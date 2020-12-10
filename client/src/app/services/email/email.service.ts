@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 export class EmailService {
     constructor(private http: HttpClient) {}
 
-    sendEmail(url: string, body: EmailBody): Observable<void> {
+    sendMail(url: string, body: EmailBody): Observable<void> {
         return this.http.post<void>(url, body);
     }
 }

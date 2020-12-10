@@ -1,25 +1,26 @@
-import { HttpClient } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FILTER_STYLES } from '@app/ressources/global-variables/filter';
 import { DrawingService } from '@app/services/drawing/drawing.service';
+import { EmailService } from '@app/services/email/email.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
 import { TextService } from '@app/services/tools/text.service';
 import { Subject } from 'rxjs';
 import { ExportComponent } from './export.component';
 
 import SpyObj = jasmine.SpyObj;
-fdescribe('ExportComponent', () => {
+describe('ExportComponent', () => {
     let component: ExportComponent;
     let fixture: ComponentFixture<ExportComponent>;
     let drawingServiceStub: DrawingService;
     let canvasStub: HTMLCanvasElement;
     let filterCanvasStub: HTMLCanvasElement;
     let dialogSpy: SpyObj<MatDialogRef<ExportComponent>>;
-    let httpClientSpy: HttpClient;
+    let sendMailObservable: Subject<void>;
     let textServiceSpy: SpyObj<TextService>;
+    let emailServiceSpy: SpyObj<EmailService>;
     let serverResponseServiceSpy: SpyObj<ServerResponseService>;
     let matDialogSpy: SpyObj<MatDialog>;
     const WIDTH = 100;
@@ -27,18 +28,21 @@ fdescribe('ExportComponent', () => {
 
     beforeEach(async(() => {
         drawingServiceStub = {} as DrawingService;
+        sendMailObservable = new Subject<void>();
+        emailServiceSpy = jasmine.createSpyObj('EmailService', ['sendMail']);
         serverResponseServiceSpy = jasmine.createSpyObj('ServerResponseService', ['sendMailConfirmSnackBar', 'sendMailErrorSnackBar']);
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll', 'open']);
         dialogSpy = jasmine.createSpyObj('dialogRef', ['close']);
         textServiceSpy = jasmine.createSpyObj('TextService', ['createText']);
+        emailServiceSpy.sendMail.and.returnValue(sendMailObservable.asObservable());
         TestBed.configureTestingModule({
             imports: [FormsModule, ReactiveFormsModule],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             declarations: [ExportComponent],
             providers: [
+                { provide: EmailService, useValue: emailServiceSpy },
                 { provide: DrawingService, useValue: drawingServiceStub },
                 { provide: MatDialogRef, useValue: dialogSpy },
-                { provide: HttpClient, useValue: httpClientSpy },
                 { provide: TextService, useValue: textServiceSpy },
                 { provide: ServerResponseService, useValue: serverResponseServiceSpy },
                 { provide: MatDialog, useValue: matDialogSpy },
@@ -133,8 +137,15 @@ fdescribe('ExportComponent', () => {
         expect(dialogSpy.close).not.toHaveBeenCalled();
     });
 
-    it('should call a success snack bar on successfull send mail', () => {
-        const postSpy = spyOn(httpClientSpy, 'post').and.returnValue(new Subject<any>().asObservable());
-        expect(postSpy).toHaveBeenCalled();
+    it('should send mail and open success modal on correct call', () => {
+        component.sendMail();
+        sendMailObservable.next();
+        expect(serverResponseServiceSpy.sendMailConfirmSnackBar).toHaveBeenCalled();
+    });
+
+    it('should send mail and open error modal on incorrect call', () => {
+        component.sendMail();
+        sendMailObservable.error('err');
+        expect(serverResponseServiceSpy.sendMailErrorSnackBar).toHaveBeenCalled();
     });
 });
