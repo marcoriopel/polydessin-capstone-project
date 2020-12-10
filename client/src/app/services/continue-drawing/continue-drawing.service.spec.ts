@@ -5,6 +5,7 @@ import { ContinueDrawingService } from '@app/services/continue-drawing/continue-
 import { DatabaseService } from '@app/services/database/database.service';
 import { DrawingService } from '@app/services/drawing/drawing.service';
 import { ServerResponseService } from '@app/services/server-response/server-response.service';
+import { ResizeDrawingService } from '../resize-drawing/resize-drawing.service';
 
 // tslint:disable: no-string-literal
 // tslint:disable no-magic-numbers
@@ -14,6 +15,7 @@ describe('ContinueDrawingService', () => {
     let drawingServiceSpy: jasmine.SpyObj<DrawingService>;
     let serverResponseService: jasmine.SpyObj<ServerResponseService>;
     let dataBaseService: jasmine.SpyObj<DatabaseService>;
+    let resizeDrawingServiceSpy: jasmine.SpyObj<ResizeDrawingService>;
     let router: Router;
     let canvas: HTMLCanvasElement;
     let context: CanvasRenderingContext2D;
@@ -38,6 +40,7 @@ describe('ContinueDrawingService', () => {
         canvas.height = HEIGHT;
         context = canvas.getContext('2d') as CanvasRenderingContext2D;
         drawingServiceSpy = jasmine.createSpyObj('DrawingService', ['autoSave']);
+        resizeDrawingServiceSpy = jasmine.createSpyObj('ResizeDrawingService', ['resizeCanvasSize']);
         serverResponseService = jasmine.createSpyObj('ServerResponseService', ['sendMailConfirmSnackBar']);
         dataBaseService = jasmine.createSpyObj('DataBaseService', ['deleteDrawing']);
         router = jasmine.createSpyObj('Router', ['initialNavigation']);
@@ -45,6 +48,7 @@ describe('ContinueDrawingService', () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DrawingService, useValue: drawingServiceSpy },
+                { provide: ResizeDrawingService, useValue: resizeDrawingServiceSpy },
                 { provide: ServerResponseService, useValue: serverResponseService },
                 { provide: DatabaseService, useValue: dataBaseService },
             ],
@@ -76,7 +80,7 @@ describe('ContinueDrawingService', () => {
         service['drawingService'].canvas = canvas;
         spyOn(context, 'drawImage').and.stub();
         service['drawingService'].baseCtx = context;
-        service.convertURIToImageData(canvas.toDataURL()).then((res) => {
+        service.convertURIToImageData(canvas.toDataURL(), 5, 5).then((res) => {
             expect(context.drawImage).toHaveBeenCalled();
             done();
         });
