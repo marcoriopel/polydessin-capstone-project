@@ -52,15 +52,14 @@ export class ResizeDrawingService {
     resizeCanvasSize(width: number, height: number): void {
         this.drawingService.canvas.width = width;
         this.drawingService.canvas.height = height;
+        this.drawingService.previewCanvas.width = width;
+        this.drawingService.previewCanvas.height = height;
         this.previewSize.x = width;
         this.previewSize.y = height;
     }
 
     restoreCanvas(resizeData: Resize): void {
-        this.drawingService.canvas.width = resizeData.canvasSize.x;
-        this.drawingService.canvas.height = resizeData.canvasSize.y;
-        this.previewSize.x = resizeData.canvasSize.x;
-        this.previewSize.y = resizeData.canvasSize.y;
+        this.resizeCanvasSize(resizeData.canvasSize.x, resizeData.canvasSize.y);
         this.drawingService.baseCtx.putImageData(resizeData.imageData, 0, 0);
     }
 

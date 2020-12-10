@@ -1,9 +1,10 @@
-/* tslint:disable:no-unused-variable */
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { EmailBody } from '@app/ressources/global-variables/email-body';
 import { EmailService } from './email.service';
+
+// tslint:disable:no-unused-variable
+// tslint:disable:no-empty
 
 describe('Service: EmailService', () => {
     let httpMock: HttpTestingController;

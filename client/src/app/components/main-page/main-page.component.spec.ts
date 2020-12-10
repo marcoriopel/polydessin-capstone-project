@@ -53,26 +53,26 @@ describe('MainPageComponent', () => {
     });
 
     it('should load old drawing', () => {
-        component.oldDrawingCheck();
+        component.loadOldDrawing();
         expect(continueDrawingSpy.loadOldDrawing).toHaveBeenCalled();
     });
 
     it('should continueDrawing', () => {
-        component.continueDrawing();
+        component.unlockContinueDrawing();
         expect(continueDrawingSpy.unlockContinueDrawing).toHaveBeenCalled();
     });
 
     it('should return print button true if local storage has key', () => {
         const keySpy = spyOn(localStorage, 'getItem').and.returnValue('yes');
-        component.printButton();
-        expect(component.printButton()).toBeTruthy();
+        component.isContinueDrawingEnable();
+        expect(component.isContinueDrawingEnable()).toBeTruthy();
         expect(keySpy).toHaveBeenCalled();
     });
 
     it('should return print button false if local storage hasnt the key', () => {
         const keySpy = spyOn(localStorage, 'getItem').and.returnValue(null);
-        component.printButton();
-        expect(component.printButton()).toBeFalsy();
+        component.isContinueDrawingEnable();
+        expect(component.isContinueDrawingEnable()).toBeFalsy();
         expect(keySpy).toHaveBeenCalled();
     });
 });
