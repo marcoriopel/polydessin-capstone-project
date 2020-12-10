@@ -4,5 +4,5 @@ export const TYPES = {
     DatabaseController: Symbol('DatabaseController'),
     DatabaseService: Symbol('DatabaseService'),
     EmailController: Symbol('EmailController'),
-    EmailService: Symbol('EmalService'),
+    EmailService: Symbol('EmailService'),
 };
