@@ -18,6 +18,7 @@ enum StatusCode {
     IM_A_TEAPOT = 418,
     TOO_MANY_REQUESTS = 429,
     INTERNAL_SERVER_ERROR = 500,
+    UNPROCESSABLE_ENTITY_ERROR = 422,
     DEPARTURE = 0,
 }
 export { StatusCode };
