@@ -28,13 +28,16 @@ describe('PenService', () => {
         canvas.height = HEIGHT;
 
         angleObservableSpy = jasmine.createSpyObj('Subject<number>', ['next']);
-        undoRedoStackServiceSpy = jasmine.createSpyObj('undoRedoStackService', ['setIsToolInUse']);
-        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave']);
+        undoRedoStackServiceSpy = jasmine.createSpyObj('undoRedoStackService', ['setIsToolInUse', 'updateStack']);
+        drawServiceSpy = jasmine.createSpyObj('DrawingService', ['applyPreview', 'clearCanvas', 'autoSave', 'getCanvasData']);
         baseCtxSpy = jasmine.createSpyObj('CanvasRenderingContext2D', ['beginPath', 'moveTo', 'lineTo', 'stroke']);
         previewCtxStub = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         TestBed.configureTestingModule({
-            providers: [{ provide: DrawingService, useValue: drawServiceSpy }],
+            providers: [
+                { provide: DrawingService, useValue: drawServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
+            ],
         });
         service = TestBed.inject(PenService);
 

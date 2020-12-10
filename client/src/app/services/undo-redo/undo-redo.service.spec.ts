@@ -39,7 +39,6 @@ describe('UndoRedoService', () => {
 
     let drawingService: DrawingService;
     let resizeDrawingService: ResizeDrawingService;
-    let undoRedoStackService: UndoRedoStackService;
 
     let pencilData: Pencil;
     let brushData: Brush;
@@ -87,6 +86,7 @@ describe('UndoRedoService', () => {
                 { provide: SquareService, useValue: squareServiceSpy },
                 { provide: CircleService, useValue: circleServiceSpy },
                 { provide: PolygonService, useValue: polygonServiceSpy },
+                { provide: UndoRedoStackService, useValue: undoRedoStackServiceSpy },
             ],
         });
         service = TestBed.inject(UndoRedoService);
@@ -95,8 +95,8 @@ describe('UndoRedoService', () => {
         resizeDrawingService.workSpaceSize = { x: 1, y: 1 };
 
         drawingService = TestBed.inject(DrawingService);
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.redoStack = [];
 
         setUndoAvailabilitySpy = spyOn<any>(service, 'setUndoAvailability').and.callThrough();
         setRedoAvailabilitySpy = spyOn<any>(service, 'setRedoAvailability').and.callThrough();
@@ -213,19 +213,19 @@ describe('UndoRedoService', () => {
     });
 
     it('should reset undo and redo stack (empty)', () => {
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.redoStack = [];
-        undoRedoStackService.redoStack.push(pencilData);
-        undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.redoStack.push(pencilData);
+        service.undoRedoStackService.undoStack.push(pencilData);
     });
 
     it('should not return if tool is not in use when calling undo', () => {
         changeRedoAvailabilitySpy = spyOn<any>(service, 'changeRedoAvailability');
         changeUndoAvailabilitySpy = spyOn<any>(service, 'changeUndoAvailability');
         obs.next(false);
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.undoStack.push(pencilData);
-        undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack.push(pencilData);
         service.undo();
         expect(selectionServiceSpy.reset).toHaveBeenCalled();
         expect(resizeDrawingSpy.resizeCanvasSize).toHaveBeenCalled();
@@ -248,46 +248,46 @@ describe('UndoRedoService', () => {
     });
 
     it('if there is already a modification it should be pushed to redo stack when calling undo', () => {
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.undoStack.push(pencilData);
-        undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack.push(pencilData);
         obs.next(false);
         service.undo();
-        expect(undoRedoStackService.redoStack.length).toEqual(1);
+        expect(service.undoRedoStackService.redoStack.length).toEqual(1);
     });
 
     it('if there is no modification on canvas nothing should be pushed to redo stack when calling undo', () => {
-        undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.undoStack = [];
         obs.next(false);
         service.undo();
-        expect(undoRedoStackService.redoStack.length).toEqual(0);
+        expect(service.undoRedoStackService.redoStack.length).toEqual(0);
     });
 
     it('if there is an element in undo stack, drawElement should be called when calling undo', () => {
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.redoStack = [];
-        undoRedoStackService.undoStack.push(pencilData);
-        undoRedoStackService.undoStack.push(pencilData); // Pushing 2 modifications because one is popped
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack.push(pencilData); // Pushing 2 modifications because one is popped
         obs.next(false);
         service.undo();
-        expect(undoRedoStackService.redoStack.length).toEqual(1);
+        expect(service.undoRedoStackService.redoStack.length).toEqual(1);
     });
 
     it('should not call drawElement if tool is in use (should not complete redo operation because unavailable', () => {
         const drawElementSpy: jasmine.SpyObj<any> = spyOn<any>(service, 'drawElement');
         obs.next(true);
-        undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.redoStack = [];
         service.redo();
         expect(drawElementSpy).not.toHaveBeenCalled();
     });
 
     it('if there is an element in redo stack, it should be added to undo stack when calling redo', () => {
         obs.next(false);
-        undoRedoStackService.redoStack = [];
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.redoStack.push(pencilData);
+        service.undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.redoStack.push(pencilData);
         service.redo();
-        expect(undoRedoStackService.undoStack.length).toEqual(1);
+        expect(service.undoRedoStackService.undoStack.length).toEqual(1);
     });
 
     it('if there is no element in redo stack, drawElement should not be called when redo is called', () => {
@@ -295,33 +295,33 @@ describe('UndoRedoService', () => {
         changeRedoAvailabilitySpy = spyOn<any>(service, 'changeRedoAvailability');
         changeUndoAvailabilitySpy = spyOn<any>(service, 'changeUndoAvailability');
         obs.next(false);
-        undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.redoStack = [];
         service.redo();
         expect(drawElementSpy).not.toHaveBeenCalled();
     });
 
     it('changeUndoAvailability should call setUndoAvailability with true if there is elements in undoStack', () => {
-        undoRedoStackService.undoStack = [];
-        undoRedoStackService.undoStack.push(pencilData);
+        service.undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.undoStack.push(pencilData);
         service.changeUndoAvailability();
         expect(setUndoAvailabilitySpy).toHaveBeenCalledWith(true);
     });
 
     it('changeUndoAvailability should call setUndoAvailability with false if there is no elements in undoStack', () => {
-        undoRedoStackService.undoStack = [];
+        service.undoRedoStackService.undoStack = [];
         service.changeUndoAvailability();
         expect(setUndoAvailabilitySpy).toHaveBeenCalledWith(false);
     });
 
     it('changeRedoAvailability should call setRedoAvailability with true if there is elements in redoStack', () => {
-        undoRedoStackService.redoStack = [];
-        undoRedoStackService.redoStack.push(pencilData);
+        service.undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.redoStack.push(pencilData);
         service.changeRedoAvailability();
         expect(setRedoAvailabilitySpy).toHaveBeenCalledWith(true);
     });
 
     it('changeRedoAvailability should call setRedoAvailability with false if there is no elements in redoStack', () => {
-        undoRedoStackService.redoStack = [];
+        service.undoRedoStackService.redoStack = [];
         service.changeRedoAvailability();
         expect(setRedoAvailabilitySpy).toHaveBeenCalledWith(false);
     });
